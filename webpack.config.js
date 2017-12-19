@@ -15,6 +15,9 @@ const webpackConfig = {
       { test: /\.tsx?/, loader: 'awesome-typescript-loader' }
     ]
   },
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js', '.jsx'],
+  },
   devtool: 'source-map',
   plugins: [new HtmlWebpackPlugin()],
 };
