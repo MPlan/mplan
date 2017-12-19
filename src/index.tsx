@@ -1,4 +1,7 @@
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
 
-ReactDom.render(<div>hello></div>, document.querySelector('#app'));
+const bootstrap = document.createElement('div');
+document.body.appendChild(bootstrap);
+
+ReactDom.render(<div>hello from react</div>, bootstrap);

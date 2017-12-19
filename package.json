@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack-dev-server"
   },
   "author": "",
   "license": "MIT",
@@ -13,6 +14,7 @@
     "@types/react-dom": "^16.0.3",
     "@types/webpack": "^3.8.1",
     "awesome-typescript-loader": "^3.4.1",
+    "html-webpack-plugin": "^2.30.1",
     "typescript": "^2.6.2",
     "webpack": "^3.10.0",
     "webpack-dev-server": "^2.9.7"
