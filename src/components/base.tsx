@@ -114,6 +114,31 @@ function parseFlex(flex?: boolean | number | Flex): FlexGrowShrinkBasis {
   return { flexGrow: 0, flexShrink: 1, flexBasis: 'auto' };
 }
 
+const defaultBorderWidth = 0.01;
+
+interface Border {
+  borderWidth?: number, borderStyle?: string, borderColor?: string
+}
+
+type BorderFlatten = { borderWidth: number, borderStyle: string, borderColor: string };
+function parseBorders(border?: boolean | Border): BorderFlatten {
+  if (border === true) {
+    return { borderWidth: defaultBorderWidth, borderStyle: 'solid', borderColor: Color.border };
+  }
+  if (typeof border === 'object') {
+    let borderFlattened = {
+      borderWidth: defaultBorderWidth,
+      borderStyle: 'solid',
+      borderColor: Color.border
+    };
+    if (border.borderColor) { borderFlattened.borderColor = border.borderColor; }
+    if (border.borderStyle) { borderFlattened.borderStyle = border.borderStyle; }
+    if (border.borderWidth) { borderFlattened.borderWidth = border.borderWidth; }
+    return borderFlattened;
+  }
+  return { borderWidth: 0, borderStyle: 'none', borderColor: Color.border };
+}
+
 export interface ViewProps extends React.HTMLAttributes<HTMLDivElement> {
   margin?: boolean | number | Directions,
   padding?: boolean | number | Directions,
@@ -137,13 +162,14 @@ export interface ViewProps extends React.HTMLAttributes<HTMLDivElement> {
   width?: number,
   /** height in `rem`. Do *not* use this property if the height changes dynamically */
   height?: number,
+  border?: boolean | Border,
 }
 type ComputedView = StyledComponentClass<React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>, any, React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>>;
 const computedViews = {} as { [css: string]: ComputedView }
 export function View(props: ViewProps) {
   const {
     margin, padding, hideOn, flex, alignSelf, justifyContent, flexWrap, alignItems,
-    /*portion,*/ row, flexDirection, backgroundColor, width, height,
+    /*portion,*/ row, flexDirection, backgroundColor, width, height, border,
     ...restOfProps
   } = props;
 
@@ -156,6 +182,7 @@ export function View(props: ViewProps) {
   const fd = /*if*/ row ? 'row' : flexDirection || 'column';
   const fw = flexWrap || /*if*/ fd === 'row' ? 'wrap' : 'nowrap';
   const bg = backgroundColor || 'initial';
+  const bf = parseBorders(border);
 
   const css = `
     margin: ${m.top}rem ${m.right}rem ${m.bottom}rem ${m.left}rem;
@@ -170,6 +197,7 @@ export function View(props: ViewProps) {
     background-color: ${bg};
     ${/*if*/ width ? `width: ${width}rem;` : ''}
     ${/*if*/ height ? `height: ${width}rem;` : ''}
+    border: ${bf.borderWidth}rem ${bf.borderStyle} ${bf.borderColor};
   `;
 
   if (!computedViews[css]) {
