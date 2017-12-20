@@ -27,17 +27,23 @@ export class Semester extends Record.define({
   count() {
     return this.courseIds.count()
   }
+
+  courseList(courses: Immutable.Set<Course>) {
+    return courses.filter(course => this.courseIds.has(course.id)).toArray();
+  }
 }
+
+const cis427id = uuid();
 
 export class App extends Record.define({
   courses: Immutable.Set<Course>([
-    new Course({ id: uuid(), name: 'CIS 427', position: 0 }),
+    new Course({ id: cis427id, name: 'CIS 427', position: 0 }),
     new Course({ id: uuid(), name: 'CIS 4691', position: 1 }),
     new Course({ id: uuid(), name: 'MATH 227', position: 2 }),
     new Course({ id: uuid(), name: 'CIS 476', position: 2 }),
   ]),
   semesters: Immutable.Set<Semester>([
-    new Semester({ id: uuid(), season: 'Fall', year: 2017 }),
+    new Semester({ id: uuid(), season: 'Fall', year: 2017, courseIds: Immutable.Set([cis427id]) }),
     new Semester({ id: uuid(), season: 'Winter', year: 2018 }),
     new Semester({ id: uuid(), season: 'Summer', year: 2018 }),
     new Semester({ id: uuid(), season: 'Fall', year: 2019 }),
@@ -48,6 +54,8 @@ export class App extends Record.define({
   y: 0,
   offsetX: 0,
   offsetY: 0,
+  mouseIsOverSemester: false,
+
 }) {
   get bucket() {
     const courseIdsInSemesters = (this.semesters

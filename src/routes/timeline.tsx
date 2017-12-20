@@ -3,21 +3,33 @@ import { View, Text } from '../components/base';
 import * as Color from '../components/colors';
 import * as Record from 'recordize';
 import * as Model from '../models';
+import * as Immutable from 'immutable';
 
 interface SemesterBlockProps {
+  courses: Immutable.Set<Model.Course>,
   semester: Model.Semester,
+  onMouseEnter: (e: React.MouseEvent<HTMLDivElement>) => void,
+  onMouseLeave: (e: React.MouseEvent<HTMLDivElement>) => void,
+  onMouseUp: (e: React.MouseEvent<HTMLDivElement>) => void,
+  onCourseMouseDown: (e: React.MouseEvent<HTMLDivElement>, course: Model.Course) => void,
+  onCourseMouseUp: (e: React.MouseEvent<HTMLDivElement>, course: Model.Course) => void,
 }
 
 function Semester(props: SemesterBlockProps) {
   const semester = props.semester;
-  return <View width={20}>
+  return <View width={20} onMouseUp={props.onMouseUp} onMouseEnter={props.onMouseEnter} onMouseLeave={props.onMouseLeave}>
     <View border flex padding margin>
       <View name="heading" row justifyContent="space-between">
         <Text strong>{semester.name}</Text>
         <Text>{semester.count()} Courses</Text>
       </View>
       <View flex>
-
+        {props.semester.courseList(props.courses).map(course => <Course
+          key={course.id}
+          course={course}
+          onMouseDown={e => props.onCourseMouseDown(e, course)}
+          onMouseUp={e => props.onCourseMouseUp(e, course)}
+        />)}
       </View>
     </View>
   </View>
@@ -57,6 +69,7 @@ interface TimelineState { }
 
 export class Timeline extends Model.Store.connect({
   get: store => ({
+    courses: store.courses,
     semesters: store.semesterList,
     courseInBucket: store.bucketList,
     dragging: store.dragging,
@@ -66,6 +79,7 @@ export class Timeline extends Model.Store.connect({
     y: store.y,
     offsetX: store.offsetX,
     offsetY: store.offsetY,
+    mouseIsOverSemester: store.mouseIsOverSemester,
   }),
   set: (store, values: any) => {
     const newSelectedCourseId = values.selectedCourseId;
@@ -76,7 +90,8 @@ export class Timeline extends Model.Store.connect({
       .set('selectedCourseId', newSelectedCourseId)
       .set('dragging', newDragging)
       .set('x', newX)
-      .set('y', newY);
+      .set('y', newY)
+      .set('mouseIsOverSemester', values.mouseIsOverSemester);
   }
 }) {
 
@@ -107,6 +122,26 @@ export class Timeline extends Model.Store.connect({
     super.componentWillUnmount();
   }
 
+  handleCourseMouseDown = (e: React.MouseEvent<HTMLDivElement>, course: Model.Course) => {
+    const offsetLeft = e.currentTarget.offsetLeft;
+    const offsetTop = e.currentTarget.offsetTop;
+    const offsetX = e.pageX - offsetLeft;
+    const offsetY = e.pageY - offsetTop;
+    this.setStore(previousState => ({
+      ...previousState,
+      selectedCourseId: course.id,
+      dragging: true,
+      offsetX,
+      offsetY,
+    }))
+  }
+
+  handleCourseMouseUp = (e: React.MouseEvent<HTMLDivElement>, course: Model.Course) => {
+    this.setStore(previousState => ({
+      ...previousState,
+      dragging: false,
+    }))
+  }
 
   render() {
     this.state
@@ -118,6 +153,7 @@ export class Timeline extends Model.Store.connect({
             position: 'absolute',
             top: this.state.y + this.state.offsetY,
             left: this.state.x + this.state.offsetX,
+            zIndex: -3,
           }}
         >
           <Course
@@ -131,7 +167,7 @@ export class Timeline extends Model.Store.connect({
       <View name="content" flex>
         <View name="header" padding row>
           <View flex>
-            <Text strong extraLarge>Timeline {/*if*/ this.state.dragging ? 'Dragging' : ''}</Text>
+            <Text strong extraLarge>Timeline</Text>
             <Text>Create your MPlan here.</Text>
           </View>
           <View alignItems="flex-end">
@@ -142,7 +178,45 @@ export class Timeline extends Model.Store.connect({
         <View name="semester-block-container" flex row overflow="auto">
           {this.state.semesters.map(semester => <Semester
             key={semester.id}
+            courses={this.state.courses}
             semester={semester}
+            onMouseEnter={() => {
+              console.log('mouse enter')
+              this.setStore(previousState => ({
+                ...previousState,
+                mouseIsOverSemester: true,
+              }))
+            }}
+            onMouseLeave={() => {
+              console.log('mouse leave')
+              this.setStore(previousState => ({
+                ...previousState,
+                mouseIsOverSemester: false,
+              }))
+            }}
+            onMouseUp={() => {
+              if (!this.state.mouseIsOverSemester) {
+                console.log('mouse is NOT over semester')
+                return;
+              }
+              if (!this.state.dragging) {
+                return;
+              }
+              // if the courseID is already in there
+              if (semester.courseIds.has(this.state.selectedCourseId)) {
+                return;
+              }
+              this.setGlobalStore(store => {
+                // remove course from other semesters
+                const removedCourse = store.update('semesters', semesters => semesters.reduce((acc, next) => {
+                  return acc.add(next.update('courseIds', courseIds => courseIds.delete(store.selectedCourseId)));
+                }, Immutable.Set<Model.Semester>()));
+                return removedCourse.update('semesters', semesters => semesters.delete(semester).add(semester.update('courseIds', courseIds => courseIds.add(store.selectedCourseId))))
+                // return store;
+              })
+            }}
+            onCourseMouseDown={this.handleCourseMouseDown}
+            onCourseMouseUp={this.handleCourseMouseUp}
           />)}
         </View>
       </View>
@@ -158,25 +232,8 @@ export class Timeline extends Model.Store.connect({
             {this.state.courseInBucket.map(course => <Course
               key={course.id}
               course={course}
-              onMouseUp={() => {
-                this.setStore(previousState => ({
-                  ...previousState,
-                  dragging: false,
-                }))
-              }}
-              onMouseDown={(e) => {
-                const offsetLeft = e.currentTarget.offsetLeft;
-                const offsetTop = e.currentTarget.offsetTop;
-                const offsetX = e.pageX - offsetLeft;
-                const offsetY = e.pageY - offsetTop;
-                this.setStore(previousState => ({
-                  ...previousState,
-                  selectedCourseId: course.id,
-                  dragging: true,
-                  offsetX,
-                  offsetY,
-                }))
-              }}
+              onMouseUp={e => this.handleCourseMouseUp(e, course)}
+              onMouseDown={e => this.handleCourseMouseDown(e, course)}
             />)}
           </View>
         </View>

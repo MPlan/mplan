@@ -26,12 +26,6 @@ const webpackConfig = {
     extensions: ['.tsx', '.ts', '.js', '.jsx', '.css'],
   },
   devtool: 'source-map',
-  plugins: [
-    new HtmlWebpackPlugin({
-      title: 'MPlan'
-    }),
-    new BaseHrefWebpackPlugin({ baseHref: '/' })
-  ],
   devServer: {
     historyApiFallback: true,
   }
