@@ -6,12 +6,6 @@ import { BrowserRouter } from 'react-router-dom';
 import { Switch, Route, Redirect } from 'react-router';
 import { Routes } from './routes';
 
-
-function SemesterBlock() {
-
-}
-
-
 export function App() {
   return <BrowserRouter>
     <View row style={{ height: '100vh', width: '100vw', maxHeight: '100vh', maxWidth: '100vw', }}>
