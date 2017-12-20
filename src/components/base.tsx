@@ -164,6 +164,7 @@ export interface ViewProps extends React.HTMLAttributes<HTMLDivElement> {
   /** height in `rem`. Do *not* use this property if the height changes dynamically */
   height?: number,
   border?: boolean | Border,
+  overflow?: string,
 }
 type ComputedView = StyledComponentClass<React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>, any, React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>>;
 const computedViews = {} as { [css: string]: ComputedView }
@@ -171,7 +172,7 @@ export function View(props: ViewProps) {
   const {
     margin, padding, hideOn, flex, alignSelf, justifyContent, flexWrap, alignItems,
     /*portion,*/ row, flexDirection, backgroundColor, width, height, border, name,
-    className,
+    className, overflow,
     ...restOfProps
   } = props;
 
@@ -182,9 +183,10 @@ export function View(props: ViewProps) {
   const jc = justifyContent || 'flex-start';
   const ai = alignItems || 'stretch';
   const fd = /*if*/ row ? 'row' : flexDirection || 'column';
-  const fw = flexWrap || /*if*/ fd === 'row' ? 'wrap' : 'nowrap';
+  const fw = flexWrap || 'nowrap';
   const bg = backgroundColor || 'initial';
   const bf = parseBorders(border);
+  const o = overflow || 'visible';
 
   const css = `
     margin: ${m.top}rem ${m.right}rem ${m.bottom}rem ${m.left}rem;
@@ -200,6 +202,7 @@ export function View(props: ViewProps) {
     ${/*if*/ width ? `width: ${width}rem;` : ''}
     ${/*if*/ height ? `height: ${width}rem;` : ''}
     border: ${bf.borderWidth}rem ${bf.borderStyle} ${bf.borderColor};
+    overflow: ${o};
   `;
 
   const newClassName = [name && `vn-${name}` || '', className || ''].join(' ').trim();
@@ -215,7 +218,7 @@ export function View(props: ViewProps) {
 }
 
 export interface TextProps {
-  children?: string,
+  children?: any,
   // sizing
   p?: number,
   small?: boolean,

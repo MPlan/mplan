@@ -14,7 +14,7 @@ function SemesterBlock() {
 
 export function App() {
   return <BrowserRouter>
-    <View row style={{ height: '100vh' }}>
+    <View row style={{ height: '100vh', width: '100vw', maxHeight: '100vh', maxWidth: '100vw', }}>
       <Nav />
       <View flex>
         <Switch>
