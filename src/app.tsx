@@ -1,5 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import { View } from './components/base';
 
 const Container = styled.div`
   display: flex;
@@ -29,9 +30,12 @@ const ChildC = styled.div`
 `;
 
 export function App() {
-  return <Container>
-    <ChildA />
-    <ChildB />
-    <ChildC />
-  </Container>;
+  return <View row>
+    <View>test one</View>
+    <View flex style={{ backgroundColor: 'blue' }}>test two</View>
+    <View flex style={{ backgroundColor: 'red' }}>test two</View>
+    <View>test two</View>
+    <View>test two</View>
+    <View>test two</View>
+  </View>;
 }

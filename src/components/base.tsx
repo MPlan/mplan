@@ -3,51 +3,166 @@ import styled, { StyledComponentClass } from 'styled-components';
 
 type ShadowLevels = '';
 
-export const base = 16;
+export const base = 1;
 export const phi = 1.618;
 
 export function p(x: number) { return base * Math.pow(phi, x); }
 export function em(x: number) { return base * x; }
 
+interface Directions {
+  all?: boolean | number,
+  vertical?: boolean | number,
+  horizontal?: boolean | number,
+  right?: boolean | number,
+  top?: boolean | number,
+  left?: boolean | number,
+  bottom?: boolean | number,
+}
+
+interface Flex {
+  flexGrow?: number,
+  flexShrink?: number,
+  /** decimals are converted to percentages  */
+  flexBasis?: string | number,
+}
+
+
+function removeBooleanFromDirections(marginOrPadding?: Directions): {
+  [P in keyof Directions]: number
+} {
+  if (typeof marginOrPadding !== 'object') {
+    return { top: 0, right: 0, bottom: 0, left: 0 };
+  }
+  return (Object
+    .keys(marginOrPadding)
+    .map(key => ({ key, value: marginOrPadding[key as keyof typeof marginOrPadding] }))
+    .map(({ key, value }) => ({ key, value: /*if*/ value === true ? 1 : 0 }))
+    .reduce((acc, { key, value }) => {
+      acc[key as keyof typeof acc] = value;
+      return acc;
+    }, {} as {[P in keyof Directions]: number})
+  );
+}
+
+type TopRightBottomLeft = { top: number, right: number, bottom: number, left: number, }
+function parseMarginOrPadding(marginOrPadding?: boolean | number | Directions): TopRightBottomLeft {
+  if (marginOrPadding === true) {
+    return { top: 1, right: 1, bottom: 1, left: 1 };
+  }
+  if (typeof marginOrPadding === 'number') {
+    return {
+      top: marginOrPadding, right: marginOrPadding, bottom: marginOrPadding, left: marginOrPadding
+    };
+  }
+  if (typeof marginOrPadding === 'object') {
+    const m = removeBooleanFromDirections(marginOrPadding);
+    const topRightBottomLeft = { top: 0, right: 0, bottom: 0, left: 0 };
+    if (typeof m.all === 'number') {
+      topRightBottomLeft.top = m.all;
+      topRightBottomLeft.right = m.all;
+      topRightBottomLeft.bottom = m.all;
+      topRightBottomLeft.left = m.all;
+    }
+    if (typeof m.vertical === 'number') {
+      topRightBottomLeft.top = m.vertical;
+      topRightBottomLeft.bottom = m.vertical
+    }
+    if (typeof m.horizontal === 'number') {
+      topRightBottomLeft.left = m.horizontal;
+      topRightBottomLeft.right = m.horizontal
+    }
+    if (typeof m.top === 'number') { topRightBottomLeft.top = m.top; }
+    if (typeof m.right === 'number') { topRightBottomLeft.right = m.right; }
+    if (typeof m.bottom === 'number') { topRightBottomLeft.bottom = m.bottom; }
+    if (typeof m.left === 'number') { topRightBottomLeft.left = m.left; }
+    return topRightBottomLeft;
+  }
+  return { top: 0, right: 0, bottom: 0, left: 0 };
+}
+
+type FlexGrowShrinkBasis = { flexGrow: number, flexShrink: number, flexBasis: string }
+function parseFlex(flex?: boolean | number | Flex): FlexGrowShrinkBasis {
+  if (flex === true) {
+    return { flexGrow: 1, flexShrink: 1, flexBasis: '' };
+  }
+  if (typeof flex === 'number') {
+    return { flexGrow: 1, flexShrink: 1, flexBasis: '' };
+  }
+  if (typeof flex === 'object') {
+    const flexGrowShrinkBasis = { flexGrow: 0, flexShrink: 1, flexBasis: '' };
+    if (typeof flex.flexGrow === 'number') {
+      flexGrowShrinkBasis.flexGrow = flex.flexGrow;
+    }
+    if (typeof flex.flexShrink === 'number') {
+      flexGrowShrinkBasis.flexShrink = flex.flexShrink;
+    }
+    if (typeof flex.flexBasis === 'number') {
+      flexGrowShrinkBasis.flexBasis = `${(flex.flexBasis * 100).toFixed(3)}%`;
+    }
+    if (typeof flex.flexBasis === 'string') {
+      flexGrowShrinkBasis.flexBasis = flex.flexBasis;
+    }
+    return flexGrowShrinkBasis;
+  }
+  return { flexGrow: 0, flexShrink: 1, flexBasis: '' };
+}
+
 export interface ViewProps extends React.HTMLAttributes<HTMLDivElement> {
-  margin?: any,
-  padding?: any,
-  cursor?: any,
+  margin?: boolean | number | Directions,
+  padding?: boolean | number | Directions,
   hideOn?: any,
   // flex properties
-  flex?: boolean | number,
-  alignSelf?: any,
-  justifyContent?: any,
+  flex?: boolean | number | Flex,
+  alignSelf?: string,
+  justifyContent?: string,
+  /** shorthand for `flex-direction: row` */
+  row?: boolean,
+  flexDirection?: string,
   /** defaults to if `flexDirection === 'row' : 'wrap' : 'nowrap'` */
-  flexWrap?: any,
-  alignItems?: any,
+  flexWrap?: string,
+  alignItems?: string,
   // responsive
-  portion?: number, // <View portion={1/2} portion={{desk: 1/2, lap: 1, palm: 1}} />
+  // TODO
+  // portion?: number, // <View portion={1/2} portion={{desk: 1/2, lap: 1, palm: 1}} />
   // quick styles
-  backgroundColor?: any,
+  // backgroundColor?: string,
 }
 type S = StyledComponentClass<React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>, any, React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>>;
 const computedViews = {} as { [css: string]: S }
 export function View(props: ViewProps) {
-  const { portion, ...restOfProps } = props;
+  const {
+    margin, padding, hideOn, flex, alignSelf, justifyContent, flexWrap, alignItems,
+    /*portion,*/ row, flexDirection, /*backgroundColor,*/
+    ...restOfProps
+  } = props;
 
-  // if portion is present then change flex-basis
+  const m = parseMarginOrPadding(margin);
+  const p = parseMarginOrPadding(padding);
+  const f = parseFlex(flex);
+  const as = alignSelf || 'auto';
+  const jc = justifyContent || 'flex-start';
+  const fd = /*if*/ row ? 'row' : flexDirection || 'column';
+  const fw = flexWrap || /*if*/ fd === 'row' ? 'wrap' : 'nowrap';
 
   const css = `
+    margin: ${m.top}rem ${m.right}rem ${m.bottom}rem ${m.left}rem;
+    padding: ${p.top}rem ${p.right}rem ${p.bottom}rem ${p.left}rem;
     display: flex;
-    flex-direction: column;
+    flex-direction: ${fd};
+    flex-wrap: ${fw};
+    align-self: ${as};
+    flex: ${f.flexGrow.toFixed(3)} ${f.flexShrink.toFixed(3)} ${f.flexBasis};
+    justify-content: ${jc};
   `;
 
   if (!computedViews[css]) {
     const templateStringsArray = Object.assign([css], { raw: [css] });
-
     const StyledView = styled.div(templateStringsArray);
     computedViews[css] = StyledView;
+    console.log('new kind')
     return <StyledView {...restOfProps} />
   }
-
   const StyledView = computedViews[css];
-
   return <StyledView {...restOfProps} />
 
 }
