@@ -12,11 +12,17 @@ const webpackConfig = {
   },
   module: {
     rules: [
-      { test: /\.tsx?/, loader: 'awesome-typescript-loader' }
+      { test: /\.tsx?/, loader: 'awesome-typescript-loader' },
+      {
+        test: /\.css/, use: [
+          { loader: 'style-loader' },
+          { loader: 'css-loader', options: { minimize: true } },
+        ]
+      }
     ]
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js', '.jsx'],
+    extensions: ['.tsx', '.ts', '.js', '.jsx', '.css'],
   },
   devtool: 'source-map',
   plugins: [new HtmlWebpackPlugin()],
