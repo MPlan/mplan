@@ -17,7 +17,7 @@ interface SemesterBlockProps {
 
 function Semester(props: SemesterBlockProps) {
   const semester = props.semester;
-  return <View width={20} onMouseUp={props.onMouseUp} onMouseEnter={props.onMouseEnter} onMouseLeave={props.onMouseLeave}>
+  return <View width={20} flex={{ flexShrink: 0 }} onMouseUp={props.onMouseUp} onMouseEnter={props.onMouseEnter} onMouseLeave={props.onMouseLeave} style={{}}>
     <View border flex padding margin>
       <View name="heading" row justifyContent="space-between">
         <Text strong>{semester.name}</Text>
@@ -175,7 +175,7 @@ export class Timeline extends Model.Store.connect({
             <Text strong large>April 2018</Text>
           </View>
         </View>
-        <View name="semester-block-container" flex row overflow="auto">
+        <View name="semester-block-container" flex row overflow="auto" style={{ maxWidth: '70rem' }}>
           {this.state.semesters.map(semester => <Semester
             key={semester.id}
             courses={this.state.courses}
