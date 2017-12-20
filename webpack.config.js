@@ -9,7 +9,6 @@ const webpackConfig = {
   entry: './src/index.tsx',
   output: {
     filename: 'mplan.js',
-    path: path.resolve(__dirname, './dist'),
   },
   module: {
     rules: [
