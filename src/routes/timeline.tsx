@@ -23,12 +23,10 @@ function Semester(props: SemesterBlockProps) {
   </View>
 }
 
-
-
 interface CourseProps {
   course: Model.Course,
-  onMouseDown: () => void,
-  onMouseUp: () => void,
+  onMouseDown: (e: React.MouseEvent<HTMLDivElement>) => void,
+  onMouseUp: (e: React.MouseEvent<HTMLDivElement>) => void,
 }
 interface CourseState {
   hovering: boolean,
@@ -66,6 +64,8 @@ export class Timeline extends Model.Store.connect({
     selectedCourseId: store.selectedCourseId,
     x: store.x,
     y: store.y,
+    offsetX: store.offsetX,
+    offsetY: store.offsetY,
   }),
   set: (store, values: any) => {
     const newSelectedCourseId = values.selectedCourseId;
@@ -111,13 +111,23 @@ export class Timeline extends Model.Store.connect({
   render() {
     this.state
     return <View name="timeline" flex row style={{ maxWidth: '100%' }}>
-      {/*if*/ this.state.dragging ? <View width={20} style={{ position: 'absolute', top: this.state.y, left: this.state.x }}>
-        <Course
-          course={this.state.selectedCourse}
-          onMouseDown={() => { }}
-          onMouseUp={() => { }}
-        />
-      </View> : null}
+      {/*if*/ this.state.dragging
+        ? <View
+          width={20}
+          style={{
+            position: 'absolute',
+            top: this.state.y + this.state.offsetY,
+            left: this.state.x + this.state.offsetX,
+          }}
+        >
+          <Course
+            course={this.state.selectedCourse}
+            onMouseDown={() => { }}
+            onMouseUp={() => { }}
+          />
+        </View>
+        : null
+      }
       <View name="content" flex>
         <View name="header" padding row>
           <View flex>
@@ -142,25 +152,29 @@ export class Timeline extends Model.Store.connect({
         </View>
         <View name="my-degree" flex>
           <View>
-            <Text large strong>Bucket</Text>
+            <Text large strong>Starred Courses</Text>
           </View>
           <View flex>
             {this.state.courseInBucket.map(course => <Course
               key={course.id}
               course={course}
               onMouseUp={() => {
-                console.log('up')
                 this.setStore(previousState => ({
                   ...previousState,
                   dragging: false,
                 }))
               }}
-              onMouseDown={() => {
-                console.log('down');
+              onMouseDown={(e) => {
+                const offsetLeft = e.currentTarget.offsetLeft;
+                const offsetTop = e.currentTarget.offsetTop;
+                const offsetX = e.pageX - offsetLeft;
+                const offsetY = e.pageY - offsetTop;
                 this.setStore(previousState => ({
                   ...previousState,
                   selectedCourseId: course.id,
                   dragging: true,
+                  offsetX,
+                  offsetY,
                 }))
               }}
             />)}

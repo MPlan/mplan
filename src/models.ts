@@ -46,6 +46,8 @@ export class App extends Record.define({
   dragging: false,
   x: 0,
   y: 0,
+  offsetX: 0,
+  offsetY: 0,
 }) {
   get bucket() {
     const courseIdsInSemesters = (this.semesters
