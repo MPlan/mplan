@@ -6,10 +6,10 @@ interface SemesterBlockProps { }
 
 
 function SemesterBlock(props: SemesterBlockProps) {
-  return <View width={20} border>
-    <View>
+  return <View width={20} margin>
+    <View border flex padding>
+      <Text>Semester block</Text>
     </View>
-    <Text>Semester block</Text>
   </View>
 }
 
@@ -30,6 +30,8 @@ export class Timeline extends React.Component<{}, TimelineState> {
         </View>
       </View>
       <View flex row>
+        <View name="semester-block-container">
+        </View>
         <SemesterBlock />
       </View>
     </View>

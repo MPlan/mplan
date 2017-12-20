@@ -114,7 +114,7 @@ function parseFlex(flex?: boolean | number | Flex): FlexGrowShrinkBasis {
   return { flexGrow: 0, flexShrink: 1, flexBasis: 'auto' };
 }
 
-const defaultBorderWidth = 0.01;
+const defaultBorderWidth = 0.10;
 
 interface Border {
   borderWidth?: number, borderStyle?: string, borderColor?: string
@@ -140,6 +140,7 @@ function parseBorders(border?: boolean | Border): BorderFlatten {
 }
 
 export interface ViewProps extends React.HTMLAttributes<HTMLDivElement> {
+  name?: string,
   margin?: boolean | number | Directions,
   padding?: boolean | number | Directions,
   hideOn?: any,
@@ -169,7 +170,8 @@ const computedViews = {} as { [css: string]: ComputedView }
 export function View(props: ViewProps) {
   const {
     margin, padding, hideOn, flex, alignSelf, justifyContent, flexWrap, alignItems,
-    /*portion,*/ row, flexDirection, backgroundColor, width, height, border,
+    /*portion,*/ row, flexDirection, backgroundColor, width, height, border, name,
+    className,
     ...restOfProps
   } = props;
 
@@ -200,14 +202,16 @@ export function View(props: ViewProps) {
     border: ${bf.borderWidth}rem ${bf.borderStyle} ${bf.borderColor};
   `;
 
+  const newClassName = [name && `vn-${name}` || '', className || ''].join(' ').trim();
+
   if (!computedViews[css]) {
     const templateStringsArray = Object.assign([css], { raw: [css] });
     const StyledView = styled.div(templateStringsArray);
     computedViews[css] = StyledView;
-    return <StyledView {...restOfProps} />
+    return <StyledView className={newClassName} {...restOfProps} />
   }
   const StyledView = computedViews[css];
-  return <StyledView {...restOfProps} />
+  return <StyledView className={newClassName} {...restOfProps} />
 }
 
 export interface TextProps {
