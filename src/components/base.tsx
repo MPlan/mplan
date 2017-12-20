@@ -127,8 +127,8 @@ export interface ViewProps extends React.HTMLAttributes<HTMLDivElement> {
   // quick styles
   // backgroundColor?: string,
 }
-type S = StyledComponentClass<React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>, any, React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>>;
-const computedViews = {} as { [css: string]: S }
+type ComputedView = StyledComponentClass<React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>, any, React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>>;
+const computedViews = {} as { [css: string]: ComputedView }
 export function View(props: ViewProps) {
   const {
     margin, padding, hideOn, flex, alignSelf, justifyContent, flexWrap, alignItems,
@@ -159,18 +159,16 @@ export function View(props: ViewProps) {
     const templateStringsArray = Object.assign([css], { raw: [css] });
     const StyledView = styled.div(templateStringsArray);
     computedViews[css] = StyledView;
-    console.log('new kind')
     return <StyledView {...restOfProps} />
   }
   const StyledView = computedViews[css];
   return <StyledView {...restOfProps} />
-
 }
 
 export interface TextProps {
   children?: string,
   // sizing
-  p?: string,
+  p?: number,
   small?: boolean,
   large?: boolean,
   extraLarge?: boolean,
@@ -187,18 +185,41 @@ export interface TextProps {
   // effects
   caps?: boolean,
 }
-const TextDiv = styled.div`
-`;
+
+type ComputedText = StyledComponentClass<React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>, any, React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>>;
+const computedTexts = {} as { [css: string]: ComputedText };
 export function Text(props: TextProps) {
-  return <TextDiv>{props.children}</TextDiv>
-}
 
-interface SubTextProps { }
-export function SubText(props: SubTextProps) {
-  return <Text />
-}
+  const {
+    p: pValue, small, large, extraLarge, light, dark, primary, info, warning, danger, weak, strong,
+    caps,
+    ...restOfProps
+  } = props;
 
-interface LabelProps { }
-export function Label(props: LabelProps) {
-  return <Text small caps />
+  let fs = 1;
+  if (small) { fs = p(-1); }
+  if (large) { fs = p(1); }
+  if (extraLarge) { fs = p(2); }
+  if (pValue !== undefined) { fs = p(pValue); }
+
+  let fw = 'normal';
+  if (weak) { fw = 'lighter'; }
+  if (strong) { fw = 'bold'; }
+
+  // let color = ''
+  // TODO
+  const css = `
+    font-size: ${fs}rem;
+    font-weight: ${fw};
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  `;
+
+  if (!computedTexts[css]) {
+    const templateStringsArray = Object.assign([css], { raw: [css] });
+    const StyledText = styled.div(templateStringsArray);
+    computedTexts[css] = StyledText;
+    return <StyledText {...restOfProps} />
+  }
+  const StyledText = computedTexts[css];
+  return <StyledText {...restOfProps} />
 }
