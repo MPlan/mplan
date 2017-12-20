@@ -1,6 +1,7 @@
 /// <reference path="./webpack.d.ts" />
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { BaseHrefWebpackPlugin } = require('base-href-webpack-plugin');
 
 
 /** @type {webpack.Configuration} */
@@ -25,7 +26,15 @@ const webpackConfig = {
     extensions: ['.tsx', '.ts', '.js', '.jsx', '.css'],
   },
   devtool: 'source-map',
-  plugins: [new HtmlWebpackPlugin()],
+  plugins: [
+    new HtmlWebpackPlugin({
+      title: 'MPlan'
+    }),
+    new BaseHrefWebpackPlugin({ baseHref: '/' })
+  ],
+  devServer: {
+    historyApiFallback: true,
+  }
 };
 
 module.exports = webpackConfig;

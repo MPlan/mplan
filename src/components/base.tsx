@@ -1,5 +1,6 @@
 import * as React from 'react';
 import styled, { StyledComponentClass } from 'styled-components';
+import * as Color from './colors';
 
 type ShadowLevels = '';
 
@@ -36,7 +37,13 @@ function removeBooleanFromDirections(marginOrPadding?: Directions): {
   return (Object
     .keys(marginOrPadding)
     .map(key => ({ key, value: marginOrPadding[key as keyof typeof marginOrPadding] }))
-    .map(({ key, value }) => ({ key, value: /*if*/ value === true ? 1 : 0 }))
+    .map(({ key, value }) => ({
+      key,
+      value: (/*if*/ value === true
+        ? 1
+        : /*if*/ typeof value === 'number' ? value : 0
+      )
+    }))
     .reduce((acc, { key, value }) => {
       acc[key as keyof typeof acc] = value;
       return acc;
@@ -83,13 +90,13 @@ function parseMarginOrPadding(marginOrPadding?: boolean | number | Directions): 
 type FlexGrowShrinkBasis = { flexGrow: number, flexShrink: number, flexBasis: string }
 function parseFlex(flex?: boolean | number | Flex): FlexGrowShrinkBasis {
   if (flex === true) {
-    return { flexGrow: 1, flexShrink: 1, flexBasis: '' };
+    return { flexGrow: 1, flexShrink: 1, flexBasis: 'auto' };
   }
   if (typeof flex === 'number') {
-    return { flexGrow: 1, flexShrink: 1, flexBasis: '' };
+    return { flexGrow: 1, flexShrink: 1, flexBasis: 'auto' };
   }
   if (typeof flex === 'object') {
-    const flexGrowShrinkBasis = { flexGrow: 0, flexShrink: 1, flexBasis: '' };
+    const flexGrowShrinkBasis = { flexGrow: 0, flexShrink: 1, flexBasis: 'auto' };
     if (typeof flex.flexGrow === 'number') {
       flexGrowShrinkBasis.flexGrow = flex.flexGrow;
     }
@@ -104,7 +111,7 @@ function parseFlex(flex?: boolean | number | Flex): FlexGrowShrinkBasis {
     }
     return flexGrowShrinkBasis;
   }
-  return { flexGrow: 0, flexShrink: 1, flexBasis: '' };
+  return { flexGrow: 0, flexShrink: 1, flexBasis: 'auto' };
 }
 
 export interface ViewProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -125,14 +132,18 @@ export interface ViewProps extends React.HTMLAttributes<HTMLDivElement> {
   // TODO
   // portion?: number, // <View portion={1/2} portion={{desk: 1/2, lap: 1, palm: 1}} />
   // quick styles
-  // backgroundColor?: string,
+  backgroundColor?: string,
+  /** width in `rem`. Do *not* use this property if the width changes dynamically */
+  width?: number,
+  /** height in `rem`. Do *not* use this property if the height changes dynamically */
+  height?: number,
 }
 type ComputedView = StyledComponentClass<React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>, any, React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>>;
 const computedViews = {} as { [css: string]: ComputedView }
 export function View(props: ViewProps) {
   const {
     margin, padding, hideOn, flex, alignSelf, justifyContent, flexWrap, alignItems,
-    /*portion,*/ row, flexDirection, /*backgroundColor,*/
+    /*portion,*/ row, flexDirection, backgroundColor, width, height,
     ...restOfProps
   } = props;
 
@@ -141,8 +152,10 @@ export function View(props: ViewProps) {
   const f = parseFlex(flex);
   const as = alignSelf || 'auto';
   const jc = justifyContent || 'flex-start';
+  const ai = alignItems || 'stretch';
   const fd = /*if*/ row ? 'row' : flexDirection || 'column';
   const fw = flexWrap || /*if*/ fd === 'row' ? 'wrap' : 'nowrap';
+  const bg = backgroundColor || 'initial';
 
   const css = `
     margin: ${m.top}rem ${m.right}rem ${m.bottom}rem ${m.left}rem;
@@ -153,6 +166,10 @@ export function View(props: ViewProps) {
     align-self: ${as};
     flex: ${f.flexGrow.toFixed(3)} ${f.flexShrink.toFixed(3)} ${f.flexBasis};
     justify-content: ${jc};
+    align-items: ${ai};
+    background-color: ${bg};
+    ${/*if*/ width ? `width: ${width}rem;` : ''}
+    ${/*if*/ height ? `height: ${width}rem;` : ''}
   `;
 
   if (!computedViews[css]) {
@@ -184,6 +201,9 @@ export interface TextProps {
   strong?: boolean,
   // effects
   caps?: boolean,
+  color?: string,
+  margin?: boolean | number | Directions,
+  padding?: boolean | number | Directions,
 }
 
 type ComputedText = StyledComponentClass<React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>, any, React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>>;
@@ -191,10 +211,13 @@ const computedTexts = {} as { [css: string]: ComputedText };
 export function Text(props: TextProps) {
 
   const {
-    p: pValue, small, large, extraLarge, light, dark, primary, info, warning, danger, weak, strong,
-    caps,
+    margin, padding, p: pValue, small, large, extraLarge, light, dark, primary, info, warning,
+    danger, weak, strong, caps, color,
     ...restOfProps
   } = props;
+
+  const m = parseMarginOrPadding(margin);
+  const pad = parseMarginOrPadding(padding);
 
   let fs = 1;
   if (small) { fs = p(-1); }
@@ -206,12 +229,17 @@ export function Text(props: TextProps) {
   if (weak) { fw = 'lighter'; }
   if (strong) { fw = 'bold'; }
 
+  const c = color || Color.text;
+
   // let color = ''
   // TODO
   const css = `
+    margin: ${m.top}rem ${m.right}rem ${m.bottom}rem ${m.left}rem;
+    padding: ${pad.top}rem ${pad.right}rem ${pad.bottom}rem ${pad.left}rem;
     font-size: ${fs}rem;
     font-weight: ${fw};
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    color: ${c};
   `;
 
   if (!computedTexts[css]) {
