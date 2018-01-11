@@ -26,7 +26,7 @@ function Semester(props: SemesterBlockProps) {
     style={{}}
   >
     <View border flex padding margin>
-      <View name="heading" row justifyContent="space-between">
+      <View _="heading" row justifyContent="space-between">
         <Text strong>{semester.name}</Text>
         <Text>{semester.count()} Courses</Text>
       </View>
@@ -60,7 +60,7 @@ class Course extends React.Component<CourseProps, CourseState> {
   render() {
     const { course } = this.props;
     return <View
-      name="course"
+      _="course"
       border
       margin={{ vertical: true }}
       padding
@@ -158,7 +158,7 @@ export class Timeline extends Model.store.connect({
 
   render() {
     this.state
-    return <View name="timeline" flex row>
+    return <View _="timeline" flex row>
       {/*if*/ this.state.dragging
         ? <View
           width={20}
@@ -177,8 +177,8 @@ export class Timeline extends Model.store.connect({
         </View>
         : null
       }
-      <View name="content" flex style={{ overflow: 'auto' }}>
-        <View name="header" padding row>
+      <View _="content" flex overflow>
+        <View _="header" padding row>
           <View flex>
             <Text strong extraLarge>Timeline</Text>
             <Text>Create your MPlan here.</Text>
@@ -188,20 +188,18 @@ export class Timeline extends Model.store.connect({
             <Text strong large>April 2018</Text>
           </View>
         </View>
-        <View name="semester-block-container" flex row overflow="auto">
+        <View _="semester-block-container" flex row overflow="auto">
           {this.state.semesters.map(semester => <Semester
             key={semester.id}
             courses={this.state.courses}
             semester={semester}
             onMouseEnter={() => {
-              console.log('mouse enter')
               this.setStore(previousState => ({
                 ...previousState,
                 mouseIsOverSemester: true,
               }))
             }}
             onMouseLeave={() => {
-              console.log('mouse leave')
               this.setStore(previousState => ({
                 ...previousState,
                 mouseIsOverSemester: false,
@@ -233,11 +231,11 @@ export class Timeline extends Model.store.connect({
           />)}
         </View>
       </View>
-      <View name="sidebar" backgroundColor={Color.background} width={20} padding>
-        <View name="my-degree" flex>
+      <View _="sidebar" backgroundColor={Color.background} width={20} padding>
+        <View _="my-degree" flex>
           <Text large strong>My Degree</Text>
         </View>
-        <View name="my-degree" flex>
+        <View _="my-degree" flex>
           <View>
             <Text large strong>Starred Courses</Text>
           </View>

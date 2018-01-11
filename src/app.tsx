@@ -10,16 +10,16 @@ export function App() {
   return <BrowserRouter>
     <View
       row
+      overflow
       style={{
         height: '100vh',
         width: '100vw',
         maxHeight: '100vh',
         maxWidth: '100vw',
-        overflow: 'auto',
       }}
     >
       <Nav />
-      <View flex style={{ overflow: 'auto' }}>
+      <View flex overflow>
         <Switch>
           {Routes.map(route => <Route
             key={route.path}

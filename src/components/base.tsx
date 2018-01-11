@@ -140,7 +140,7 @@ function parseBorders(border?: boolean | Border): BorderFlatten {
 }
 
 export interface ViewProps extends React.HTMLAttributes<HTMLDivElement> {
-  name?: string,
+  _?: string,
   margin?: boolean | number | Directions,
   padding?: boolean | number | Directions,
   hideOn?: any,
@@ -164,14 +164,14 @@ export interface ViewProps extends React.HTMLAttributes<HTMLDivElement> {
   /** height in `rem`. Do *not* use this property if the height changes dynamically */
   height?: number,
   border?: boolean | Border,
-  overflow?: string,
+  overflow?: boolean | string,
 }
 type ComputedView = StyledComponentClass<React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>, any, React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>>;
 const computedViews = {} as { [css: string]: ComputedView }
 export function View(props: ViewProps) {
   const {
     margin, padding, hideOn, flex, alignSelf, justifyContent, flexWrap, alignItems,
-    /*portion,*/ row, flexDirection, backgroundColor, width, height, border, name,
+    /*portion,*/ row, flexDirection, backgroundColor, width, height, border, _,
     className, overflow,
     ...restOfProps
   } = props;
@@ -186,7 +186,10 @@ export function View(props: ViewProps) {
   const fw = flexWrap || 'nowrap';
   const bg = backgroundColor || 'initial';
   const bf = parseBorders(border);
-  const o = overflow || 'visible';
+  const o = (/*if*/ overflow === true
+    ? 'auto'
+    : /*if*/ typeof overflow === 'string' ? overflow : 'visible'
+  );
 
   const css = `
     margin: ${m.top}rem ${m.right}rem ${m.bottom}rem ${m.left}rem;
@@ -205,7 +208,7 @@ export function View(props: ViewProps) {
     overflow: ${o};
   `;
 
-  const newClassName = [name && `vn-${name}` || '', className || ''].join(' ').trim();
+  const newClassName = [_ && `__${_}__` || '', className || ''].join(' ').trim();
 
   if (!computedViews[css]) {
     const templateStringsArray = Object.assign([css], { raw: [css] });
