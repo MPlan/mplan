@@ -40,7 +40,7 @@
     "react-dom": "^16.2.0",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
-    "recordize": "0.0.2",
+    "recordize": "0.0.7",
     "styled-components": "^2.3.0",
     "uuid": "^3.1.0"
   }

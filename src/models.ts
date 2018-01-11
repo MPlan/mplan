@@ -25,7 +25,7 @@ export class Semester extends Record.define({
     return `${this.season} ${this.year}`
   }
   count() {
-    return this.courseIds.count()
+    return this.courseIds.count();
   }
 
   courseList(courses: Immutable.Set<Course>) {
@@ -92,4 +92,4 @@ export class App extends Record.define({
   }
 }
 
-export const Store = Record.createStore(new App());
+export const store = Record.createStore(new App());

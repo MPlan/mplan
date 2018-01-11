@@ -17,7 +17,14 @@ interface SemesterBlockProps {
 
 function Semester(props: SemesterBlockProps) {
   const semester = props.semester;
-  return <View width={20} flex={{ flexShrink: 0 }} onMouseUp={props.onMouseUp} onMouseEnter={props.onMouseEnter} onMouseLeave={props.onMouseLeave} style={{}}>
+  return <View
+    width={20}
+    flex={{ flexShrink: 0 }}
+    onMouseUp={props.onMouseUp}
+    onMouseEnter={props.onMouseEnter}
+    onMouseLeave={props.onMouseLeave}
+    style={{}}
+  >
     <View border flex padding margin>
       <View name="heading" row justifyContent="space-between">
         <Text strong>{semester.name}</Text>
@@ -65,9 +72,15 @@ class Course extends React.Component<CourseProps, CourseState> {
   }
 }
 
-interface TimelineState { }
+export class Test extends Model.store.connect({
+  get: store => ({
+    x: store.x,
+    y: store.y,
+  }),
+  set: (store, v) => store.set('x', v.x).set('y', v.y)
+}) { }
 
-export class Timeline extends Model.Store.connect({
+export class Timeline extends Model.store.connect({
   get: store => ({
     courses: store.courses,
     semesters: store.semesterList,
@@ -145,7 +158,7 @@ export class Timeline extends Model.Store.connect({
 
   render() {
     this.state
-    return <View name="timeline" flex row style={{ maxWidth: '100%' }}>
+    return <View name="timeline" flex row>
       {/*if*/ this.state.dragging
         ? <View
           width={20}
@@ -164,7 +177,7 @@ export class Timeline extends Model.Store.connect({
         </View>
         : null
       }
-      <View name="content" flex>
+      <View name="content" flex style={{ overflow: 'auto' }}>
         <View name="header" padding row>
           <View flex>
             <Text strong extraLarge>Timeline</Text>
@@ -175,7 +188,7 @@ export class Timeline extends Model.Store.connect({
             <Text strong large>April 2018</Text>
           </View>
         </View>
-        <View name="semester-block-container" flex row overflow="auto" style={{ maxWidth: '70rem' }}>
+        <View name="semester-block-container" flex row overflow="auto">
           {this.state.semesters.map(semester => <Semester
             key={semester.id}
             courses={this.state.courses}

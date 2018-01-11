@@ -8,9 +8,18 @@ import { Routes } from './routes';
 
 export function App() {
   return <BrowserRouter>
-    <View row style={{ height: '100vh', width: '100vw', maxHeight: '100vh', maxWidth: '100vw', }}>
+    <View
+      row
+      style={{
+        height: '100vh',
+        width: '100vw',
+        maxHeight: '100vh',
+        maxWidth: '100vw',
+        overflow: 'auto',
+      }}
+    >
       <Nav />
-      <View flex>
+      <View flex style={{ overflow: 'auto' }}>
         <Switch>
           {Routes.map(route => <Route
             key={route.path}
