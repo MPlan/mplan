@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack-dev-server",
+    "start": "npm run start:server & npm run start:client",
+    "start:server": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server/index.ts",
+    "start:client": "webpack-dev-server",
     "build": "./node_modules/.bin/webpack -p",
     "heroku-prebuild": "npm install --only=dev && npm install && npm run build"
   },
@@ -42,6 +44,7 @@
     "react-router-dom": "^4.2.2",
     "recordize": "0.0.7",
     "styled-components": "^2.3.0",
+    "unofficial-umdearborn-catalog-api": "^0.1.4",
     "uuid": "^3.1.0"
   }
 }

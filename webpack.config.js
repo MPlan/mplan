@@ -6,8 +6,9 @@ const { BaseHrefWebpackPlugin } = require('base-href-webpack-plugin');
 
 /** @type {webpack.Configuration} */
 const webpackConfig = {
-  entry: './src/index.tsx',
+  entry: './src/client/index.tsx',
   output: {
+    path: path.resolve(__dirname, './src/web-root'),
     filename: 'mplan.js',
   },
   module: {
@@ -26,7 +27,11 @@ const webpackConfig = {
   },
   devtool: 'source-map',
   devServer: {
+    contentBase: path.resolve(__dirname, './src/web-root'),
     historyApiFallback: true,
+    proxy: {
+      '/api': 'http://localhost:8090',
+    }
   }
 };
 

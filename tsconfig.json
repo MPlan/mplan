@@ -3,13 +3,11 @@
     "target": "es5",
     "module": "commonjs",
     "lib": [
-      "dom",
-      "es2017"
+      "es2017", "dom"
     ],
     "jsx": "react",
-    "downlevelIteration": true,
     "strict": true,
     "skipLibCheck": true,
-    "allowSyntheticDefaultImports": true
+    "downlevelIteration": true
   }
 }

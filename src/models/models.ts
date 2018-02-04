@@ -12,7 +12,7 @@ export class Semester extends Record.define({
   id: '',
   courseIds: Immutable.Set<string>(),
   season: 'Fall' as 'Fall' | 'Winter' | 'Summer',
-  year: 0
+  year: 0,
 }) {
   get position() {
     const seasonNumber = (/*if*/ this.season === 'Winter'
