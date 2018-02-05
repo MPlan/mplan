@@ -1,13 +1,17 @@
 process.env.MONGODB_URI = 'mongodb://local@localhost/mplan-integration-tests';
 import {
-  findJobTodo, collections, Job, maxJobsRunAtOnce, countOfJobsBeingWorkedOn, runJob,
+  findJobTodo, maxJobsRunAtOnce, countOfJobsBeingWorkedOn, runJob,
   markJobAsStarted, queue, markJobAsFinished, markJobAsFailure
 } from './scheduler';
+import { Job, JobFailure } from '../models/jobs';
 import { log } from '../../utilities/utilities';
 import * as Mongo from 'mongodb';
 import { range } from 'lodash';
+import { dbConnection } from '../models/mongo';
 
 describe('scheduler', () => {
+  if (process.env.SKIP_SCHEDULER_INTEGRATION_TESTS) { return; }
+
   beforeAll(() => {
     process.env.IGNORE_LOG_LEVEL_DEBUG = 'true';
     process.env.IGNORE_LOG_LEVEL_ERROR = 'true';
@@ -17,12 +21,12 @@ describe('scheduler', () => {
   beforeEach(async () => {
     log.debug('dropping and re-creating collections...');
     try {
-      const { jobs, jobFailures } = await collections();
+      const { jobs, jobFailures } = await dbConnection;
       await jobs.drop();
       await jobFailures.drop();
     } catch {
     } finally {
-      const { jobs, jobFailures } = await collections();
+      const { jobs, jobFailures } = await dbConnection;
     }
   });
 
@@ -32,7 +36,7 @@ describe('scheduler', () => {
     delete process.env.IGNORE_LOG_LEVEL_INFO;
 
     try {
-      const { jobs, jobFailures } = await collections();
+      const { jobs, jobFailures } = await dbConnection;
       await jobs.drop();
       await jobFailures.drop();
     } catch {
@@ -41,7 +45,7 @@ describe('scheduler', () => {
 
   describe('countOfJobsBeingWorkedOn', async () => {
     it(`counts the number of jobs where the 'timeStarted' is 'undefined'`, async () => {
-      const { jobs } = await collections();
+      const { jobs } = await dbConnection;
       const expectedNumberOfJobsBeingWorkedOn = 5;
 
       const jobsBeingWorkedOn = range(expectedNumberOfJobsBeingWorkedOn).map(i => {
@@ -84,13 +88,13 @@ describe('scheduler', () => {
 
   describe('findJobTodo', () => {
     it('returns undefined when the collection is empty', async () => {
-      const { jobs } = await collections();
+      const { jobs } = await dbConnection;
       const jobTodo = await findJobTodo();
       expect(jobTodo).toBeUndefined();
     });
 
     it('returns undefined when there are no uncompleted jobs or unworked on', async () => {
-      const { jobs } = await collections();
+      const { jobs } = await dbConnection;
 
       const jobBeingWorkedOn: Job = {
         _id: new Mongo.ObjectId(),
@@ -135,7 +139,7 @@ describe('scheduler', () => {
 
     })
     it('returns undefined when too many jobs are run', async () => {
-      const { jobs } = await collections();
+      const { jobs } = await dbConnection;
 
       const jobsBeingWorkedOn = range(maxJobsRunAtOnce).map(i => {
         const timestamp = new Date().getTime() - (i * 1000);
@@ -197,7 +201,7 @@ describe('scheduler', () => {
     });
 
     it('returns the oldest job', async () => {
-      const { jobs } = await collections();
+      const { jobs } = await dbConnection;
 
       const jobsToSubmit = range(maxJobsRunAtOnce - 1).map(i => {
         const timestamp = new Date().getTime() - (Math.random() * 100 * 1000);
@@ -229,7 +233,7 @@ describe('scheduler', () => {
 
   describe('markJobAsStarted', async () => {
     it(`updates the job in the DB with 'workedOnByProcessPid' and 'timeStarted'`, async () => {
-      const { jobs } = await collections();
+      const { jobs } = await dbConnection;
 
       const jobTodoToInsert: Job = {
         _id: new Mongo.ObjectId(),
@@ -262,7 +266,7 @@ describe('scheduler', () => {
 
   describe('markJobAsFinished', () => {
     it(`updates the 'timeCompleted' field in the job document`, async () => {
-      const { jobs } = await collections();
+      const { jobs } = await dbConnection;
       await queue('__testJob', new Date().getTime());
       const todo = (await findJobTodo())!;
       expect(todo).toBeDefined();
@@ -277,7 +281,7 @@ describe('scheduler', () => {
 
   describe('markJobAsFailure', () => {
     it(`adds a document to 'JobFailures' and marks the current job to be redone`, async () => {
-      const { jobs, jobFailures } = await collections();
+      const { jobs, jobFailures } = await dbConnection;
 
       const jobToFail: Job = {
         _id: new Mongo.ObjectId(),
@@ -336,7 +340,7 @@ describe('scheduler', () => {
 
   describe('runJob', () => {
     it('adds a failure document when the job throws', async () => {
-      const { jobFailures, jobs } = await collections();
+      const { jobFailures, jobs } = await dbConnection;
       await queue('__testJobThatFails', new Date().getTime());
       const jobTodo = (await findJobTodo())!;
       expect(jobTodo).toBeDefined();
@@ -358,7 +362,7 @@ describe('scheduler', () => {
     });
 
     it('runs a job', async () => {
-      const { jobs, jobFailures } = await collections();
+      const { jobs, jobFailures } = await dbConnection;
       await queue('__testJob', new Date().getTime());
       const jobTodo = (await findJobTodo())!;
       expect(jobTodo).toBeDefined();
