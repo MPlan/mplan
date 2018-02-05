@@ -28,7 +28,7 @@ export function pad(message: string, atLeast: number, padFromLeft?: boolean) {
 
 // logging stuff
 function logger(level: string, color: colors.Color, ...messages: any[]) {
-  // const message = messages.map(m => m + '').
+  if (process.env[`IGNORE_LOG_LEVEL_${level.toUpperCase()}`]) { return; }
   const colorize = /*if*/ color ? color : (s: string) => s;
   const prefix = `${colorize(oneLine`
     [${pad(level.toUpperCase().trim(), 5, true)}
