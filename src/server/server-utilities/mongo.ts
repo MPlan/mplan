@@ -1,5 +1,6 @@
+import * as cluster from 'cluster';
 import { MongoClient } from 'mongodb';
-import { log, getOrThrow } from '../../utilities'
+import { log, getOrThrow } from '../../utilities';
 
 const mongoUri = getOrThrow(process.env.MONGODB_URI);
 const metaDbName = getOrThrow(process.env.MONGODB_META_DB_NAME);

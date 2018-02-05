@@ -8,7 +8,7 @@ export function wait(milliseconds: number) {
 
 export function getOrThrow<T>(value: T | undefined | null) {
   if (value === undefined || value === null) {
-    throw new Error(`Value '${value}' was null or undefined!`);
+    throw new Error(`Some value was null or undefined.`);
   }
   return value;
 }
@@ -27,13 +27,21 @@ export function pad(message: string, atLeast: number, padFromLeft?: boolean) {
 }
 
 // logging stuff
-function loggingString(level: string, message: string, color?: colors.Color) {
+function logger(level: string, color: colors.Color, ...messages: any[]) {
+  // const message = messages.map(m => m + '').
   const colorize = /*if*/ color ? color : (s: string) => s;
-  return `${colorize(oneLine`
-    [${pad(level.toUpperCase().trim(), 6, true)}
+  const prefix = `${colorize(oneLine`
+    [${pad(level.toUpperCase().trim(), 5, true)}
     T${new Date().getTime().toString(16)}
     P${process.pid.toString(16)}]
-  `)}: ${message}`;
+  `)}:`;
+  if (level === 'warn') {
+    console.warn(prefix, ...messages);
+  } else if (level === 'error') {
+    console.error(prefix, ...messages);
+  } else {
+    console.log(prefix, ...messages);
+  }
 }
 
 const _logger = {
@@ -49,9 +57,9 @@ export const log = (Object
   .reduce((obj, key) => {
     const color = _logger[key];
 
-    obj[key] = (message: string) => {
-      console[key](loggingString(key, message, color));
+    obj[key] = (...messages: any[]) => {
+      logger(key, color, ...messages);
     };
     return obj;
-  }, {} as {[P in keyof typeof _logger]: (message: string) => void})
+  }, {} as {[P in keyof typeof _logger]: (message: any) => void})
 );
