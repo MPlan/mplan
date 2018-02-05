@@ -3,7 +3,7 @@ import * as colors from 'colors';
 import { oneLine } from 'common-tags';
 
 export function wait(milliseconds: number) {
-  return new Promise<'TIMER'>(resolve => setTimeout(() => resolve('TIMER')));
+  return new Promise<'TIMER'>(resolve => setTimeout(() => resolve('TIMER'), milliseconds));
 }
 
 export function getOrThrow<T>(value: T | undefined | null) {

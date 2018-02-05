@@ -7,7 +7,9 @@ import * as path from 'path';
 import * as throng from 'throng';
 
 import { api } from './api';
-import { getOrThrow, log } from '../utilities';
+import { getOrThrow, log } from '../utilities/utilities';
+import { queue, runScheduler } from './scheduler/scheduler';
+import { dbConnection } from './db/mongo';
 
 const app = express();
 
@@ -23,8 +25,21 @@ async function start(workerId: number) {
   });
 
   app.listen(port, () => log.info(`Cluster started on port '${port}'`));
+
+  // await queue('catalogTestJob', new Date().getTime() + 1000 * 60);
+
+  process.on('exit', async () => {
+    log.info('Process exit detected, attempting disconnect from database...');
+    const db = await dbConnection;
+    await db.close();
+    log.info('Disconnected successful from the database.');
+    log.info('Exiting process...');
+  });
 }
 
-function master() { log.info('Application started'); }
+async function master() {
+  log.info('Application started');
+  await runScheduler();
+}
 
 throng({ workers: webConcurrency, start, master });

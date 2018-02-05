@@ -1,4 +1,4 @@
-import { pad } from './';
+import { pad } from './utilities';
 
 describe('shared utilities', () => {
 
