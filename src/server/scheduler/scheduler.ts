@@ -24,15 +24,47 @@ const JobTypes = {
 type _JobTypes = typeof JobTypes;
 export interface JobTypes extends _JobTypes { }
 
+/**
+ * The 'schema' for the 'Job's collection.
+ */
 export interface Job {
+  /**
+   * an ID provided by mongodb
+   */
   _id: Mongo.ObjectId,
+  /**
+   * the name of the static job to run
+   */
   jobName: keyof JobTypes,
-  timeToBeCompleted: number,
+  /** 
+   * a timestamp denote when this job can first be run
+   */
+  plannedStartTime: number,
+  /**
+   * the timestamp when this job was started by a worker. initially, it will be undefined
+   */
+  timeStarted: number | undefined,
+  /**
+   * timestamp when this job was submitted to the queue
+   */
   submissionTime: number,
+  /**
+   * the process that submitted the job
+   */
   submittedByProcessPid: number,
+  /**
+   * timestamp when this job was completed. this field will not be populated until it is completed
+   */
   timeCompleted: number | undefined,
-  beingWorkedOn: boolean,
-  startedBy: string,
+  /**
+   * the user who has added the job to the queue. this will be `SYSTEM` for jobs that are automated
+   */
+  startedByUser: string,
+  /**
+   * the process that worked on the job. this field is used to ensure that no two processes will
+   * work on the same job (though that would be a very rare race condition).
+   */
+  workedOnByProcessPid: number | undefined,
 }
 
 export interface JobFailure {
@@ -57,34 +89,55 @@ export async function collections() {
   };
 }
 
-export async function queue(jobName: keyof typeof JobTypes, timeToBeCompleted: number) {
+export async function queue(
+  jobName: keyof JobTypes,
+  plannedStartTime: number,
+  startedByUser?: string
+) {
   const db = await dbConnection;
   const jobCollections = db.collection<Job>('jobs');
   const job: Job = {
     _id: new Mongo.ObjectId(),
     jobName,
-    timeToBeCompleted,
+    plannedStartTime,
+    startedByUser: startedByUser || 'SYSTEM',
     submissionTime: new Date().getTime(),
     submittedByProcessPid: process.pid,
-    beingWorkedOn: false,
+    // these will be populated later when it gets picked up by a worker
     timeCompleted: undefined,
-    startedBy: 'SYSTEM',
+    timeStarted: undefined,
+    workedOnByProcessPid: undefined,
   };
   const result = await jobCollections.insertOne(job);
-  log.debug({ result });
+  log.info(`Inserted job '${job.jobName}' with the id of ${job._id} to the queue.`);
+}
+
+export async function countOfJobsBeingWorkedOn() {
+  const { jobs } = await collections();
+  const numberOfJobsBeingWorkedOn = await jobs.find({
+    timeStarted: { $ne: undefined }
+  }).count();
+  return numberOfJobsBeingWorkedOn;
+}
+
+export async function countOfJobsTodo() {
+  const { jobs } = await collections();
+  const numberOfJobsTodo = await jobs.find({ timeStarted: undefined });
+  return numberOfJobsTodo;
 }
 
 
 export async function findJobTodo() {
   const { jobs } = await collections();
-  const cursor = jobs.find({ beingWorkedOn: true });
-  const numberOfJobsBeingWorkedOn = await cursor.count();
+  const numberOfJobsBeingWorkedOn = await countOfJobsBeingWorkedOn();
+  log.debug({ numberOfJobsBeingWorkedOn });
 
   if (numberOfJobsBeingWorkedOn > maxJobsRunAtOnce) { return undefined; }
 
   const job = await (jobs
-    .find({ beingWorkedOn: false, timeCompleted: undefined })
+    .find({ timeStarted: undefined, timeCompleted: undefined })
     .sort({ submissionTime: 1 })
+    .limit(1)
     .next()
   );
 
@@ -95,36 +148,38 @@ export async function findJobTodo() {
 export async function runJob(jobToRun: Job) {
   const { jobs, jobFailures } = await collections();
   log.info(`Working on job '${jobToRun._id}'...`);
-  await jobs.updateOne(
-    { _id: jobToRun._id },
-    {
-      $set: {
-        beingWorkedOn: true,
-      }
-    }
-  );
+
+  // update the DB marking the job as started and noting the process id
+  const jobStartedUpdate: Partial<Job> = {
+    workedOnByProcessPid: process.pid,
+    timeStarted: new Date().getTime(),
+  };
+  await jobs.updateOne({ _id: jobToRun._id }, { $set: jobStartedUpdate });
 
   try {
+    // run the job
     await JobTypes[jobToRun.jobName]();
     log.info(`Finished job '${jobToRun._id}'!`);
 
+    // then update the DB with the time completed marking it as a finished job
     const jobFinishUpdate: Partial<Job> = {
-      beingWorkedOn: false,
       timeCompleted: new Date().getTime(),
     }
     await jobs.updateOne({ _id: jobToRun._id }, { $set: jobFinishUpdate });
+
   } catch (error) {
     log.error(`Error with job ${jobToRun._id}`);
     const jobFailure: JobFailure = {
       _id: new Mongo.ObjectId(),
+      error,
       failedByProcessPid: process.pid,
       jobId: jobToRun._id,
       timeFailed: new Date().getTime(),
-      error
     };
     await jobFailures.insertOne(jobFailure);
     const jobFinishWithFailureUpdate: Partial<Job> = {
-      beingWorkedOn: false,
+      workedOnByProcessPid: undefined,
+      timeStarted: undefined,
     }
     await jobs.updateOne({ _id: jobToRun._id }, { $set: jobFinishWithFailureUpdate });
   }
