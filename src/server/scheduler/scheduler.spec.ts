@@ -1,15 +1,12 @@
 process.env.MONGODB_URI = 'mongodb://local@localhost/mplan-integration-tests';
 import {
-  findJobTodo, collections, Job, maxJobsRunAtOnce, countOfJobsBeingWorkedOn
+  findJobTodo, collections, Job, maxJobsRunAtOnce, countOfJobsBeingWorkedOn, runJob
 } from './scheduler';
 import { log } from '../../utilities/utilities';
 import * as Mongo from 'mongodb';
 import { range } from 'lodash';
 
-
-
 describe('scheduler', () => {
-
   beforeAll(() => {
     process.env.IGNORE_LOG_LEVEL_DEBUG = 'true';
   });
@@ -229,7 +226,31 @@ describe('scheduler', () => {
   });
 
   describe('runJob', () => {
-    it(`updates the 'beingWorkedOn' flag before it starts a job`);
+    it(`updates the 'timeStarted' and 'workedOnByProcessPid' before it starts a job`, async () => {
+      const { jobs } = await collections();
+
+      const jobsTodo = range(maxJobsRunAtOnce - 1).map(i => {
+        const timestamp = new Date().getTime() - (i * 1000);
+        const job: Job = {
+          _id: new Mongo.ObjectId(),
+          jobName: '__testJob',
+          plannedStartTime: timestamp,
+          startedByUser: 'TEST',
+          submissionTime: timestamp,
+          submittedByProcessPid: process.pid,
+          timeCompleted: undefined,
+          timeStarted: undefined,
+          workedOnByProcessPid: undefined,
+        };
+        return job;
+      });
+
+      await jobs.insertMany(jobsTodo);
+      const jobTodo = (await findJobTodo())!;
+
+      await runJob(jobTodo);
+
+    });
     it(`inserts a 'JobFailure' entry when the job throws or rejects`);
     it(``);
   });

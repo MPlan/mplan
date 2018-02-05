@@ -145,43 +145,55 @@ export async function findJobTodo() {
   return job;
 }
 
-export async function runJob(jobToRun: Job) {
-  const { jobs, jobFailures } = await collections();
-  log.info(`Working on job '${jobToRun._id}'...`);
-
-  // update the DB marking the job as started and noting the process id
+export async function markJobAsStarted(jobToStart: Job) {
+  const { jobs } = await collections();
   const jobStartedUpdate: Partial<Job> = {
     workedOnByProcessPid: process.pid,
     timeStarted: new Date().getTime(),
   };
-  await jobs.updateOne({ _id: jobToRun._id }, { $set: jobStartedUpdate });
+  await jobs.updateOne({ _id: jobToStart._id }, { $set: jobStartedUpdate });
+}
+
+export async function markJobAsFinished(jobToFinish: Job) {
+  const { jobs } = await collections();
+
+  // then update the DB with the time completed marking it as a finished job
+  const jobFinishUpdate: Partial<Job> = {
+    timeCompleted: new Date().getTime(),
+  }
+  await jobs.updateOne({ _id: jobToFinish._id }, { $set: jobFinishUpdate });
+  log.info(`Finished job '${jobToFinish._id}'!`);
+}
+
+export async function markJobAsFailure(jobToFail: Job, error: any) {
+  const { jobs, jobFailures } = await collections();
+  log.error(`Error with job ${jobToFail._id}`);
+  const jobFailure: JobFailure = {
+    _id: new Mongo.ObjectId(),
+    error,
+    failedByProcessPid: process.pid,
+    jobId: jobToFail._id,
+    timeFailed: new Date().getTime(),
+  };
+  await jobFailures.insertOne(jobFailure);
+  const jobFinishWithFailureUpdate: Partial<Job> = {
+    workedOnByProcessPid: undefined,
+    timeStarted: undefined,
+  }
+  await jobs.updateOne({ _id: jobToFail._id }, { $set: jobFinishWithFailureUpdate });
+}
+
+export async function runJob(jobToRun: Job) {
+  const { jobs, jobFailures } = await collections();
+  log.info(`Working on job '${jobToRun._id}'...`);
 
   try {
+    await markJobAsStarted(jobToRun);
     // run the job
     await JobTypes[jobToRun.jobName]();
-    log.info(`Finished job '${jobToRun._id}'!`);
-
-    // then update the DB with the time completed marking it as a finished job
-    const jobFinishUpdate: Partial<Job> = {
-      timeCompleted: new Date().getTime(),
-    }
-    await jobs.updateOne({ _id: jobToRun._id }, { $set: jobFinishUpdate });
-
+    await markJobAsFinished(jobToRun);
   } catch (error) {
-    log.error(`Error with job ${jobToRun._id}`);
-    const jobFailure: JobFailure = {
-      _id: new Mongo.ObjectId(),
-      error,
-      failedByProcessPid: process.pid,
-      jobId: jobToRun._id,
-      timeFailed: new Date().getTime(),
-    };
-    await jobFailures.insertOne(jobFailure);
-    const jobFinishWithFailureUpdate: Partial<Job> = {
-      workedOnByProcessPid: undefined,
-      timeStarted: undefined,
-    }
-    await jobs.updateOne({ _id: jobToRun._id }, { $set: jobFinishWithFailureUpdate });
+    await markJobAsFailure(jobToRun, error);
   }
 }
 
