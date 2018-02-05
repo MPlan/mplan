@@ -10,6 +10,8 @@ import { range } from 'lodash';
 describe('scheduler', () => {
   beforeAll(() => {
     process.env.IGNORE_LOG_LEVEL_DEBUG = 'true';
+    process.env.IGNORE_LOG_LEVEL_ERROR = 'true';
+    process.env.IGNORE_LOG_LEVEL_INFO = 'true';
   });
 
   beforeEach(async () => {
@@ -26,6 +28,9 @@ describe('scheduler', () => {
 
   afterAll(async () => {
     delete process.env.IGNORE_LOG_LEVEL_DEBUG;
+    delete process.env.IGNORE_LOG_LEVEL_ERROR;
+    delete process.env.IGNORE_LOG_LEVEL_INFO;
+
     try {
       const { jobs, jobFailures } = await collections();
       await jobs.drop();
@@ -76,10 +81,6 @@ describe('scheduler', () => {
       expect(await countOfJobsBeingWorkedOn()).toBe(expectedNumberOfJobsBeingWorkedOn);
     });
   });
-
-  describe('countOfJobsTodo', () => {
-    it(`counts the number of jobs todo`);
-  })
 
   describe('findJobTodo', () => {
     it('returns undefined when the collection is empty', async () => {
@@ -312,13 +313,48 @@ describe('scheduler', () => {
       expect(jobFailureFromDb.jobId.toHexString()).toBe(failedJobFromDb._id.toHexString());
       expect(jobFailureFromDb.timeFailed).toBeDefined();
       expect(jobFailureFromDb.failedByProcessPid).toBeDefined();
-      // expect(jobFailureFromDb.error).toBe('some test error');
-      expect(jobFailureFromDb.error).toBeDefined();
+      expect(jobFailureFromDb.errorMessage).toBe('some test error');
+      expect(jobFailureFromDb.stack).toBeDefined();
     });
   });
 
   describe('runJob', () => {
-    it('runs a job');
-    it('adds a failure document when the job throws');
+    it('adds a failure document when the job throws', async () => {
+      const { jobFailures, jobs } = await collections();
+      await queue('__testJobThatFails', new Date().getTime());
+      const jobTodo = (await findJobTodo())!;
+      expect(jobTodo).toBeDefined();
+      await runJob(jobTodo);
+
+      const jobAfterFail = (await jobs.findOne({}))!;
+      expect(jobAfterFail).toBeDefined();
+      expect(jobAfterFail.timeCompleted).toBeFalsy();
+      expect(jobAfterFail.timeStarted).toBeFalsy();
+      expect(jobAfterFail.timeCompleted).toBeFalsy();
+      expect(jobAfterFail.workedOnByProcessPid).toBeFalsy();
+
+      const jobFailure = (await jobFailures.findOne({}))!;
+      expect(jobFailure).toBeDefined();
+      expect(jobFailure.errorMessage).toBe('failing job');
+      expect(jobFailure.stack).toBeDefined();
+      expect(jobFailure.jobId.toHexString()).toBe(jobTodo._id.toHexString());
+      expect(jobFailure.timeFailed).toBeDefined();
+    });
+
+    it('runs a job', async () => {
+      const { jobs, jobFailures } = await collections();
+      await queue('__testJob', new Date().getTime());
+      const jobTodo = (await findJobTodo())!;
+      expect(jobTodo).toBeDefined();
+      await runJob(jobTodo);
+      const completedJob = (await jobs.findOne({}))!;
+      expect(completedJob).toBeDefined();
+      expect(completedJob.timeCompleted).toBeDefined();
+      expect(completedJob.workedOnByProcessPid).toBeDefined();
+      expect(completedJob.timeStarted).toBeDefined();
+
+      const jobFailure = await jobFailures.findOne({});
+      expect(jobFailure).toBeFalsy();
+    });
   });
 });

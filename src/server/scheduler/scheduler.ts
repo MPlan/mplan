@@ -72,7 +72,8 @@ export interface JobFailure {
   jobId: Mongo.ObjectId,
   timeFailed: number,
   failedByProcessPid: number,
-  error: any,
+  errorMessage: string,
+  stack: string | undefined | null,
 }
 
 // TODO
@@ -119,13 +120,6 @@ export async function countOfJobsBeingWorkedOn() {
   return numberOfJobsBeingWorkedOn;
 }
 
-export async function countOfJobsTodo() {
-  const { jobs } = await collections();
-  const numberOfJobsTodo = await jobs.find({ timeStarted: undefined });
-  return numberOfJobsTodo;
-}
-
-
 export async function findJobTodo() {
   const { jobs } = await collections();
   const numberOfJobsBeingWorkedOn = await countOfJobsBeingWorkedOn();
@@ -169,7 +163,8 @@ export async function markJobAsFailure(jobToFail: Job, error: any) {
   log.error(`Error with job ${jobToFail._id}`);
   const jobFailure: JobFailure = {
     _id: new Mongo.ObjectId(),
-    error,
+    errorMessage: /*if*/ error instanceof Error ? error.message : error + '',
+    stack: /*if*/ error instanceof Error ? error.stack : undefined,
     failedByProcessPid: process.pid,
     jobId: jobToFail._id,
     timeFailed: new Date().getTime(),
@@ -200,9 +195,7 @@ export async function runScheduler() {
   log.info('Starting scheduler...');
   while (true) {
     const jobTodo = await findJobTodo();
-    if (!jobTodo) {
-      log.info('Found no jobs to finish!');
-    } else {
+    if (jobTodo) {
       await runJob(jobTodo);
     }
     await wait(pollingWaitTime);
