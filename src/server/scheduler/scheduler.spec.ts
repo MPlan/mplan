@@ -1,6 +1,7 @@
 process.env.MONGODB_URI = 'mongodb://local@localhost/mplan-integration-tests';
 import {
-  findJobTodo, collections, Job, maxJobsRunAtOnce, countOfJobsBeingWorkedOn, runJob
+  findJobTodo, collections, Job, maxJobsRunAtOnce, countOfJobsBeingWorkedOn, runJob,
+  markJobAsStarted, queue, markJobAsFinished, markJobAsFailure
 } from './scheduler';
 import { log } from '../../utilities/utilities';
 import * as Mongo from 'mongodb';
@@ -225,33 +226,99 @@ describe('scheduler', () => {
     });
   });
 
-  describe('runJob', () => {
-    it(`updates the 'timeStarted' and 'workedOnByProcessPid' before it starts a job`, async () => {
+  describe('markJobAsStarted', async () => {
+    it(`updates the job in the DB with 'workedOnByProcessPid' and 'timeStarted'`, async () => {
       const { jobs } = await collections();
 
-      const jobsTodo = range(maxJobsRunAtOnce - 1).map(i => {
-        const timestamp = new Date().getTime() - (i * 1000);
-        const job: Job = {
-          _id: new Mongo.ObjectId(),
-          jobName: '__testJob',
-          plannedStartTime: timestamp,
-          startedByUser: 'TEST',
-          submissionTime: timestamp,
-          submittedByProcessPid: process.pid,
-          timeCompleted: undefined,
-          timeStarted: undefined,
-          workedOnByProcessPid: undefined,
-        };
-        return job;
-      });
+      const jobTodoToInsert: Job = {
+        _id: new Mongo.ObjectId(),
+        jobName: '__testJob',
+        plannedStartTime: new Date().getTime() - 1000,
+        startedByUser: 'TEST',
+        submissionTime: new Date().getTime() - 2000,
+        submittedByProcessPid: process.pid,
+        timeCompleted: undefined,
+        timeStarted: undefined,
+        workedOnByProcessPid: undefined,
+      };
 
-      await jobs.insertMany(jobsTodo);
+      await jobs.insertOne(jobTodoToInsert);
+
       const jobTodo = (await findJobTodo())!;
+      expect(jobTodo).toBeDefined();
 
-      await runJob(jobTodo);
+      await markJobAsStarted(jobTodo);
+      const startedJobCount = await countOfJobsBeingWorkedOn();
+      expect(startedJobCount).toBe(1);
 
+      const startedJob = (await jobs.findOne({}))!;
+      expect(startedJob).toBeDefined();
+      expect(startedJob.timeStarted).toBeDefined();
+      expect(startedJob.workedOnByProcessPid).toBeDefined();
+      expect(startedJob.timeCompleted).toBeFalsy();
     });
-    it(`inserts a 'JobFailure' entry when the job throws or rejects`);
-    it(``);
+  });
+
+  describe('markJobAsFinished', () => {
+    it(`updates the 'timeCompleted' field in the job document`, async () => {
+      const { jobs } = await collections();
+      await queue('__testJob', new Date().getTime());
+      const todo = (await findJobTodo())!;
+      expect(todo).toBeDefined();
+      await markJobAsStarted(todo);
+      await markJobAsFinished(todo);
+
+      const jobFromDb = (await jobs.findOne({}))!;
+      expect(jobFromDb).toBeDefined();
+      expect(jobFromDb.timeCompleted).toBeDefined();
+    });
+  });
+
+  describe('markJobAsFailure', () => {
+    it(`adds a document to 'JobFailures' and marks the current job to be redone`, async () => {
+      const { jobs, jobFailures } = await collections();
+
+      const jobToFail: Job = {
+        _id: new Mongo.ObjectId(),
+        jobName: '__testJob',
+        plannedStartTime: new Date().getTime() - 2000,
+        startedByUser: 'TEST',
+        submissionTime: new Date().getTime() - 3000,
+        submittedByProcessPid: process.pid,
+        timeCompleted: undefined,
+        timeStarted: new Date().getTime() - 1000,
+        workedOnByProcessPid: process.pid,
+      };
+
+      await jobs.insertOne(jobToFail);
+
+      const jobToFailFromDb = (await jobs.findOne({}))!;
+      expect(jobToFailFromDb).toBeDefined();
+
+      await markJobAsFailure(jobToFailFromDb, 'some test error');
+
+      const failedJobFromDb = (await jobs.findOne({}))!;
+      expect(failedJobFromDb).toBeDefined();
+      expect(failedJobFromDb.timeStarted).toBeFalsy();
+      expect(failedJobFromDb.workedOnByProcessPid).toBeFalsy();
+      expect(failedJobFromDb.timeCompleted).toBeFalsy();
+
+      const jobFailuresFromDb = await jobFailures.find({});
+      const failureDocumentCount = await jobFailuresFromDb.count();
+      expect(failureDocumentCount).toBe(1);
+
+      const jobFailureFromDb = (await jobFailuresFromDb.next());
+      expect(jobFailureFromDb).toBeDefined();
+      expect(jobFailureFromDb.jobId.toHexString()).toBe(failedJobFromDb._id.toHexString());
+      expect(jobFailureFromDb.timeFailed).toBeDefined();
+      expect(jobFailureFromDb.failedByProcessPid).toBeDefined();
+      // expect(jobFailureFromDb.error).toBe('some test error');
+      expect(jobFailureFromDb.error).toBeDefined();
+    });
+  });
+
+  describe('runJob', () => {
+    it('runs a job');
+    it('adds a failure document when the job throws');
   });
 });

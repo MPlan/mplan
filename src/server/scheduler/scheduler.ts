@@ -43,7 +43,7 @@ export interface Job {
   /**
    * the timestamp when this job was started by a worker. initially, it will be undefined
    */
-  timeStarted: number | undefined,
+  timeStarted: number | undefined | null,
   /**
    * timestamp when this job was submitted to the queue
    */
@@ -55,7 +55,7 @@ export interface Job {
   /**
    * timestamp when this job was completed. this field will not be populated until it is completed
    */
-  timeCompleted: number | undefined,
+  timeCompleted: number | undefined | null,
   /**
    * the user who has added the job to the queue. this will be `SYSTEM` for jobs that are automated
    */
@@ -64,7 +64,7 @@ export interface Job {
    * the process that worked on the job. this field is used to ensure that no two processes will
    * work on the same job (though that would be a very rare race condition).
    */
-  workedOnByProcessPid: number | undefined,
+  workedOnByProcessPid: number | undefined | null,
 }
 
 export interface JobFailure {
@@ -94,8 +94,7 @@ export async function queue(
   plannedStartTime: number,
   startedByUser?: string
 ) {
-  const db = await dbConnection;
-  const jobCollections = db.collection<Job>('jobs');
+  const { jobs } = await collections();
   const job: Job = {
     _id: new Mongo.ObjectId(),
     jobName,
@@ -108,7 +107,7 @@ export async function queue(
     timeStarted: undefined,
     workedOnByProcessPid: undefined,
   };
-  const result = await jobCollections.insertOne(job);
+  const result = await jobs.insertOne(job);
   log.info(`Inserted job '${job.jobName}' with the id of ${job._id} to the queue.`);
 }
 
