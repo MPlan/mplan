@@ -318,6 +318,22 @@ describe('scheduler', () => {
     });
   });
 
+  describe('queue', () => {
+    it(`queues jobs by adding entries to the jobs collection`, async () => {
+      await queue('__testJob', new Date().getTime());
+      const jobTodo = (await findJobTodo())!;
+      expect(jobTodo).toBeDefined();
+      expect(jobTodo.jobName).toBeDefined();
+      expect(jobTodo.plannedStartTime).toBeDefined();
+      expect(jobTodo.startedByUser).toBeDefined();
+      expect(jobTodo.submissionTime).toBeDefined();
+      expect(jobTodo.submittedByProcessPid).toBeDefined();
+      expect(jobTodo.timeCompleted).toBeFalsy();
+      expect(jobTodo.timeStarted).toBeFalsy();
+      expect(jobTodo.workedOnByProcessPid).toBeFalsy();
+    });
+  });
+
   describe('runJob', () => {
     it('adds a failure document when the job throws', async () => {
       const { jobFailures, jobs } = await collections();
