@@ -1,6 +1,6 @@
 process.env.MONGODB_URI = 'mongodb://local@localhost/mplan-integration-tests';
 process.env.IGNORE_LOG_LEVEL_DEBUG = 'true';
-import { findJobTodo, collections, Job } from './scheduler';
+import { findJobTodo, collections, Job, maxJobsRunAtOnce } from './scheduler';
 import { log } from '../../utilities/utilities';
 import * as Mongo from 'mongodb';
 import { range } from 'lodash';
@@ -31,7 +31,7 @@ describe('scheduler', () => {
       const jobBeingWorkedOn: Job = {
         beingWorkedOn: true,
         _id: new Mongo.ObjectId(),
-        jobName: 'testJob',
+        jobName: '__testJob',
         startedBy: 'TEST',
         submissionTime: new Date().getTime(),
         submittedByProcessPid: process.pid,
@@ -47,7 +47,7 @@ describe('scheduler', () => {
         submissionTime: process.pid,
         timeCompleted: new Date().getTime(),
         timeToBeCompleted: new Date().getTime(),
-        jobName: 'testJob',
+        jobName: '__testJob',
       };
 
       const otherCompletedJob: Job = {
@@ -58,7 +58,7 @@ describe('scheduler', () => {
         submissionTime: process.pid,
         timeCompleted: new Date().getTime(),
         timeToBeCompleted: new Date().getTime(),
-        jobName: 'testJob',
+        jobName: '__testJob',
       };
 
       await jobs.insertMany([jobBeingWorkedOn, completedJob, otherCompletedJob]);
@@ -67,7 +67,64 @@ describe('scheduler', () => {
       expect(jobTodo).toBeUndefined();
 
     })
-    it('returns undefined when too many jobs are run');
+    it('returns undefined when too many jobs are run', async () => {
+      const { jobs } = await collections();
+
+      const jobsBeingWorkedOn = range(maxJobsRunAtOnce).map(i => {
+        const timestamp = new Date().getTime() - (i * 1000);
+        const job: Job = {
+          _id: new Mongo.ObjectId(),
+          beingWorkedOn: true,
+          jobName: '__testJob',
+          startedBy: 'TEST',
+          submissionTime: timestamp,
+          submittedByProcessPid: process.pid,
+          timeCompleted: undefined,
+          timeToBeCompleted: timestamp,
+        };
+        return job;
+      });
+
+      const jobsThatCanBeWorkedOn = range(3).map(i => {
+        const timestamp = new Date().getTime() - (1000 * i * 60);
+        const job: Job = {
+          _id: new Mongo.ObjectId(),
+          beingWorkedOn: false,
+          jobName: '__testJob',
+          startedBy: 'TEST',
+          submissionTime: timestamp,
+          submittedByProcessPid: process.pid,
+          timeCompleted: undefined,
+          timeToBeCompleted: timestamp
+        };
+        return job;
+      });
+
+      const jobsToSubmit = [...jobsBeingWorkedOn, ...jobsThatCanBeWorkedOn];
+
+      await jobs.insertMany(jobsToSubmit);
+
+      const firstJob = jobsThatCanBeWorkedOn[jobsThatCanBeWorkedOn.length - 1];
+      const jobTodo = (await findJobTodo())!;
+      expect(jobTodo).toBeDefined();
+      expect(jobTodo._id.toHexString()).toBe(firstJob._id.toHexString());
+
+      const oneMoreJob: Job = {
+        _id: new Mongo.ObjectId(),
+        beingWorkedOn: true,
+        jobName: '__testJob',
+        startedBy: 'TEST',
+        submissionTime: new Date().getTime(),
+        submittedByProcessPid: process.pid,
+        timeCompleted: undefined,
+        timeToBeCompleted: new Date().getTime(),
+      }
+
+      await jobs.insertOne(oneMoreJob);
+
+      const noJob = await findJobTodo();
+      expect(noJob).toBeUndefined();
+    });
 
     it('returns the oldest job', async () => {
       const { jobs } = await collections();
@@ -77,7 +134,7 @@ describe('scheduler', () => {
         const job: Job = {
           _id: new Mongo.ObjectId(),
           beingWorkedOn: false,
-          jobName: 'testJob',
+          jobName: '__testJob',
           startedBy: 'TEST',
           submissionTime: timestamp,
           submittedByProcessPid: process.pid,

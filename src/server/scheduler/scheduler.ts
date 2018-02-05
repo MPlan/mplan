@@ -3,17 +3,22 @@ import { catalogTestJob } from '../catalog/catalog.job';
 import { dbConnection } from '../db/mongo';
 import { log, wait } from '../../utilities/utilities';
 
-const pollingWaitTime = 60 * 1000;
-const maxJobsRunAtOnce = 4;
+export const pollingWaitTime = 60 * 1000;
+export const maxJobsRunAtOnce = 4;
 
-async function testJob() {
+async function __testJob() {
   return 'test job!';
+}
+
+async function __testJobThatFails() {
+  throw new Error('failing job');
 }
 
 // add jobs here
 const JobTypes = {
   catalogTestJob,
-  testJob,
+  __testJob,
+  __testJobThatFails
 };
 
 type _JobTypes = typeof JobTypes;
