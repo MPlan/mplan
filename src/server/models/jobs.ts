@@ -3,7 +3,9 @@ import * as Mongo from 'mongodb';
 async function __testJob() { return 'test job!'; }
 async function __testJobThatFails() { throw new Error('failing job'); }
 
-// add jobs here
+/**
+ * Add static jobs to this object.
+ */
 export const JobTypes = {
   __testJob,
   __testJobThatFails
@@ -24,6 +26,11 @@ export interface Job {
    * the name of the static job to run
    */
   jobName: keyof JobTypes,
+  /**
+   * parameters for the job. Parameters are persisted to the database when added and are used when
+   * the job is run.
+   */
+  parameters: string[] | undefined | null,
   /** 
    * a timestamp denote when this job can first be run
    */
@@ -56,10 +63,30 @@ export interface Job {
 }
 
 export interface JobFailure {
+  /**
+   * an ID provided by mongodb
+   */
   _id: Mongo.ObjectId,
+  /**
+   * the corresponding ID of the job that failed
+   */
   jobId: Mongo.ObjectId,
+  /**
+   * a timestamp when the job failed
+   */
   timeFailed: number,
+  /**
+   * the PID of the process the job was running in when it failed
+   */
   failedByProcessPid: number,
+  /**
+   * If the job failed by throwing an `Error` object, this field would be populated with that error.
+   * Otherwise, this field will what ever error object passed as a string
+   */
   errorMessage: string,
+  /**
+   * If the job failed by throwing an `Error` object, this field would be populated with its stack
+   * trace, otherwise it will have the value of `null` or `undefined`
+   */
   stack: string | undefined | null,
 }

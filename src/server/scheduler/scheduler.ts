@@ -16,12 +16,14 @@ export const maxJobsRunAtOnce = 4;
 export async function queue(
   jobName: keyof JobTypes,
   plannedStartTime: number,
+  parameters?: string[],
   startedByUser?: string
 ) {
   const { jobs } = await dbConnection;
   const job: Job = {
     _id: new Mongo.ObjectId(),
     jobName,
+    parameters,
     plannedStartTime,
     startedByUser: startedByUser || 'SYSTEM',
     submissionTime: new Date().getTime(),
@@ -107,7 +109,7 @@ export async function runJob(jobToRun: Job) {
   try {
     await markJobAsStarted(jobToRun);
     // run the job
-    await JobTypes[jobToRun.jobName]();
+    await (JobTypes[jobToRun.jobName] as any)(...(jobToRun.parameters || []));
     await markJobAsFinished(jobToRun);
   } catch (error) {
     await markJobAsFailure(jobToRun, error);

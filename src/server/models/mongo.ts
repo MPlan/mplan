@@ -2,6 +2,7 @@ import * as cluster from 'cluster';
 import { MongoClient } from 'mongodb';
 import { log, getOrThrow } from '../../utilities/utilities';
 import { Job, JobFailure } from './jobs';
+import * as Model from './models';
 
 const mongoUri = getOrThrow(process.env.MONGODB_URI);
 
@@ -18,6 +19,7 @@ async function createMongoDbConnection() {
   const collections = {
     get jobs() { return db.collection<Job>('Jobs'); },
     get jobFailures() { return db.collection<JobFailure>('JobFailures'); },
+    get terms() { return db.collection<Model.Term>('Terms'); },
     close: client.close.bind(client) as (force?: boolean) => Promise<void>,
   }
 

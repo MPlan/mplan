@@ -60,6 +60,7 @@ describe('scheduler', () => {
           timeCompleted: undefined,
           timeStarted: timestamp,
           workedOnByProcessPid: process.pid,
+          parameters: undefined,
         };
         return job;
       });
@@ -76,6 +77,7 @@ describe('scheduler', () => {
           timeCompleted: undefined,
           timeStarted: undefined,
           workedOnByProcessPid: undefined,
+          parameters: undefined,
         };
         return job;
       });
@@ -106,6 +108,7 @@ describe('scheduler', () => {
         plannedStartTime: new Date().getTime(),
         workedOnByProcessPid: process.pid,
         timeStarted: new Date().getTime(),
+        parameters: undefined,
       };
 
       const completedJob: Job = {
@@ -118,6 +121,7 @@ describe('scheduler', () => {
         timeCompleted: new Date().getTime(),
         timeStarted: new Date().getTime() - 1000,
         workedOnByProcessPid: process.pid,
+        parameters: undefined,
       };
 
       const otherCompletedJob: Job = {
@@ -130,6 +134,7 @@ describe('scheduler', () => {
         timeCompleted: new Date().getTime(),
         timeStarted: new Date().getTime() - 1000,
         workedOnByProcessPid: process.pid,
+        parameters: undefined,
       };
 
       await jobs.insertMany([jobBeingWorkedOn, completedJob, otherCompletedJob]);
@@ -153,6 +158,7 @@ describe('scheduler', () => {
           timeCompleted: undefined,
           timeStarted: timestamp - 1000,
           workedOnByProcessPid: process.pid,
+          parameters: undefined,
         };
         return job;
       });
@@ -169,6 +175,7 @@ describe('scheduler', () => {
           timeCompleted: undefined,
           timeStarted: undefined,
           workedOnByProcessPid: undefined,
+          parameters: undefined,
         };
         return job;
       });
@@ -192,6 +199,7 @@ describe('scheduler', () => {
         plannedStartTime: new Date().getTime(),
         workedOnByProcessPid: process.pid,
         timeStarted: new Date().getTime(),
+        parameters: undefined,
       }
 
       await jobs.insertOne(oneMoreJob);
@@ -215,6 +223,7 @@ describe('scheduler', () => {
           plannedStartTime: timestamp,
           workedOnByProcessPid: undefined,
           timeStarted: undefined,
+          parameters: undefined,
         };
         return job;
       });
@@ -245,6 +254,7 @@ describe('scheduler', () => {
         timeCompleted: undefined,
         timeStarted: undefined,
         workedOnByProcessPid: undefined,
+        parameters: undefined,
       };
 
       await jobs.insertOne(jobTodoToInsert);
@@ -293,6 +303,7 @@ describe('scheduler', () => {
         timeCompleted: undefined,
         timeStarted: new Date().getTime() - 1000,
         workedOnByProcessPid: process.pid,
+        parameters: undefined,
       };
 
       await jobs.insertOne(jobToFail);
