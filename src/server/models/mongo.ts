@@ -20,8 +20,17 @@ async function createMongoDbConnection() {
     get jobs() { return db.collection<Job>('Jobs'); },
     get jobFailures() { return db.collection<JobFailure>('JobFailures'); },
     get terms() { return db.collection<Model.Term>('Terms'); },
+    get subjects() { return db.collection<Model.Subject>('Subjects'); },
+    get courses() { return db.collection<Model.Course>('Courses'); },
+    get sections() { return db.collection<Model.Section>('Sections'); },
     close: client.close.bind(client) as (force?: boolean) => Promise<void>,
   }
+
+  // ensure indexes here
+  collections.terms.createIndex({ code: 1, seasons: 1, year: 1 }, { unique: true });
+  collections.subjects.createIndex({ code: 1 }, { unique: true });
+  collections.courses.createIndex({ subjectCode: 1, courseNumber: 1 }, { unique: true });
+  collections.sections.createIndex({ termCode: 1, courseRegistrationNumber: 1 }, { unique: true });
 
   return collections;
 }

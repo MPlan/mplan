@@ -1,4 +1,7 @@
 import * as Mongo from 'mongodb';
+import {
+  syncTerms, syncSubjects, syncCatalogEntries, syncCourseDetails
+} from '../catalog/catalog.job';
 
 async function __testJob() { return 'test job!'; }
 async function __testJobThatFails() { throw new Error('failing job'); }
@@ -7,8 +10,12 @@ async function __testJobThatFails() { throw new Error('failing job'); }
  * Add static jobs to this object.
  */
 export const JobTypes = {
+  syncTerms,
+  syncSubjects,
+  syncCatalogEntries,
+  syncCourseDetails,
   __testJob,
-  __testJobThatFails
+  __testJobThatFails,
 };
 
 type _JobTypes = typeof JobTypes;
@@ -60,6 +67,7 @@ export interface Job {
    * work on the same job (though that would be a very rare race condition).
    */
   workedOnByProcessPid: number | undefined | null,
+  attempts: number,
 }
 
 export interface JobFailure {
@@ -89,4 +97,5 @@ export interface JobFailure {
    * trace, otherwise it will have the value of `null` or `undefined`
    */
   stack: string | undefined | null,
+  attempt: number,
 }

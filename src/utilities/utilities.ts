@@ -63,3 +63,20 @@ export const log = (Object
     return obj;
   }, {} as {[P in keyof typeof _logger]: (message: any) => void})
 );
+
+export function combineUniquely(arrA: string[], arrB: string[]) {
+  const objA = arrA.reduce((obj, next) => {
+    obj[next] = true;
+    return obj;
+  }, {} as { [key: string]: true });
+
+  const objB = arrB.reduce((obj, next) => {
+    obj[next] = true;
+    return obj;
+  }, {} as { [key: string]: true });
+
+  const uniqueAWithNoB = Object.keys(objA).filter(a => !objB[a]);
+  const uniqueB = Object.keys(objB);
+  const uniqueArr = [...uniqueAWithNoB, ...uniqueB];
+  return uniqueArr;
+}

@@ -1,11 +1,11 @@
 import * as Mongo from 'mongodb';
-import { catalogTestJob } from '../catalog/catalog.job';
 import { dbConnection } from '../models/mongo';
 import { log, wait } from '../../utilities/utilities';
 import { Job, JobFailure, JobTypes } from '../models/jobs';
 
-export const pollingWaitTime = 60 * 1000;
+export const pollingWaitTime = 1000;
 export const maxJobsRunAtOnce = 4;
+export const maxAttempts = 3;
 
 // TODO
 // export interface SchedulerSettings {
@@ -32,6 +32,7 @@ export async function queue(
     timeCompleted: undefined,
     timeStarted: undefined,
     workedOnByProcessPid: undefined,
+    attempts: 0,
   };
   const result = await jobs.insertOne(job);
   log.info(`Inserted job '${job.jobName}' with the id of ${job._id} to the queue.`);
@@ -40,7 +41,8 @@ export async function queue(
 export async function countOfJobsBeingWorkedOn() {
   const { jobs } = await dbConnection;
   const numberOfJobsBeingWorkedOn = await jobs.find({
-    timeStarted: { $ne: undefined }
+    timeStarted: { $ne: undefined },
+    timeCompleted: { $eq: undefined },
   }).count();
   return numberOfJobsBeingWorkedOn;
 }
@@ -48,14 +50,18 @@ export async function countOfJobsBeingWorkedOn() {
 export async function findJobTodo() {
   const { jobs } = await dbConnection;
   const numberOfJobsBeingWorkedOn = await countOfJobsBeingWorkedOn();
-  log.debug({ numberOfJobsBeingWorkedOn });
 
   if (numberOfJobsBeingWorkedOn > maxJobsRunAtOnce) { return undefined; }
 
   const job = await (jobs
-    .find({ timeStarted: undefined, timeCompleted: undefined })
+    .find({
+      timeStarted: undefined,
+      timeCompleted: undefined,
+      plannedStartTime: { $lt: new Date().getTime() },
+      attempts: { $lt: maxAttempts },
+    })
     .sort({ submissionTime: 1 })
-    .limit(1)
+    // .limit(1)/
     .next()
   );
 
@@ -80,7 +86,7 @@ export async function markJobAsFinished(jobToFinish: Job) {
     timeCompleted: new Date().getTime(),
   }
   await jobs.updateOne({ _id: jobToFinish._id }, { $set: jobFinishUpdate });
-  log.info(`Finished job '${jobToFinish._id}'!`);
+  log.info(`Finished job '${jobToFinish.jobName}' '${jobToFinish._id}'!`);
 }
 
 export async function markJobAsFailure(jobToFail: Job, error: any) {
@@ -93,18 +99,20 @@ export async function markJobAsFailure(jobToFail: Job, error: any) {
     failedByProcessPid: process.pid,
     jobId: jobToFail._id,
     timeFailed: new Date().getTime(),
+    attempt: jobToFail.attempts,
   };
   await jobFailures.insertOne(jobFailure);
   const jobFinishWithFailureUpdate: Partial<Job> = {
     workedOnByProcessPid: undefined,
     timeStarted: undefined,
+    attempts: jobToFail.attempts + 1,
   }
   await jobs.updateOne({ _id: jobToFail._id }, { $set: jobFinishWithFailureUpdate });
 }
 
 export async function runJob(jobToRun: Job) {
   const { jobs, jobFailures } = await dbConnection;
-  log.info(`Working on job '${jobToRun._id}'...`);
+  log.info(`Working on job '${jobToRun.jobName}' '${jobToRun._id}'...`);
 
   try {
     await markJobAsStarted(jobToRun);
