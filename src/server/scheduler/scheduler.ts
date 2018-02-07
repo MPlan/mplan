@@ -1,8 +1,9 @@
 import * as Mongo from 'mongodb';
 import { oneLine } from 'common-tags';
 import { dbConnection } from '../models/mongo';
-import { log, wait, pad } from '../../utilities/utilities';
+import { log, wait, pad, throwIfNotOne } from '../../utilities/utilities';
 import { Job, JobFailure, JobTypes, JobSuccess, JobInProgress } from '../models/jobs';
+import * as colors from 'colors';
 
 export const pollingWaitTime = 1000;
 export const maxJobsRunAtOnce = 4;
@@ -14,18 +15,16 @@ export const maxAttempts = 3;
 //   // pollingTime: 
 // }
 
-function throwIfNotOne(options: { [key: string]: number | undefined }) {
-  const first = Object.entries(options)[0];
-  if (!first) { throw new Error(`Used 'throwIfNotOne' incorrectly.`); }
-  const [key, value] = first;
-  if (value !== 1) {
-    throw new Error(`Expected '${key}' to be '1' but found '${value}' instead`);
-  }
+function colorMap(action: 'insert' | 'complete' | 'in-prog', message: string) {
+  if (action === 'insert') { return colors.cyan(message); }
+  if (action === 'in-prog') { return colors.yellow(message); }
+  if (action === 'complete') { return colors.green(message); }
+  return message;
 }
 
 function logJob(job: Job, action: 'insert' | 'complete' | 'in-prog') {
   log.info(oneLine`
-    ${pad(action.toUpperCase(), 'complete'.length, true)}
+    ${colorMap(action, pad(action.toUpperCase(), 'complete'.length, true))}
     ${pad(job.jobName, 20, true)}
     ${job.parameters.map(p => pad(p, 5, true)).join('|')}
     | #${job._id}

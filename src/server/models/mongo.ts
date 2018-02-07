@@ -1,10 +1,37 @@
 import * as cluster from 'cluster';
-import { MongoClient } from 'mongodb';
-import { log, getOrThrow } from '../../utilities/utilities';
+import * as Mongo from 'mongodb';
+import { log, getOrThrow, throwIfNotOne, removeKeysWhereValueIsUndefined } from '../../utilities/utilities';
 import { Job, JobFailure, JobSuccess, JobInProgress } from './jobs';
 import * as Model from './models';
 
 const mongoUri = getOrThrow(process.env.MONGODB_URI);
+
+export async function updateIfSameTermOrLater<T extends Model.DbSynced>(options: {
+  itemsToUpdate: Array<Partial<T> & Model.DbSynced>,
+  collection: Mongo.Collection<T>,
+  query: (t: Partial<T>) => Partial<T>,
+  replace?: boolean,
+}) {
+  const { collection, itemsToUpdate, query } = options;
+
+  for (const itemToUpdate of itemsToUpdate) {
+    const itemQuery = query(itemToUpdate);
+    const existingItem = await collection.findOne(itemQuery);
+    if (!existingItem) {
+      const insertedCount = await collection.insertOne(itemToUpdate);
+    } else {
+      // don't do an update if the object is from a previous term
+      if (itemToUpdate.lastTermCode < existingItem.lastTermCode) { continue; }
+      const replacement: T = {
+        ...removeKeysWhereValueIsUndefined(existingItem as any),
+        ...removeKeysWhereValueIsUndefined(itemToUpdate as any),
+        _id: existingItem._id, // keep existing ID
+      };
+
+      await collection.findOneAndReplace(itemQuery, replacement);
+    }
+  }
+}
 
 async function createMongoDbConnection() {
   const match = /\/\/.*\/([^?]*)/.exec(mongoUri);
@@ -12,7 +39,7 @@ async function createMongoDbConnection() {
     throw new Error('Could not find database name in mongo URI');
   }
   const databaseName = match[1]
-  const client = await MongoClient.connect(mongoUri);
+  const client = await Mongo.MongoClient.connect(mongoUri);
   log.info(`Connected to the database!`);
   const db = client.db(databaseName);
 

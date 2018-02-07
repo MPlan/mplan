@@ -1,21 +1,19 @@
-import { log, combineUniquely } from '../../utilities/utilities';
+import { log, combineUniquely, sequentially, flatten } from '../../utilities/utilities';
 import {
-  fetchTerms, fetchSubjects, fetchCatalogEntries, fetchCourseDetail
+  fetchTerms, fetchSubjects, fetchCatalogEntries, fetchCourseDetail, fetchScheduleListings, fetchScheduleDetail,
 } from 'unofficial-umdearborn-catalog-api';
-import { dbConnection } from '../models/mongo';
+import { dbConnection, updateIfSameTermOrLater } from '../models/mongo';
 import * as Mongo from 'mongodb';
 import * as Model from '../models/models';
 import { queue } from '../scheduler/scheduler';
 import { isEqual } from 'lodash';
 
-export async function syncTerms() {
+export async function sync() {
   const { terms } = await dbConnection;
-  // const termsFromUmConnect = (await fetchTerms()).filter(t =>
-  //   // last 5 years
-  //   t.year > new Date().getFullYear() - 5
-  // );
-  const termsFromUmConnect = (await fetchTerms()).slice(0, 1);
-
+  const termsFromUmConnect = (await fetchTerms()).filter(t =>
+    // last 5 years
+    t.year >= new Date().getFullYear() - 5
+  );
 
   const termsToSave = termsFromUmConnect.map(termFromUmconnect => {
     const term: Model.Term = {
@@ -27,7 +25,11 @@ export async function syncTerms() {
     return term;
   });
 
-  await terms.insertMany(termsToSave);
+  await updateIfSameTermOrLater({
+    itemsToUpdate: termsToSave,
+    collection: terms,
+    query: term => ({ code: term.code })
+  });
 
   const termCodeFromLastFiveYears = termsFromUmConnect.map(t => t.code);
 
@@ -56,9 +58,14 @@ export async function syncSubjects(termCode: string) {
   });
 
   const { subjects } = await dbConnection;
-  await subjects.insertMany(subjectsToSave);
 
-  for (const subjectToSave of subjectsToSave.slice(3)) {
+  await updateIfSameTermOrLater({
+    itemsToUpdate: subjectsToSave,
+    collection: subjects,
+    query: subject => ({ code: subject.code }),
+  });
+
+  for (const subjectToSave of subjectsToSave) {
     await queue({
       jobName: 'syncCatalogEntries',
       plannedStartTime: new Date().getTime(),
@@ -75,26 +82,16 @@ export async function syncCatalogEntries(termCode: string, subjectCode: string) 
   // download all catalog entries
   const catalogEntriesFromUmconnect = await fetchCatalogEntries(termCode, subjectCode);
 
-  // create a map for faster lookups
-  const catalogEntryMap = catalogEntriesFromUmconnect.reduce((obj, entry) => {
-    obj[entry.courseNumber] = entry;
-    return obj;
-  }, {} as { [courseNumber: string]: typeof catalogEntriesFromUmconnect[0] });
-
   // create new courses to insert
-  const newCoursesToInsert = catalogEntriesFromUmconnect.map(c => {
-    const catalogEntry: Model.Course = {
+  const newCourses = catalogEntriesFromUmconnect.map(c => {
+    const catalogEntry: Partial<Model.Course> & Model.DbSynced = {
       _id: new Mongo.ObjectId(),
-      corequisites: undefined,
       courseNumber: c.courseNumber,
-      credits: 0,
-      creditsMin: undefined,
       crossList: [],
       description: '',
       lastTermCode: termCode,
       lastUpdateDate: new Date().getTime(),
       name: c.name,
-      prerequisites: undefined,
       restrictions: '',
       subjectCode: c.subjectCode,
       scheduleTypes: c.scheduleTypes,
@@ -105,70 +102,64 @@ export async function syncCatalogEntries(termCode: string, subjectCode: string) 
 
   const { courses } = await dbConnection;
 
-  // try to insert them all (the unique indexes should stop duplicates)
-  await courses.insertMany(newCoursesToInsert);
-
-  // find the courses the should be updated
-  const coursesEligibleForUpdates = await courses.find({}).filter((c: Model.Course) => {
-    const lastTermCode = parseInt(c.lastTermCode);
-    const currentTermCode = parseInt(termCode);
-    if (lastTermCode > currentTermCode) { return false; }
-    return true;
-  }).toArray();
-
-  // update the courses
-  const coursesToUpdate = coursesEligibleForUpdates.map(c => {
-    const newCourse = catalogEntryMap[c.courseNumber];
-
-    const updatedCourse: Model.Course = {
-      ...c,
-      scheduleTypes: combineUniquely(c.scheduleTypes, newCourse && newCourse.scheduleTypes || []),
-      name: newCourse && newCourse.name || c.name || '',
-    };
-
-    return updatedCourse;
-  }).filter(updatedCourse => {
-    const newCourse = catalogEntryMap[updatedCourse.courseNumber];
-    return !isEqual(newCourse, updatedCourse);
+  await updateIfSameTermOrLater({
+    collection: courses,
+    itemsToUpdate: newCourses,
+    query: course => ({ subjectCode: course.subjectCode, courseNumber: course.courseNumber }),
   });
 
-  // do a find and replace for each
-  for (const courseToUpdate of coursesToUpdate.slice(0, 1)) {
-    await courses.findOneAndReplace({ _id: courseToUpdate._id }, courseToUpdate);
+  for (const newCourse of newCourses) {
+    const courseNumber = newCourse && newCourse.courseNumber;
+    if (!courseNumber) { continue; }
     await queue({
       jobName: 'syncCourseDetails',
+      parameters: [termCode, subjectCode, courseNumber],
       plannedStartTime: new Date().getTime(),
-      parameters: [termCode, subjectCode, courseToUpdate.courseNumber],
       priority: 30,
     });
   }
 }
 
 export async function syncCourseDetails(termCode: string, subjectCode: string, courseNumber: string) {
-  const courseDetail = await fetchCourseDetail(termCode, subjectCode, courseNumber);
+  const courseFromUmconnect = await fetchCourseDetail(termCode, subjectCode, courseNumber);
 
   const { courses } = await dbConnection;
 
-  const courseFromDb = await courses.findOne({ subjectCode, courseNumber });
-  if (!courseFromDb) {
-    log.warn(`course ${termCode} ${subjectCode} ${courseNumber} from db was not found!`);
-    return;
+  const updatedCourseDetail: Partial<Model.Course> & Model.DbSynced = {
+    _id: new Mongo.ObjectId(),
+    corequisites: courseFromUmconnect.corequisites,
+    courseNumber,
+    description: courseFromUmconnect.description,
+    lastTermCode: termCode,
+    lastUpdateDate: new Date().getTime(),
+    prerequisites: courseFromUmconnect.prerequisites,
+    restrictions: courseFromUmconnect.restrictions,
+    subjectCode,
   }
 
-  const lastTermCode = parseInt(courseFromDb.lastTermCode);
-  const currentTermCode = parseInt(termCode);
+  await updateIfSameTermOrLater({
+    collection: courses,
+    itemsToUpdate: [updatedCourseDetail],
+    query: course => ({ subjectCode: course.subjectCode, courseNumber: course.courseNumber }),
+  });
+}
 
-  if (lastTermCode <= currentTermCode) {
-    const updatedCourseFromDb: Model.Course = {
-      ...courseFromDb,
-      prerequisites: courseDetail.prerequisites,
-      corequisites: courseDetail.corequisites,
-      description: courseDetail.description || '',
-      restrictions: courseDetail.restrictions || '',
+export async function syncSchedules(
+  termCode: string,
+  subjectCode: string,
+  courseNumber: string,
+  ...scheduleTypes: string[],
+) {
+  const schedules = flatten(await sequentially(
+    scheduleTypes,
+    scheduleType => fetchScheduleListings(termCode, subjectCode, courseNumber, scheduleType)
+  ));
+
+  const sections = await sequentially(schedules, async schedule => {
+    const scheduleDetail = await fetchScheduleDetail(termCode, schedule.crn);
+    return {
+      ...schedule,
+      ...scheduleDetail,
     };
-
-    await courses.findOneAndReplace({ _id: updatedCourseFromDb._id }, updatedCourseFromDb);
-  }
-
-  // sync sections
+  });
 }

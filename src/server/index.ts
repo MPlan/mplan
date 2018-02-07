@@ -26,8 +26,6 @@ async function start(workerId: number) {
 
   app.listen(port, () => log.info(`Cluster started on port '${port}'`));
 
-  // await queue('catalogTestJob', new Date().getTime() + 1000 * 60);
-
   process.on('exit', async () => {
     log.info('Process exit detected, attempting disconnect from database...');
     const db = await dbConnection;
@@ -36,10 +34,10 @@ async function start(workerId: number) {
     log.info('Exiting process...');
   });
 
-  await queue({
-    jobName: 'syncTerms',
-    plannedStartTime: new Date().getTime()
-  });
+  // await queue({
+  //   jobName: 'sync',
+  //   plannedStartTime: new Date().getTime()
+  // });
   await executeSchedulerQueue();
 }
 

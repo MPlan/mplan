@@ -1,6 +1,6 @@
 import * as Mongo from 'mongodb';
 import {
-  syncTerms, syncSubjects, syncCatalogEntries, syncCourseDetails
+  sync, syncSubjects, syncCatalogEntries, syncCourseDetails
 } from '../catalog/catalog.job';
 
 async function __testJob() { return 'test job!'; }
@@ -10,7 +10,7 @@ async function __testJobThatFails() { throw new Error('failing job'); }
  * Add static jobs to this object.
  */
 export const JobTypes = {
-  syncTerms,
+  sync,
   syncSubjects,
   syncCatalogEntries,
   syncCourseDetails,

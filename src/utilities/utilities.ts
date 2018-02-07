@@ -80,3 +80,39 @@ export function combineUniquely(arrA: string[], arrB: string[]) {
   const uniqueArr = [...uniqueAWithNoB, ...uniqueB];
   return uniqueArr;
 }
+
+export function throwIfNotOne(options: { [key: string]: number | undefined }) {
+  const first = Object.entries(options)[0];
+  if (!first) { throw new Error(`Used 'throwIfNotOne' incorrectly.`); }
+  const [key, value] = first;
+  if (value !== 1) {
+    throw new Error(`Expected '${key}' to be '1' but found '${value}' instead`);
+  }
+}
+
+export function removeKeysWhereValueIsUndefined<T extends { [key: string]: any }>(obj: T) {
+  const newObj = (Object
+    .entries(obj)
+    .filter(([_, value]) => value !== undefined)
+    .reduce((newObj, [key, value]) => {
+      newObj[key] = value;
+      return newObj;
+    }, {} as T)
+  );
+  return newObj;
+}
+
+export async function sequentially<T, R>(list: T[], asyncFunction: (t: T) => Promise<R>) {
+  const newList = [] as R[];
+  for (const i of list) {
+    newList.push(await asyncFunction(i));
+  }
+  return newList;
+}
+
+export function flatten<T>(listOfLists: T[][]) {
+  return listOfLists.reduce((flattenedList, nextList) => [
+    ...flattenedList,
+    ...nextList
+  ], [] as T[]);
+}
