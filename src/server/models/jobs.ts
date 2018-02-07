@@ -37,15 +37,11 @@ export interface Job {
    * parameters for the job. Parameters are persisted to the database when added and are used when
    * the job is run.
    */
-  parameters: string[] | undefined | null,
+  parameters: string[],
   /** 
    * a timestamp denote when this job can first be run
    */
   plannedStartTime: number,
-  /**
-   * the timestamp when this job was started by a worker. initially, it will be undefined
-   */
-  timeStarted: number | undefined | null,
   /**
    * timestamp when this job was submitted to the queue
    */
@@ -55,22 +51,16 @@ export interface Job {
    */
   submittedByProcessPid: number,
   /**
-   * timestamp when this job was completed. this field will not be populated until it is completed
-   */
-  timeCompleted: number | undefined | null,
-  /**
    * the user who has added the job to the queue. this will be `SYSTEM` for jobs that are automated
    */
   startedByUser: string,
   /**
-   * the process that worked on the job. this field is used to ensure that no two processes will
-   * work on the same job (though that would be a very rare race condition).
+   * the number of times this job has been attempted
    */
-  workedOnByProcessPid: number | undefined | null,
   attempts: number,
 }
 
-export interface JobFailure {
+export interface JobFailure extends JobInProgress {
   /**
    * an ID provided by mongodb
    */
@@ -84,10 +74,6 @@ export interface JobFailure {
    */
   timeFailed: number,
   /**
-   * the PID of the process the job was running in when it failed
-   */
-  failedByProcessPid: number,
-  /**
    * If the job failed by throwing an `Error` object, this field would be populated with that error.
    * Otherwise, this field will what ever error object passed as a string
    */
@@ -97,5 +83,25 @@ export interface JobFailure {
    * trace, otherwise it will have the value of `null` or `undefined`
    */
   stack: string | undefined | null,
-  attempt: number,
+}
+
+export interface JobSuccess extends JobInProgress {
+  jobId: Mongo.ObjectId,
+  /**
+   * timestamp when this job was completed. this field will not be populated until it is completed
+   */
+  timeCompleted: number,
+}
+
+export interface JobInProgress extends Job {
+  jobId: Mongo.ObjectId,
+  /**
+   * the timestamp when this job was started by a worker. initially, it will be undefined
+   */
+  timeStarted: number | undefined | null,
+  /**
+   * the process that worked on the job. this field is used to ensure that no two processes will
+   * work on the same job (though that would be a very rare race condition).
+   */
+  workedOnByProcessPid: number | undefined | null,
 }

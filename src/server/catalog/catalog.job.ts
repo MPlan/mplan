@@ -19,10 +19,10 @@ export async function syncTerms() {
 
   const termsToSave = termsFromUmConnect.map(termFromUmconnect => {
     const term: Model.Term = {
+      ...termFromUmconnect,
       _id: new Mongo.ObjectId(),
       lastUpdateDate: new Date().getTime(),
       lastTermCode: termFromUmconnect.code,
-      ...termFromUmconnect,
     };
     return term;
   });
@@ -31,10 +31,8 @@ export async function syncTerms() {
 
   const termCodeFromLastFiveYears = termsFromUmConnect.map(t => t.code);
 
-  let i = 0;
   for (const termCode of termCodeFromLastFiveYears) {
     await queue('syncSubjects', new Date().getTime(), [termCode]);
-    i += 1;
   }
 }
 

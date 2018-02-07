@@ -1,7 +1,7 @@
 import * as cluster from 'cluster';
 import { MongoClient } from 'mongodb';
 import { log, getOrThrow } from '../../utilities/utilities';
-import { Job, JobFailure } from './jobs';
+import { Job, JobFailure, JobSuccess, JobInProgress } from './jobs';
 import * as Model from './models';
 
 const mongoUri = getOrThrow(process.env.MONGODB_URI);
@@ -19,6 +19,8 @@ async function createMongoDbConnection() {
   const collections = {
     get jobs() { return db.collection<Job>('Jobs'); },
     get jobFailures() { return db.collection<JobFailure>('JobFailures'); },
+    get jobSuccesses() { return db.collection<JobSuccess>('JobSuccesses'); },
+    get jobsInProgress() { return db.collection<JobInProgress>('JobsInProgress'); },
     get terms() { return db.collection<Model.Term>('Terms'); },
     get subjects() { return db.collection<Model.Subject>('Subjects'); },
     get courses() { return db.collection<Model.Course>('Courses'); },
