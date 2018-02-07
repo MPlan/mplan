@@ -36,10 +36,10 @@ async function start(workerId: number) {
     log.info('Exiting process...');
   });
 
-  // await queue({
-  //   jobName: 'syncTerms',
-  //   plannedStartTime: new Date().getTime()
-  // });
+  await queue({
+    jobName: 'syncTerms',
+    plannedStartTime: new Date().getTime()
+  });
   await executeSchedulerQueue();
 }
 

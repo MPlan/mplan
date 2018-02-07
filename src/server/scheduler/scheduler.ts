@@ -1,4 +1,5 @@
 import * as Mongo from 'mongodb';
+import { oneLine } from 'common-tags';
 import { dbConnection } from '../models/mongo';
 import { log, wait, pad } from '../../utilities/utilities';
 import { Job, JobFailure, JobTypes, JobSuccess, JobInProgress } from '../models/jobs';
@@ -22,6 +23,15 @@ function throwIfNotOne(options: { [key: string]: number | undefined }) {
   }
 }
 
+function logJob(job: Job, action: 'insert' | 'complete' | 'in-prog') {
+  log.info(oneLine`
+    ${pad(action.toUpperCase(), 'complete'.length, true)}
+    ${pad(job.jobName, 20, true)}
+    ${job.parameters.map(p => pad(p, 5, true)).join('|')}
+    | #${job._id}
+  `);
+}
+
 export async function queue(options: {
   jobName: keyof JobTypes,
   plannedStartTime: number,
@@ -39,12 +49,11 @@ export async function queue(options: {
     startedByUser: startedByUser || 'SYSTEM',
     submissionTime: new Date().getTime(),
     submittedByProcessPid: process.pid,
-    // these will be populated later when it gets picked up by a worker
     attempts: 0,
     priority: priority || 0,
   };
   const result = await jobs.insertOne(job);
-  log.info(`Inserted job '${job.jobName}' with the id of ${job._id} to the queue.`);
+  logJob(job, 'insert');
 }
 
 export async function countOfJobsBeingWorkedOn() {
@@ -107,7 +116,7 @@ export async function markJobAsStarted(jobToStart: Job) {
   const insertedCount = (await jobsInProgress.insertOne(jobInProgress)).insertedCount;
   throwIfNotOne({ insertedCount });
 
-  log.info(`Marked job '${jobToStart._id}' as started.`);
+  logJob(jobInProgress, 'in-prog');
 }
 
 export async function markJobAsFinished(jobToFinish: Job) {
@@ -131,7 +140,7 @@ export async function markJobAsFinished(jobToFinish: Job) {
   const insertedCount = (await jobSuccesses.insertOne(jobSuccess)).insertedCount;
   throwIfNotOne({ insertedCount });
 
-  log.info(`Finished job '${jobToFinish.jobName}' '${jobToFinish._id}'!`);
+  logJob(jobToFinish, 'complete');
 }
 
 export async function markJobAsFailure(jobToFail: Job, error: any) {
@@ -173,7 +182,6 @@ export async function markJobAsFailure(jobToFail: Job, error: any) {
 
 export async function runJob(jobToRun: Job) {
   const { jobs, jobFailures } = await dbConnection;
-  log.info(`Working on job '${jobToRun.jobName}' '${jobToRun._id}'...`);
 
   try {
     await markJobAsStarted(jobToRun);
