@@ -58,6 +58,7 @@ export interface Job {
    * the number of times this job has been attempted
    */
   attempts: number,
+  priority: number,
 }
 
 export interface JobFailure extends JobInProgress {

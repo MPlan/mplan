@@ -32,8 +32,13 @@ export async function syncTerms() {
   const termCodeFromLastFiveYears = termsFromUmConnect.map(t => t.code);
 
   for (const termCode of termCodeFromLastFiveYears) {
-    await queue('syncSubjects', new Date().getTime(), [termCode]);
-  }
+    await queue({
+      jobName: 'syncSubjects',
+      plannedStartTime: new Date().getTime(),
+      parameters: [termCode],
+      priority: 10,
+    });
+  };
 }
 
 export async function syncSubjects(termCode: string) {
@@ -54,7 +59,12 @@ export async function syncSubjects(termCode: string) {
   await subjects.insertMany(subjectsToSave);
 
   for (const subjectToSave of subjectsToSave.slice(3)) {
-    await queue('syncCatalogEntries', new Date().getTime(), [termCode, subjectToSave.code]);
+    await queue({
+      jobName: 'syncCatalogEntries',
+      plannedStartTime: new Date().getTime(),
+      parameters: [termCode, subjectToSave.code],
+      priority: 20,
+    });
   }
 }
 
@@ -125,9 +135,13 @@ export async function syncCatalogEntries(termCode: string, subjectCode: string) 
   // do a find and replace for each
   for (const courseToUpdate of coursesToUpdate.slice(0, 1)) {
     await courses.findOneAndReplace({ _id: courseToUpdate._id }, courseToUpdate);
-    await queue('syncCourseDetails', new Date().getTime(), [termCode, subjectCode, courseToUpdate.courseNumber]);
+    await queue({
+      jobName: 'syncCourseDetails',
+      plannedStartTime: new Date().getTime(),
+      parameters: [termCode, subjectCode, courseToUpdate.courseNumber],
+      priority: 30,
+    });
   }
-
 }
 
 export async function syncCourseDetails(termCode: string, subjectCode: string, courseNumber: string) {

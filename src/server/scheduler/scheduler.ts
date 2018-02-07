@@ -22,12 +22,14 @@ function throwIfNotOne(options: { [key: string]: number | undefined }) {
   }
 }
 
-export async function queue(
+export async function queue(options: {
   jobName: keyof JobTypes,
   plannedStartTime: number,
+  priority?: number,
   parameters?: string[],
   startedByUser?: string
-) {
+}) {
+  const { jobName, plannedStartTime, priority, parameters, startedByUser } = options;
   const { jobs } = await dbConnection;
   const job: Job = {
     _id: new Mongo.ObjectId(),
@@ -39,6 +41,7 @@ export async function queue(
     submittedByProcessPid: process.pid,
     // these will be populated later when it gets picked up by a worker
     attempts: 0,
+    priority: priority || 0,
   };
   const result = await jobs.insertOne(job);
   log.info(`Inserted job '${job.jobName}' with the id of ${job._id} to the queue.`);
@@ -46,6 +49,7 @@ export async function queue(
 
 export async function countOfJobsBeingWorkedOn() {
   const { jobs } = await dbConnection;
+  jobs.updateOne
   const numberOfJobsBeingWorkedOn = await jobs.find({
     timeStarted: { $ne: undefined },
     timeCompleted: { $eq: undefined },
@@ -59,12 +63,21 @@ export async function findJobTodo() {
 
   if (numberOfJobsBeingWorkedOn > maxJobsRunAtOnce) { return undefined; }
 
+  const highestPriorityJob = await (jobs
+    .find({ plannedStartTime: { $lt: new Date().getTime() } })
+    .sort({ priority: -1 })
+    .limit(1)
+    .next()
+  );
+  if (!highestPriorityJob) { return undefined; }
+
   const job = await (jobs
     .find({
       plannedStartTime: { $lt: new Date().getTime() },
+      priority: highestPriorityJob.priority,
     })
     .sort({ submissionTime: 1 })
-    // .limit(1)/
+    .limit(1)
     .next()
   );
 
