@@ -8,7 +8,7 @@ import * as throng from 'throng';
 
 import { api } from './api';
 import { getOrThrow, log } from '../utilities/utilities';
-import { queue, executeSchedulerQueue } from './scheduler/scheduler';
+import { queue, executeSchedulerQueue, restartUnfinishedJobs } from './scheduler/scheduler';
 import { dbConnection } from './models/mongo';
 
 const app = express();
@@ -43,6 +43,7 @@ async function start(workerId: number) {
 
 async function master() {
   log.info('Application started');
+  await restartUnfinishedJobs();
 }
 
 throng({ workers: webConcurrency, start, master });

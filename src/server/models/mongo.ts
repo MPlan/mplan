@@ -1,7 +1,9 @@
 import * as cluster from 'cluster';
 import * as Mongo from 'mongodb';
-import { log, getOrThrow, throwIfNotOne, removeKeysWhereValueIsUndefined } from '../../utilities/utilities';
-import { Job, JobFailure, JobSuccess, JobInProgress } from './jobs';
+import {
+  log, getOrThrow, throwIfNotOne, removeKeysWhereValueIsUndefined
+} from '../../utilities/utilities';
+import { Job, JobFailure, JobSuccess, JobInProgress, JobSettings } from './jobs';
 import * as Model from './models';
 
 const mongoUri = getOrThrow(process.env.MONGODB_URI);
@@ -40,7 +42,7 @@ async function createMongoDbConnection() {
   }
   const databaseName = match[1]
   const client = await Mongo.MongoClient.connect(mongoUri);
-  log.info(`Connected to the database!`);
+  log.info(`P${process.pid} Connected to the database!`);
   const db = client.db(databaseName);
 
   const collections = {
@@ -53,7 +55,7 @@ async function createMongoDbConnection() {
     get courses() { return db.collection<Model.Course>('Courses'); },
     get sections() { return db.collection<Model.Section>('Sections'); },
     close: client.close.bind(client) as (force?: boolean) => Promise<void>,
-  }
+  };
 
   // ensure indexes here
   collections.terms.createIndex({ code: 1, seasons: 1, year: 1 }, { unique: true });

@@ -203,3 +203,27 @@ export async function executeSchedulerQueue() {
     await wait(pollingWaitTime);
   }
 }
+
+export async function restartUnfinishedJobs() {
+  const { jobsInProgress, jobs } = await dbConnection;
+
+  let findJobAndDeleteOp = await jobsInProgress.findOneAndDelete({});
+  while (findJobAndDeleteOp.value) {
+    const jobInProgress = findJobAndDeleteOp.value;
+    const jobToRetry: Job = {
+      _id: new Mongo.ObjectId(),
+      attempts: jobInProgress.attempts + 1,
+      jobName: jobInProgress.jobName,
+      parameters: jobInProgress.parameters,
+      plannedStartTime: jobInProgress.plannedStartTime,
+      priority: jobInProgress.priority,
+      startedByUser: jobInProgress.startedByUser,
+      submissionTime: jobInProgress.submissionTime,
+      submittedByProcessPid: process.pid,
+    };
+
+    await jobs.insertOne(jobToRetry);
+    logJob(jobToRetry, 'insert');
+    findJobAndDeleteOp = await jobsInProgress.findOneAndDelete({});
+  }
+}
