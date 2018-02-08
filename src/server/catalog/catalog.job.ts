@@ -7,6 +7,7 @@ import * as Mongo from 'mongodb';
 import * as Model from '../models/models';
 import { queue } from '../scheduler/scheduler';
 import { isEqual } from 'lodash';
+import { oneLine } from 'common-tags';
 
 export async function sync() {
   const { terms } = await dbConnection;
@@ -120,7 +121,11 @@ export async function syncCatalogEntries(termCode: string, subjectCode: string) 
   }
 }
 
-export async function syncCourseDetails(termCode: string, subjectCode: string, courseNumber: string) {
+export async function syncCourseDetails(
+  termCode: string,
+  subjectCode: string,
+  courseNumber: string,
+) {
   const courseFromUmconnect = await fetchCourseDetail(termCode, subjectCode, courseNumber);
 
   const { courses } = await dbConnection;
@@ -142,6 +147,23 @@ export async function syncCourseDetails(termCode: string, subjectCode: string, c
     itemsToUpdate: [updatedCourseDetail],
     query: course => ({ subjectCode: course.subjectCode, courseNumber: course.courseNumber }),
   });
+
+  const courseFromDb = await courses.findOne({ subjectCode, courseNumber });
+
+  if (!courseFromDb) {
+    throw new Error(oneLine`
+      Could not find course ${subjectCode} ${courseNumber} from DB right after inserting!
+    `);
+  }
+
+  const scheduleTypes = courseFromDb.scheduleTypes || [];
+
+  await queue({
+    jobName: 'syncSchedules',
+    parameters: [termCode, subjectCode, courseNumber, ...scheduleTypes],
+    plannedStartTime: new Date().getTime(),
+    priority: 40,
+  });
 }
 
 export async function syncSchedules(
@@ -155,11 +177,68 @@ export async function syncSchedules(
     scheduleType => fetchScheduleListings(termCode, subjectCode, courseNumber, scheduleType)
   ));
 
-  const sections = await sequentially(schedules, async schedule => {
+  const sectionsFromUmconnect = await sequentially(schedules, async schedule => {
     const scheduleDetail = await fetchScheduleDetail(termCode, schedule.crn);
     return {
       ...schedule,
       ...scheduleDetail,
     };
+  });
+
+  const creditsList = sectionsFromUmconnect.map(s => s.credits).sort();
+
+  const creditsMin = creditsList[0];
+  const credits = creditsList[creditsList.length - 1];
+  const crossList = flatten(sectionsFromUmconnect.map(s => s.crossList));
+
+  const updatedCourseDetail: Partial<Model.Course> & Model.DbSynced = {
+    _id: new Mongo.ObjectId(),
+    creditsMin,
+    credits,
+    crossList,
+    lastTermCode: termCode,
+    lastUpdateDate: new Date().getTime(),
+  };
+
+  const { courses, sections } = await dbConnection;
+
+  await updateIfSameTermOrLater({
+    collection: courses,
+    itemsToUpdate: [updatedCourseDetail],
+    query: course => ({ subjectCode: course.subjectCode, courseNumber: course.courseNumber }),
+  });
+
+  const courseFromDb = await courses.findOne({ subjectCode, courseNumber });
+  if (!courseFromDb) {
+    throw new Error(oneLine`
+      Could not find course ${subjectCode} ${courseNumber} from DB. This is needed to populate the
+      sections of that course.
+    `);
+  }
+
+  const modelSections = sectionsFromUmconnect.map(s => {
+    const section: Model.Section = {
+      _id: new Mongo.ObjectId(),
+      capacity: s.cap,
+      courseId: courseFromDb._id,
+      courseRegistrationNumber: s.crn,
+      days: s.day,
+      instructor: s.ins,
+      lastTermCode: termCode,
+      lastUpdateDate: new Date().getTime(),
+      location: s.loc,
+      remaining: s.rem,
+      termCode,
+      time: s.tim,
+      type: s.typ,
+    };
+
+    return section;
+  });
+
+  await updateIfSameTermOrLater({
+    collection: sections,
+    itemsToUpdate: modelSections,
+    query: s => ({ termCode: s.termCode, courseRegistrationNumber: s.courseRegistrationNumber }),
   });
 }

@@ -1,6 +1,6 @@
 import * as Mongo from 'mongodb';
 import {
-  sync, syncSubjects, syncCatalogEntries, syncCourseDetails
+  sync, syncSubjects, syncCatalogEntries, syncCourseDetails, syncSchedules
 } from '../catalog/catalog.job';
 
 async function __testJob() { return 'test job!'; }
@@ -14,6 +14,7 @@ export const JobTypes = {
   syncSubjects,
   syncCatalogEntries,
   syncCourseDetails,
+  syncSchedules,
   __testJob,
   __testJobThatFails,
 };
