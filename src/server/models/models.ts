@@ -40,24 +40,24 @@ export interface Course extends DbSynced {
   /** the full name of the course */
   name: string,
   /** the description of the course */
-  description: string,
+  description: string | undefined | null,
   /**
    * the number of credit hours of the course determined by the most recent sections in the most
    * recent terms of this course
    */
-  credits: number,
+  credits: number | undefined | null,
   /**
    * a credit range is possible if the `creditsMin` is present.
    */
-  creditsMin: number,
+  creditsMin: number | undefined | null,
   /** the restriction placed on this course */
-  restrictions: string,
+  restrictions: string | undefined | null,
   /** represents the set of courses needed to have been taken before the course */
   prerequisites: Prerequisite,
   /** represents the set of courses needed to be taken either before or during the course */
   corequisites: Prerequisite,
   /** tuples of courses that this course is cross listed with */
-  crossList: Array<[string, string]>,
+  crossList: Array<[string, string]> | undefined | null,
   scheduleTypes: string[],
 }
 

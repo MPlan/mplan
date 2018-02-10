@@ -25,11 +25,11 @@ export async function updateIfSameTermOrLater<T extends Model.DbSynced>(options:
       // don't do an update if the object is from a previous term
       if (itemToUpdate.lastTermCode < existingItem.lastTermCode) { continue; }
 
-      const replacement = combineObjects<T>(
-        existingItem,
-        itemsToUpdate,
-        { _id: existingItem._id },
-      );
+      const replacement: T = {
+        ...removeEmptyKeys(existingItem as any),
+        ...removeEmptyKeys(itemToUpdate as any),
+        _id: existingItem._id,
+      };
 
       await collection.findOneAndReplace(itemQuery, replacement);
     }

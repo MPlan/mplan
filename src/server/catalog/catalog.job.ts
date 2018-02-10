@@ -1,6 +1,7 @@
 import { log, combineUniquely, sequentially, flatten } from '../../utilities/utilities';
 import {
-  fetchTerms, fetchSubjects, fetchCatalogEntries, fetchCourseDetail, fetchScheduleListings, fetchScheduleDetail,
+  fetchTerms, fetchSubjects, fetchCatalogEntries, fetchCourseDetail, fetchScheduleListings,
+  fetchScheduleDetail,
 } from 'unofficial-umdearborn-catalog-api';
 import { dbConnection, updateIfSameTermOrLater } from '../models/mongo';
 import * as Mongo from 'mongodb';
@@ -89,12 +90,9 @@ export async function syncCatalogEntries(termCode: string, subjectCode: string) 
     const catalogEntry: Partial<Model.Course> & Model.DbSynced = {
       _id: new Mongo.ObjectId(),
       courseNumber: c.courseNumber,
-      crossList: [],
-      description: '',
       lastTermCode: termCode,
       lastUpdateDate: new Date().getTime(),
       name: c.name,
-      restrictions: '',
       subjectCode: c.subjectCode,
       scheduleTypes: c.scheduleTypes,
     };
@@ -187,16 +185,25 @@ export async function syncSchedules(
   });
 
   const creditsList = sectionsFromUmconnect.map(s => s.credits).sort();
-
   const creditsMin = creditsList[0];
   const credits = creditsList[creditsList.length - 1];
-  const crossList = flatten(sectionsFromUmconnect.map(s => s.crossList));
+
+  const sectionsAsStrings = flatten(sectionsFromUmconnect
+    .map(section => section.crossList.map(course => course.join('__|__')))
+  );
+  const uniqueSections = Object.keys(
+    sectionsAsStrings.reduce((obj, next) => {
+      obj[next] = true;
+      return obj;
+    }, {} as { [key: string]: true })
+  );
+  const crossList = uniqueSections.map(s => s.split('__|__') as [string, string]);
 
   const updatedCourseDetail: Partial<Model.Course> & Model.DbSynced = {
     _id: new Mongo.ObjectId(),
     creditsMin,
     credits,
-    crossList,
+    crossList: crossList.length > 0 ? crossList : undefined,
     lastTermCode: termCode,
     lastUpdateDate: new Date().getTime(),
   };
@@ -206,7 +213,7 @@ export async function syncSchedules(
   await updateIfSameTermOrLater({
     collection: courses,
     itemsToUpdate: [updatedCourseDetail],
-    query: course => ({ subjectCode: course.subjectCode, courseNumber: course.courseNumber }),
+    query: () => ({ subjectCode, courseNumber }),
   });
 
   const courseFromDb = await courses.findOne({ subjectCode, courseNumber });
