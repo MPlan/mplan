@@ -1,9 +1,9 @@
 import * as cluster from 'cluster';
 import * as Mongo from 'mongodb';
 import {
-  log, getOrThrow, throwIfNotOne, removeKeysWhereValueIsUndefined
+  log, getOrThrow, throwIfNotOne, removeEmptyKeys, combineObjects
 } from '../../utilities/utilities';
-import { Job, JobFailure, JobSuccess, JobInProgress, JobSettings } from './jobs';
+import { Job, JobFailure, JobSuccess, JobInProgress } from './jobs';
 import * as Model from './models';
 
 const mongoUri = getOrThrow(process.env.MONGODB_URI);
@@ -24,11 +24,12 @@ export async function updateIfSameTermOrLater<T extends Model.DbSynced>(options:
     } else {
       // don't do an update if the object is from a previous term
       if (itemToUpdate.lastTermCode < existingItem.lastTermCode) { continue; }
-      const replacement: T = {
-        ...removeKeysWhereValueIsUndefined(existingItem as any),
-        ...removeKeysWhereValueIsUndefined(itemToUpdate as any),
-        _id: existingItem._id, // keep existing ID
-      };
+
+      const replacement = combineObjects<T>(
+        existingItem,
+        itemsToUpdate,
+        { _id: existingItem._id },
+      );
 
       await collection.findOneAndReplace(itemQuery, replacement);
     }

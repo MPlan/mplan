@@ -90,16 +90,27 @@ export function throwIfNotOne(options: { [key: string]: number | undefined }) {
   }
 }
 
-export function removeKeysWhereValueIsUndefined<T extends { [key: string]: any }>(obj: T) {
+export function removeEmptyKeys<T extends { [key: string]: any }>(obj: T) {
   const newObj = (Object
     .entries(obj)
-    .filter(([_, value]) => value !== undefined)
+    .filter(([_, value]) => {
+      if (value === undefined) { return false; }
+      if (value === null) { return false; }
+      return true;
+    })
     .reduce((newObj, [key, value]) => {
       newObj[key] = value;
       return newObj;
     }, {} as T)
   );
   return newObj;
+}
+
+export function combineObjects<T>(...objects: any[]) {
+  return objects.reduce((combined, nextObject) => ({
+    ...removeEmptyKeys(combined as any),
+    ...removeEmptyKeys(nextObject as any),
+  }), {}) as T;
 }
 
 export async function sequentially<T, R>(list: T[], asyncFunction: (t: T) => Promise<R>) {

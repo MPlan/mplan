@@ -69,15 +69,15 @@ export interface Section extends DbSynced {
   /** the course registration number */
   courseRegistrationNumber: string,
   /** unique name of the instructor */
-  instructor: string[],
+  instructors: string[],
   /** schedule type of this section e.g. Lecture or Internet */
-  type: string[],
+  scheduleTypes: string[],
   /** time of day of this schedule */
-  time: string[],
+  times: string[],
   /** the days this schedule was offered on e.g. TR for Tuesday Thursdays */
   days: string[],
   /** the location of this section as it appears on the SIS */
-  location: string[],
+  locations: string[],
   /** the total capacity *including* cross-listed seats */
   capacity: number,
   /** the remaining seats *including* cross-listed seats */

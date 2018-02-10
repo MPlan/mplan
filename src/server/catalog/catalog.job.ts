@@ -53,7 +53,8 @@ export async function syncSubjects(termCode: string) {
       _id: new Mongo.ObjectId(),
       lastTermCode: termCode,
       lastUpdateDate: new Date().getTime(),
-      ...s,
+      code: s.code,
+      name: s.name,
     };
     return subject;
   });
@@ -178,7 +179,7 @@ export async function syncSchedules(
   ));
 
   const sectionsFromUmconnect = await sequentially(schedules, async schedule => {
-    const scheduleDetail = await fetchScheduleDetail(termCode, schedule.crn);
+    const scheduleDetail = await fetchScheduleDetail(termCode, schedule.courseRegistrationNumber);
     return {
       ...schedule,
       ...scheduleDetail,
@@ -219,18 +220,18 @@ export async function syncSchedules(
   const modelSections = sectionsFromUmconnect.map(s => {
     const section: Model.Section = {
       _id: new Mongo.ObjectId(),
-      capacity: s.cap,
+      capacity: s.capacity,
       courseId: courseFromDb._id,
-      courseRegistrationNumber: s.crn,
-      days: s.day,
-      instructor: s.ins,
+      courseRegistrationNumber: s.courseRegistrationNumber,
+      days: s.days,
+      instructors: s.instructors,
       lastTermCode: termCode,
       lastUpdateDate: new Date().getTime(),
-      location: s.loc,
-      remaining: s.rem,
+      locations: s.locations,
+      remaining: s.remaining,
       termCode,
-      time: s.tim,
-      type: s.typ,
+      times: s.times,
+      scheduleTypes: s.scheduleType,
     };
 
     return section;
