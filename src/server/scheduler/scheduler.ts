@@ -26,8 +26,7 @@ function logJob(job: Job, action: 'insert' | 'complete' | 'in-prog') {
   log.info(oneLine`
     ${colorMap(action, pad(action.toUpperCase(), 'complete'.length, true))}
     ${pad(job.jobName, 20, true)}
-    ${job.parameters.map(p => pad(p, 5, true)).join('|')}
-    | #${job._id}
+    ${job.parameters.map(p => pad(p, 5, true)).join('|')}| #${job._id}
   `);
 }
 

@@ -113,7 +113,7 @@ export async function syncCatalogEntries(termCode: string, subjectCode: string) 
     if (!courseNumber) { continue; }
     await queue({
       jobName: 'syncCourseDetails',
-      parameters: [termCode, subjectCode, courseNumber],
+      parameters: [termCode, subjectCode, courseNumber, ...(newCourse.scheduleTypes || [])],
       plannedStartTime: new Date().getTime(),
       priority: 30,
     });
@@ -124,6 +124,7 @@ export async function syncCourseDetails(
   termCode: string,
   subjectCode: string,
   courseNumber: string,
+  ...scheduleTypes: string[],
 ) {
   const courseFromUmconnect = await fetchCourseDetail(termCode, subjectCode, courseNumber);
 
@@ -146,16 +147,6 @@ export async function syncCourseDetails(
     itemsToUpdate: [updatedCourseDetail],
     query: course => ({ subjectCode: course.subjectCode, courseNumber: course.courseNumber }),
   });
-
-  const courseFromDb = await courses.findOne({ subjectCode, courseNumber });
-
-  if (!courseFromDb) {
-    throw new Error(oneLine`
-      Could not find course ${subjectCode} ${courseNumber} from DB right after inserting!
-    `);
-  }
-
-  const scheduleTypes = courseFromDb.scheduleTypes || [];
 
   await queue({
     jobName: 'syncSchedules',
