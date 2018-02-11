@@ -4,7 +4,7 @@ import * as Immutable from 'immutable';
 import * as uuid from 'uuid/v4';
 import { ObjectID as _ObjectId } from 'bson';
 
-function ObjectId(id?: string | number | _ObjectId) {
+export function ObjectId(id?: string | number | _ObjectId) {
   return (_ObjectId as any)(id) as _ObjectId;
 }
 
@@ -52,6 +52,45 @@ export class Semester extends Record.define({
   }
 }
 
+export function includes(strA: string, strB: string) {
+  return strA.trim().toLowerCase().includes(strB.trim().toLowerCase());
+}
+
+export class Catalog extends Record.define({
+  courseMap: Immutable.Map<string, Course>(),
+  search: '',
+}) {
+  get courses() {
+    return this.getOrCalculate('courses', [this.coursesSorted], () => {
+      return this.coursesSorted.toArray();
+    });
+  }
+
+  get coursesSorted() {
+    return this.getOrCalculate('coursesSorted', [this.courseMap], () => {
+      console.log('calculated courses');
+      return this.courseMap
+        .valueSeq()
+        .sortBy(course => `${course.subjectCode} ${course.courseNumber}`);
+    });
+  }
+
+  get filteredCourses() {
+    return this.getOrCalculate('filteredCourses', () => {
+      console.log('calculated filered courses');
+      return this.coursesSorted.filter(course => {
+        const searchTerms = this.search.split(' ').map(t => t.trim()).filter(t => !!t);
+        return searchTerms.every(searchTerm => {
+          if (includes(course.subjectCode, searchTerm)) { return true; }
+          if (includes(course.courseNumber, searchTerm)) { return true; }
+          const description = course.description;
+          if (description && includes(description, searchTerm)) { return true; }
+          return false;
+        });
+      }).toArray();
+    });
+  }
+}
 
 const id0 = ObjectId();
 const id1 = ObjectId();
@@ -59,6 +98,7 @@ const id2 = ObjectId();
 const id3 = ObjectId();
 
 export class App extends Record.define({
+  catalog: new Catalog(),
   courses: Immutable.Map<string, Course>(),
   semesters: Immutable.Map<string, Semester>([
     [id0.toHexString(), new Semester({
@@ -112,5 +152,3 @@ export class App extends Record.define({
     ) || this.courses.first() || new Course();
   }
 }
-
-export const store = Record.createStore(new App());

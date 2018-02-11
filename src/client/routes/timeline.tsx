@@ -2,7 +2,7 @@ import * as React from 'react';
 import { View, Text } from '../components/base';
 import * as Color from '../components/colors';
 import * as Record from 'recordize';
-import * as Model from '../../models/records';
+import * as Model from '../models';
 import * as Immutable from 'immutable';
 
 interface SemesterBlockProps {
