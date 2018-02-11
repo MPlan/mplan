@@ -33,18 +33,18 @@ async function start(workerId: number) {
     log.info('Disconnected successful from the database.');
     log.info('Exiting process...');
   });
-
+  
   // await queue({
   //   jobName: 'sync',
   //   plannedStartTime: new Date().getTime()
   // });
   // process.exit(0);
-  await executeSchedulerQueue();
+  // await executeSchedulerQueue();
 }
 
 async function master() {
   log.info('Application started');
-  await restartUnfinishedJobs();
+  // await restartUnfinishedJobs();
 }
 
 throng({ workers: webConcurrency, start, master });

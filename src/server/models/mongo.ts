@@ -4,7 +4,7 @@ import {
   log, getOrThrow, throwIfNotOne, removeEmptyKeys, combineObjects
 } from '../../utilities/utilities';
 import { Job, JobFailure, JobSuccess, JobInProgress } from './jobs';
-import * as Model from './models';
+import * as Model from '../../models/models';
 
 const mongoUri = getOrThrow(process.env.MONGODB_URI);
 
