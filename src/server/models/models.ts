@@ -41,6 +41,8 @@ export interface Course extends DbSynced {
   name: string,
   /** the description of the course */
   description: string | undefined | null,
+  creditHours: number | undefined | null,
+  creditHoursMin: number | undefined | null,
   /**
    * the number of credit hours of the course determined by the most recent sections in the most
    * recent terms of this course

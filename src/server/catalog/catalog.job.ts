@@ -139,6 +139,8 @@ export async function syncCourseDetails(
     lastUpdateDate: new Date().getTime(),
     prerequisites: courseFromUmconnect.prerequisites,
     restrictions: courseFromUmconnect.restrictions,
+    creditHours: courseFromUmconnect.creditHours,
+    creditHoursMin: courseFromUmconnect.creditHoursMin,
     subjectCode,
   }
 
