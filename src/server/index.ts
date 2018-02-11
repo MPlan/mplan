@@ -19,6 +19,18 @@ const port = parseInt(process.env.PORT || '8090');
 const webConcurrency = parseInt(process.env.WEB_CONCURRENCY || '1');
 
 async function start(workerId: number) {
+  // require https in production
+  if (process.env.NODE_ENV === 'production') {
+    // https://stackoverflow.com/questions/7185074/heroku-nodejs-http-to-https-ssl-forced-redirect
+    app.use((req, res, next) => {
+      if (req.headers['x-forwarded-proto'] !== 'https') {
+        res.redirect(process.env.APP_URL + req.url);
+        return;
+      }
+      next();
+    })
+  }
+
   app.use('/api', api);
   app.use(compression(), express.static(path.resolve(__dirname, '../web-root')));
   app.use('*', compression(), (req, res) => {
