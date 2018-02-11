@@ -8,7 +8,7 @@ import styled from 'styled-components';
 
 const StyledLink = styled(Link) `
   color: white
-`
+`;
 
 interface NavButtonProps {
   name: string,

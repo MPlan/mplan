@@ -1,95 +1,86 @@
-import * as Record from 'recordize';
-import * as Immutable from 'immutable';
-import * as uuid from 'uuid/v4'
+import * as Mongo from 'mongodb';
 
-export class Course extends Record.define({
-  id: '',
-  name: '',
-  position: 0,
-}) { }
-
-export class Semester extends Record.define({
-  id: '',
-  courseIds: Immutable.Set<string>(),
-  season: 'Fall' as 'Fall' | 'Winter' | 'Summer',
-  year: 0,
-}) {
-  get position() {
-    const seasonNumber = (/*if*/ this.season === 'Winter'
-      ? 0
-      : /*if*/ this.season === 'Summer' ? (1 / 3) : (2 / 3)
-    );
-    return seasonNumber + this.year;
-  }
-  get name() {
-    return `${this.season} ${this.year}`
-  }
-  count() {
-    return this.courseIds.count();
-  }
-
-  courseList(courses: Immutable.Set<Course>) {
-    return courses.filter(course => this.courseIds.has(course.id)).toArray();
-  }
+export interface DbSynced {
+  _id: Mongo.ObjectId,
+  lastUpdateDate: number,
+  lastTermCode: string,
 }
 
-const cis427id = uuid();
-
-export class App extends Record.define({
-  courses: Immutable.Set<Course>([
-    new Course({ id: cis427id, name: 'CIS 427', position: 0 }),
-    new Course({ id: uuid(), name: 'CIS 4691', position: 1 }),
-    new Course({ id: uuid(), name: 'MATH 227', position: 2 }),
-    new Course({ id: uuid(), name: 'CIS 476', position: 2 }),
-  ]),
-  semesters: Immutable.Set<Semester>([
-    new Semester({ id: uuid(), season: 'Fall', year: 2017, courseIds: Immutable.Set([cis427id]) }),
-    new Semester({ id: uuid(), season: 'Winter', year: 2018 }),
-    new Semester({ id: uuid(), season: 'Summer', year: 2018 }),
-    new Semester({ id: uuid(), season: 'Fall', year: 2019 }),
-  ]),
-  selectedCourseId: '',
-  dragging: false,
-  x: 0,
-  y: 0,
-  offsetX: 0,
-  offsetY: 0,
-  mouseIsOverSemester: false,
-
-}) {
-  get bucket() {
-    const courseIdsInSemesters = (this.semesters
-      .map(semester => semester.courseIds)
-      .reduce((flattened, courseIds) => {
-        return flattened.union(courseIds);
-      }, Immutable.Set<string>())
-    );
-
-    const courseIdsNotInSemesters = (this.courses
-      .map(course => course.id)
-      .subtract(courseIdsInSemesters)
-    );
-
-    return this.courses.filter(course => courseIdsNotInSemesters.has(course.id));
-  }
-
-  get semesterList() {
-    return this.semesters.sortBy(semester => semester.position).toArray();
-  }
-
-  get courseList() {
-    return this.courses.sortBy(course => course.position).toArray();
-  }
-
-  get bucketList() {
-    return this.bucket.sortBy(course => course.position).toArray();
-  }
-
-  get selectedCourse() {
-    return this.courses.find(course =>
-      course.id === this.selectedCourseId
-    ) || this.courses.first() || new Course();
-  }
+export interface Term extends DbSynced {
+  code: string,
+  season: string,
+  year: number,
 }
 
-export const store = Record.createStore(new App());
+export interface Subject extends DbSynced {
+  code: string,
+  name: string,
+}
+
+export type Prerequisite = undefined | [string, string] | string | {
+  /** the logic gate to use */
+  g: '&' | '|',
+  /**
+   * the operands of the logic gate
+   * 
+   * can be:
+   * 
+   * * another `Prerequisite`
+   * * a tuple of `[subjectCode, courseNumber]` e.g. `["CIS", "310"]`
+   * * or a simple string e.g. `"Remedial Math"`
+   */
+  o: Prerequisite[],
+}
+
+export interface Course extends DbSynced {
+  /** the subject code of this course. e.g. `CIS` */
+  subjectCode: string,
+  /** the course number of this course. e.g. `450` */
+  courseNumber: string,
+  /** the full name of the course */
+  name: string,
+  /** the description of the course */
+  description: string | undefined | null,
+  /**
+   * the number of credit hours of the course determined by the most recent sections in the most
+   * recent terms of this course
+   */
+  credits: number | undefined | null,
+  /**
+   * a credit range is possible if the `creditsMin` is present.
+   */
+  creditsMin: number | undefined | null,
+  /** the restriction placed on this course */
+  restrictions: string | undefined | null,
+  /** represents the set of courses needed to have been taken before the course */
+  prerequisites: Prerequisite,
+  /** represents the set of courses needed to be taken either before or during the course */
+  corequisites: Prerequisite,
+  /** tuples of courses that this course is cross listed with */
+  crossList: Array<[string, string]> | undefined | null,
+  scheduleTypes: string[],
+}
+
+export interface Section extends DbSynced {
+  /** a link to the course id this section belongs to */
+  courseId: Mongo.ObjectId,
+  /** the term for this section */
+  termCode: string,
+  /** the course registration number */
+  courseRegistrationNumber: string,
+  /** unique name of the instructor */
+  instructors: string[],
+  /** schedule type of this section e.g. Lecture or Internet */
+  scheduleTypes: string[],
+  /** time of day of this schedule */
+  times: string[],
+  /** the days this schedule was offered on e.g. TR for Tuesday Thursdays */
+  days: string[],
+  /** the location of this section as it appears on the SIS */
+  locations: string[],
+  /** the total capacity *including* cross-listed seats */
+  capacity: number,
+  /** the remaining seats *including* cross-listed seats */
+  remaining: number,
+}
+

@@ -5,7 +5,7 @@ import {
 } from 'unofficial-umdearborn-catalog-api';
 import { dbConnection, updateIfSameTermOrLater } from '../models/mongo';
 import * as Mongo from 'mongodb';
-import * as Model from '../models/models';
+import * as Model from '../../models/models';
 import { queue } from '../scheduler/scheduler';
 import { isEqual } from 'lodash';
 import { oneLine } from 'common-tags';

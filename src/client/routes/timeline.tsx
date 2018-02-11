@@ -2,7 +2,7 @@ import * as React from 'react';
 import { View, Text } from '../components/base';
 import * as Color from '../components/colors';
 import * as Record from 'recordize';
-import * as Model from '../../models/models';
+import * as Model from '../../models/records';
 import * as Immutable from 'immutable';
 
 interface SemesterBlockProps {
@@ -31,12 +31,7 @@ function Semester(props: SemesterBlockProps) {
         <Text>{semester.count()} Courses</Text>
       </View>
       <View flex>
-        {props.semester.courseList(props.courses).map(course => <Course
-          key={course.id}
-          course={course}
-          onMouseDown={e => props.onCourseMouseDown(e, course)}
-          onMouseUp={e => props.onCourseMouseUp(e, course)}
-        />)}
+        
       </View>
     </View>
   </View>
@@ -142,7 +137,7 @@ export class Timeline extends Model.store.connect({
     const offsetY = e.pageY - offsetTop;
     this.setStore(previousState => ({
       ...previousState,
-      selectedCourseId: course.id,
+      selectedCourseId: course._id.toHexString(),
       dragging: true,
       offsetX,
       offsetY,
@@ -189,46 +184,7 @@ export class Timeline extends Model.store.connect({
           </View>
         </View>
         <View _="semester-block-container" flex row overflow="auto">
-          {this.state.semesters.map(semester => <Semester
-            key={semester.id}
-            courses={this.state.courses}
-            semester={semester}
-            onMouseEnter={() => {
-              this.setStore(previousState => ({
-                ...previousState,
-                mouseIsOverSemester: true,
-              }))
-            }}
-            onMouseLeave={() => {
-              this.setStore(previousState => ({
-                ...previousState,
-                mouseIsOverSemester: false,
-              }))
-            }}
-            onMouseUp={() => {
-              if (!this.state.mouseIsOverSemester) {
-                console.log('mouse is NOT over semester')
-                return;
-              }
-              if (!this.state.dragging) {
-                return;
-              }
-              // if the courseID is already in there
-              if (semester.courseIds.has(this.state.selectedCourseId)) {
-                return;
-              }
-              this.setGlobalStore(store => {
-                // remove course from other semesters
-                const removedCourse = store.update('semesters', semesters => semesters.reduce((acc, next) => {
-                  return acc.add(next.update('courseIds', courseIds => courseIds.delete(store.selectedCourseId)));
-                }, Immutable.Set<Model.Semester>()));
-                return removedCourse.update('semesters', semesters => semesters.delete(semester).add(semester.update('courseIds', courseIds => courseIds.add(store.selectedCourseId))))
-                // return store;
-              })
-            }}
-            onCourseMouseDown={this.handleCourseMouseDown}
-            onCourseMouseUp={this.handleCourseMouseUp}
-          />)}
+          
         </View>
       </View>
       <View _="sidebar" backgroundColor={Color.background} width={20} padding>
@@ -240,8 +196,8 @@ export class Timeline extends Model.store.connect({
             <Text large strong>Starred Courses</Text>
           </View>
           <View flex>
-            {this.state.courseInBucket.map(course => <Course
-              key={course.id}
+            {this.state.courseInBucket.map(([courseId, course]) => <Course
+              key={courseId}
               course={course}
               onMouseUp={e => this.handleCourseMouseUp(e, course)}
               onMouseDown={e => this.handleCourseMouseDown(e, course)}

@@ -34,16 +34,17 @@ async function start(workerId: number) {
     log.info('Exiting process...');
   });
   
-    // await queue({
-    //   jobName: 'sync',
-    //   plannedStartTime: new Date().getTime()
-    // });
-  await executeSchedulerQueue();
+  // await queue({
+  //   jobName: 'sync',
+  //   plannedStartTime: new Date().getTime()
+  // });
+  // process.exit(0);
+  // await executeSchedulerQueue();
 }
 
 async function master() {
   log.info('Application started');
-  await restartUnfinishedJobs();
+  // await restartUnfinishedJobs();
 }
 
 throng({ workers: webConcurrency, start, master });
