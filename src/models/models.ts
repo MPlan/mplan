@@ -50,6 +50,8 @@ export interface Course extends DbSynced {
    * a credit range is possible if the `creditsMin` is present.
    */
   creditsMin: number | undefined | null,
+  creditHours: number | undefined | null,
+  creditHoursMin: number | undefined | null,
   /** the restriction placed on this course */
   restrictions: string | undefined | null,
   /** represents the set of courses needed to have been taken before the course */

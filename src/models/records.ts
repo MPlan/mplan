@@ -2,16 +2,22 @@ import * as Record from 'recordize';
 import * as Model from './models';
 import * as Immutable from 'immutable';
 import * as uuid from 'uuid/v4';
-import * as Mongo from 'mongodb';
+import { ObjectID as _ObjectId } from 'bson';
+
+function ObjectId(id?: string | number | _ObjectId) {
+  return (_ObjectId as any)(id) as _ObjectId;
+}
 
 export class Course extends Record.define({
-  _id: new Mongo.ObjectId(),
+  _id: ObjectId(),
   name: '',
   subjectCode: '',
   courseNumber: '',
   description: undefined,
   credits: undefined,
   creditsMin: undefined,
+  creditHours: undefined,
+  creditHoursMin: undefined,
   restrictions: undefined,
   prerequisites: undefined,
   corequisites: undefined,
@@ -22,7 +28,7 @@ export class Course extends Record.define({
 }) implements Model.Course { }
 
 export class Semester extends Record.define({
-  _id: new Mongo.ObjectId(),
+  _id: ObjectId(),
   courseIds: Immutable.Set<string>(),
   season: 'Fall' as 'Fall' | 'Winter' | 'Summer',
   year: 0,
@@ -47,12 +53,10 @@ export class Semester extends Record.define({
 }
 
 
-const id0 = new Mongo.ObjectId();
-const id1 = new Mongo.ObjectId();
-const id2 = new Mongo.ObjectId();
-const id3 = new Mongo.ObjectId();
-
-;
+const id0 = ObjectId();
+const id1 = ObjectId();
+const id2 = ObjectId();
+const id3 = ObjectId();
 
 export class App extends Record.define({
   courses: Immutable.Map<string, Course>(),
