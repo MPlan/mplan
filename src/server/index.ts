@@ -5,6 +5,7 @@ if (process.env.NODE_ENV !== 'production') {
 import * as express from 'express';
 import * as path from 'path';
 import * as throng from 'throng';
+import * as compression from 'compression';
 
 import { api } from './api';
 import { getOrThrow, log } from '../utilities/utilities';
@@ -19,8 +20,8 @@ const webConcurrency = parseInt(process.env.WEB_CONCURRENCY || '1');
 
 async function start(workerId: number) {
   app.use('/api', api);
-  app.use(express.static(path.resolve(__dirname, '../web-root')));
-  app.use('*', (req, res) => {
+  app.use(compression(), express.static(path.resolve(__dirname, '../web-root')));
+  app.use('*', compression(), (req, res) => {
     res.sendFile(path.resolve(__dirname, '../web-root/index.html'));
   });
 
@@ -33,7 +34,7 @@ async function start(workerId: number) {
     log.info('Disconnected successful from the database.');
     log.info('Exiting process...');
   });
-  
+
   // await queue({
   //   jobName: 'sync',
   //   plannedStartTime: new Date().getTime()
