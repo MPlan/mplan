@@ -134,7 +134,7 @@ const id3 = ObjectId();
 
 export class App extends Record.define({
   catalog: new Catalog(),
-  binMap: Immutable.Map<string, Course>(),
+  boxMap: Immutable.Map<string, Course>(),
   courses: Immutable.Map<string, Course>(),
   semesters: Immutable.Map<string, Semester>([
     [id0.toHexString(), new Semester({
@@ -152,9 +152,9 @@ export class App extends Record.define({
   offsetY: 0,
   mouseIsOverSemester: false,
 }) {
-  get bin() {
-    return this.getOrCalculate('bin', [this.binMap], () => {
-      return this.binMap.valueSeq().toArray();
+  get box() {
+    return this.getOrCalculate('box', [this.boxMap], () => {
+      return this.boxMap.valueSeq().toArray();
     });
   }
 }

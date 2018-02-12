@@ -4,7 +4,7 @@ import * as Model from '../models';
 import styled from 'styled-components';
 import * as Styles from '../components/styles';
 import { Button } from '../components/button';
-import { Bin } from '../components/bin';
+import { Box } from '../components/box';
 
 const Input = styled.input`
   padding: ${p(0)}rem;
@@ -56,9 +56,9 @@ export class Catalog extends Model.store.connect({
     }));
   }
 
-  onAddToBinClick(course: Model.Course) {
+  onAddToBoxClick(course: Model.Course) {
     this.setGlobalStore(store => store
-      .update('binMap', binMap => binMap
+      .update('boxMap', boxMap => boxMap
         .set(course._id.toHexString(), course)));
   }
 
@@ -88,7 +88,7 @@ export class Catalog extends Model.store.connect({
             </View>
             <Text>{course.description}</Text>
             <View row justifyContent="flex-end">
-              <Button onClick={() => this.onAddToBinClick(course)}>+ to bin</Button>
+              <Button onClick={() => this.onAddToBoxClick(course)}>+ to box</Button>
             </View>
           </View>)}
         </View>
@@ -112,7 +112,7 @@ export class Catalog extends Model.store.connect({
           </View>
         </View>
       </View>
-      <View><Bin /></View>
+      <View><Box /></View>
     </View>;
   }
 }

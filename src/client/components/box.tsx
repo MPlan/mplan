@@ -3,14 +3,14 @@ import { View, Text } from '../components/base';
 import * as Model from '../models';
 import { Button } from '../components/button';
 
-export class Bin extends Model.store.connect({
-  get: store => ({ bin: store.bin }),
+export class Box extends Model.store.connect({
+  get: store => ({ box: store.box }),
   set: (store, { }) => store,
 }) {
 
   onDeleteClick(course: Model.Course) {
     this.setGlobalStore(store => store
-      .update('binMap', binMap => binMap
+      .update('boxMap', boxMap => boxMap
         .delete(course._id.toHexString())));
   }
 
@@ -24,11 +24,11 @@ export class Bin extends Model.store.connect({
       style={{ borderTop: 'none' }}
     >
       <View margin={{ bottom: true }}>
-        <Text large strong>The bin</Text>
+        <Text large strong>The box</Text>
         <Text>A quick place to put some course in.</Text>
       </View>
       <View flex>
-        {this.state.bin.map(course => <View
+        {this.state.box.map(course => <View
           key={course._id.toHexString()}
           row
           alignItems="baseline"

@@ -1,9 +1,13 @@
 import * as React from 'react';
 import { Catalog } from './catalog';
 import { Timeline } from './timeline';
+import { View, Text } from '../components/base';
 
 function Wip() {
-  return <div>todo</div>
+  return <View flex justifyContent="center" alignItems="center">
+    <Text strong extraLarge>This page is under construction.</Text>
+    <Text large>Check back soon.</Text>
+  </View>
 }
 
 export const Routes = [

@@ -4,6 +4,7 @@ import * as Styles from '../components/styles';
 import * as Record from 'recordize';
 import * as Model from '../models';
 import * as Immutable from 'immutable';
+import { Box } from '../components/box';
 
 interface SemesterBlockProps {
   courses: Immutable.Set<Model.Course>,
@@ -31,7 +32,6 @@ function Semester(props: SemesterBlockProps) {
         <Text>{semester.count()} Courses</Text>
       </View>
       <View flex>
-        
       </View>
     </View>
   </View>
@@ -145,9 +145,9 @@ export class Timeline extends Model.store.connect({
           </View>
         </View>
         <View _="semester-block-container" flex row overflow="auto">
-          
         </View>
       </View>
+      <View><Box /></View>
     </View>
   }
 }
