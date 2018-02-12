@@ -119,6 +119,13 @@ export class Timeline extends Model.store.connect({
     });
   }
 
+  onCourseMouseDown(course: Model.Course) {
+    this.setGlobalStore(store => store
+      .set('selectedCourseId', course.id)
+      .set('dragging', true)
+    );
+  }
+
   render() {
     return <View _="timeline" flex row style={{ position: 'relative' }}>
       <View
@@ -150,6 +157,7 @@ export class Timeline extends Model.store.connect({
             key={semester.id}
             semester={semester}
             onCourseDeleteClick={course => this.handleCourseSemesterDeleteClick(course, semester)}
+            onCourseMouseDown={course => this.onCourseMouseDown(course)}
           />)}
           <CreateSemester onCreateClick={this.onCreateSemesterAfter} />
         </View>

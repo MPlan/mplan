@@ -11,22 +11,19 @@ export class Box extends Model.store.connect({
 
   documentMouseUp = (e: MouseEvent) => {
     this.setGlobalStore(store => {
-      let newStore = store.set('dragging', false);
-      if (!store.mouseIsOverSemester) { console.log('not mouse over'); return newStore; }
-
+      const newStore = store.set('dragging', false);
+      if (!store.dragging) { return newStore; }
+      if (!store.mouseIsOverSemester) { return newStore; }
       const lastMouseOverSemesterId = store.lastMouseOverSemesterId;
       const hasMousedOverSemester = store.semesterMap.has(store.lastMouseOverSemesterId);
-      if (!hasMousedOverSemester) { console.log('no has'); return newStore; }
-
+      if (!hasMousedOverSemester) { return newStore; }
       const selectedCourse = store.selectedCourse;
-      if (!selectedCourse) { console.log('no selected course'); return newStore; }
+      if (!selectedCourse) { return newStore; }
 
-      newStore = newStore.update('semesterMap', semesterMap =>
+      return newStore.update('semesterMap', semesterMap =>
         semesterMap.update(lastMouseOverSemesterId, semester =>
           semester.update('courseMap', courseMap =>
             courseMap.set(selectedCourse.id, selectedCourse))));
-
-      return newStore;
     });
   }
 

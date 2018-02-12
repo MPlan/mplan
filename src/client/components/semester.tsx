@@ -10,6 +10,7 @@ interface SemesterProps {
   onMouseEnter?: () => void,
   onMouseLeave?: () => void,
   onCourseDeleteClick?: (course: Model.Course) => void,
+  onCourseMouseDown?: (course: Model.Course) => void,
 }
 
 export function Semester(props: SemesterProps) {
@@ -30,6 +31,7 @@ export function Semester(props: SemesterProps) {
         key={course.id}
         course={course}
         onDeleteClick={() => props.onCourseDeleteClick && props.onCourseDeleteClick(course)}
+        onMouseDown={() => props.onCourseMouseDown && props.onCourseMouseDown(course)}
       />)}
     </View>
   </View>;
