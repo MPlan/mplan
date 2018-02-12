@@ -2,6 +2,7 @@ import * as React from 'react';
 import { View, Text } from '../components/base';
 import * as Model from '../models';
 import { Button } from '../components/button';
+import { Course } from '../components/course';
 
 export class Box extends Model.store.connect({
   get: store => ({ box: store.box }),
@@ -28,19 +29,11 @@ export class Box extends Model.store.connect({
         <Text>A quick place to put some course in.</Text>
       </View>
       <View flex>
-        {this.state.box.map(course => <View
-          key={course._id.toHexString()}
-          row
-          alignItems="baseline"
-          border
-          padding
-          margin={{ bottom: true }}
-        >
-          <Text strong>{course.subjectCode}&nbsp;</Text>
-          <Text strong>{course.courseNumber}&nbsp;</Text>
-          <Text>{course.name}&nbsp;</Text>
-          <Button onClick={() => this.onDeleteClick(course)}>x</Button>
-        </View>)}
+        {this.state.box.map(course => <Course
+          key={course.id}
+          course={course}
+          onDeleteClick={() => this.onDeleteClick(course)}
+        />)}
       </View>
     </View>;
   }

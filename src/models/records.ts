@@ -22,7 +22,9 @@ export class Section extends Record.define({
   locations: [] as string[],
   capacity: 0,
   remaining: 0,
-}) implements Model.Section { }
+}) implements Model.Section {
+  get id() { return this._id.toHexString(); }
+}
 
 export class Course extends Record.define({
   _id: ObjectId(),
@@ -42,14 +44,19 @@ export class Course extends Record.define({
   lastUpdateDate: 0,
   lastTermCode: '',
   sections: Immutable.Map<string, Immutable.Set<Section>>(),
-}) implements Model.Course { }
+}) implements Model.Course {
+  get id() { return this._id.toHexString(); }
+}
 
 export class Semester extends Record.define({
   _id: ObjectId(),
-  courseIds: Immutable.Set<string>(),
+  courseMap: Immutable.Map<string, Course>(),
   season: 'Fall' as 'Fall' | 'Winter' | 'Summer',
   year: 0,
 }) {
+
+  get id() { return this._id.toHexString(); }
+
   get position() {
     const seasonNumber = (/*if*/ this.season === 'Winter'
       ? 0
@@ -57,15 +64,57 @@ export class Semester extends Record.define({
     );
     return seasonNumber + this.year;
   }
+
   get name() {
     return `${this.season} ${this.year}`
   }
-  count() {
-    return this.courseIds.count();
+
+  get courseCount() {
+    return this.getOrCalculate('courseCount', () => {
+      return this.courseMap.count();
+    });
   }
 
-  courseList(courses: Immutable.Map<string, Course>) {
-    return courses.filter(course => this.courseIds.has(course._id.toHexString())).toArray();
+  get courses() {
+    return this.getOrCalculate('courses', () => {
+      return this.courseMap.valueSeq().toArray();
+    });
+  }
+
+  private _previousSemesterSeason() {
+    if (this.season === 'Winter') { return 'Fall'; }
+    if (this.season === 'Fall') { return 'Summer'; }
+    if (this.season === 'Summer') { return 'Winter'; }
+    throw new Error('season was neither Winter, Fall, or Summer');
+  }
+
+  private _previousSemesterYear() {
+    if (this.season === 'Winter') { return this.year - 1; }
+    return this.year;
+  }
+
+  private _nextSemesterSeason() {
+    if (this.season === 'Winter') { return 'Summer'; }
+    if (this.season === 'Fall') { return 'Winter'; }
+    if (this.season === 'Summer') { return 'Fall'; }
+    throw new Error('season was neither Winter, Fall, or Summer');
+  }
+
+  private _nextSemesterYear() {
+    if (this.season === 'Fall') { return this.year + 1; }
+    return this.year;
+  }
+
+  previousSemester(): { season: 'Fall' | 'Winter' | 'Summer', year: number } {
+    const season = this._previousSemesterSeason();
+    const year = this._previousSemesterYear();
+    return { season, year };
+  }
+
+  nextSemester(): { season: 'Fall' | 'Winter' | 'Summer', year: number } {
+    const season = this._nextSemesterSeason();
+    const year = this._nextSemesterYear();
+    return { season, year };
   }
 }
 
@@ -130,20 +179,13 @@ export class Catalog extends Record.define({
 const id0 = ObjectId();
 const id1 = ObjectId();
 const id2 = ObjectId();
-const id3 = ObjectId();
 
 export class App extends Record.define({
   catalog: new Catalog(),
   boxMap: Immutable.Map<string, Course>(),
-  courses: Immutable.Map<string, Course>(),
-  semesters: Immutable.Map<string, Semester>([
-    [id0.toHexString(), new Semester({
-      _id: id0,
-      courseIds: Immutable.Set<string>(),
-      season: 'Fall',
-      year: 2018,
-    })]
-  ]),
+  semesterMap: Immutable.Map<string, Semester>()
+    .set(id0.toHexString(), new Semester({ _id: id0, season: 'Winter', year: 2018 }))
+    .set(id1.toHexString(), new Semester({ _id: id1, season: 'Fall', year: 2018 })),
   selectedCourseId: '',
   dragging: false,
   x: 0,
@@ -155,6 +197,18 @@ export class App extends Record.define({
   get box() {
     return this.getOrCalculate('box', [this.boxMap], () => {
       return this.boxMap.valueSeq().toArray();
+    });
+  }
+
+  get semestersSorted() {
+    return this.getOrCalculate('semestersSorted', [this.semesterMap], () => {
+      return this.semesterMap.valueSeq().sortBy(semester => semester.position);
+    });
+  }
+
+  get semesters() {
+    return this.getOrCalculate('semesters', [this.semestersSorted], () => {
+      return this.semestersSorted.toArray();
     });
   }
 }

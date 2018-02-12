@@ -5,79 +5,23 @@ import * as Record from 'recordize';
 import * as Model from '../models';
 import * as Immutable from 'immutable';
 import { Box } from '../components/box';
+import { Semester } from '../components/semester';
+import { Button } from '../components/button';
 
-interface SemesterBlockProps {
-  courses: Immutable.Set<Model.Course>,
-  semester: Model.Semester,
-  onMouseEnter: (e: React.MouseEvent<HTMLDivElement>) => void,
-  onMouseLeave: (e: React.MouseEvent<HTMLDivElement>) => void,
-  onMouseUp: (e: React.MouseEvent<HTMLDivElement>) => void,
-  onCourseMouseDown: (e: React.MouseEvent<HTMLDivElement>, course: Model.Course) => void,
-  onCourseMouseUp: (e: React.MouseEvent<HTMLDivElement>, course: Model.Course) => void,
+interface CreateSemesterProps {
+  onCreateClick: (e: React.MouseEvent<HTMLButtonElement>) => void,
 }
 
-function Semester(props: SemesterBlockProps) {
-  const semester = props.semester;
-  return <View
-    width={20}
-    flex={{ flexShrink: 0 }}
-    onMouseUp={props.onMouseUp}
-    onMouseEnter={props.onMouseEnter}
-    onMouseLeave={props.onMouseLeave}
-    style={{}}
-  >
-    <View border flex padding margin>
-      <View _="heading" row justifyContent="space-between">
-        <Text strong>{semester.name}</Text>
-        <Text>{semester.count()} Courses</Text>
-      </View>
-      <View flex>
-      </View>
-    </View>
-  </View>
+function CreateSemester(props: CreateSemesterProps) {
+  return <View border margin padding justifyContent="center" alignItems="center">
+    <Button onClick={props.onCreateClick}><Text>+ new semester</Text></Button>
+  </View>;
 }
 
-interface CourseProps {
-  course: Model.Course,
-  onMouseDown: (e: React.MouseEvent<HTMLDivElement>) => void,
-  onMouseUp: (e: React.MouseEvent<HTMLDivElement>) => void,
-}
-interface CourseState {
-  hovering: boolean,
-}
-class Course extends React.Component<CourseProps, CourseState> {
-  constructor(props: CourseProps) {
-    super(props);
-    this.state = {
-      hovering: false,
-    }
-  }
-  render() {
-    const { course } = this.props;
-    return <View
-      _="course"
-      border
-      margin={{ vertical: true }}
-      padding
-      onMouseDown={this.props.onMouseDown}
-      onMouseUp={this.props.onMouseUp}
-    >
-      <Text>{course.name}</Text>
-    </View>
-  }
-}
-
-export class Test extends Model.store.connect({
-  get: store => ({
-    x: store.x,
-    y: store.y,
-  }),
-  set: (store, v) => store.set('x', v.x).set('y', v.y)
-}) { }
 
 export class Timeline extends Model.store.connect({
   get: store => ({
-
+    semesters: store.semesters,
   }),
   set: store => store,
 }) {
@@ -130,8 +74,35 @@ export class Timeline extends Model.store.connect({
     }))
   }
 
+  onCreateSemesterBefore = () => {
+    const id = Model.ObjectId();
+    this.setGlobalStore(store => {
+      const firstSemester = store.semesters[0];
+      const { season, year } = firstSemester.previousSemester();
+      return store.update('semesterMap', semesterMap =>
+        semesterMap.set(id.toHexString(), new Model.Semester({
+          _id: id,
+          season,
+          year,
+        })));
+    });
+  }
+
+  onCreateSemesterAfter = () => {
+    const id = Model.ObjectId();
+    this.setGlobalStore(store => {
+      const firstSemester = store.semesters[store.semesters.length - 1];
+      const { season, year } = firstSemester.nextSemester();
+      return store.update('semesterMap', semesterMap =>
+        semesterMap.set(id.toHexString(), new Model.Semester({
+          _id: id,
+          season,
+          year,
+        })));
+    });
+  }
+
   render() {
-    this.state
     return <View _="timeline" flex row>
       <View _="content" flex overflow>
         <View _="header" padding row>
@@ -144,7 +115,12 @@ export class Timeline extends Model.store.connect({
             <Text strong large>April 2018</Text>
           </View>
         </View>
-        <View _="semester-block-container" flex row overflow="auto">
+        <View _="semester-block-container" flex row overflow>
+          <CreateSemester onCreateClick={this.onCreateSemesterBefore} />
+          {this.state.semesters.map(semester => <Semester
+            semester={semester}
+          />)}
+          <CreateSemester onCreateClick={this.onCreateSemesterAfter} />
         </View>
       </View>
       <View><Box /></View>
