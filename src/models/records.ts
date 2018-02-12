@@ -211,4 +211,11 @@ export class App extends Record.define({
       return this.semestersSorted.toArray();
     });
   }
+
+  get selectedCourse() {
+    return this.getOrCalculate('selectedCourse', () => {
+      const selectedCourse = this.catalog.courseMap.get(this.selectedCourseId);
+      return selectedCourse;
+    })
+  }
 }

@@ -7,6 +7,7 @@ import * as Immutable from 'immutable';
 import { Box } from '../components/box';
 import { Semester } from '../components/semester';
 import { Button } from '../components/button';
+import { Course } from '../components/course';
 
 interface CreateSemesterProps {
   onCreateClick: (e: React.MouseEvent<HTMLButtonElement>) => void,
@@ -22,35 +23,29 @@ function CreateSemester(props: CreateSemesterProps) {
 export class Timeline extends Model.store.connect({
   get: store => ({
     semesters: store.semesters,
+    dragging: store.dragging,
+    x: store.x,
+    y: store.y,
+    selectedCourse: store.selectedCourse,
   }),
   set: store => store,
 }) {
 
-  handleMouseUp = () => {
-    this.setStore(previousState => ({
-      ...previousState,
-      dragging: false,
-    }))
-  }
-
   handleMouseMove = (e: MouseEvent) => {
-    this.setStore(previousState => ({
-      ...previousState,
-      x: e.clientX,
-      y: e.clientY,
-    }))
+    this.setGlobalStore(store => store
+      .set('x', e.clientX)
+      .set('y', e.clientY)
+    );
   }
 
   componentDidMount() {
-    document.addEventListener('mouseup', this.handleMouseUp);
-    document.addEventListener('mousemove', this.handleMouseMove);
     super.componentDidMount();
+    document.addEventListener('mousemove', this.handleMouseMove);
   }
 
   componentWillUnmount() {
-    document.removeEventListener('mouseup', this.handleMouseUp);
-    document.removeEventListener('mousemove', this.handleMouseMove);
     super.componentWillUnmount();
+    document.removeEventListener('mousemove', this.handleMouseMove);
   }
 
   handleCourseMouseDown = (e: React.MouseEvent<HTMLDivElement>, course: Model.Course) => {
@@ -103,7 +98,17 @@ export class Timeline extends Model.store.connect({
   }
 
   render() {
-    return <View _="timeline" flex row>
+    return <View _="timeline" flex row style={{ position: 'relative' }}>
+      <View
+        style={{
+          display: /*if*/ this.state.dragging ? 'initial' : 'none',
+          position: 'absolute',
+          top: this.state.y - 100,
+          left: this.state.x - 100,
+        }}
+      >
+        {this.state.selectedCourse && <Course course={this.state.selectedCourse} />}
+      </View>
       <View _="content" flex overflow>
         <View _="header" padding row>
           <View flex>
@@ -118,6 +123,7 @@ export class Timeline extends Model.store.connect({
         <View _="semester-block-container" flex row overflow>
           <CreateSemester onCreateClick={this.onCreateSemesterBefore} />
           {this.state.semesters.map(semester => <Semester
+            key={semester.id}
             semester={semester}
           />)}
           <CreateSemester onCreateClick={this.onCreateSemesterAfter} />

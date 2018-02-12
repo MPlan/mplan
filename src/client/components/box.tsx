@@ -9,10 +9,31 @@ export class Box extends Model.store.connect({
   set: (store, { }) => store,
 }) {
 
+  documentMouseUp = (e: MouseEvent) => {
+    this.setGlobalStore(store => store.set('dragging', false));
+  }
+
+  componentDidMount() {
+    super.componentDidMount();
+    document.addEventListener('mouseup', this.documentMouseUp);
+  }
+
+  componentWillUnmount() {
+    super.componentWillUnmount();
+    document.removeEventListener('mouseup', this.documentMouseUp);
+  }
+
   onDeleteClick(course: Model.Course) {
     this.setGlobalStore(store => store
       .update('boxMap', boxMap => boxMap
         .delete(course._id.toHexString())));
+  }
+
+  onCourseMouseDown(course: Model.Course) {
+    this.setGlobalStore(store => store
+      .set('selectedCourseId', course.id)
+      .set('dragging', true)
+    );
   }
 
   render() {
@@ -33,6 +54,7 @@ export class Box extends Model.store.connect({
           key={course.id}
           course={course}
           onDeleteClick={() => this.onDeleteClick(course)}
+          onMouseDown={() => this.onCourseMouseDown(course)}
         />)}
       </View>
     </View>;
