@@ -193,6 +193,7 @@ export class App extends Record.define({
   offsetX: 0,
   offsetY: 0,
   mouseIsOverSemester: false,
+  lastMouseOverSemesterId: '',
 }) {
   get box() {
     return this.getOrCalculate('box', [this.boxMap], () => {

@@ -97,6 +97,28 @@ export class Timeline extends Model.store.connect({
     });
   }
 
+  handleMouseEnterSemester = (semester: Model.Semester) => {
+    console.log('mouse enter');
+    this.setGlobalStore(store => store
+      .set('mouseIsOverSemester', true)
+      .set('lastMouseOverSemesterId', semester.id)
+    );
+  }
+
+  handleMouseLeaveSemester = (semester: Model.Semester) => {
+    console.log('mouse elave')
+    this.setGlobalStore(store => store.set('mouseIsOverSemester', false));
+  }
+
+  handleCourseSemesterDeleteClick(course: Model.Course, semester: Model.Semester) {
+    this.setGlobalStore(store => {
+      return store.update('semesterMap', semesterMap =>
+        semesterMap.update(semester.id, s =>
+          s.update('courseMap', courseMap =>
+            courseMap.delete(course.id))));
+    });
+  }
+
   render() {
     return <View _="timeline" flex row style={{ position: 'relative' }}>
       <View
@@ -123,8 +145,11 @@ export class Timeline extends Model.store.connect({
         <View _="semester-block-container" flex row overflow>
           <CreateSemester onCreateClick={this.onCreateSemesterBefore} />
           {this.state.semesters.map(semester => <Semester
+            onMouseEnter={() => this.handleMouseEnterSemester(semester)}
+            onMouseLeave={() => this.handleMouseLeaveSemester(semester)}
             key={semester.id}
             semester={semester}
+            onCourseDeleteClick={course => this.handleCourseSemesterDeleteClick(course, semester)}
           />)}
           <CreateSemester onCreateClick={this.onCreateSemesterAfter} />
         </View>
