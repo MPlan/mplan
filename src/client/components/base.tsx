@@ -1,14 +1,22 @@
 import * as React from 'react';
 import styled, { StyledComponentClass } from 'styled-components';
-import * as Color from './colors';
-
-type ShadowLevels = '';
+import * as Styles from './styles';
 
 export const base = 1;
 export const phi = 1.618;
 
 export function p(x: number) { return base * Math.pow(phi, x); }
 export function em(x: number) { return base * x; }
+
+// https://codepen.io/sdthornton/pen/wBZdXq
+export function boxShadow(level: number) {
+  if (level <= 0) { return 'initial'; }
+  if (level <= 1) { return '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)'; }
+  if (level <= 2) { return '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)'; }
+  if (level <= 3) { return '0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)'; }
+  if (level <= 4) { return '0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)'; }
+  return '0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)';
+}
 
 interface Directions {
   all?: boolean | number,
@@ -123,20 +131,20 @@ interface Border {
 type BorderFlatten = { borderWidth: number, borderStyle: string, borderColor: string };
 function parseBorders(border?: boolean | Border): BorderFlatten {
   if (border === true) {
-    return { borderWidth: defaultBorderWidth, borderStyle: 'solid', borderColor: Color.border };
+    return { borderWidth: defaultBorderWidth, borderStyle: 'solid', borderColor: Styles.border };
   }
   if (typeof border === 'object') {
     let borderFlattened = {
       borderWidth: defaultBorderWidth,
       borderStyle: 'solid',
-      borderColor: Color.border
+      borderColor: Styles.border
     };
     if (border.borderColor) { borderFlattened.borderColor = border.borderColor; }
     if (border.borderStyle) { borderFlattened.borderStyle = border.borderStyle; }
     if (border.borderWidth) { borderFlattened.borderWidth = border.borderWidth; }
     return borderFlattened;
   }
-  return { borderWidth: 0, borderStyle: 'none', borderColor: Color.border };
+  return { borderWidth: 0, borderStyle: 'none', borderColor: Styles.border };
 }
 
 export interface ViewProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -165,6 +173,7 @@ export interface ViewProps extends React.HTMLAttributes<HTMLDivElement> {
   height?: number,
   border?: boolean | Border,
   overflow?: boolean | string,
+  shadow?: number,
 }
 type ComputedView = StyledComponentClass<React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>, any, React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>>;
 const computedViews = {} as { [css: string]: ComputedView }
@@ -172,7 +181,7 @@ export function View(props: ViewProps) {
   const {
     margin, padding, hideOn, flex, alignSelf, justifyContent, flexWrap, alignItems,
     /*portion,*/ row, flexDirection, backgroundColor, width, height, border, _,
-    className, overflow,
+    className, overflow, shadow,
     ...restOfProps
   } = props;
 
@@ -206,6 +215,7 @@ export function View(props: ViewProps) {
     ${/*if*/ height ? `height: ${width}rem;` : ''}
     border: ${bf.borderWidth}rem ${bf.borderStyle} ${bf.borderColor};
     overflow: ${o};
+    box-shadow: ${shadow ? boxShadow(shadow) : 'initial'};
   `;
 
   const newClassName = [_ && `__${_}__` || '', className || ''].join(' ').trim();
@@ -267,7 +277,7 @@ export function Text(props: TextProps) {
   if (weak) { fw = 'lighter'; }
   if (strong) { fw = 'bold'; }
 
-  const c = color || Color.text;
+  const c = color || Styles.text;
 
   // let color = ''
   // TODO

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View, Text } from '../components/base';
-import * as Color from '../components/colors';
+import * as Styles from '../components/styles';
 import * as Record from 'recordize';
 import * as Model from '../models';
 import * as Immutable from 'immutable';
@@ -185,24 +185,6 @@ export class Timeline extends Model.store.connect({
         </View>
         <View _="semester-block-container" flex row overflow="auto">
           
-        </View>
-      </View>
-      <View _="sidebar" backgroundColor={Color.background} width={20} padding>
-        <View _="my-degree" flex>
-          <Text large strong>My Degree</Text>
-        </View>
-        <View _="my-degree" flex>
-          <View>
-            <Text large strong>Starred Courses</Text>
-          </View>
-          <View flex>
-            {this.state.courseInBucket.map(([courseId, course]) => <Course
-              key={courseId}
-              course={course}
-              onMouseUp={e => this.handleCourseMouseUp(e, course)}
-              onMouseDown={e => this.handleCourseMouseDown(e, course)}
-            />)}
-          </View>
         </View>
       </View>
     </View>

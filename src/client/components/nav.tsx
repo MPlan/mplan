@@ -1,13 +1,21 @@
 import * as React from 'react';
 import { View, Text, p } from './base';
-import * as Color from './colors';
+import * as Styles from './styles';
 import { Routes } from '../routes';
 import { Link } from 'react-router-dom';
 import { Fa } from './fa';
 import styled from 'styled-components';
 
 const StyledLink = styled(Link) `
-  color: white
+  color: ${Styles.gray};
+
+  & {
+    text-decoration: none;
+  }
+
+  &:hover, &:hover * {
+    color: ${Styles.black};
+  }
 `;
 
 interface NavButtonProps {
@@ -27,7 +35,7 @@ class NavButton extends React.Component<NavButtonProps, NavButtonState> {
   }
 
   onMouseEnter = () => {
-    this.setState(previousState => ({ ...previousState, hovering: true }))
+    this.setState(previousState => ({ ...previousState, hovering: true, }))
   }
 
   onMouseLeave = () => {
@@ -43,11 +51,6 @@ class NavButton extends React.Component<NavButtonProps, NavButtonState> {
         onMouseLeave={this.onMouseLeave}
       >
         <Fa icon={this.props.icon} size="2x" />
-        <Text
-          small
-          color={/*if*/ this.state.hovering ? Color.signatureMaize : Color.white}
-          margin={{ top: p(-1) }}
-        >{this.props.name}</Text>
       </View>
     </StyledLink>
   }
@@ -55,8 +58,10 @@ class NavButton extends React.Component<NavButtonProps, NavButtonState> {
 
 export function Nav() {
   return <View
-    backgroundColor={Color.signatureBlue}
-    width={5}
+    backgroundColor={Styles.white}
+    border
+    width={4}
+    style={{ borderTop: 0 }}
   >
     {Routes.map(route => <NavButton
       key={route.path}

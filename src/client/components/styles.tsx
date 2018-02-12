@@ -21,6 +21,7 @@ export function hslToHex(hslString: string) {
 
 export const signatureMaize = '#ffCB05';
 export const signatureBlue = '#00274c';
+export const lightBlue = '#CEE6FF';
 // colors taken from Bulma= https=//bulma.io/documentation/overview/variables/
 export const black = hslToHex('hsl(0; 0%; 4%)');
 export const blackBis = hslToHex('hsl(0; 0%; 7%)');
