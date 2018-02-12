@@ -77,30 +77,9 @@ export class Test extends Model.store.connect({
 
 export class Timeline extends Model.store.connect({
   get: store => ({
-    courses: store.courses,
-    semesters: store.semesterList,
-    courseInBucket: store.bucketList,
-    dragging: store.dragging,
-    selectedCourse: store.selectedCourse,
-    selectedCourseId: store.selectedCourseId,
-    x: store.x,
-    y: store.y,
-    offsetX: store.offsetX,
-    offsetY: store.offsetY,
-    mouseIsOverSemester: store.mouseIsOverSemester,
+
   }),
-  set: (store, values: any) => {
-    const newSelectedCourseId = values.selectedCourseId;
-    const newDragging = values.dragging;
-    const newX = values.x;
-    const newY = values.y;
-    return store
-      .set('selectedCourseId', newSelectedCourseId)
-      .set('dragging', newDragging)
-      .set('x', newX)
-      .set('y', newY)
-      .set('mouseIsOverSemester', values.mouseIsOverSemester);
-  }
+  set: store => store,
 }) {
 
   handleMouseUp = () => {
@@ -154,24 +133,6 @@ export class Timeline extends Model.store.connect({
   render() {
     this.state
     return <View _="timeline" flex row>
-      {/*if*/ this.state.dragging
-        ? <View
-          width={20}
-          style={{
-            position: 'absolute',
-            top: this.state.y + this.state.offsetY,
-            left: this.state.x + this.state.offsetX,
-            zIndex: -3,
-          }}
-        >
-          <Course
-            course={this.state.selectedCourse}
-            onMouseDown={() => { }}
-            onMouseUp={() => { }}
-          />
-        </View>
-        : null
-      }
       <View _="content" flex overflow>
         <View _="header" padding row>
           <View flex>

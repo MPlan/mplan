@@ -7,16 +7,21 @@ interface ButtonProps extends React.DetailedHTMLProps<React.ButtonHTMLAttributes
 }
 
 export const Button = styled.button`
-  background-color: ${Styles.grayLight};
-  color: ${Styles.whiteBis};
+  background-color: ${Styles.white};
+  color: ${Styles.text};
   padding: ${p(-1)}rem ${p(0)}rem;
-  border: none;
-  border-radius: 99999px;
+  border: solid ${Styles.border} 0.10rem;
 
-  & * { color: ${Styles.whiteBis} !important; }
+  & * { color: ${Styles.text} !important; }
 
-  &:hover, &:focus { background-color: ${Styles.gray}; }
-  &:active { background-color: ${Styles.grayDark}; }
+  &:hover, &:focus {
+    border: solid ${Styles.gray} 0.10rem;
+    color: ${Styles.textStrong} !important;
+  }
+  &:active {
+    border: solid ${Styles.black} 0.10rem;
+    color: ${Styles.textStrong} !important;
+  }
   &:focus { outline: none; }
 `;
 

@@ -17,7 +17,7 @@ export interface Subject extends DbSynced {
   name: string,
 }
 
-export type Prerequisite = undefined | [string, string] | string | {
+export type Prerequisite = undefined | null | [string, string] | string | {
   /** the logic gate to use */
   g: '&' | '|',
   /**

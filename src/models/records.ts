@@ -134,6 +134,7 @@ const id3 = ObjectId();
 
 export class App extends Record.define({
   catalog: new Catalog(),
+  binMap: Immutable.Map<string, Course>(),
   courses: Immutable.Map<string, Course>(),
   semesters: Immutable.Map<string, Semester>([
     [id0.toHexString(), new Semester({
@@ -150,40 +151,10 @@ export class App extends Record.define({
   offsetX: 0,
   offsetY: 0,
   mouseIsOverSemester: false,
-
 }) {
-  get bucket() {
-    const courseIdsInSemesters = (this.semesters
-      .map(semester => semester.courseIds)
-      .reduce((flattened, courseIds) => {
-        return flattened.union(courseIds);
-      }, Immutable.Set<string>())
-    );
-
-    const courseIdsNotInSemesters = (this.courses
-      .map(course => course._id.toHexString())
-      .toSet()
-      .subtract(courseIdsInSemesters)
-    );
-
-    return this.courses.filter(course => courseIdsNotInSemesters.has(course._id.toHexString()));
-  }
-
-  get semesterList() {
-    return this.semesters.sortBy(semester => semester.position).toArray();
-  }
-
-  get courseList() {
-    return this.courses.toArray();//.sortBy(course => course.position).toArray();
-  }
-
-  get bucketList() {
-    return this.bucket.toArray();//.sortBy(course => course.position).toArray();
-  }
-
-  get selectedCourse() {
-    return this.courses.find(course =>
-      course._id.toHexString() === this.selectedCourseId
-    ) || this.courses.first() || new Course();
+  get bin() {
+    return this.getOrCalculate('bin', [this.binMap], () => {
+      return this.binMap.valueSeq().toArray();
+    });
   }
 }
