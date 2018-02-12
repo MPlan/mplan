@@ -12,6 +12,14 @@ api.get('/test', (req, res) => {
 
 let catalog: Model.Catalog;
 
+function termCodeToSeason(termCode: string) {
+  const endOfTermCode = termCode.substring(termCode.length - 2, termCode.length);
+  if (endOfTermCode === '10') { return 'Fall'; }
+  if (endOfTermCode === '20') { return 'Winter'; }
+  if (endOfTermCode === '30') { return 'Summer'; }
+  return undefined;
+}
+
 api.get('/catalog', compression(), async (req, res) => {
   if (!catalog) {
     log.info('calculating catalog for the first time...');
@@ -23,8 +31,10 @@ api.get('/catalog', compression(), async (req, res) => {
       const courseWithSections: Model.CourseWithSections = {
         ...course,
         sections: sections.reduce((sectionsBySemester, section) => {
-          sectionsBySemester[section.termCode] = sectionsBySemester[section.termCode] || [];
-          sectionsBySemester[section.termCode].push(section);
+          const season = termCodeToSeason(section.termCode);
+          if (!season) { return sectionsBySemester; }
+          sectionsBySemester[season] = sectionsBySemester[season] || [];
+          sectionsBySemester[season].push(section);
           return sectionsBySemester;
         }, {} as { [termCode: string]: Model.Section[] })
       };

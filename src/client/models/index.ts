@@ -13,14 +13,15 @@ async function fetchCatalog() {
 
     const sections = (Object
       .entries(rawSections)
-      .reduce((sections, [termCode, sectionList]) => {
+      .reduce((sections, [_season, sectionList]) => {
+        const season = _season as 'Fall' | 'Winter' | 'Summer';
         const sectionSet = sectionList.reduce((sectionSet, rawSection) => {
           const section = new Record.Section({ ...rawSection });
           return sectionSet.add(section);
         }, Immutable.Set<Record.Section>());
 
-        return sections.set(termCode, sectionSet);
-      }, Immutable.Map<string, Immutable.Set<Record.Section>>())
+        return sections.set(season, sectionSet);
+      }, Immutable.Map<'Fall' | 'Winter' | 'Summer', Immutable.Set<Record.Section>>())
     );
 
     const courseRecord = new Record.Course({
