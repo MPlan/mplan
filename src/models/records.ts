@@ -76,6 +76,8 @@ export function includes(strA: string, strB: string) {
 export class Catalog extends Record.define({
   courseMap: Immutable.Map<string, Course>(),
   search: '',
+  currentPageIndex: 0,
+  coursesPerPage: 5,
 }) {
   get courses() {
     return this.getOrCalculate('courses', [this.coursesSorted], () => {
@@ -88,23 +90,39 @@ export class Catalog extends Record.define({
       console.log('calculated courses');
       return this.courseMap
         .valueSeq()
-        .sortBy(course => `${course.subjectCode} ${course.courseNumber}`);
+        .sortBy(course => `${course.subjectCode} ${course.courseNumber} ${course.name}`);
+    });
+  }
+
+  get coursesOnCurrentPage() {
+    return this.getOrCalculate('coursesOnCurrentPage', () => {
+      const start = this.currentPageIndex * this.coursesPerPage;
+      const end = (this.currentPageIndex + 1) * this.coursesPerPage;
+
+      return this.filteredCourses.slice(start, end).toArray();
+    });
+  }
+
+  get totalPages() {
+    return this.getOrCalculate('totalPages', () => {
+      return Math.ceil(this.filteredCourses.count() / this.coursesPerPage);
     });
   }
 
   get filteredCourses() {
     return this.getOrCalculate('filteredCourses', () => {
-      console.log('calculated filered courses');
+      console.log('calculated filtered courses');
       return this.coursesSorted.filter(course => {
         const searchTerms = this.search.split(' ').map(t => t.trim()).filter(t => !!t);
         return searchTerms.every(searchTerm => {
           if (includes(course.subjectCode, searchTerm)) { return true; }
           if (includes(course.courseNumber, searchTerm)) { return true; }
+          if (includes(course.name, searchTerm)) { return true; }
           const description = course.description;
           if (description && includes(description, searchTerm)) { return true; }
           return false;
         });
-      }).toArray();
+      });
     });
   }
 }

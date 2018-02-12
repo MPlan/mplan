@@ -42,6 +42,7 @@ export function AuthenticatedRoute() {
       padding
       border
       row
+      flex={{ flexShrink: 0 }}
     >
       <View>
         <Text large strong>MPlan</Text>
