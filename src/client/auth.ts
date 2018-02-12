@@ -8,7 +8,7 @@ const webAuth = new WebAuth({
   responseType: 'token id_token',
   audience: 'https://formandfocus.auth0.com/userinfo',
   scope: 'openid profile',
-  redirectUri: 'http://localhost:8080/callback'
+  redirectUri: `${window.location.protocol}//${window.location.host}/callback`
 });
 
 function login() {

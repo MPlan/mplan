@@ -24,7 +24,6 @@ interface NavButtonProps {
   icon: string,
 }
 interface NavButtonState {
-  hovering: boolean
 }
 class NavButton extends React.Component<NavButtonProps, NavButtonState> {
   constructor(props: NavButtonProps) {
@@ -34,21 +33,11 @@ class NavButton extends React.Component<NavButtonProps, NavButtonState> {
     }
   }
 
-  onMouseEnter = () => {
-    this.setState(previousState => ({ ...previousState, hovering: true, }))
-  }
-
-  onMouseLeave = () => {
-    this.setState(previousState => ({ ...previousState, hovering: false, }))
-  }
-
   render() {
     return <StyledLink to={this.props.to}>
       <View
         padding
         alignItems="center"
-        onMouseEnter={this.onMouseEnter}
-        onMouseLeave={this.onMouseLeave}
       >
         <Fa icon={this.props.icon} size="2x" />
       </View>
