@@ -3,6 +3,7 @@ import * as Model from './models';
 import * as Immutable from 'immutable';
 import * as uuid from 'uuid/v4';
 import { ObjectID as _ObjectId } from 'bson';
+import { oneLine } from 'common-tags';
 
 export function ObjectId(id?: string | number | _ObjectId) {
   return (_ObjectId as any)(id) as _ObjectId;
@@ -116,6 +117,39 @@ export class Semester extends Record.define({
     const year = this._nextSemesterYear();
     return { season, year };
   }
+
+  warningsNeverRanDuringCurrentSeason(catalog: Catalog) {
+    return this.getOrCalculate('warningsNeverRanDuringCurrentSeason', [catalog, this], () => {
+      const warnings = this.courseMap.valueSeq().map(course => {
+        const sectionSet = course.sections.get(this.season);
+        const hasNeverRan = oneLine`
+          ${course.subjectCode} ${course.courseNumber} has never ran in the ${this.season} past
+          three years. Check with your advisor to see if this course will run in the future.
+        `;
+        if (!sectionSet) { return hasNeverRan; }
+
+        const sortedSections = sectionSet.sortBy(section => parseInt(section.termCode)).toArray();
+
+        for (let i = 0; i < sortedSections.length - 1; i += 1) {
+          const currentSection = sortedSections[i];
+          const nextSection = sortedSections[i + 1];
+
+          const currentSectionYearCode = parseInt(currentSection.termCode.substring(0, 4));
+          const nextSectionYearCode = parseInt(nextSection.termCode.substring(0, 4));
+
+          if (Math.abs(currentSectionYearCode - nextSectionYearCode) >= 2) {
+            return oneLine`
+              ${course.subjectCode} ${course.courseNumber} has previously ran in the ${this.season}
+              but there was a gap of offerings between ${currentSectionYearCode} and
+              ${nextSectionYearCode}.
+            `;
+          }
+        }
+      }).filter(x => !!x).toArray() as string[];
+
+      return warnings;
+    });
+  }
 }
 
 export function includes(strA: string, strB: string) {
@@ -128,6 +162,7 @@ export class Catalog extends Record.define({
   currentPageIndex: 0,
   coursesPerPage: 5,
 }) {
+
   get courses() {
     return this.getOrCalculate('courses', [this.coursesSorted], () => {
       return this.coursesSorted.toArray();
@@ -185,7 +220,7 @@ export class App extends Record.define({
   boxMap: Immutable.Map<string, Course>(),
   semesterMap: Immutable.Map<string, Semester>()
     .set(id0.toHexString(), new Semester({ _id: id0, season: 'Winter', year: 2018 }))
-    .set(id1.toHexString(), new Semester({ _id: id1, season: 'Fall', year: 2018 })),
+    .set(id1.toHexString(), new Semester({ _id: id1, season: 'Summer', year: 2018 })),
   selectedCourseId: '',
   dragging: false,
   x: 0,
