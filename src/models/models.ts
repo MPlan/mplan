@@ -86,3 +86,10 @@ export interface Section extends DbSynced {
   remaining: number,
 }
 
+export interface CourseWithSections extends Course {
+  sections: { [termCode: string]: Section[] }
+}
+
+export interface Catalog {
+  [courseId: string]: CourseWithSections,
+}

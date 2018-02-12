@@ -1,30 +1,43 @@
-import * as Record from 'recordize';
+import * as Recordize from 'recordize';
+import * as Record from '../../models/records';
 export * from '../../models/records';
 import * as Immutable from 'immutable';
 import * as Model from '../../models/models';
-import { App, Course, ObjectId } from '../../models/records';
-export const store = Record.createStore(new App());
+export const store = Recordize.createStore(new Record.App());
 
-async function fetchCourses() {
-  const response = await fetch('/api/courses');
-  const courses = await response.json();
-  const courseMap = Object.entries(courses).reduce((obj, [courseId, _course]) => {
-    const course = {
-      ..._course,
-      _id: ObjectId((_course as any)._id)
-    };
-    return obj.set(courseId, new Course(course));
-  }, Immutable.Map<string, Course>());
-  return courseMap;
+async function fetchCatalog() {
+  const response = await fetch('/api/catalog');
+  const courses = await response.json() as Model.Catalog;
+  const courseMap = Object.entries(courses).reduce((catalogRecord, [courseId, course]) => {
+    const { _id, sections: rawSections, ...restOfCourse } = course;
+
+    const sections = (Object
+      .entries(rawSections)
+      .reduce((sections, [termCode, sectionList]) => {
+        const sectionSet = sectionList.reduce((sectionSet, rawSection) => {
+          const section = new Record.Section({ ...rawSection });
+          return sectionSet.add(section);
+        }, Immutable.Set<Record.Section>());
+
+        return sections.set(termCode, sectionSet);
+      }, Immutable.Map<string, Immutable.Set<Record.Section>>())
+    );
+
+    const courseRecord = new Record.Course({
+      ...restOfCourse,
+      _id: Record.ObjectId(course._id),
+      sections,
+    });
+    return catalogRecord.set(courseId, courseRecord);
+  }, Immutable.Map<string, Record.Course>());
+
+  const catalog = new Record.Catalog({ courseMap });
+  return catalog;
 }
 
 async function updateStoreWithCatalog() {
-  const courseMap = await fetchCourses();
-  store.sendUpdate(store =>
-    store.update('catalog', catalog =>
-      catalog.set('courseMap', courseMap)
-    )
-  );
+  const catalog = await fetchCatalog();
+  store.sendUpdate(store => store.update('catalog', () => catalog));
 }
 
 updateStoreWithCatalog();

@@ -21,7 +21,7 @@ export class Catalog extends Model.store.connect({
     this.setStore(previousStore => ({
       ...previousStore,
       search: e.currentTarget.value,
-    }))
+    }));
   }
 
   render() {
@@ -32,7 +32,7 @@ export class Catalog extends Model.store.connect({
         </form>
       </View>
       <View flex overflow>
-        {this.state.filteredCourses.map(course => <View _="test"
+        {/* {this.state.filteredCourses.map(course => <View _="test"
           key={course._id.toHexString()}
           margin
           padding
@@ -44,7 +44,8 @@ export class Catalog extends Model.store.connect({
             <Text large margin={{left: true}}>{course.name}</Text>
           </View>
           <Text>{course.description}</Text>
-        </View>)}
+        </View>)} */}
+        <Text>{this.state.filteredCourses.length}</Text>
       </View>
     </View>
   }

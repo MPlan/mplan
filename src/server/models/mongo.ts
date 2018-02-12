@@ -63,6 +63,7 @@ async function createMongoDbConnection() {
   collections.subjects.createIndex({ code: 1 }, { unique: true });
   collections.courses.createIndex({ subjectCode: 1, courseNumber: 1 }, { unique: true });
   collections.sections.createIndex({ termCode: 1, courseRegistrationNumber: 1 }, { unique: true });
+  collections.sections.createIndex({ courseId: 1 });
 
   return collections;
 }

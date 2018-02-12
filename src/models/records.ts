@@ -8,23 +8,40 @@ export function ObjectId(id?: string | number | _ObjectId) {
   return (_ObjectId as any)(id) as _ObjectId;
 }
 
+export class Section extends Record.define({
+  _id: ObjectId(),
+  lastUpdateDate: 0,
+  lastTermCode: '',
+  courseId: ObjectId(),
+  termCode: '',
+  courseRegistrationNumber: '',
+  instructors: [] as string[],
+  scheduleTypes: [] as string[],
+  times: [] as string[],
+  days: [] as string[],
+  locations: [] as string[],
+  capacity: 0,
+  remaining: 0,
+}) implements Model.Section { }
+
 export class Course extends Record.define({
   _id: ObjectId(),
   name: '',
   subjectCode: '',
   courseNumber: '',
-  description: undefined,
-  credits: undefined,
-  creditsMin: undefined,
-  creditHours: undefined,
-  creditHoursMin: undefined,
-  restrictions: undefined,
-  prerequisites: undefined,
-  corequisites: undefined,
-  crossList: undefined,
-  scheduleTypes: [],
+  description: undefined as string | undefined | null,
+  credits: undefined as number | undefined | null,
+  creditsMin: undefined as number | undefined | null,
+  creditHours: undefined as number | undefined | null,
+  creditHoursMin: undefined as number | undefined | null,
+  restrictions: undefined as string | undefined | null,
+  prerequisites: undefined as Model.Prerequisite,
+  corequisites: undefined as Model.Prerequisite,
+  crossList: undefined as Array<[string, string]> | undefined | null,
+  scheduleTypes: [] as string[],
   lastUpdateDate: 0,
   lastTermCode: '',
+  sections: Immutable.Map<string, Immutable.Set<Section>>(),
 }) implements Model.Course { }
 
 export class Semester extends Record.define({
