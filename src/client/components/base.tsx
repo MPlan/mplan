@@ -2,12 +2,6 @@ import * as React from 'react';
 import styled, { StyledComponentClass } from 'styled-components';
 import * as Styles from './styles';
 
-export const base = 1;
-export const phi = 1.618;
-
-export function p(x: number) { return base * Math.pow(phi, x); }
-export function em(x: number) { return base * x; }
-
 // https://codepen.io/sdthornton/pen/wBZdXq
 export function boxShadow(level: number) {
   if (level <= 0) { return 'initial'; }
@@ -231,27 +225,6 @@ export function View(props: ViewProps) {
 }
 
 export interface TextProps {
-  children?: any,
-  // sizing
-  p?: number,
-  small?: boolean,
-  large?: boolean,
-  extraLarge?: boolean,
-  // color
-  light?: boolean,
-  dark?: boolean,
-  primary?: boolean,
-  info?: boolean,
-  warning?: boolean,
-  danger?: boolean,
-  // weight
-  weak?: boolean,
-  strong?: boolean,
-  // effects
-  caps?: boolean,
-  color?: string,
-  margin?: boolean | number | Directions,
-  padding?: boolean | number | Directions,
 }
 
 type ComputedText = StyledComponentClass<React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>, any, React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>>;

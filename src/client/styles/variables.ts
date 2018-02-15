@@ -1,24 +1,24 @@
-import * as React from 'react';
-import { hsl } from 'polished';
+import { oneLine } from 'common-tags';
+import { hslToHex } from './utilities';
 
-function parsePercentOrDecimal(percentageOrDecimal: string) {
-  const match = /([0-9.]*)%/.exec(percentageOrDecimal);
-  if (!match) { return parseFloat(percentageOrDecimal); }
-  const percentValue = parseFloat(match[1]);
-  return percentValue / 100;
-}
+// SIZING
+export const base = 1;
+export const phi = 1.618;
 
-export function hslToHex(hslString: string) {
-  const match = /hsl\((.*)(?:,|;)(.*)(?:,|;)(.*)\)/.exec(hslString);
-  if (!match) {
-    throw new Error('could not convert hsl string to HSL values ' + hslString);
-  }
-  const hue = parsePercentOrDecimal(match[1].trim());
-  const saturation = parsePercentOrDecimal(match[2].trim());
-  const lightness = parsePercentOrDecimal(match[3].trim());
-  return hsl({ hue, saturation, lightness });
-}
+// FONTS
+export const fontFamily = oneLine`
+  -apple-system,
+  BlinkMacSystemFont,
+  "Segoe UI",
+  Helvetica,
+  Arial,
+  sans-serif,
+  "Apple Color Emoji",
+  "Segoe UI Emoji",
+  "Segoe UI Symbol"
+`;
 
+// COLORS
 export const signatureMaize = '#ffCB05';
 export const signatureBlue = '#00274c';
 export const lightBlue = '#CEE6FF';
@@ -43,6 +43,7 @@ export const blue = hslToHex('hsl(217; 71%; 53%)');
 export const purple = hslToHex('hsl(271; 100%; 71%)');
 export const red = hslToHex('hsl(348; 100%; 61%)');
 
+// SEMANTIC COLORS
 export const primary = blue; // TODO
 export const info = cyan;
 export const success = green;
