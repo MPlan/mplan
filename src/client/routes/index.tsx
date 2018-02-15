@@ -17,5 +17,4 @@ export const Routes = [
   { path: '/catalog', name: 'Catalog', icon: 'list', component: Catalog, },
   { path: '/critical-path', name: 'Critical Path', icon: 'sitemap', component: Wip, },
   { path: '/degree-checklist', name: 'Degree Checklist', icon: 'check', component: Wip, },
-  
 ];

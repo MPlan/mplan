@@ -11,6 +11,7 @@
     "build": "./node_modules/.bin/webpack -p",
     "heroku-prebuild": "npm install --only=dev && npm install && npm run build"
   },
+  "private": true,
   "author": "",
   "license": "MIT",
   "devDependencies": {
@@ -63,7 +64,7 @@
     "react-dom": "^16.2.0",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
-    "recordize": "0.0.7",
+    "recordize": "0.1.0",
     "styled-components": "^2.3.0",
     "throng": "^4.0.0",
     "ts-node": "^4.1.0",

@@ -66,7 +66,7 @@ export function AuthenticatedRoute() {
           {Routes.map(route => <Route
             key={route.path}
             path={route.path}
-            component={route.component}
+            component={route.component as any}
           />)}
           <Redirect from="/" to={Routes[0].path} />
         </Switch>

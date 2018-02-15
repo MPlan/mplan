@@ -8,6 +8,7 @@ import { Box } from '../components/box';
 import { Semester } from '../components/semester';
 import { Button } from '../components/button';
 import { Course } from '../components/course';
+import { Warnings } from './warnings';
 
 interface CreateSemesterProps {
   onCreateClick: (e: React.MouseEvent<HTMLButtonElement>) => void,
@@ -20,16 +21,7 @@ function CreateSemester(props: CreateSemesterProps) {
 }
 
 
-export class Timeline extends Model.store.connect({
-  get: store => ({
-    semesters: store.semesters,
-    dragging: store.dragging,
-    x: store.x,
-    y: store.y,
-    selectedCourse: store.selectedCourse,
-  }),
-  set: store => store,
-}) {
+export class Timeline extends Model.store.connect() {
 
   handleMouseMove = (e: MouseEvent) => {
     this.setGlobalStore(store => store
@@ -39,7 +31,6 @@ export class Timeline extends Model.store.connect({
   }
 
   componentDidMount() {
-    super.componentDidMount();
     document.addEventListener('mousemove', this.handleMouseMove);
   }
 
@@ -53,20 +44,23 @@ export class Timeline extends Model.store.connect({
     const offsetTop = e.currentTarget.offsetTop;
     const offsetX = e.pageX - offsetLeft;
     const offsetY = e.pageY - offsetTop;
-    this.setStore(previousState => ({
-      ...previousState,
-      selectedCourseId: course._id.toHexString(),
-      dragging: true,
-      offsetX,
-      offsetY,
-    }))
+    // this.setStore(previousState => ({
+    //   ...previousState,
+    //   selectedCourseId: course._id.toHexString(),
+    //   dragging: true,
+    //   offsetX,
+    //   offsetY,
+    // }))
+    this.setStore(store => store
+      .set('selectedCourseId', course.id)
+      .set('dragging', true)
+      .set('offsetX', offsetX)
+      .set('offsetY', offsetY)
+    );
   }
 
   handleCourseMouseUp = (e: React.MouseEvent<HTMLDivElement>, course: Model.Course) => {
-    this.setStore(previousState => ({
-      ...previousState,
-      dragging: false,
-    }))
+    this.setStore(store => store.set('dragging', false))
   }
 
   onCreateSemesterBefore = () => {
@@ -130,13 +124,13 @@ export class Timeline extends Model.store.connect({
     return <View _="timeline" flex row style={{ position: 'relative' }}>
       <View
         style={{
-          display: /*if*/ this.state.dragging ? 'initial' : 'none',
+          display: /*if*/ this.store.dragging ? 'initial' : 'none',
           position: 'absolute',
-          top: this.state.y - 100,
-          left: this.state.x - 100,
+          top: this.store.y - 100,
+          left: this.store.x - 100,
         }}
       >
-        {this.state.selectedCourse && <Course course={this.state.selectedCourse} />}
+        {this.store.selectedCourse && <Course course={this.store.selectedCourse} />}
       </View>
       <View _="content" flex overflow>
         <View _="header" padding row>
@@ -151,7 +145,7 @@ export class Timeline extends Model.store.connect({
         </View>
         <View _="semester-block-container" flex row overflow>
           <CreateSemester onCreateClick={this.onCreateSemesterBefore} />
-          {this.state.semesters.map(semester => <Semester
+          {this.store.semesters.map(semester => <Semester
             onMouseEnter={() => this.handleMouseEnterSemester(semester)}
             onMouseLeave={() => this.handleMouseLeaveSemester(semester)}
             key={semester.id}
@@ -162,7 +156,13 @@ export class Timeline extends Model.store.connect({
           <CreateSemester onCreateClick={this.onCreateSemesterAfter} />
         </View>
       </View>
-      <View><Box /></View>
+      <View
+        width={20}
+        border
+      >
+        <Box />
+        <Warnings />
+      </View>
     </View>
   }
 }

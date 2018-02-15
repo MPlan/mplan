@@ -137,7 +137,7 @@ export class Semester extends Record.define({
           const currentSectionYearCode = parseInt(currentSection.termCode.substring(0, 4));
           const nextSectionYearCode = parseInt(nextSection.termCode.substring(0, 4));
 
-          if (Math.abs(currentSectionYearCode - nextSectionYearCode) >= 2) {
+          if (Math.abs(currentSectionYearCode - nextSectionYearCode) > 1) {
             return oneLine`
               ${course.subjectCode} ${course.courseNumber} has previously ran in the ${this.season}
               but there was a gap of offerings between ${currentSectionYearCode} and
@@ -146,10 +146,13 @@ export class Semester extends Record.define({
           }
         }
       }).filter(x => !!x).toArray() as string[];
-
       return warnings;
     });
   }
+
+  // warningsAllSectionsHaveFilledUp(catalog: Catalog) {
+
+  // }
 }
 
 export function includes(strA: string, strB: string) {
@@ -209,6 +212,20 @@ export class Catalog extends Record.define({
       });
     });
   }
+
+  setSearch(search: string) {
+    return this.set('search', search);
+  }
+
+  nextPage() {
+    const nextPageIndex = Math.min(this.currentPageIndex + 1, this.totalPages - 1);
+    return this.set('currentPageIndex', nextPageIndex);
+  }
+
+  previousPage() {
+    const previousPageIndex = Math.max(this.currentPageIndex - 1, 0);
+    return this.set('currentPageIndex', previousPageIndex);
+  }
 }
 
 const id0 = ObjectId();
@@ -230,6 +247,11 @@ export class App extends Record.define({
   mouseIsOverSemester: false,
   lastMouseOverSemesterId: '',
 }) {
+
+  removeCourseFromBox(course: Course) {
+    return this.update('boxMap', boxMap => boxMap.remove(course.id));
+  }
+
   get box() {
     return this.getOrCalculate('box', [this.boxMap], () => {
       return this.boxMap.valueSeq().toArray();
@@ -253,5 +275,9 @@ export class App extends Record.define({
       const selectedCourse = this.catalog.courseMap.get(this.selectedCourseId);
       return selectedCourse;
     })
+  }
+
+  addToBox(course: Course) {
+    return this.update('boxMap', boxMap => boxMap.set(course.id, course));
   }
 }

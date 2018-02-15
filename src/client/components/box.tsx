@@ -4,13 +4,10 @@ import * as Model from '../models';
 import { Button } from '../components/button';
 import { Course } from '../components/course';
 
-export class Box extends Model.store.connect({
-  get: store => ({ box: store.box }),
-  set: (store, { }) => store,
-}) {
+export class Box extends Model.store.connect() {
 
   documentMouseUp = (e: MouseEvent) => {
-    this.setGlobalStore(store => {
+    this.setStore(store => {
       const newStore = store.set('dragging', false);
       if (!store.dragging) { return newStore; }
       if (!store.mouseIsOverSemester) { return newStore; }
@@ -28,7 +25,6 @@ export class Box extends Model.store.connect({
   }
 
   componentDidMount() {
-    super.componentDidMount();
     document.addEventListener('mouseup', this.documentMouseUp);
   }
 
@@ -38,13 +34,11 @@ export class Box extends Model.store.connect({
   }
 
   onDeleteClick(course: Model.Course) {
-    this.setGlobalStore(store => store
-      .update('boxMap', boxMap => boxMap
-        .delete(course._id.toHexString())));
+    this.setStore(store => store.removeCourseFromBox(course));
   }
 
   onCourseMouseDown(course: Model.Course) {
-    this.setGlobalStore(store => store
+    this.setStore(store => store
       .set('selectedCourseId', course.id)
       .set('dragging', true)
     );
@@ -52,19 +46,16 @@ export class Box extends Model.store.connect({
 
   render() {
     return <View
-      flex
+      flex={{ flexGrow: 0, flexShrink: 0 }}
       overflow
-      width={20}
-      border
       padding
-      style={{ borderTop: 'none' }}
     >
       <View margin={{ bottom: true }}>
         <Text large strong>The box</Text>
         <Text>A quick place to put some course in.</Text>
       </View>
-      <View flex>
-        {this.state.box.map(course => <Course
+      <View flex={{ flexShrink: 0 }} overflow>
+        {this.store.box.map(course => <Course
           key={course.id}
           course={course}
           onDeleteClick={() => this.onDeleteClick(course)}

@@ -19,16 +19,6 @@ const Form = styled.form`
 export class Catalog extends Model.store.connect({
   scope: store => store.catalog,
   descope: (store, catalog: Model.Catalog) => store.set('catalog', catalog),
-  get: catalog => ({
-    courses: catalog.courses,
-    search: catalog.search,
-    coursesOnCurrentPage: catalog.coursesOnCurrentPage,
-    totalPages: catalog.totalPages,
-    currentPageIndex: catalog.currentPageIndex,
-  }),
-  set: (catalog, { search, currentPageIndex }) => catalog
-    .set('search', search)
-    .set('currentPageIndex', currentPageIndex),
 }) {
 
   onFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -36,30 +26,20 @@ export class Catalog extends Model.store.connect({
   }
 
   onInput = (e: React.FormEvent<HTMLInputElement>) => {
-    this.setStore(previousStore => ({
-      ...previousStore,
-      search: e.currentTarget.value,
-    }));
+    const value = e.currentTarget.value;
+    this.setStore(store => store.setSearch(value));
   }
 
   onNextPage = () => {
-    this.setStore(previousStore => ({
-      ...previousStore,
-      currentPageIndex: Math.min(previousStore.currentPageIndex + 1, previousStore.totalPages - 1)
-    }));
+    this.setStore(catalog => catalog.nextPage());
   }
 
   onPreviousPage = () => {
-    this.setStore(previousStore => ({
-      ...previousStore,
-      currentPageIndex: Math.max(previousStore.currentPageIndex - 1, 0)
-    }));
+    this.setStore(catalog => catalog.previousPage());
   }
 
   onAddToBoxClick(course: Model.Course) {
-    this.setGlobalStore(store => store
-      .update('boxMap', boxMap => boxMap
-        .set(course._id.toHexString(), course)));
+    this.setGlobalStore(store => store.addToBox(course));
   }
 
   render() {
@@ -75,7 +55,7 @@ export class Catalog extends Model.store.connect({
           </Form>
         </View>
         <View flex overflow>
-          {this.state.coursesOnCurrentPage.map(course => <View _="test"
+          {this.store.coursesOnCurrentPage.map(course => <View _="test"
             key={course._id.toHexString()}
             margin
             padding
@@ -100,7 +80,7 @@ export class Catalog extends Model.store.connect({
           style={{ borderTop: `solid ${Styles.border} ${0.10}rem` }}
         >
           <View>
-            <Text>Page {this.state.currentPageIndex + 1}/{Math.max(this.state.totalPages, 1)}</Text>
+            <Text>Page {this.store.currentPageIndex + 1}/{Math.max(this.store.totalPages, 1)}</Text>
           </View>
           <View flex row justifyContent="flex-end">
             <View margin={{ left: true }}>
