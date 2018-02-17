@@ -1,34 +1,71 @@
 import * as React from 'react';
-import { View, Text, p } from '../components/base';
+import { View, Text, Button, Box } from '../components';
 import * as Model from '../models';
 import styled from 'styled-components';
-import * as Styles from '../components/styles';
-import { Button } from '../components/button';
-import { Box } from '../components/box';
+import * as styles from '../styles';
 
 const Input = styled.input`
-  padding: ${p(0)}rem;
-  border: solid ${Styles.border} ${0.10}rem;
+  padding: ${styles.spacing(0)};
+  border: solid ${styles.borderWidth} ${styles.border};
   flex: 1;
 `;
-
 const Form = styled.form`
   display: flex;
+`;
+const CatalogContainer = styled(View) `
+  flex: 1;
+  flex-direction: row;
+`;
+const CatalogContent = styled(View) `
+  flex: 1;
+  overflow: auto;
+`;
+const CatalogAside = styled(View) `
+  border-left: solid ${styles.borderWidth} ${styles.border};
+`;
+const SearchContainer = styled(View) `
+  padding: ${styles.spacing(0)};
+  border-bottom: solid ${styles.borderWidth} ${styles.border};
+`;
+const CatalogBody = styled(View) `
+  flex: 1;
+  overflow: auto;
+`;
+const CatalogCourse = styled(View) `
+  margin: ${styles.spacing(0)};
+  padding: ${styles.spacing(0)};
+  border: solid ${styles.borderWidth} ${styles.border};
+  flex-shrink: 0;
+`;
+const CatalogCourseHeader = styled(View) `
+  flex-direction: row;
+  margin-bottom: ${styles.spacing(0)};
+`;
+const CatalogCourseFooter = styled(View) `
+  flex-direction: row;
+  justify-content: flex-end;
+`;
+const CourseName = styled(Text) `
+  margin-left: ${styles.spacing(0)};
+`;
+const Pagination = styled(View) `
+  flex-direction: row;
+  padding: ${styles.spacing(0)};
+  align-items: baseline;
+  border-top: solid ${styles.border} ${styles.borderWidth};
+`;
+const PaginationButtons = styled(View) `
+  flex: 1;
+  flex-direction: row;
+  justify-content: flex-end;
+`;
+const ButtonContainer = styled(View) `
+  margin-left: ${styles.spacing(0)};
 `;
 
 export class Catalog extends Model.store.connect({
   scope: store => store.catalog,
   descope: (store, catalog: Model.Catalog) => store.set('catalog', catalog),
-  get: catalog => ({
-    courses: catalog.courses,
-    search: catalog.search,
-    coursesOnCurrentPage: catalog.coursesOnCurrentPage,
-    totalPages: catalog.totalPages,
-    currentPageIndex: catalog.currentPageIndex,
-  }),
-  set: (catalog, { search, currentPageIndex }) => catalog
-    .set('search', search)
-    .set('currentPageIndex', currentPageIndex),
 }) {
 
   onFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -36,83 +73,67 @@ export class Catalog extends Model.store.connect({
   }
 
   onInput = (e: React.FormEvent<HTMLInputElement>) => {
-    this.setStore(previousStore => ({
-      ...previousStore,
-      search: e.currentTarget.value,
-    }));
+    const value = e.currentTarget.value;
+    this.setStore(store => store.setSearch(value));
   }
 
   onNextPage = () => {
-    this.setStore(previousStore => ({
-      ...previousStore,
-      currentPageIndex: Math.min(previousStore.currentPageIndex + 1, previousStore.totalPages - 1)
-    }));
+    this.setStore(catalog => catalog.nextPage());
   }
 
   onPreviousPage = () => {
-    this.setStore(previousStore => ({
-      ...previousStore,
-      currentPageIndex: Math.max(previousStore.currentPageIndex - 1, 0)
-    }));
+    this.setStore(catalog => catalog.previousPage());
   }
 
   onAddToBoxClick(course: Model.Course) {
-    this.setGlobalStore(store => store
-      .update('boxMap', boxMap => boxMap
-        .set(course._id.toHexString(), course)));
+    this.setGlobalStore(store => store.addToBox(course));
   }
 
   render() {
-    return <View row>
-      <View flex>
-        <View
-          padding
-          flex={{ flexShrink: 0 }}
-          style={{ borderBottom: `solid ${Styles.border} ${0.10}rem` }}
-        >
+    return <CatalogContainer>
+      <CatalogContent>
+        <SearchContainer>
           <Form onSubmit={this.onFormSubmit}>
             <Input onInput={this.onInput} placeholder="Search for a course..." />
           </Form>
-        </View>
-        <View flex overflow>
-          {this.state.coursesOnCurrentPage.map(course => <View _="test"
-            key={course._id.toHexString()}
-            margin
-            padding
-            border
-            flex={{ flexShrink: 0 }}
-          >
-            <View row margin={{ bottom: true }}>
+        </SearchContainer>
+
+        <CatalogBody>
+          {this.store.coursesOnCurrentPage.map(course => <CatalogCourse key={course.id}>
+            <CatalogCourseHeader>
               <Text large strong>{course.subjectCode} {course.courseNumber}</Text>
-              <Text large margin={{ left: true }}>{course.name}</Text>
-            </View>
+              <CourseName large>{course.name}</CourseName>
+            </CatalogCourseHeader>
+
             <Text>{course.description}</Text>
-            <View row justifyContent="flex-end">
+
+            <CatalogCourseFooter>
               <Button onClick={() => this.onAddToBoxClick(course)}>+ to box</Button>
-            </View>
-          </View>)}
-        </View>
-        <View
-          row
-          padding
-          alignItems="baseline"
-          flex={{ flexShrink: 0 }}
-          style={{ borderTop: `solid ${Styles.border} ${0.10}rem` }}
-        >
+            </CatalogCourseFooter>
+
+          </CatalogCourse>)}
+        </CatalogBody>
+
+        <Pagination>
           <View>
-            <Text>Page {this.state.currentPageIndex + 1}/{Math.max(this.state.totalPages, 1)}</Text>
+            <Text>Page {this.store.currentPageIndex + 1}/{Math.max(this.store.totalPages, 1)}</Text>
           </View>
-          <View flex row justifyContent="flex-end">
-            <View margin={{ left: true }}>
+          
+          <PaginationButtons>
+            <ButtonContainer>
               <Button onClick={this.onPreviousPage}>Previous Page</Button>
-            </View>
-            <View margin={{ left: true }}>
+            </ButtonContainer>
+
+            <ButtonContainer>
               <Button onClick={this.onNextPage}>Next Page</Button>
-            </View>
-          </View>
-        </View>
-      </View>
-      <View><Box /></View>
-    </View>;
+            </ButtonContainer>
+          </PaginationButtons>
+        </Pagination>
+      </CatalogContent>
+
+      <CatalogAside>
+        <Box />
+      </CatalogAside>
+    </CatalogContainer>;
   }
 }

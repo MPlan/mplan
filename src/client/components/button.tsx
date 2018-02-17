@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { View, Text, p } from './base';
 import styled from 'styled-components';
-import * as Styles from './styles';
+import * as Styles from '../styles';
 
 interface ButtonProps extends React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> {
 }
@@ -9,7 +8,7 @@ interface ButtonProps extends React.DetailedHTMLProps<React.ButtonHTMLAttributes
 export const Button = styled.button`
   background-color: ${Styles.white};
   color: ${Styles.text};
-  padding: ${p(-1)}rem ${p(0)}rem;
+  padding: ${Styles.spacing(-1)} ${Styles.spacing(0)};
   border: solid ${Styles.border} 0.10rem;
 
   & * { color: ${Styles.text} !important; }

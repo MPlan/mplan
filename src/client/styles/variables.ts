@@ -1,7 +1,7 @@
-import * as React from 'react';
+import { oneLine } from 'common-tags';
 import { hsl } from 'polished';
 
-function parsePercentOrDecimal(percentageOrDecimal: string) {
+export function parsePercentOrDecimal(percentageOrDecimal: string) {
   const match = /([0-9.]*)%/.exec(percentageOrDecimal);
   if (!match) { return parseFloat(percentageOrDecimal); }
   const percentValue = parseFloat(match[1]);
@@ -19,6 +19,28 @@ export function hslToHex(hslString: string) {
   return hsl({ hue, saturation, lightness });
 }
 
+// SIZING
+export const base = 1;
+export const phi = 1.618;
+export const borderWidth = '0.01rem';
+
+// FONTS
+export const fontFamily = oneLine`
+  -apple-system,
+  BlinkMacSystemFont,
+  "Segoe UI",
+  Helvetica,
+  Arial,
+  sans-serif,
+  "Apple Color Emoji",
+  "Segoe UI Emoji",
+  "Segoe UI Symbol"
+`;
+
+export const bold = '500';
+export const lightTextWeight = '300';
+
+// COLORS
 export const signatureMaize = '#ffCB05';
 export const signatureBlue = '#00274c';
 export const lightBlue = '#CEE6FF';
@@ -43,6 +65,7 @@ export const blue = hslToHex('hsl(217; 71%; 53%)');
 export const purple = hslToHex('hsl(271; 100%; 71%)');
 export const red = hslToHex('hsl(348; 100%; 61%)');
 
+// SEMANTIC COLORS
 export const primary = blue; // TODO
 export const info = cyan;
 export const success = green;

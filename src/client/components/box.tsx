@@ -1,16 +1,27 @@
 import * as React from 'react';
-import { View, Text } from '../components/base';
+import styled from 'styled-components';
+import { View, Text, Button, Course } from './';
+import * as Styles from '../styles';
 import * as Model from '../models';
-import { Button } from '../components/button';
-import { Course } from '../components/course';
 
-export class Box extends Model.store.connect({
-  get: store => ({ box: store.box }),
-  set: (store, { }) => store,
-}) {
+const BoxContainer = styled(View) `
+  overflow: auto;
+  padding: ${Styles.spacing(0)};
+  flex: 1;
+`;
+
+const BoxHeader = styled(View) `
+  margin-bottom: ${Styles.spacing(0)};
+`;
+
+const BoxContent = styled(View) `
+  overflow: auto;
+`;
+
+export class Box extends Model.store.connect() {
 
   documentMouseUp = (e: MouseEvent) => {
-    this.setGlobalStore(store => {
+    this.setStore(store => {
       const newStore = store.set('dragging', false);
       if (!store.dragging) { return newStore; }
       if (!store.mouseIsOverSemester) { return newStore; }
@@ -28,7 +39,6 @@ export class Box extends Model.store.connect({
   }
 
   componentDidMount() {
-    super.componentDidMount();
     document.addEventListener('mouseup', this.documentMouseUp);
   }
 
@@ -38,39 +48,30 @@ export class Box extends Model.store.connect({
   }
 
   onDeleteClick(course: Model.Course) {
-    this.setGlobalStore(store => store
-      .update('boxMap', boxMap => boxMap
-        .delete(course._id.toHexString())));
+    this.setStore(store => store.removeCourseFromBox(course));
   }
 
   onCourseMouseDown(course: Model.Course) {
-    this.setGlobalStore(store => store
+    this.setStore(store => store
       .set('selectedCourseId', course.id)
       .set('dragging', true)
     );
   }
 
   render() {
-    return <View
-      flex
-      overflow
-      width={20}
-      border
-      padding
-      style={{ borderTop: 'none' }}
-    >
-      <View margin={{ bottom: true }}>
+    return <BoxContainer>
+      <BoxHeader>
         <Text large strong>The box</Text>
         <Text>A quick place to put some course in.</Text>
-      </View>
-      <View flex>
-        {this.state.box.map(course => <Course
+      </BoxHeader>
+      <BoxContent>
+        {this.store.box.map(course => <Course
           key={course.id}
           course={course}
           onDeleteClick={() => this.onDeleteClick(course)}
           onMouseDown={() => this.onCourseMouseDown(course)}
         />)}
-      </View>
-    </View>;
+      </BoxContent>
+    </BoxContainer>;
   }
 }

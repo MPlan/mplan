@@ -2,13 +2,20 @@ import * as React from 'react';
 import { Catalog } from './catalog';
 import { Timeline } from './timeline';
 import { Warnings } from './warnings';
-import { View, Text } from '../components/base';
+import { View, Text } from '../components';
+import styled from 'styled-components';
+
+const WipContainer = styled(View) `
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+`;
 
 function Wip() {
-  return <View flex justifyContent="center" alignItems="center">
+  return <WipContainer>
     <Text strong extraLarge>This page is under construction.</Text>
     <Text large>Check back soon.</Text>
-  </View>
+  </WipContainer>
 }
 
 export const Routes = [
@@ -17,5 +24,4 @@ export const Routes = [
   { path: '/catalog', name: 'Catalog', icon: 'list', component: Catalog, },
   { path: '/critical-path', name: 'Critical Path', icon: 'sitemap', component: Wip, },
   { path: '/degree-checklist', name: 'Degree Checklist', icon: 'check', component: Wip, },
-  
 ];

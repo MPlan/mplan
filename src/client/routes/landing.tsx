@@ -1,28 +1,53 @@
 import * as React from 'react';
-import { View, Text } from '../components/base';
+import { View, Text, Button, Fa } from '../components';
 import { Auth } from '../auth';
-import { Button } from '../components/button';
-import { Fa } from '../components/fa';
+import styled from 'styled-components';
+import * as styles from '../styles';
 
 function onButtonClick() {
   Auth.login();
 }
 
+const LandingContainer = styled(View) `
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+`;
+
+const LandingContent = styled(View) `
+  margin: ${styles.spacing(0)};
+  max-width: 50rem;
+`;
+
+const Header = styled(View) `
+  flex-direction: row;
+  align-items: baseline;
+  margin-bottom: ${styles.spacing(0)};
+`;
+
+const ElevatorPitch = styled(View) `
+  margin-bottom: ${styles.spacing(0)};
+`;
+
+const Description = styled(View) `
+  margin-bottom: ${styles.spacing(0)};
+`;
+
 export function Landing() {
-  return <View flex justifyContent="center" alignItems="center">
-    <View margin style={{ maxWidth: '50rem' }}>
-      <View row alignItems="baseline" margin={{bottom: true}}>
+  return <LandingContainer>
+    <LandingContent>
+      <Header>
         <Text strong extraLarge>Save your&nbsp;</Text>
         <Text extraLarge>(academic)&nbsp;</Text>
         <Text strong extraLarge>life with MPlan.</Text>
-      </View>
-      <View margin={{ bottom: true }}>
+      </Header>
+      <ElevatorPitch>
         <Text large>
           MPlan is your personalized degree completion planning tool made with &nbsp;
           <Fa icon="heart" />&nbsp;for students by students. Never delay your graduation again.
         </Text>
-      </View>
-      <View margin={{ bottom: true }}>
+      </ElevatorPitch>
+      <Description>
         <Text>
           MPlan is currently under construction. Anything presented here is a very early
           pre-production, pre-alpha preview and may not represent the current state of the
@@ -30,8 +55,8 @@ export function Landing() {
           future). Email Rico Kahler <a href="mailto:rakahler@umich.edu">rakahler@umich.edu</a> if
           you have any questions.
         </Text>
-      </View>
-    </View>
+      </Description>
+    </LandingContent>
     <Button onClick={onButtonClick}><Text>Click here to log in or sign up!</Text></Button>
-  </View >
+  </LandingContainer>
 }

@@ -1,17 +1,43 @@
 import * as React from 'react';
-import { View, Text } from '../components/base';
+import { View, Text } from '../components';
 import * as Model from '../models';
+import * as styles from '../styles';
+import { flatten } from '../../utilities/utilities';
+import styled from 'styled-components';
 
-export class Warnings extends Model.store.connect({
-  get: store => ({ semesters: store.semesters, catalog: store.catalog }),
-  set: store => store,
-}) {
+const WarningsContainer = styled(View) `
+  flex: 1;
+  overflow: auto;
+  padding: ${styles.spacing(0)};
+  border-top: solid ${styles.borderWidth} ${styles.border};
+`;
+
+const WarningsContent = styled(View) `
+  flex: 1;
+  overflow: auto;
+`;
+
+const Warning = styled(View) `
+  border: solid ${styles.borderWidth} ${styles.border};
+  padding: ${styles.spacing(0)};
+`;
+
+export class Warnings extends Model.store.connect() {
   render() {
-    return <View flex overflow>
-      {this.state.semesters
-        .map(semester => semester.warningsNeverRanDuringCurrentSeason(this.state.catalog))
-        .map((warning, i) => <Text key={i}>{warning}</Text>)
-      }
-    </View>;
+
+    const warnings = flatten(
+      this.store.semesters.map(semester =>
+        semester.warningsNeverRanDuringCurrentSeason(this.store.catalog)
+      )
+    );
+
+    return <WarningsContainer>
+      <View><Text strong large>Warnings</Text></View>
+      <WarningsContent>{
+        warnings.map((warning, i) => <Warning key={i}>
+          <Text>{warning}</Text>
+        </Warning>)}
+      </WarningsContent>
+    </WarningsContainer>;
   }
 }
