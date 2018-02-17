@@ -13,15 +13,18 @@ const Form = styled.form`
   display: flex;
 `;
 const CatalogContainer = styled(View) `
+  flex: 1;
   flex-direction: row;
 `;
 const CatalogContent = styled(View) `
   flex: 1;
+  overflow: auto;
 `;
-const CatalogAside = styled(View) ``;
+const CatalogAside = styled(View) `
+  border-left: solid ${styles.borderWidth} ${styles.border};
+`;
 const SearchContainer = styled(View) `
   padding: ${styles.spacing(0)};
-  flex: 1 0;
   border-bottom: solid ${styles.borderWidth} ${styles.border};
 `;
 const CatalogBody = styled(View) `
@@ -32,7 +35,7 @@ const CatalogCourse = styled(View) `
   margin: ${styles.spacing(0)};
   padding: ${styles.spacing(0)};
   border: solid ${styles.borderWidth} ${styles.border};
-  flex: 1 0;
+  flex-shrink: 0;
 `;
 const CatalogCourseHeader = styled(View) `
   flex-direction: row;
@@ -47,7 +50,6 @@ const CourseName = styled(Text) `
 `;
 const Pagination = styled(View) `
   flex-direction: row;
-  flex: 1 0;
   padding: ${styles.spacing(0)};
   align-items: baseline;
   border-top: solid ${styles.border} ${styles.borderWidth};

@@ -10,6 +10,7 @@ const SemesterContainer = styled(View) `
   padding: ${Styles.spacing(0)};
   width: 15rem;
   z-index: 5;
+  flex-shrink: 0;
 `;
 
 const SemesterHeader = styled(View) `

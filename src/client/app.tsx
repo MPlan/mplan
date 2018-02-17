@@ -32,13 +32,12 @@ function onSignOutClick() {
   return Auth.logout();
 }
 
-const AuthenticatedRouteContainer = styled(View) ` flex-direction: row; `;
+const AuthenticatedRouteContainer = styled(View) ` flex: 1; `;
 
 const Header = styled(View) `
   padding: ${styles.spacing(0)};
   border: solid ${styles.borderWidth} ${styles.border};
   flex-direction: row;
-  flex: 0 0;
 `;
 
 const HeaderContent = styled(View) `
@@ -108,19 +107,22 @@ function renderLanding() {
   return <Landing />;
 }
 
+const AppContent = styled(View) `
+  max-width: 100vw;
+  max-height: 100vh;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+`;
+
 export function App() {
-  return <Router history={history}>
-    <View style={{
-      height: '100vh',
-      width: '100vw',
-      maxHeight: '100vh',
-      maxWidth: '100vw',
-    }}>
+  return <AppContent>
+    <Router history={history}>
       <Switch>
         <Route path="/callback" component={Callback} />
         <Route path="/login" render={renderLanding} />
         <Route render={renderApp} />
       </Switch>
-    </View>
-  </Router>;
+    </Router>
+  </AppContent>;
 }

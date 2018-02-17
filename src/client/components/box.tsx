@@ -6,8 +6,8 @@ import * as Model from '../models';
 
 const BoxContainer = styled(View) `
   overflow: auto;
-  flex: 0 0;
   padding: ${Styles.spacing(0)};
+  flex: 1;
 `;
 
 const BoxHeader = styled(View) `
