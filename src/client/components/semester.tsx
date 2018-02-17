@@ -6,8 +6,8 @@ import * as styles from '../styles';
 
 const SemesterContainer = styled(View) `
   border: ${styles.border};
-  margin: ${styles.spacing(0)};
-  padding: ${styles.spacing(0)};
+  margin: ${styles.space(0)};
+  padding: ${styles.space(0)};
   width: 15rem;
   z-index: 5;
   flex-shrink: 0;
@@ -21,7 +21,7 @@ const SemesterHeader = styled(View) `
 const SemesterBody = styled(View) `
   flex: 1;
   border: ${styles.border};
-  margin-top: ${styles.spacing(0)};
+  margin-top: ${styles.space(0)};
 `;
 
 interface SemesterProps {

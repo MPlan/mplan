@@ -35,7 +35,7 @@ function onSignOutClick() {
 const AuthenticatedRouteContainer = styled(View) ` flex: 1; `;
 
 const Header = styled(View) `
-  padding: ${styles.spacing(0)};
+  padding: ${styles.space(0)};
   flex-direction: row;
   background-color: ${styles.white};
   border-bottom: ${styles.border};
@@ -50,12 +50,12 @@ const HeaderContent = styled(View) `
 const User = styled(View) `
   flex-direction: row;
   /* align-items: center; */
-  margin-left: ${styles.spacing(0)};
+  margin-left: ${styles.space(0)};
 `;
 
-const UserName = styled(Text) ` margin-left: ${styles.spacing(0)}; `;
-const Settings = styled(View) ` margin-left: ${styles.spacing(0)}; `;
-const SignOut = styled(View) ` margin-left: ${styles.spacing(0)}; `;
+const UserName = styled(Text) ` margin-left: ${styles.space(0)}; `;
+const Settings = styled(View) ` margin-left: ${styles.space(0)}; `;
+const SignOut = styled(View) ` margin-left: ${styles.space(0)}; `;
 
 const Body = styled(View) `
   flex-direction: row;

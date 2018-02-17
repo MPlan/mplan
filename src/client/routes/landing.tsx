@@ -15,22 +15,22 @@ const LandingContainer = styled(View) `
 `;
 
 const LandingContent = styled(View) `
-  margin: ${styles.spacing(0)};
+  margin: ${styles.space(0)};
   max-width: 50rem;
 `;
 
 const Header = styled(View) `
   flex-direction: row;
   align-items: baseline;
-  margin-bottom: ${styles.spacing(0)};
+  margin-bottom: ${styles.space(0)};
 `;
 
 const ElevatorPitch = styled(View) `
-  margin-bottom: ${styles.spacing(0)};
+  margin-bottom: ${styles.space(0)};
 `;
 
 const Description = styled(View) `
-  margin-bottom: ${styles.spacing(0)};
+  margin-bottom: ${styles.space(0)};
 `;
 
 export function Landing() {

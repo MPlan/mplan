@@ -1,6 +1,6 @@
 import { base, phi } from './variables';
 
-export function spacing(x: number) { return `${base * Math.pow(phi, x)}rem`; }
+export function space(x: number) { return `${base * Math.pow(phi, x)}rem`; }
 
 // https://codepen.io/sdthornton/pen/wBZdXq
 export function boxShadow(level: number) {

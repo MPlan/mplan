@@ -1,5 +1,5 @@
 import { oneLine } from 'common-tags';
-import { hsl } from 'polished';
+import { hsl, darken } from 'polished';
 
 export function parsePercentOrDecimal(percentageOrDecimal: string) {
   const match = /([0-9.]*)%/.exec(percentageOrDecimal);

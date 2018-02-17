@@ -8,8 +8,8 @@ import styled from 'styled-components';
 const CourseContainer = styled(View) `
   flex-direction: row;
   border: ${styles.border};
-  padding: ${styles.spacing(0)};
-  margin-bottom: ${styles.spacing(0)};
+  padding: ${styles.space(0)};
+  margin-bottom: ${styles.space(0)};
   align-items: baseline;
   background-color: ${styles.white};
 `;

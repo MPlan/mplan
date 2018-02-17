@@ -9,8 +9,8 @@ import styled from 'styled-components';
 
 const CreateSemesterContainer = styled(View) `
   border: ${styles.border};
-  margin: ${styles.spacing(0)};
-  padding: ${styles.spacing(0)};
+  margin: ${styles.space(0)};
+  padding: ${styles.space(0)};
   justify-content: center;
   align-items: center;
 `;
@@ -41,7 +41,7 @@ const Content = styled(View) `
 `;
 
 const Header = styled(View) `
-  padding: ${styles.spacing(0)};
+  padding: ${styles.space(0)};
   flex-direction: row;
 `;
 

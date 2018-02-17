@@ -13,7 +13,7 @@ const StyledLink = styled(NavLink) `
 `;
 
 const NavButtonContainer = styled(View) `
-  padding: ${styles.spacing(0)};
+  padding: ${styles.space(0)};
   align-items: center;
 `;
 

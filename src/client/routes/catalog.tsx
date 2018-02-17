@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import * as styles from '../styles';
 
 const Input = styled.input`
-  padding: ${styles.spacing(0)};
+  padding: ${styles.space(0)};
   border: ${styles.border};
   flex: 1;
 `;
@@ -24,7 +24,7 @@ const CatalogAside = styled(View) `
   border-left: ${styles.border};
 `;
 const SearchContainer = styled(View) `
-  padding: ${styles.spacing(0)};
+  padding: ${styles.space(0)};
   border-bottom: ${styles.border};
 `;
 const CatalogBody = styled(View) `
@@ -32,25 +32,25 @@ const CatalogBody = styled(View) `
   overflow: auto;
 `;
 const CatalogCourse = styled(View) `
-  margin: ${styles.spacing(0)};
-  padding: ${styles.spacing(0)};
+  margin: ${styles.space(0)};
+  padding: ${styles.space(0)};
   border: ${styles.border};
   flex-shrink: 0;
 `;
 const CatalogCourseHeader = styled(View) `
   flex-direction: row;
-  margin-bottom: ${styles.spacing(0)};
+  margin-bottom: ${styles.space(0)};
 `;
 const CatalogCourseFooter = styled(View) `
   flex-direction: row;
   justify-content: flex-end;
 `;
 const CourseName = styled(Text) `
-  margin-left: ${styles.spacing(0)};
+  margin-left: ${styles.space(0)};
 `;
 const Pagination = styled(View) `
   flex-direction: row;
-  padding: ${styles.spacing(0)};
+  padding: ${styles.space(0)};
   align-items: baseline;
   border-top: ${styles.border};
 `;
@@ -60,7 +60,7 @@ const PaginationButtons = styled(View) `
   justify-content: flex-end;
 `;
 const ButtonContainer = styled(View) `
-  margin-left: ${styles.spacing(0)};
+  margin-left: ${styles.space(0)};
 `;
 
 export class Catalog extends Model.store.connect({

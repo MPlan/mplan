@@ -8,7 +8,7 @@ import styled from 'styled-components';
 const WarningsContainer = styled(View) `
   flex: 1;
   overflow: auto;
-  padding: ${styles.spacing(0)};
+  padding: ${styles.space(0)};
   border-top: ${styles.border};
 `;
 
@@ -19,7 +19,7 @@ const WarningsContent = styled(View) `
 
 const Warning = styled(View) `
   border: ${styles.border};
-  padding: ${styles.spacing(0)};
+  padding: ${styles.space(0)};
 `;
 
 export class Warnings extends Model.store.connect() {

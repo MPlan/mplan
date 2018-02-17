@@ -27,7 +27,7 @@ export function Text(props: TextProps) {
   const fontWeight = (light && styles.lightTextWeight) || (strong && styles.bold) || undefined;
 
   const css = `
-    font-size: ${styles.spacing(size)};
+    font-size: ${styles.space(size)};
     font-family: ${styles.fontFamily};
     ${/*if*/ fontWeight ? `font-weight: ${fontWeight};` : ''}
     ${/*if*/ color ? `color: ${color};` : styles.text}
