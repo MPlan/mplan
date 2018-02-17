@@ -2,19 +2,14 @@ import * as React from 'react';
 import { View, Text, Fa } from './';
 import * as styles from '../styles';
 import { Routes } from '../routes';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
-const StyledLink = styled(Link) `
-  color: ${styles.gray};
-
-  & {
-    text-decoration: none;
-  }
-
-  &:hover, &:hover * {
-    color: ${styles.black};
-  }
+const StyledLink = styled(NavLink) `
+  color: ${styles.grayLight};
+  & { text-decoration: none; }
+  &:hover, &:hover * { color: ${styles.grayLighter}; }
+  &.active, &:active, &:active * { color: ${styles.white}; }
 `;
 
 const NavButtonContainer = styled(View) `
@@ -38,7 +33,7 @@ class NavButton extends React.Component<NavButtonProps, NavButtonState> {
   }
 
   render() {
-    return <StyledLink to={this.props.to}>
+    return <StyledLink to={this.props.to} activeClassName="active">
       <NavButtonContainer>
         <Fa icon={this.props.icon} size="2x" />
       </NavButtonContainer>
@@ -47,9 +42,9 @@ class NavButton extends React.Component<NavButtonProps, NavButtonState> {
 }
 
 const NavContainer = styled(View) `
-  border: ${styles.border};
-  border-top: 0;
   width: 4rem;
+  background-color: ${styles.blackTer};
+  color: ${styles.white};
 `;
 
 export function Nav() {

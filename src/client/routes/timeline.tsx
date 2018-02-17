@@ -59,7 +59,8 @@ const SemesterBlockContainer = styled(View) `
 
 const SideBar = styled(View) `
   width: 20rem;
-  border: ${styles.border};
+  border-left: .1rem solid ${styles.borderColor};
+  background-color: ${styles.white};
 `;
 
 export class Timeline extends Model.store.connect() {

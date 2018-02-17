@@ -22,7 +22,7 @@ export function hslToHex(hslString: string) {
 // SIZING
 export const base = 1;
 export const phi = 1.618;
-export const borderWidth = '0.01rem';
+export const borderWidth = `${0.09}rem`;
 
 // FONTS
 export const fontFamily = oneLine`

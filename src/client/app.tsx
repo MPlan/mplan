@@ -36,8 +36,9 @@ const AuthenticatedRouteContainer = styled(View) ` flex: 1; `;
 
 const Header = styled(View) `
   padding: ${styles.spacing(0)};
-  border: ${styles.border};
   flex-direction: row;
+  background-color: ${styles.white};
+  border-bottom: ${styles.border};
 `;
 
 const HeaderContent = styled(View) `
@@ -67,11 +68,15 @@ const Content = styled(View) `
   overflow: auto;
 `;
 
+const Brand = styled(Text) `
+  color: ${styles.signatureBlue};
+`;
+
 export function AuthenticatedRoute() {
   return <AuthenticatedRouteContainer>
     <Header>
       <View>
-        <Text large strong>MPlan</Text>
+        <Brand large strong>MPlan</Brand>
       </View>
 
       <HeaderContent>
