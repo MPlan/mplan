@@ -5,7 +5,7 @@ import { log, wait, pad, throwIfNotOne } from '../../utilities/utilities';
 import { Job, JobFailure, JobTypes, JobSuccess, JobInProgress } from '../models/jobs';
 import * as colors from 'colors';
 
-export const pollingWaitTime = 100;
+export const pollingWaitTime = 300;
 export const maxJobsRunAtOnce = 1;
 export const maxAttempts = 3;
 

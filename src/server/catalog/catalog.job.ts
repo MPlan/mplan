@@ -11,29 +11,15 @@ import { isEqual } from 'lodash';
 import { oneLine } from 'common-tags';
 
 export async function sync() {
-  const { terms } = await dbConnection;
-  const termsFromUmConnect = (await fetchTerms()).filter(t =>
-    // last 5 years
-    t.year >= new Date().getFullYear() - 5
-  );
-
-  const termsToSave = termsFromUmConnect.map(termFromUmconnect => {
-    const term: Model.Term = {
-      ...termFromUmconnect,
-      _id: new Mongo.ObjectId(),
-      lastUpdateDate: new Date().getTime(),
-      lastTermCode: termFromUmconnect.code,
-    };
-    return term;
-  });
-
-  await updateIfSameTermOrLater({
-    itemsToUpdate: termsToSave,
-    collection: terms,
-    query: term => ({ code: term.code })
-  });
-
-  const termCodeFromLastFiveYears = termsFromUmConnect.map(t => t.code);
+  const termCodeFromLastFiveYears = [
+    '201610',
+    '201530', '201520', '201510',
+    '201430', '201420', '201410',
+    '201330', '201320', '201310',
+    '201230', '201220', '201210',
+    '201130', '201120', '201110',
+    '201030', '201020', '201010',
+  ];
 
   for (const termCode of termCodeFromLastFiveYears) {
     await queue({
