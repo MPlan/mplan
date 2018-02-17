@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import * as styles from '../styles';
 
 const SemesterContainer = styled(View) `
-  border: solid ${styles.borderWidth} ${styles.border};
+  border: ${styles.border};
   margin: ${styles.spacing(0)};
   padding: ${styles.spacing(0)};
   width: 15rem;
@@ -20,7 +20,7 @@ const SemesterHeader = styled(View) `
 
 const SemesterBody = styled(View) `
   flex: 1;
-  border: solid ${styles.borderWidth} ${styles.border};
+  border: ${styles.border};
   margin-top: ${styles.spacing(0)};
 `;
 

@@ -8,7 +8,7 @@ import { Warnings } from './warnings';
 import styled from 'styled-components';
 
 const CreateSemesterContainer = styled(View) `
-  border: solid ${styles.borderWidth} ${styles.border};
+  border: ${styles.border};
   margin: ${styles.spacing(0)};
   padding: ${styles.spacing(0)};
   justify-content: center;
@@ -59,7 +59,7 @@ const SemesterBlockContainer = styled(View) `
 
 const SideBar = styled(View) `
   width: 20rem;
-  border: solid ${styles.borderWidth} ${styles.border};
+  border: ${styles.border};
 `;
 
 export class Timeline extends Model.store.connect() {

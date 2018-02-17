@@ -9,16 +9,16 @@ export const Button = styled.button`
   background-color: ${styles.white};
   color: ${styles.text};
   padding: ${styles.spacing(-1)} ${styles.spacing(0)};
-  border: solid ${styles.border} 0.10rem;
+  border: ${styles.border};
 
   & * { color: ${styles.text} !important; }
 
   &:hover, &:focus {
-    border: solid ${styles.gray} 0.10rem;
+    border: ${styles.border};
     color: ${styles.textStrong} !important;
   }
   &:active {
-    border: solid ${styles.black} 0.10rem;
+    border: ${styles.border};
     color: ${styles.textStrong} !important;
   }
   &:focus { outline: none; }

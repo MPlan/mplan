@@ -7,7 +7,7 @@ import styled from 'styled-components';
 
 const CourseContainer = styled(View) `
   flex-direction: row;
-  border: solid ${styles.borderWidth} ${styles.border};
+  border: ${styles.border};
   padding: ${styles.spacing(0)};
   margin-bottom: ${styles.spacing(0)};
   align-items: baseline;

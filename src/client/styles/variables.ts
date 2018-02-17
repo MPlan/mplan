@@ -74,7 +74,7 @@ export const danger = red;
 export const light = grayLighter;
 export const dark = grayDarker;
 export const background = whiteTer;
-export const border = grayLighter;
+export const borderColor = grayLighter;
 export const borderHover = grayLight;
 export const text = grayDark;
 export const textLight = gray;
@@ -91,3 +91,6 @@ export const linkFocus = grayDarker;
 export const linkFocusBorder = blue;
 export const linkActive = grayDarker;
 export const linkActiveBorder = grayDark;
+
+// BORDERS
+export const border = `${borderWidth} solid ${borderColor}`;

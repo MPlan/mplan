@@ -36,7 +36,7 @@ const AuthenticatedRouteContainer = styled(View) ` flex: 1; `;
 
 const Header = styled(View) `
   padding: ${styles.spacing(0)};
-  border: solid ${styles.borderWidth} ${styles.border};
+  border: ${styles.border};
   flex-direction: row;
 `;
 

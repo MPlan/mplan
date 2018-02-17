@@ -47,7 +47,7 @@ class NavButton extends React.Component<NavButtonProps, NavButtonState> {
 }
 
 const NavContainer = styled(View) `
-  border: solid ${styles.borderWidth} ${styles.border};
+  border: ${styles.border};
   border-top: 0;
   width: 4rem;
 `;

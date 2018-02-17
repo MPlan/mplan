@@ -9,7 +9,7 @@ const WarningsContainer = styled(View) `
   flex: 1;
   overflow: auto;
   padding: ${styles.spacing(0)};
-  border-top: solid ${styles.borderWidth} ${styles.border};
+  border-top: ${styles.border};
 `;
 
 const WarningsContent = styled(View) `
@@ -18,7 +18,7 @@ const WarningsContent = styled(View) `
 `;
 
 const Warning = styled(View) `
-  border: solid ${styles.borderWidth} ${styles.border};
+  border: ${styles.border};
   padding: ${styles.spacing(0)};
 `;
 

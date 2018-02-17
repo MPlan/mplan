@@ -6,7 +6,7 @@ import * as styles from '../styles';
 
 const Input = styled.input`
   padding: ${styles.spacing(0)};
-  border: solid ${styles.borderWidth} ${styles.border};
+  border: ${styles.border};
   flex: 1;
 `;
 const Form = styled.form`
@@ -21,11 +21,11 @@ const CatalogContent = styled(View) `
   overflow: auto;
 `;
 const CatalogAside = styled(View) `
-  border-left: solid ${styles.borderWidth} ${styles.border};
+  border-left: ${styles.border};
 `;
 const SearchContainer = styled(View) `
   padding: ${styles.spacing(0)};
-  border-bottom: solid ${styles.borderWidth} ${styles.border};
+  border-bottom: ${styles.border};
 `;
 const CatalogBody = styled(View) `
   flex: 1;
@@ -34,7 +34,7 @@ const CatalogBody = styled(View) `
 const CatalogCourse = styled(View) `
   margin: ${styles.spacing(0)};
   padding: ${styles.spacing(0)};
-  border: solid ${styles.borderWidth} ${styles.border};
+  border: ${styles.border};
   flex-shrink: 0;
 `;
 const CatalogCourseHeader = styled(View) `
@@ -52,7 +52,7 @@ const Pagination = styled(View) `
   flex-direction: row;
   padding: ${styles.spacing(0)};
   align-items: baseline;
-  border-top: solid ${styles.border} ${styles.borderWidth};
+  border-top: ${styles.border};
 `;
 const PaginationButtons = styled(View) `
   flex: 1;
