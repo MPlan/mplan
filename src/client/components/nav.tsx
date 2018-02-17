@@ -1,24 +1,24 @@
 import * as React from 'react';
 import { View, Text, Fa } from './';
-import * as Styles from '../styles';
+import * as styles from '../styles';
 import { Routes } from '../routes';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 const StyledLink = styled(Link) `
-  color: ${Styles.gray};
+  color: ${styles.gray};
 
   & {
     text-decoration: none;
   }
 
   &:hover, &:hover * {
-    color: ${Styles.black};
+    color: ${styles.black};
   }
 `;
 
 const NavButtonContainer = styled(View) `
-  padding: ${Styles.spacing(0)};
+  padding: ${styles.spacing(0)};
   align-items: center;
 `;
 
@@ -47,7 +47,7 @@ class NavButton extends React.Component<NavButtonProps, NavButtonState> {
 }
 
 const NavContainer = styled(View) `
-  border: solid ${Styles.borderWidth} ${Styles.border};
+  border: solid ${styles.borderWidth} ${styles.border};
   border-top: 0;
   width: 4rem;
 `;

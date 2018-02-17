@@ -1,17 +1,17 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { View, Text, Button, Course } from './';
-import * as Styles from '../styles';
+import * as styles from '../styles';
 import * as Model from '../models';
 
 const BoxContainer = styled(View) `
   overflow: auto;
-  padding: ${Styles.spacing(0)};
+  padding: ${styles.spacing(0)};
   flex: 1;
 `;
 
 const BoxHeader = styled(View) `
-  margin-bottom: ${Styles.spacing(0)};
+  margin-bottom: ${styles.spacing(0)};
 `;
 
 const BoxContent = styled(View) `

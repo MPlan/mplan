@@ -2,16 +2,16 @@ import * as React from 'react';
 import { View, Text } from './';
 import { Button } from '../components/button';
 import * as Model from '../models';
-import * as Styles from '../styles';
+import * as styles from '../styles';
 import styled from 'styled-components';
 
 const CourseContainer = styled(View) `
   flex-direction: row;
-  border: solid ${Styles.borderWidth} ${Styles.border};
-  padding: ${Styles.spacing(0)};
-  margin-bottom: ${Styles.spacing(0)};
+  border: solid ${styles.borderWidth} ${styles.border};
+  padding: ${styles.spacing(0)};
+  margin-bottom: ${styles.spacing(0)};
   align-items: baseline;
-  background-color: ${Styles.white};
+  background-color: ${styles.white};
 `;
 
 export interface CourseProps {

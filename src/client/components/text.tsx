@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled, { StyledComponentClass } from 'styled-components';
-import * as Styles from '../styles';
+import * as styles from '../styles';
 
 export interface TextProps extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
   children?: any,
@@ -24,13 +24,13 @@ export function Text(props: TextProps) {
   const { small, large, extraLarge, light, strong, color, ref, ...restOfProps } = props;
 
   const size = (small && -1) || (large && 1) || (extraLarge && 2) || 0;
-  const fontWeight = (light && Styles.lightTextWeight) || (strong && Styles.bold) || undefined;
+  const fontWeight = (light && styles.lightTextWeight) || (strong && styles.bold) || undefined;
 
   const css = `
-    font-size: ${Styles.spacing(size)};
-    font-family: ${Styles.fontFamily};
+    font-size: ${styles.spacing(size)};
+    font-family: ${styles.fontFamily};
     ${/*if*/ fontWeight ? `font-weight: ${fontWeight};` : ''}
-    ${/*if*/ color ? `color: ${color};` : Styles.text}
+    ${/*if*/ color ? `color: ${color};` : styles.text}
   `;
 
   const MaybeStyledSpan = textCache[css];

@@ -1,25 +1,25 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import * as Styles from '../styles';
+import * as styles from '../styles';
 
 interface ButtonProps extends React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> {
 }
 
 export const Button = styled.button`
-  background-color: ${Styles.white};
-  color: ${Styles.text};
-  padding: ${Styles.spacing(-1)} ${Styles.spacing(0)};
-  border: solid ${Styles.border} 0.10rem;
+  background-color: ${styles.white};
+  color: ${styles.text};
+  padding: ${styles.spacing(-1)} ${styles.spacing(0)};
+  border: solid ${styles.border} 0.10rem;
 
-  & * { color: ${Styles.text} !important; }
+  & * { color: ${styles.text} !important; }
 
   &:hover, &:focus {
-    border: solid ${Styles.gray} 0.10rem;
-    color: ${Styles.textStrong} !important;
+    border: solid ${styles.gray} 0.10rem;
+    color: ${styles.textStrong} !important;
   }
   &:active {
-    border: solid ${Styles.black} 0.10rem;
-    color: ${Styles.textStrong} !important;
+    border: solid ${styles.black} 0.10rem;
+    color: ${styles.textStrong} !important;
   }
   &:focus { outline: none; }
 `;

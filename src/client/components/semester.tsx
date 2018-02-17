@@ -2,12 +2,12 @@ import * as React from 'react';
 import { View, Text, Button, Course } from './';
 import * as Model from '../models';
 import styled from 'styled-components';
-import * as Styles from '../styles';
+import * as styles from '../styles';
 
 const SemesterContainer = styled(View) `
-  border: solid ${Styles.borderWidth} ${Styles.border};
-  margin: ${Styles.spacing(0)};
-  padding: ${Styles.spacing(0)};
+  border: solid ${styles.borderWidth} ${styles.border};
+  margin: ${styles.spacing(0)};
+  padding: ${styles.spacing(0)};
   width: 15rem;
   z-index: 5;
   flex-shrink: 0;
@@ -20,8 +20,8 @@ const SemesterHeader = styled(View) `
 
 const SemesterBody = styled(View) `
   flex: 1;
-  border: solid ${Styles.borderWidth} ${Styles.border};
-  margin-top: ${Styles.spacing(0)};
+  border: solid ${styles.borderWidth} ${styles.border};
+  margin-top: ${styles.spacing(0)};
 `;
 
 interface SemesterProps {
