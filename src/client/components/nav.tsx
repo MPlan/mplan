@@ -1,9 +1,8 @@
 import * as React from 'react';
-import { View, Text, p } from './base';
-import * as Styles from './styles';
+import { View, Text, Fa } from './';
+import * as Styles from '../styles';
 import { Routes } from '../routes';
 import { Link } from 'react-router-dom';
-import { Fa } from './fa';
 import styled from 'styled-components';
 
 const StyledLink = styled(Link) `
@@ -18,13 +17,18 @@ const StyledLink = styled(Link) `
   }
 `;
 
+const NavButtonContainer = styled(View) `
+  padding: ${Styles.spacing(0)};
+  align-items: center;
+`;
+
 interface NavButtonProps {
   name: string,
   to: string,
   icon: string,
 }
-interface NavButtonState {
-}
+interface NavButtonState { }
+
 class NavButton extends React.Component<NavButtonProps, NavButtonState> {
   constructor(props: NavButtonProps) {
     super(props);
@@ -35,28 +39,26 @@ class NavButton extends React.Component<NavButtonProps, NavButtonState> {
 
   render() {
     return <StyledLink to={this.props.to}>
-      <View
-        padding
-        alignItems="center"
-      >
+      <NavButtonContainer>
         <Fa icon={this.props.icon} size="2x" />
-      </View>
+      </NavButtonContainer>
     </StyledLink>
   }
 }
 
+const NavContainer = styled(View) `
+  border: solid ${Styles.borderWidth} ${Styles.border};
+  border-top: 0;
+  width: 4rem;
+`;
+
 export function Nav() {
-  return <View
-    backgroundColor={Styles.white}
-    border
-    width={4}
-    style={{ borderTop: 0 }}
-  >
+  return <NavContainer>
     {Routes.map(route => <NavButton
       key={route.path}
       to={route.path}
       name={route.name}
       icon={route.icon}
     />)}
-  </View>
+  </NavContainer>
 }

@@ -8,6 +8,7 @@
     "start": "npm run start:server & npm run start:client",
     "start:server": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server/index.ts",
     "start:client": "webpack-dev-server",
+    "server": "ts-node ./src/server/index.ts",
     "build": "./node_modules/.bin/webpack -p",
     "heroku-prebuild": "npm install --only=dev && npm install && npm run build"
   },

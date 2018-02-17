@@ -1,25 +1,66 @@
 import * as React from 'react';
-import { View, Text } from '../components/base';
-import * as Styles from '../components/styles';
+import { View, Text, Box, Button, Course, Semester } from '../components';
+import * as styles from '../styles';
 import * as Record from 'recordize';
 import * as Model from '../models';
 import * as Immutable from 'immutable';
-import { Box } from '../components/box';
-import { Semester } from '../components/semester';
-import { Button } from '../components/button';
-import { Course } from '../components/course';
 import { Warnings } from './warnings';
+import styled from 'styled-components';
+
+const CreateSemesterContainer = styled(View) `
+  border: solid ${styles.borderWidth} ${styles.border};
+  margin: ${styles.spacing(0)};
+  padding: ${styles.spacing(0)};
+  justify-content: center;
+  align-items: center;
+`;
 
 interface CreateSemesterProps {
   onCreateClick: (e: React.MouseEvent<HTMLButtonElement>) => void,
 }
 
 function CreateSemester(props: CreateSemesterProps) {
-  return <View border margin padding justifyContent="center" alignItems="center">
+  return <CreateSemesterContainer>
     <Button onClick={props.onCreateClick}><Text>+ new semester</Text></Button>
-  </View>;
+  </CreateSemesterContainer>;
 }
 
+const TimelineContainer = styled(View) `
+  flex: 1;
+  flex-direction: row;
+  position: relative;
+`;
+
+const FloatingCourseContainer = styled(View) `
+  position: absolute;
+`;
+
+const Content = styled(View) `
+  flex: 1;
+  overflow: auto;
+`;
+
+const Header = styled(View) `
+  padding: ${styles.spacing(0)};
+  flex-direction: row;
+`;
+
+const HeaderMain = styled(View) `
+  flex: 1;
+`;
+
+const HeaderRight = styled(View) ``;
+
+const SemesterBlockContainer = styled(View) `
+  flex: 1;
+  flex-direction: row;
+  overflow; auto;
+`;
+
+const SideBar = styled(View) `
+  width: 20rem;
+  border: solid ${styles.borderWidth} ${styles.border};
+`;
 
 export class Timeline extends Model.store.connect() {
 
@@ -44,13 +85,7 @@ export class Timeline extends Model.store.connect() {
     const offsetTop = e.currentTarget.offsetTop;
     const offsetX = e.pageX - offsetLeft;
     const offsetY = e.pageY - offsetTop;
-    // this.setStore(previousState => ({
-    //   ...previousState,
-    //   selectedCourseId: course._id.toHexString(),
-    //   dragging: true,
-    //   offsetX,
-    //   offsetY,
-    // }))
+
     this.setStore(store => store
       .set('selectedCourseId', course.id)
       .set('dragging', true)
@@ -121,29 +156,31 @@ export class Timeline extends Model.store.connect() {
   }
 
   render() {
-    return <View _="timeline" flex row style={{ position: 'relative' }}>
-      <View
+    return <TimelineContainer>
+      <FloatingCourseContainer
         style={{
           display: /*if*/ this.store.dragging ? 'initial' : 'none',
-          position: 'absolute',
           top: this.store.y - 100,
           left: this.store.x - 100,
         }}
       >
         {this.store.selectedCourse && <Course course={this.store.selectedCourse} />}
-      </View>
-      <View _="content" flex overflow>
-        <View _="header" padding row>
-          <View flex>
+      </FloatingCourseContainer>
+      
+      <Content>
+        <Header>
+          <HeaderMain>
             <Text strong extraLarge>Timeline</Text>
             <Text>Create your MPlan here.</Text>
-          </View>
-          <View alignItems="flex-end">
+          </HeaderMain>
+
+          <HeaderRight>
             <Text strong>Expected Graduation:</Text>
             <Text strong large>April 2018</Text>
-          </View>
-        </View>
-        <View _="semester-block-container" flex row overflow>
+          </HeaderRight>
+        </Header>
+
+        <SemesterBlockContainer>
           <CreateSemester onCreateClick={this.onCreateSemesterBefore} />
           {this.store.semesters.map(semester => <Semester
             onMouseEnter={() => this.handleMouseEnterSemester(semester)}
@@ -154,15 +191,13 @@ export class Timeline extends Model.store.connect() {
             onCourseMouseDown={course => this.onCourseMouseDown(course)}
           />)}
           <CreateSemester onCreateClick={this.onCreateSemesterAfter} />
-        </View>
-      </View>
-      <View
-        width={20}
-        border
-      >
+        </SemesterBlockContainer>
+      </Content>
+
+      <SideBar>
         <Box />
         <Warnings />
-      </View>
-    </View>
+      </SideBar>
+    </TimelineContainer>
   }
 }

@@ -1,8 +1,26 @@
 import * as React from 'react';
-import { View, Text } from '../components/base';
+import { View, Text } from '../components';
 import * as Model from '../models';
-import * as Styles from '../components/styles';
-import { flatten } from '../../utilities/utilities'
+import * as styles from '../styles';
+import { flatten } from '../../utilities/utilities';
+import styled from 'styled-components';
+
+const WarningsContainer = styled(View) `
+  flex: 1;
+  overflow: auto;
+  padding: ${styles.spacing(0)};
+  border-top: solid ${styles.borderWidth} ${styles.border};
+`;
+
+const WarningsContent = styled(View) `
+  flex: 1;
+  overflow: auto;
+`;
+
+const Warning = styled(View) `
+  border: solid ${styles.borderWidth} ${styles.border};
+  padding: ${styles.spacing(0)};
+`;
 
 export class Warnings extends Model.store.connect() {
   render() {
@@ -13,24 +31,13 @@ export class Warnings extends Model.store.connect() {
       )
     );
 
-    return <View
-      flex
-      overflow
-      padding
-      style={{ borderTop: `solid 0.10rem ${Styles.border}` }}
-    >
+    return <WarningsContainer>
       <View><Text strong large>Warnings</Text></View>
-      <View flex overflow>{
-        warnings.map((warning, i) => <View
-          key={i}
-          border
-          padding
-          margin={{ bottom: true }}
-        >
+      <WarningsContent>{
+        warnings.map((warning, i) => <Warning key={i}>
           <Text>{warning}</Text>
-        </View>)}
-      </View>
-
-    </View>;
+        </Warning>)}
+      </WarningsContent>
+    </WarningsContainer>;
   }
 }

@@ -1,9 +1,28 @@
 import { oneLine } from 'common-tags';
-import { hslToHex } from './utilities';
+import { hsl } from 'polished';
+
+export function parsePercentOrDecimal(percentageOrDecimal: string) {
+  const match = /([0-9.]*)%/.exec(percentageOrDecimal);
+  if (!match) { return parseFloat(percentageOrDecimal); }
+  const percentValue = parseFloat(match[1]);
+  return percentValue / 100;
+}
+
+export function hslToHex(hslString: string) {
+  const match = /hsl\((.*)(?:,|;)(.*)(?:,|;)(.*)\)/.exec(hslString);
+  if (!match) {
+    throw new Error('could not convert hsl string to HSL values ' + hslString);
+  }
+  const hue = parsePercentOrDecimal(match[1].trim());
+  const saturation = parsePercentOrDecimal(match[2].trim());
+  const lightness = parsePercentOrDecimal(match[3].trim());
+  return hsl({ hue, saturation, lightness });
+}
 
 // SIZING
 export const base = 1;
 export const phi = 1.618;
+export const borderWidth = '0.01rem';
 
 // FONTS
 export const fontFamily = oneLine`
@@ -17,6 +36,9 @@ export const fontFamily = oneLine`
   "Segoe UI Emoji",
   "Segoe UI Symbol"
 `;
+
+export const bold = '500';
+export const lightTextWeight = '300';
 
 // COLORS
 export const signatureMaize = '#ffCB05';

@@ -1,8 +1,22 @@
 import * as React from 'react';
-import { View, Text } from '../components/base';
+import styled from 'styled-components';
+import { View, Text, Button, Course } from './';
+import * as Styles from '../styles';
 import * as Model from '../models';
-import { Button } from '../components/button';
-import { Course } from '../components/course';
+
+const BoxContainer = styled(View) `
+  overflow: auto;
+  flex: 0 0;
+  padding: ${Styles.spacing(0)};
+`;
+
+const BoxHeader = styled(View) `
+  margin-bottom: ${Styles.spacing(0)};
+`;
+
+const BoxContent = styled(View) `
+  overflow: auto;
+`;
 
 export class Box extends Model.store.connect() {
 
@@ -45,23 +59,19 @@ export class Box extends Model.store.connect() {
   }
 
   render() {
-    return <View
-      flex={{ flexGrow: 0, flexShrink: 0 }}
-      overflow
-      padding
-    >
-      <View margin={{ bottom: true }}>
+    return <BoxContainer>
+      <BoxHeader>
         <Text large strong>The box</Text>
         <Text>A quick place to put some course in.</Text>
-      </View>
-      <View flex={{ flexShrink: 0 }} overflow>
+      </BoxHeader>
+      <BoxContent>
         {this.store.box.map(course => <Course
           key={course.id}
           course={course}
           onDeleteClick={() => this.onDeleteClick(course)}
           onMouseDown={() => this.onCourseMouseDown(course)}
         />)}
-      </View>
-    </View>;
+      </BoxContent>
+    </BoxContainer>;
   }
 }

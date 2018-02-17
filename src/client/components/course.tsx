@@ -1,8 +1,18 @@
 import * as React from 'react';
-import { View, Text } from '../components/base';
+import { View, Text } from './';
 import { Button } from '../components/button';
 import * as Model from '../models';
-import * as Styles from './styles';
+import * as Styles from '../styles';
+import styled from 'styled-components';
+
+const CourseContainer = styled(View) `
+  flex-direction: row;
+  border: solid ${Styles.borderWidth} ${Styles.border};
+  padding: ${Styles.spacing(0)};
+  margin-bottom: ${Styles.spacing(0)};
+  align-items: baseline;
+  background-color: ${Styles.white};
+`;
 
 export interface CourseProps {
   course: Model.Course,
@@ -12,19 +22,13 @@ export interface CourseProps {
 
 export function Course(props: CourseProps) {
   const course = props.course;
-  return <View
+  return <CourseContainer
     key={course._id.toHexString()}
-    row
-    alignItems="baseline"
-    border
-    padding
-    margin={{ bottom: true }}
     onMouseDown={props.onMouseDown}
-    backgroundColor={Styles.white}
   >
     <Text strong>{course.subjectCode}&nbsp;</Text>
     <Text strong>{course.courseNumber}&nbsp;</Text>
     <Text>{course.name}&nbsp;</Text>
     <Button onClick={props.onDeleteClick}>x</Button>
-  </View>;
+  </CourseContainer>;
 }

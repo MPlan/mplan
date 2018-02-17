@@ -1,22 +1,13 @@
-import { hsl } from 'polished';
 import { base, phi } from './variables';
 
-export function size(x: number) { return base * Math.pow(phi, x); }
+export function spacing(x: number) { return `${base * Math.pow(phi, x)}rem`; }
 
-export function hslToHex(hslString: string) {
-  const match = /hsl\((.*)(?:,|;)(.*)(?:,|;)(.*)\)/.exec(hslString);
-  if (!match) {
-    throw new Error('could not convert hsl string to HSL values ' + hslString);
-  }
-  const hue = parsePercentOrDecimal(match[1].trim());
-  const saturation = parsePercentOrDecimal(match[2].trim());
-  const lightness = parsePercentOrDecimal(match[3].trim());
-  return hsl({ hue, saturation, lightness });
-}
-
-export function parsePercentOrDecimal(percentageOrDecimal: string) {
-  const match = /([0-9.]*)%/.exec(percentageOrDecimal);
-  if (!match) { return parseFloat(percentageOrDecimal); }
-  const percentValue = parseFloat(match[1]);
-  return percentValue / 100;
+// https://codepen.io/sdthornton/pen/wBZdXq
+export function boxShadow(level: number) {
+  if (level <= 0) { return 'initial'; }
+  if (level <= 1) { return '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)'; }
+  if (level <= 2) { return '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)'; }
+  if (level <= 3) { return '0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)'; }
+  if (level <= 4) { return '0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)'; }
+  return '0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)';
 }
