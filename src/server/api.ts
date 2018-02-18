@@ -41,7 +41,8 @@ api.get('/catalog', compression(), async (req, res) => {
       return courseWithSections;
     }));
     catalog = courseWithSections.reduce((catalog, courseWithSection) => {
-      catalog[courseWithSection._id.toHexString()] = courseWithSection;
+      const { subjectCode, courseNumber } = courseWithSection;
+      catalog[`${subjectCode}__|__${courseNumber}`] = courseWithSection;
       return catalog;
     }, {} as Model.Catalog);
     log.info('finished calculating catalog!');

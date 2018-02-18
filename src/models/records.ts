@@ -5,6 +5,35 @@ import * as uuid from 'uuid/v4';
 import { ObjectID as _ObjectId } from 'bson';
 import { oneLine } from 'common-tags';
 
+export function convertCatalogJsonToRecord(courses: Model.Catalog) {
+  const courseMap = Object.entries(courses).reduce((catalogRecord, [courseCode, course]) => {
+    const { _id, sections: rawSections, ...restOfCourse } = course;
+
+    const sections = (Object
+      .entries(rawSections)
+      .reduce((sections, [_season, sectionList]) => {
+        const season = _season as 'Fall' | 'Winter' | 'Summer';
+        const sectionSet = sectionList.reduce((sectionSet, rawSection) => {
+          const section = new Section({ ...rawSection });
+          return sectionSet.add(section);
+        }, Immutable.Set<Section>());
+
+        return sections.set(season, sectionSet);
+      }, Immutable.Map<'Fall' | 'Winter' | 'Summer', Immutable.Set<Section>>())
+    );
+
+    const courseRecord = new Course({
+      ...restOfCourse,
+      _id: ObjectId(course._id),
+      sections,
+    });
+    return catalogRecord.set(courseCode, courseRecord);
+  }, Immutable.Map<string, Course>());
+
+  const catalog = new Catalog({ courseMap });
+  return catalog;
+}
+
 export function ObjectId(id?: string | number | _ObjectId) {
   return (_ObjectId as any)(id) as _ObjectId;
 }
@@ -228,26 +257,17 @@ export class Catalog extends Record.define({
   }
 }
 
-const id0 = ObjectId();
-const id1 = ObjectId();
-const id2 = ObjectId();
-
-export class App extends Record.define({
-  catalog: new Catalog(),
+export class User extends Record.define({
+  _id: ObjectId(),
+  username: '',
+  name: '',
+  picture: '',
+  registerDate: 0,
+  lastLoginDate: 0,
   boxMap: Immutable.Map<string, Course>(),
-  semesterMap: Immutable.Map<string, Semester>()
-    .set(id0.toHexString(), new Semester({ _id: id0, season: 'Winter', year: 2018 }))
-    .set(id1.toHexString(), new Semester({ _id: id1, season: 'Summer', year: 2018 })),
-  selectedCourseId: '',
-  dragging: false,
-  x: 0,
-  y: 0,
-  offsetX: 0,
-  offsetY: 0,
-  mouseIsOverSemester: false,
-  lastMouseOverSemesterId: '',
+  coursesInDegreeMap: Immutable.Map<string, Course>(),
+  semesterMap: Immutable.Map<string, Semester>(),
 }) {
-
   removeCourseFromBox(course: Course) {
     return this.update('boxMap', boxMap => boxMap.remove(course.id));
   }
@@ -270,14 +290,40 @@ export class App extends Record.define({
     });
   }
 
-  get selectedCourse() {
-    return this.getOrCalculate('selectedCourse', () => {
-      const selectedCourse = this.catalog.courseMap.get(this.selectedCourseId);
-      return selectedCourse;
-    })
+  selectedCourse(selectedCourseId: string, catalog: Catalog) {
+    return catalog.courseMap.get(selectedCourseId);
   }
 
   addToBox(course: Course) {
     return this.update('boxMap', boxMap => boxMap.set(course.id, course));
   }
+
+  get coursesInDegree() {
+    return this.getOrCalculate('degree', [this.coursesInDegreeMap], () => {
+      return this.coursesInDegreeMap.valueSeq().toArray();
+    });
+  }
+
+  criticalPath(catalog: Catalog) {
+    return this.getOrCalculate('criticalPath', [catalog, this.coursesInDegreeMap], () => {
+      
+    });
+  }
 }
+
+export class Ui extends Record.define({
+  dragging: false,
+  x: 0,
+  y: 0,
+  offsetX: 0,
+  offsetY: 0,
+  mouseIsOverSemester: false,
+  lastMouseOverSemesterId: '',
+  selectedCourseId: '',
+}) { }
+
+export class App extends Record.define({
+  catalog: new Catalog(),
+  user: new User(),
+  ui: new Ui(),
+}) { }

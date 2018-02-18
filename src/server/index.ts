@@ -49,12 +49,12 @@ async function start(workerId: number) {
 
   
   // process.exit(0);
-  await executeSchedulerQueue();
+  // await executeSchedulerQueue();
 }
 
 async function master() {
   log.info('Application started');
-  await restartUnfinishedJobs();
+  // await restartUnfinishedJobs();
   // await queue({
   //   jobName: 'sync',
   //   plannedStartTime: new Date().getTime()
