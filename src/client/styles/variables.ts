@@ -1,5 +1,5 @@
 import { oneLine } from 'common-tags';
-import { hsl, darken } from 'polished';
+import { hsl, darken, lighten } from 'polished';
 
 export function parsePercentOrDecimal(percentageOrDecimal: string) {
   const match = /([0-9.]*)%/.exec(percentageOrDecimal);
@@ -65,6 +65,27 @@ export const blue = hslToHex('hsl(217; 71%; 53%)');
 export const purple = hslToHex('hsl(271; 100%; 71%)');
 export const red = hslToHex('hsl(348; 100%; 61%)');
 
+export const beeKeeper = 'rgb(246, 229, 141)';
+export const spicedNectarine = 'rgb(255, 190, 118)';
+export const pinkGlamour = 'rgb(255, 121, 121)';
+export const juneBud = 'rgb(186, 220, 88)';
+export const coastalBreeze = 'rgb(223, 249, 251)';
+export const turbo = 'rgb(249, 202, 36)';
+export const quinceJelly = 'rgb(240, 147, 43)';
+export const carminePink = 'rgb(235, 77, 75)';
+export const pureApple = 'rgb(106, 176, 76)';
+export const hintOfIcePack = 'rgb(199, 236, 238)';
+export const middleBlue = 'rgb(126, 214, 223)';
+export const heliotrope = 'rgb(224, 86, 253)';
+export const exodusFruit = 'rgb(104, 109, 224)';
+export const deepKoamaru = 'rgb(48, 51, 107)';
+export const soaringEagle = 'rgb(149, 175, 192)';
+export const greenlandGreen = 'rgb(34, 166, 179)';
+export const steelPink = 'rgb(190, 46, 221)';
+export const blurple = 'rgb(72, 52, 212)';
+export const deepCove = 'rgb(19, 15, 64)';
+export const wizardGrey = 'rgb(83, 92, 104)';
+
 // SEMANTIC COLORS
 export const primary = blue; // TODO
 export const info = cyan;
@@ -74,7 +95,7 @@ export const danger = red;
 export const light = grayLighter;
 export const dark = grayDarker;
 export const background = whiteTer;
-export const borderColor = grayLighter;
+export const borderColor = lighten(0.1, soaringEagle);
 export const borderHover = grayLight;
 export const text = grayDark;
 export const textLight = gray;

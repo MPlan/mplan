@@ -8,8 +8,15 @@ import styled from 'styled-components';
 const StyledLink = styled(NavLink) `
   color: ${styles.grayLight};
   & { text-decoration: none; }
-  &:hover, &:hover * { color: ${styles.grayLighter}; }
-  &.active, &:active, &:active * { color: ${styles.white}; }
+  &:hover, &:hover * { color: ${styles.beeKeeper}; }
+  
+  &.active:hover,
+  &.active:hover *,
+  &.active,
+  &:active,
+  &:active * {
+    color: ${styles.turbo};
+  }
 `;
 
 const NavButtonContainer = styled(View) `
@@ -43,7 +50,7 @@ class NavButton extends React.Component<NavButtonProps, NavButtonState> {
 
 const NavContainer = styled(View) `
   width: 4rem;
-  background-color: ${styles.blackTer};
+  background-color: ${styles.deepCove};
   color: ${styles.white};
 `;
 
