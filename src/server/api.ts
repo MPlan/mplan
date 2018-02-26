@@ -42,7 +42,7 @@ api.get('/catalog', compression(), async (req, res) => {
     }));
     catalog = courseWithSections.reduce((catalog, courseWithSection) => {
       const { subjectCode, courseNumber } = courseWithSection;
-      catalog[`${subjectCode}__|__${courseNumber}`] = courseWithSection;
+      catalog[`${subjectCode}__|__${courseNumber}`.toUpperCase()] = courseWithSection;
       return catalog;
     }, {} as Model.Catalog);
     log.info('finished calculating catalog!');

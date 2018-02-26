@@ -56,6 +56,70 @@ export class Section extends Record.define({
   get id() { return this._id.toHexString(); }
 }
 
+export function allCombinations(
+  listsOfLists: Array<Immutable.Set<Immutable.Set<string | Course>>>
+) {
+  return _allCombinations(listsOfLists)[0];
+}
+
+function _allCombinations(
+  listsOfLists: Array<Immutable.Set<Immutable.Set<string | Course>>>
+): Array<Immutable.Set<Immutable.Set<string | Course>>> {
+  if (listsOfLists.length <= 1) {
+    return listsOfLists;
+  }
+  let combined = Immutable.Set<Immutable.Set<string | Course>>();
+  const listA = listsOfLists[0];
+  const listB = listsOfLists[1];
+
+  for (const a of listA) {
+    for (const b of listB) {
+      combined = combined.add(a.union(b))
+    }
+  }
+
+  return _allCombinations([combined, ...listsOfLists.slice(2)]);
+}
+
+function flattenPrerequisites(prerequisite: Model.Prerequisite, catalog: Catalog): Immutable.Set<Immutable.Set<string | Course>> {
+  if (!prerequisite) {
+    return Immutable.Set<Immutable.Set<string | Course>>();
+  }
+  if (typeof prerequisite === 'string') {
+    return Immutable.Set<Immutable.Set<string | Course>>()
+      .add(Immutable.Set<string | Course>().add(prerequisite));
+  }
+  if (Array.isArray(prerequisite)) {
+    const subjectCode = prerequisite[0];
+    const courseNumber = prerequisite[1];
+    const course = catalog.getCourse(
+      subjectCode, courseNumber
+    ) || `${subjectCode} ${courseNumber}`.toUpperCase();
+
+    return Immutable.Set<Immutable.Set<string | Course>>()
+      .add(Immutable.Set<string | Course>()
+        .add(course));
+  }
+  if (typeof prerequisite === 'object') {
+    if (prerequisite.g === '&') {
+      const operandsPrerequisites = prerequisite.o.map(operand => flattenPrerequisites(operand, catalog));
+      return allCombinations(operandsPrerequisites);
+    } else if (prerequisite.g === '|') {
+      const operandSetsFlattened = (prerequisite.o
+        .map(operand => flattenPrerequisites(operand, catalog))
+        .reduce((combinedSetOfSets, flattenedOperand) =>
+          flattenedOperand.reduce((combinedSet, set) =>
+            combinedSet.add(set),
+            combinedSetOfSets
+          ), Immutable.Set<Immutable.Set<string | Course>>())
+      );
+      return operandSetsFlattened;
+    }
+  }
+
+  throw new Error(`Could not flatten prerequisite because its type could not be matched.`);
+}
+
 export class Course extends Record.define({
   _id: ObjectId(),
   name: '',
@@ -76,6 +140,12 @@ export class Course extends Record.define({
   sections: Immutable.Map<string, Immutable.Set<Section>>(),
 }) implements Model.Course {
   get id() { return this._id.toHexString(); }
+
+  prerequisitesFlattened(catalog: Catalog) {
+    return this.getOrCalculate('prerequisitesFlattened', [catalog, this], () =>
+      flattenPrerequisites(this.prerequisites, catalog)
+    );
+  }
 }
 
 export class Semester extends Record.define({
@@ -178,10 +248,6 @@ export class Semester extends Record.define({
       return warnings;
     });
   }
-
-  // warningsAllSectionsHaveFilledUp(catalog: Catalog) {
-
-  // }
 }
 
 export function includes(strA: string, strB: string) {
@@ -194,6 +260,10 @@ export class Catalog extends Record.define({
   currentPageIndex: 0,
   coursesPerPage: 5,
 }) {
+
+  getCourse(subjectCode: string, courseNumber: string) {
+    return this.courseMap.get(`${subjectCode}__|__${courseNumber}`.toUpperCase());
+  }
 
   get courses() {
     return this.getOrCalculate('courses', [this.coursesSorted], () => {
@@ -306,7 +376,7 @@ export class User extends Record.define({
 
   criticalPath(catalog: Catalog) {
     return this.getOrCalculate('criticalPath', [catalog, this.coursesInDegreeMap], () => {
-      
+
     });
   }
 }
