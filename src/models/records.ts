@@ -4,6 +4,8 @@ import * as Immutable from 'immutable';
 import * as uuid from 'uuid/v4';
 import { ObjectID as _ObjectId } from 'bson';
 import { oneLine } from 'common-tags';
+import { flatten } from '../utilities/utilities';
+import { zip } from 'lodash';
 
 export function convertCatalogJsonToRecord(courses: Model.Catalog) {
   const courseMap = Object.entries(courses).reduce((catalogRecord, [courseCode, course]) => {
@@ -81,7 +83,10 @@ function _allCombinations(
   return _allCombinations([combined, ...listsOfLists.slice(2)]);
 }
 
-function flattenPrerequisites(prerequisite: Model.Prerequisite, catalog: Catalog): Immutable.Set<Immutable.Set<string | Course>> {
+function flattenPrerequisites(
+  prerequisite: Model.Prerequisite,
+  catalog: Catalog,
+): Immutable.Set<Immutable.Set<string | Course>> {
   if (!prerequisite) {
     return Immutable.Set<Immutable.Set<string | Course>>();
   }
@@ -120,6 +125,10 @@ function flattenPrerequisites(prerequisite: Model.Prerequisite, catalog: Catalog
   throw new Error(`Could not flatten prerequisite because its type could not be matched.`);
 }
 
+const memo = new WeakMap<any, any>();
+const depthMemo = new WeakMap<any, any>();
+const preferredCoursesMemo = new WeakMap<any, any>();
+
 export class Course extends Record.define({
   _id: ObjectId(),
   name: '',
@@ -140,12 +149,94 @@ export class Course extends Record.define({
   sections: Immutable.Map<string, Immutable.Set<Section>>(),
 }) implements Model.Course {
   get id() { return this._id.toHexString(); }
+  get simpleName() { return `${this.subjectCode} ${this.courseNumber}`; }
 
-  prerequisitesFlattened(catalog: Catalog) {
-    return this.getOrCalculate('prerequisitesFlattened', [catalog, this], () =>
-      flattenPrerequisites(this.prerequisites, catalog)
-    );
+  prerequisitesFlattened(catalog: Catalog): Immutable.Set<Immutable.Set<string | Course>> {
+    if (memo.has(this)) {
+      return memo.get(this);
+    }
+    const flattened = flattenPrerequisites(this.prerequisites, catalog);
+    memo.set(this, flattened);
+    return flattened;
   }
+
+  preferredSequence(catalog: Catalog, preferredCourses: Immutable.Set<string | Course>) {
+    const options = this.prerequisitesFlattened(catalog);
+    let bestOption = Immutable.Set<string | Course>();
+    let mostCourses = 0;
+
+    for (const option of options) {
+      let intersectingCourses = Immutable.Set<string | Course>();
+      for (const course of option) {
+        if (preferredCourses.has(course)) {
+          intersectingCourses = intersectingCourses.add(course);
+        }
+        if (course instanceof Course) {
+          intersectingCourses = (course
+            .findPreferredCourses(catalog, preferredCourses)
+            .reduce((intersectingCourses, next) =>
+              intersectingCourses.add(next), intersectingCourses
+            )
+          );
+        }
+      }
+      const courseCount = intersectingCourses.count();
+      if (courseCount > mostCourses) {
+        bestOption = option;
+        mostCourses = courseCount;
+      }
+    }
+
+    return bestOption;
+  }
+
+  preferredCoursesCount(catalog: Catalog, preferredCourses: Immutable.Set<string | Course>) {
+    return this.findPreferredCourses(catalog, preferredCourses).count();
+  }
+
+  findPreferredCourses(
+    catalog: Catalog,
+    preferredCourses: Immutable.Set<string | Course>,
+  ): Immutable.Set<string | Course> {
+
+    if (preferredCoursesMemo.has(this)) {
+      return preferredCoursesMemo.get(this);
+    }
+
+    const options = this.prerequisitesFlattened(catalog);
+    let foundCourses = Immutable.Set<string | Course>();
+
+    for (const option of options) {
+      for (const course of option) {
+        if (preferredCourses.has(course)) {
+          foundCourses = foundCourses.add(course);
+        }
+        if (course instanceof Course) {
+          foundCourses = (course
+            .findPreferredCourses(catalog, preferredCourses)
+            .reduce((foundCourses, next) => foundCourses.add(next), foundCourses)
+          );
+        }
+      }
+    }
+
+    preferredCoursesMemo.set(this, foundCourses);
+
+    return foundCourses;
+  }
+
+  // prerequisiteDepth(catalog: Catalog): number {
+  //   if (depthMemo.has(this)) {
+  //     return depthMemo.get(this);
+  //   }
+
+  //   const options = this.prerequisitesFlattened(catalog);
+
+
+  //   const value = min + 1;
+  //   depthMemo.set(this, value);
+  //   return value;
+  // }
 }
 
 export class Semester extends Record.define({
@@ -256,11 +347,7 @@ export function includes(strA: string, strB: string) {
 
 export class Catalog extends Record.define({
   courseMap: Immutable.Map<string, Course>(),
-  search: '',
-  currentPageIndex: 0,
-  coursesPerPage: 5,
 }) {
-
   getCourse(subjectCode: string, courseNumber: string) {
     return this.courseMap.get(`${subjectCode}__|__${courseNumber}`.toUpperCase());
   }
@@ -279,52 +366,6 @@ export class Catalog extends Record.define({
         .sortBy(course => `${course.subjectCode} ${course.courseNumber} ${course.name}`);
     });
   }
-
-  get coursesOnCurrentPage() {
-    return this.getOrCalculate('coursesOnCurrentPage', () => {
-      const start = this.currentPageIndex * this.coursesPerPage;
-      const end = (this.currentPageIndex + 1) * this.coursesPerPage;
-
-      return this.filteredCourses.slice(start, end).toArray();
-    });
-  }
-
-  get totalPages() {
-    return this.getOrCalculate('totalPages', () => {
-      return Math.ceil(this.filteredCourses.count() / this.coursesPerPage);
-    });
-  }
-
-  get filteredCourses() {
-    return this.getOrCalculate('filteredCourses', () => {
-      console.log('calculated filtered courses');
-      return this.coursesSorted.filter(course => {
-        const searchTerms = this.search.split(' ').map(t => t.trim()).filter(t => !!t);
-        return searchTerms.every(searchTerm => {
-          if (includes(course.subjectCode, searchTerm)) { return true; }
-          if (includes(course.courseNumber, searchTerm)) { return true; }
-          if (includes(course.name, searchTerm)) { return true; }
-          const description = course.description;
-          if (description && includes(description, searchTerm)) { return true; }
-          return false;
-        });
-      });
-    });
-  }
-
-  setSearch(search: string) {
-    return this.set('search', search);
-  }
-
-  nextPage() {
-    const nextPageIndex = Math.min(this.currentPageIndex + 1, this.totalPages - 1);
-    return this.set('currentPageIndex', nextPageIndex);
-  }
-
-  previousPage() {
-    const previousPageIndex = Math.max(this.currentPageIndex - 1, 0);
-    return this.set('currentPageIndex', previousPageIndex);
-  }
 }
 
 export class User extends Record.define({
@@ -335,7 +376,7 @@ export class User extends Record.define({
   registerDate: 0,
   lastLoginDate: 0,
   boxMap: Immutable.Map<string, Course>(),
-  coursesInDegreeMap: Immutable.Map<string, Course>(),
+  degreeMap: Immutable.Map<string, Course>(),
   semesterMap: Immutable.Map<string, Semester>(),
 }) {
   removeCourseFromBox(course: Course) {
@@ -369,14 +410,8 @@ export class User extends Record.define({
   }
 
   get coursesInDegree() {
-    return this.getOrCalculate('degree', [this.coursesInDegreeMap], () => {
-      return this.coursesInDegreeMap.valueSeq().toArray();
-    });
-  }
-
-  criticalPath(catalog: Catalog) {
-    return this.getOrCalculate('criticalPath', [catalog, this.coursesInDegreeMap], () => {
-
+    return this.getOrCalculate('degree', [this.degreeMap], () => {
+      return this.degreeMap.valueSeq().toArray();
     });
   }
 }

@@ -49,19 +49,115 @@ describe('record models', () => {
   });
 
   it('prerequisitesFlattened', () => {
-    const course = catalog.getCourse('ARTH', '400')!;
+    const course = catalog.getCourse('CIS', '450')!;
     const prerequisitesFlattened = course.prerequisitesFlattened(catalog);
 
-    console.log('{');
+    console.log(`unflattened course prerequisite options for ${course.subjectCode} ${course.courseNumber}`);
+    console.log(`
+ALL
+|--IMSE 317
+|
++--EITHER
+   |--ALL
+   |  |--ECE 370
+   |  +--MATH 276
+   |
+   |--ALL
+   |  |--ECE 370
+   |  +--ECE 276
+   |
+   +--ALL
+      |--CIS 310
+      +--EITHER
+         |--CIS 350
+         |--CIS 3501
+         +--ISME 350
+`);
+
+    console.log(`flattend course prerequisite options for ${course.subjectCode} ${course.courseNumber}`);
+    console.log('EITHER');
+    console.log('|')
     for (const prerequisiteSet of prerequisitesFlattened) {
       const set = prerequisiteSet.map(course => typeof course === 'string'
         ? course
         : `${course.subjectCode} ${course.courseNumber}`
-      ).join(', ');
-      console.log(`  { ${set} }`);
+      );
+      console.log(`|--ALL`)
+      for (const course of set) {
+        console.log(`|  |--${course}`)
+      }
+      console.log('|')
     }
-    console.log('}');
   });
+
+  // it('prerequisiteDepth', () => {
+  //   const course = catalog.getCourse('CIS', '4962')!;
+
+  //   console.log(course.prerequisiteDepth(catalog));
+  // });
+
+  it('pointer equality test', () => {
+    const cis375 = catalog.getCourse('CIS', '375');
+    const alsoCis375 = catalog.getCourse('CIS', '375');
+    expect(cis375).toBe(alsoCis375);
+  })
+
+  it('preferredCoursesCount', () => {
+    const cis375 = catalog.getCourse('ECE', '370')!;
+    const cis350 = catalog.getCourse('CIS', '350')!;
+    const cis200 = catalog.getCourse('CIS', '200')!;
+
+    const preferredCourses = Immutable.Set<string | Record.Course>().add(cis350).add(cis200);
+
+    const result = cis375.preferredCoursesCount(catalog, preferredCourses);
+    console.log({ result });
+  });
+
+  it('preferredSequence', () => {
+    // course we want to find the preferred sequence
+    const cis4962 = catalog.getCourse('CIS', '4962')!;
+
+    // preferred courses to input into the algorithm
+    const cis350 = catalog.getCourse('CIS', '350')!;
+    const cis200 = catalog.getCourse('CIS', '200')!;
+    const comp270 = catalog.getCourse('COMP', '270')!;
+
+    const preferredCourses = Immutable.Set<string | Record.Course>()
+      .add(cis350)
+      .add(cis200)
+      .add(comp270);
+
+    const preferredSequence = cis4962.preferredSequence(catalog, preferredCourses)!;
+
+    function convertToString(set: Immutable.Set<string | Record.Course>) {
+      const namesOfCourses: Array<any> = [];
+
+      for (let course of set) {
+        if (typeof course === 'string') {
+          namesOfCourses.push(course);
+        } else {
+          const courseName = `${course.subjectCode} ${course.courseNumber}`;
+          namesOfCourses.push(courseName);
+          const subPreferredCourses = course.preferredSequence(catalog, preferredCourses);
+          if (!subPreferredCourses) { continue; }
+          namesOfCourses.push(convertToString(subPreferredCourses));
+        }
+      }
+
+      return namesOfCourses;
+    }
+
+    console.log(JSON.stringify(convertToString(preferredSequence), null, 2));
+
+
+    // const queue = [] as Array<string | Record.Course>;
+
+    // function print(set: Immutable.Set<string | Record.Course>) {
+    //   for (const course in set) {
+    //     queue.push(course);
+    //   }
+    // }
+  })
 
   describe('User', () => {
     describe('critical path', () => {
