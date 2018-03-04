@@ -50,7 +50,7 @@ describe('record models', () => {
 
   it('prerequisitesFlattened', () => {
     const course = catalog.getCourse('CIS', '450')!;
-    const prerequisitesFlattened = course.prerequisitesFlattened(catalog);
+    const prerequisitesFlattened = course.options(catalog);
 
     console.log(`unflattened course prerequisite options for ${course.subjectCode} ${course.courseNumber}`);
     console.log(`
@@ -90,27 +90,33 @@ ALL
     }
   });
 
-  // it('prerequisiteDepth', () => {
-  //   const course = catalog.getCourse('CIS', '4962')!;
+  it('prerequisiteDepth', () => {
+    // course we want to find the preferred sequence
+    const cis4962 = catalog.getCourse('CIS', '4962')!;
 
-  //   console.log(course.prerequisiteDepth(catalog));
-  // });
+    // preferred courses to input into the algorithm
+    const cis350 = catalog.getCourse('CIS', '350')!;
+    const cis200 = catalog.getCourse('CIS', '200')!;
+    const comp270 = catalog.getCourse('COMP', '270')!;
 
-  it('pointer equality test', () => {
-    const cis375 = catalog.getCourse('CIS', '375');
-    const alsoCis375 = catalog.getCourse('CIS', '375');
-    expect(cis375).toBe(alsoCis375);
-  })
+    const preferredCourses = Immutable.Set<string | Record.Course>()
+      .add(cis350)
+      .add(cis200)
+      .add(comp270);
+    const depth = cis4962.depth(catalog, preferredCourses);
 
-  it('preferredCoursesCount', () => {
-    const cis375 = catalog.getCourse('ECE', '370')!;
+    console.log(depth);
+  });
+
+  it('findPreferredCourses', () => {
+    const cis375 = catalog.getCourse('CIS', '375')!;
     const cis350 = catalog.getCourse('CIS', '350')!;
     const cis200 = catalog.getCourse('CIS', '200')!;
 
     const preferredCourses = Immutable.Set<string | Record.Course>().add(cis350).add(cis200);
 
-    const result = cis375.preferredCoursesCount(catalog, preferredCourses);
-    console.log({ result });
+    const result = cis375.intersection(preferredCourses, catalog);
+    console.log(result.count());
   });
 
   it('preferredSequence', () => {
@@ -127,7 +133,7 @@ ALL
       .add(cis200)
       .add(comp270);
 
-    const preferredSequence = cis4962.preferredSequence(catalog, preferredCourses)!;
+    const preferredSequence = cis4962.bestOption(catalog, preferredCourses)!;
 
     function convertToString(set: Immutable.Set<string | Record.Course>) {
       const namesOfCourses: Array<any> = [];
@@ -138,7 +144,7 @@ ALL
         } else {
           const courseName = `${course.subjectCode} ${course.courseNumber}`;
           namesOfCourses.push(courseName);
-          const subPreferredCourses = course.preferredSequence(catalog, preferredCourses);
+          const subPreferredCourses = course.bestOption(catalog, preferredCourses);
           if (!subPreferredCourses) { continue; }
           namesOfCourses.push(convertToString(subPreferredCourses));
         }
@@ -148,20 +154,5 @@ ALL
     }
 
     console.log(JSON.stringify(convertToString(preferredSequence), null, 2));
-
-
-    // const queue = [] as Array<string | Record.Course>;
-
-    // function print(set: Immutable.Set<string | Record.Course>) {
-    //   for (const course in set) {
-    //     queue.push(course);
-    //   }
-    // }
   })
-
-  describe('User', () => {
-    describe('critical path', () => {
-
-    });
-  });
 });

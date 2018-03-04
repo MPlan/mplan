@@ -5,7 +5,10 @@ import * as uuid from 'uuid/v4';
 import { ObjectID as _ObjectId } from 'bson';
 import { oneLine } from 'common-tags';
 import { flatten } from '../utilities/utilities';
-import { zip } from 'lodash';
+
+export function ObjectId(id?: string | number | _ObjectId) {
+  return (_ObjectId as any)(id) as _ObjectId;
+}
 
 export function convertCatalogJsonToRecord(courses: Model.Catalog) {
   const courseMap = Object.entries(courses).reduce((catalogRecord, [courseCode, course]) => {
@@ -34,10 +37,6 @@ export function convertCatalogJsonToRecord(courses: Model.Catalog) {
 
   const catalog = new Catalog({ courseMap });
   return catalog;
-}
-
-export function ObjectId(id?: string | number | _ObjectId) {
-  return (_ObjectId as any)(id) as _ObjectId;
 }
 
 export class Section extends Record.define({
@@ -125,9 +124,9 @@ function flattenPrerequisites(
   throw new Error(`Could not flatten prerequisite because its type could not be matched.`);
 }
 
-const memo = new WeakMap<any, any>();
-const depthMemo = new WeakMap<any, any>();
-const preferredCoursesMemo = new WeakMap<any, any>();
+function hashObjects(objects: { [key: string]: any }) {
+  return Immutable.Map(objects).hashCode();
+}
 
 export class Course extends Record.define({
   _id: ObjectId(),
@@ -151,17 +150,37 @@ export class Course extends Record.define({
   get id() { return this._id.toHexString(); }
   get simpleName() { return `${this.subjectCode} ${this.courseNumber}`; }
 
-  prerequisitesFlattened(catalog: Catalog): Immutable.Set<Immutable.Set<string | Course>> {
-    if (memo.has(this)) {
-      return memo.get(this);
+  static optionsMemo = new Map<any, any>();
+  static bestOptionMemo = new Map<any, any>();
+  static hasCourseMemo = new Map<any, any>();
+  static intersectionMemo = new Map<any, any>();
+  static depthMemo = new Map<any, any>();
+
+  /**
+   * calculates all possible options of prerequisites. e.g. for CIS 350, you can take either
+   * (CIS 200 and CIS 275 and MATH 115) or (IMSE 200 and CIS 275 and MATH 115)
+   */
+  options(catalog: Catalog): Immutable.Set<Immutable.Set<string | Course>> {
+    const hash = hashObjects({ catalog, course: this });
+    if (Course.optionsMemo.has(hash)) {
+      return Course.optionsMemo.get(hash);
     }
     const flattened = flattenPrerequisites(this.prerequisites, catalog);
-    memo.set(this, flattened);
+    Course.optionsMemo.set(hash, flattened);
     return flattened;
   }
 
-  preferredSequence(catalog: Catalog, preferredCourses: Immutable.Set<string | Course>) {
-    const options = this.prerequisitesFlattened(catalog);
+  /**
+   * given a set of preferred courses, this will return the best option has the most preferred
+   * courses
+   */
+  bestOption(catalog: Catalog, preferredCourses: Immutable.Set<string | Course>) {
+    const hash = hashObjects({ catalog, preferredCourses, course: this });
+    if (Course.bestOptionMemo.has(hash)) {
+      return Course.bestOptionMemo.get(hash);
+    }
+
+    const options = this.options(catalog);
     let bestOption = Immutable.Set<string | Course>();
     let mostCourses = 0;
 
@@ -173,7 +192,7 @@ export class Course extends Record.define({
         }
         if (course instanceof Course) {
           intersectingCourses = (course
-            .findPreferredCourses(catalog, preferredCourses)
+            .intersection(preferredCourses, catalog)
             .reduce((intersectingCourses, next) =>
               intersectingCourses.add(next), intersectingCourses
             )
@@ -187,23 +206,61 @@ export class Course extends Record.define({
       }
     }
 
+    Course.bestOptionMemo.set(hash, bestOption);
     return bestOption;
   }
 
-  preferredCoursesCount(catalog: Catalog, preferredCourses: Immutable.Set<string | Course>) {
-    return this.findPreferredCourses(catalog, preferredCourses).count();
-  }
-
-  findPreferredCourses(
+  /**
+   * returns whether or not the given course is in the current course's prerequisite tree
+   */
+  hasCourse(
+    courseToFind: string | Course,
     catalog: Catalog,
-    preferredCourses: Immutable.Set<string | Course>,
-  ): Immutable.Set<string | Course> {
-
-    if (preferredCoursesMemo.has(this)) {
-      return preferredCoursesMemo.get(this);
+    preferredCourses: Immutable.Set<string | Course>
+  ) {
+    const hash = hashObjects({ courseToFind, catalog, preferredCourses, course: this });
+    if (Course.hasCourseMemo.has(hash)) {
+      return Course.hasCourseMemo.get(hash);
     }
 
-    const options = this.prerequisitesFlattened(catalog);
+    const option = this.bestOption(catalog, preferredCourses);
+    if (option.has(courseToFind)) {
+      Course.hasCourseMemo.set(hash, true);
+      return true;
+    }
+
+    for (const course of option) {
+      if (course instanceof Course) {
+        const courseHasPrerequisite = course.hasCourse(
+          courseToFind,
+          catalog,
+          preferredCourses
+        );
+        if (courseHasPrerequisite) {
+          Course.hasCourseMemo.set(hash, true);
+          return true;
+        }
+      }
+    }
+
+    Course.hasCourseMemo.set(hash, false);
+    return false;
+  }
+
+  /**
+   * finds the intersection of the given `preferredCourses` and the current course's preqreuisite
+   * tree.
+   */
+  intersection(
+    preferredCourses: Immutable.Set<string | Course>,
+    catalog: Catalog,
+  ): Immutable.Set<string | Course> {
+    const hash = hashObjects({ preferredCourses, catalog, course: this });
+    if (Course.intersectionMemo.has(hash)) {
+      return Course.intersectionMemo.get(hash);
+    }
+
+    const options = this.options(catalog);
     let foundCourses = Immutable.Set<string | Course>();
 
     for (const option of options) {
@@ -213,30 +270,42 @@ export class Course extends Record.define({
         }
         if (course instanceof Course) {
           foundCourses = (course
-            .findPreferredCourses(catalog, preferredCourses)
+            .intersection(preferredCourses, catalog)
             .reduce((foundCourses, next) => foundCourses.add(next), foundCourses)
           );
         }
       }
     }
 
-    preferredCoursesMemo.set(this, foundCourses);
-
+    Course.intersectionMemo.set(hash, foundCourses);
     return foundCourses;
   }
 
-  // prerequisiteDepth(catalog: Catalog): number {
-  //   if (depthMemo.has(this)) {
-  //     return depthMemo.get(this);
-  //   }
+  /**
+   * finds the depth of the prerequisite tree using the `bestOption`
+   */
+  depth(catalog: Catalog, preferredCourses: Immutable.Set<string | Course>): number {
+    const hash = hashObjects({ catalog, preferredCourses, course: this });
+    if (Course.depthMemo.has(hash)) {
+      return Course.depthMemo.get(hash);
+    }
 
-  //   const options = this.prerequisitesFlattened(catalog);
+    const bestOption = this.bestOption(catalog, preferredCourses);
 
+    let maxDepth = 0;
+    for (const course of bestOption) {
+      if (course instanceof Course) {
+        const courseDepth = course.depth(catalog, preferredCourses);
+        if (courseDepth > maxDepth) {
+          maxDepth = courseDepth;
+        }
+      }
+    }
 
-  //   const value = min + 1;
-  //   depthMemo.set(this, value);
-  //   return value;
-  // }
+    const value = maxDepth + 1;
+    Course.depthMemo.set(hash, value);
+    return value;
+  }
 }
 
 export class Semester extends Record.define({
