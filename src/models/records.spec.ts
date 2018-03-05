@@ -184,4 +184,60 @@ ALL
       console.log(levelString);
     }
   });
+
+  it('closure', () => {
+
+    const cis350 = catalog.getCourse('CIS', '350')!;
+    const cis200 = catalog.getCourse('CIS', '200')!;
+    const comp270 = catalog.getCourse('COMP', '270')!;
+    const comp105 = catalog.getCourse('COMP', '105')!;
+    const math115 = catalog.getCourse('MATH', '115')!;
+
+    const preferredCourses = Immutable.Set<string | Record.Course>()
+      .add(cis350)
+      .add(cis200)
+      .add(comp270)
+      .add(math115)
+      .add(comp105);
+    
+    
+    const closure = catalog.getCourse('CIS', '4962')!.closure(catalog, preferredCourses);
+
+    console.log(closure.map(course => /*if*/ course instanceof Record.Course
+      ? `${course.subjectCode} ${course.courseNumber}`
+      : course
+    ).join(' '));
+  });
+
+  it('critical path', () => {
+    const degree = Immutable.Set<string | Record.Course>()
+      .add(catalog.getCourse('CIS', '4962')!)
+      .add(catalog.getCourse('CIS', '200')!)
+      .add(catalog.getCourse('COMP', '270')!)
+      .add(catalog.getCourse('CIS', '450')!)
+      .add(catalog.getCourse('CIS', '450')!)
+      .add(catalog.getCourse('CHEM', '134')!)
+      .add(catalog.getCourse('CHEM', '136')!)
+      .add(catalog.getCourse('PHYS', '126')!)
+      .add(catalog.getCourse('CIS', '421')!)
+      .add(catalog.getCourse('CIS', '435')!)
+      .add(catalog.getCourse('OB', '354')!)
+
+    const user = new Record.User({
+      degree,
+    });
+
+    const criticalPath = user.criticalPath(catalog);
+
+    for (const tree of criticalPath) {
+      for (const level of tree) {
+        const levelString = level.map(course => /*if*/ course instanceof Record.Course
+          ? `${course.subjectCode} ${course.courseNumber}`
+          : course
+        ).join(' ');
+        console.log(levelString);
+      }
+      console.log('----');
+    }
+  });
 });

@@ -157,6 +157,7 @@ export class Course extends Record.define({
   static depthMemo = new Map<any, any>();
   static minDepthMemo = new Map<any, any>();
   static levelsMemo = new Map<any, any>();
+  static closureMemo = new Map<any, any>();
 
   /**
    * calculates all possible options of prerequisites. e.g. for CIS 350, you can take either
@@ -412,6 +413,30 @@ export class Course extends Record.define({
     Course.levelsMemo.set(hash, levels);
     return levels;
   }
+
+  closure(
+    catalog: Catalog,
+    preferredCourses: Immutable.Set<string | Course>,
+  ): Immutable.Set<string | Course> {
+    const hash = hashObjects({ course: this, catalog, preferredCourses });
+    if (Course.closureMemo.has(hash)) {
+      return Course.closureMemo.get(hash);
+    }
+
+    let coursesInClosure = Immutable.Set<string | Course>();
+    coursesInClosure = coursesInClosure.add(this);
+
+    const bestOption = this.bestOption(catalog, preferredCourses);
+    for (const course of bestOption) {
+      coursesInClosure = coursesInClosure.add(course);
+      if (course instanceof Course) {
+        coursesInClosure = coursesInClosure.union(course.closure(catalog, preferredCourses));
+      }
+    }
+
+    Course.closureMemo.set(hash, coursesInClosure);
+    return coursesInClosure;
+  }
 }
 
 export class Semester extends Record.define({
@@ -594,14 +619,8 @@ export class User extends Record.define({
   }
 
   criticalPath(catalog: Catalog) {
-    // iterate through preferred courses to find the course with the highest depth
-    // check to see if that course is already in the tree
-    // write out its prerequisites by depth using a breadth first traversal
-    // remove any duplicates
-    // move courses down if you can
-
-    let levels = Immutable.List<Immutable.Set<string | Course>>();
-    let coursesInForest = Immutable.Set<string | Course>();
+    let forest = Immutable.Set<Immutable.List<Immutable.Set<string | Course>>>();
+    let closure = Immutable.Set<string | Course>();
 
     const preferredCoursesSorted = (this
       .preferredCourses
@@ -610,19 +629,41 @@ export class User extends Record.define({
         ? c.depth(catalog, this.preferredCourses)
         : 0
       )
+      .reverse()
     );
 
     for (const course of preferredCoursesSorted) {
-      if (coursesInForest.has(course)) { continue; }
+      if (closure.has(course)) { continue; }
 
-      let newTree = Immutable.List<Immutable.Set<string | Course>>();
+      if (course instanceof Course) {
+        let courseLevels = course.levels(catalog, this.preferredCourses);
 
-      if (typeof course === 'string') {
-        newTree = newTree.set(0, Immutable.Set<string | Course>().add(course));
-      } else if (course instanceof Course) {
-        course.bestOption(catalog, this.preferredCourses);
+        // remove all the repeats
+        const levelsCount = courseLevels.count();
+        for (let courseLevelIndex = 0; courseLevelIndex < levelsCount; courseLevelIndex += 1) {
+          let courseLevel = courseLevels.get(courseLevelIndex);
+          if (!courseLevel) { continue; }
+
+          courseLevel = courseLevel.subtract(closure.intersect(courseLevel));
+          courseLevels = courseLevels.set(courseLevelIndex, courseLevel);
+        }
+
+        closure = closure.union(
+          course.closure(catalog, this.preferredCourses)
+        );
+
+        forest = forest.add(courseLevels.filter(x => !x.isEmpty()));
+      } else if (typeof course === 'string') {
+        forest = forest
+          .add(Immutable.List<Immutable.Set<string | Course>>()
+            .push(
+              Immutable.Set<string | Course>().add(
+                course)));
       }
+      closure = closure.add(course);
     }
+
+    return forest;
   }
 }
 
