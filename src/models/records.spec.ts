@@ -162,13 +162,15 @@ ALL
     const cis350 = catalog.getCourse('CIS', '350')!;
     const cis200 = catalog.getCourse('CIS', '200')!;
     const comp270 = catalog.getCourse('COMP', '270')!;
+    const comp105 = catalog.getCourse('COMP', '105')!;
     const math115 = catalog.getCourse('MATH', '115')!;
 
     const preferredCourses = Immutable.Set<string | Record.Course>()
       .add(cis350)
       .add(cis200)
       .add(comp270)
-      .add(math115);
+      .add(math115)
+      .add(comp105);
 
     const levels = cis4962.levels(catalog, preferredCourses);
 

@@ -155,6 +155,7 @@ export class Course extends Record.define({
   static hasCourseMemo = new Map<any, any>();
   static intersectionMemo = new Map<any, any>();
   static depthMemo = new Map<any, any>();
+  static minDepthMemo = new Map<any, any>();
   static levelsMemo = new Map<any, any>();
 
   /**
@@ -185,10 +186,14 @@ export class Course extends Record.define({
     }
 
     const options = this.options(catalog);
-    let bestOption = options.filter(course => course instanceof Course).minBy(course => /*if*/ course instanceof Course
-      ? course.depth(catalog, preferredCourses)
-      : 99999
-    ) || Immutable.Set<string | Course>();
+    const minDepthOption = options.minBy(option => {
+      const maxDepthOfAllCoursesInOption = (option
+        .filter(course => course instanceof Course)
+        .maxBy(course => (course as any as Course).minDepth(catalog))
+      );
+      return maxDepthOfAllCoursesInOption;
+    })
+    let bestOption = minDepthOption || Immutable.Set<string | Course>();
     let mostCourses = 0;
 
     for (const option of options) {
@@ -314,6 +319,39 @@ export class Course extends Record.define({
 
     const value = maxDepth + 1;
     Course.depthMemo.set(hash, value);
+    return value;
+  }
+
+  minDepth(catalog: Catalog): number {
+    const hash = hashObjects({ catalog, course: this });
+    if (Course.minDepthMemo.has(hash)) {
+      return Course.minDepthMemo.get(hash);
+    }
+
+    const options = this.options(catalog);
+    if (options.isEmpty()) {
+      Course.minDepthMemo.set(hash, 1);
+      return 1;
+    }
+
+    let minDepthOfAllOptions = 9999;
+    for (const option of options) {
+      let maxDepthOfAllCourses = 0;
+      for (const course of option) {
+        if (course instanceof Course) {
+          const courseDepth = course.minDepth(catalog);
+          if (courseDepth > maxDepthOfAllCourses) {
+            maxDepthOfAllCourses = courseDepth;
+          }
+        }
+      }
+      if (maxDepthOfAllCourses < minDepthOfAllOptions) {
+        minDepthOfAllOptions = maxDepthOfAllCourses;
+      }
+    }
+
+    const value = minDepthOfAllOptions + 1;
+    Course.minDepthMemo.set(hash, value);
     return value;
   }
 
