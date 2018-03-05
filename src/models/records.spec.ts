@@ -154,5 +154,32 @@ ALL
     }
 
     console.log(JSON.stringify(convertToString(preferredSequence), null, 2));
-  })
+  });
+
+  it('levels', () => {
+    const cis4962 = catalog.getCourse('CIS', '4962')!;
+
+    const cis350 = catalog.getCourse('CIS', '350')!;
+    const cis200 = catalog.getCourse('CIS', '200')!;
+    const comp270 = catalog.getCourse('COMP', '270')!;
+    const math115 = catalog.getCourse('MATH', '115')!;
+
+    const preferredCourses = Immutable.Set<string | Record.Course>()
+      .add(cis350)
+      .add(cis200)
+      .add(comp270)
+      .add(math115);
+
+    const levels = cis4962.levels(catalog, preferredCourses);
+
+    console.log('count', levels.count());
+
+    for (const level of levels) {
+      const levelString = level.map(course => /*if*/ course instanceof Record.Course
+        ? `${course.subjectCode} ${course.courseNumber}`
+        : course
+      ).join(' ');
+      console.log(levelString);
+    }
+  });
 });

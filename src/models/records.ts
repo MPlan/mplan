@@ -155,6 +155,7 @@ export class Course extends Record.define({
   static hasCourseMemo = new Map<any, any>();
   static intersectionMemo = new Map<any, any>();
   static depthMemo = new Map<any, any>();
+  static levelsMemo = new Map<any, any>();
 
   /**
    * calculates all possible options of prerequisites. e.g. for CIS 350, you can take either
@@ -174,14 +175,20 @@ export class Course extends Record.define({
    * given a set of preferred courses, this will return the best option has the most preferred
    * courses
    */
-  bestOption(catalog: Catalog, preferredCourses: Immutable.Set<string | Course>) {
+  bestOption(
+    catalog: Catalog,
+    preferredCourses: Immutable.Set<string | Course>,
+  ): Immutable.Set<string | Course> {
     const hash = hashObjects({ catalog, preferredCourses, course: this });
     if (Course.bestOptionMemo.has(hash)) {
       return Course.bestOptionMemo.get(hash);
     }
 
     const options = this.options(catalog);
-    let bestOption = Immutable.Set<string | Course>();
+    let bestOption = options.filter(course => course instanceof Course).minBy(course => /*if*/ course instanceof Course
+      ? course.depth(catalog, preferredCourses)
+      : 99999
+    ) || Immutable.Set<string | Course>();
     let mostCourses = 0;
 
     for (const option of options) {
@@ -248,7 +255,7 @@ export class Course extends Record.define({
   }
 
   /**
-   * finds the intersection of the given `preferredCourses` and the current course's preqreuisite
+   * finds the intersection of the given `preferredCourses` and the current course's prerequisite
    * tree.
    */
   intersection(
@@ -262,6 +269,9 @@ export class Course extends Record.define({
 
     const options = this.options(catalog);
     let foundCourses = Immutable.Set<string | Course>();
+    if (preferredCourses.has(this)) {
+      foundCourses = foundCourses.add(this);
+    }
 
     for (const option of options) {
       for (const course of option) {
@@ -306,6 +316,45 @@ export class Course extends Record.define({
     Course.depthMemo.set(hash, value);
     return value;
   }
+
+  levels(
+    catalog: Catalog,
+    preferredCourses: Immutable.Set<string | Course>,
+  ): Immutable.List<Immutable.Set<string | Course>> {
+    const hash = hashObjects({ course: this, catalog, preferredCourses });
+    if (Course.levelsMemo.has(hash)) {
+      return Course.levelsMemo.get(hash);
+    }
+
+    const bestOption = this.bestOption(catalog, preferredCourses);
+    // const depth = this.depth(catalog, preferredCourses);
+
+    let levels = Immutable.List<Immutable.Set<string | Course>>();
+    levels = levels
+      .set(0, Immutable.Set<string | Course>()
+        .add(this));
+
+    for (const course of bestOption) {
+      let secondLevel = levels.get(1) || Immutable.Set<string | Course>();
+      secondLevel = secondLevel.add(course);
+      levels = levels.set(1, secondLevel);
+      if (course instanceof Course) {
+        const subLevels = course.levels(catalog, preferredCourses);
+        const subLevelCount = subLevels.count();
+        for (let i = 0; i < subLevelCount; i += 1) {
+          const subLevel = subLevels.get(i);
+          if (!subLevel) { continue; }
+          const parentIndex = i + 1;
+          let parentLevel = levels.get(parentIndex) || Immutable.Set<string | Course>();
+          parentLevel = parentLevel.union(subLevel);
+          levels = levels.set(parentIndex, parentLevel);
+        }
+      }
+    }
+
+    Course.levelsMemo.set(hash, levels);
+    return levels;
+  }
 }
 
 export class Semester extends Record.define({
@@ -314,7 +363,6 @@ export class Semester extends Record.define({
   season: 'Fall' as 'Fall' | 'Winter' | 'Summer',
   year: 0,
 }) {
-
   get id() { return this._id.toHexString(); }
 
   get position() {
@@ -410,10 +458,6 @@ export class Semester extends Record.define({
   }
 }
 
-export function includes(strA: string, strB: string) {
-  return strA.trim().toLowerCase().includes(strB.trim().toLowerCase());
-}
-
 export class Catalog extends Record.define({
   courseMap: Immutable.Map<string, Course>(),
 }) {
@@ -445,9 +489,12 @@ export class User extends Record.define({
   registerDate: 0,
   lastLoginDate: 0,
   boxMap: Immutable.Map<string, Course>(),
-  degreeMap: Immutable.Map<string, Course>(),
   semesterMap: Immutable.Map<string, Semester>(),
+  degree: Immutable.Set<string | Course>(),
+  additionalCourses: Immutable.Set<string | Course>(),
 }) {
+  static preferredCoursesMemo = new Map<any, any>();
+
   removeCourseFromBox(course: Course) {
     return this.update('boxMap', boxMap => boxMap.remove(course.id));
   }
@@ -478,10 +525,47 @@ export class User extends Record.define({
     return this.update('boxMap', boxMap => boxMap.set(course.id, course));
   }
 
-  get coursesInDegree() {
-    return this.getOrCalculate('degree', [this.degreeMap], () => {
-      return this.degreeMap.valueSeq().toArray();
-    });
+  get preferredCourses() {
+    const hash = hashObjects({ degree: this.degree, additionalCourses: this.additionalCourses });
+    if (User.preferredCoursesMemo.has(hash)) {
+      return User.preferredCoursesMemo.get(hash) as Immutable.Set<string | Course>;
+    }
+
+    const combined = this.degree.union(this.additionalCourses);
+    User.preferredCoursesMemo.set(hash, combined);
+    return combined;
+  }
+
+  criticalPath(catalog: Catalog) {
+    // iterate through preferred courses to find the course with the highest depth
+    // check to see if that course is already in the tree
+    // write out its prerequisites by depth using a breadth first traversal
+    // remove any duplicates
+    // move courses down if you can
+
+    let levels = Immutable.List<Immutable.Set<string | Course>>();
+    let coursesInForest = Immutable.Set<string | Course>();
+
+    const preferredCoursesSorted = (this
+      .preferredCourses
+      .toList()
+      .sortBy(c => /*if*/ c instanceof Course
+        ? c.depth(catalog, this.preferredCourses)
+        : 0
+      )
+    );
+
+    for (const course of preferredCoursesSorted) {
+      if (coursesInForest.has(course)) { continue; }
+
+      let newTree = Immutable.List<Immutable.Set<string | Course>>();
+
+      if (typeof course === 'string') {
+        newTree = newTree.set(0, Immutable.Set<string | Course>().add(course));
+      } else if (course instanceof Course) {
+        course.bestOption(catalog, this.preferredCourses);
+      }
+    }
   }
 }
 
