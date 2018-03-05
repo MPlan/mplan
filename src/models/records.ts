@@ -390,6 +390,25 @@ export class Course extends Record.define({
       }
     }
 
+    // remove duplicates
+    for (let lastLevelIndex = levels.count() - 1; lastLevelIndex >= 0; lastLevelIndex -= 1) {
+      const lastLevel = levels.get(lastLevelIndex);
+      if (!lastLevel) {
+        console.warn('last level was undefined');
+        continue;
+      }
+      for (let levelsIndex = 0; levelsIndex < lastLevelIndex; levelsIndex += 1) {
+        let parentLevel = levels.get(levelsIndex);
+        if (!parentLevel) {
+          console.warn('parent level was undefined');
+          continue;
+        }
+
+        parentLevel = parentLevel.subtract(lastLevel);
+        levels = levels.set(levelsIndex, parentLevel);
+      }
+    }
+
     Course.levelsMemo.set(hash, levels);
     return levels;
   }
