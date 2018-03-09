@@ -76,8 +76,8 @@ export class CriticalPath extends Model.store.connect() {
     const height = parseInt(svg.attr('height'), 10);
 
     const simulation = forceSimulation()
-      .force("link", forceLink().id((d: any) => d.id))
-      .force("charge", forceManyBody())
+      .force("link", forceLink().id((d: any) => d.id).distance(10))
+      .force("charge", forceManyBody().strength(-500))
       .force("center", forceCenter(width / 2, height / 2));
 
     const link = svg.append("g")
@@ -90,21 +90,20 @@ export class CriticalPath extends Model.store.connect() {
 
     var node = svg.append("g")
       .attr("class", "nodes")
-      .selectAll("circle")
+      .selectAll("g")
       .data(nodesForD3)
       .enter()
-      .append("circle")
-      .attr("r", 25)
-      .attr("fill", 'none')
-      .attr("stroke", 'black')
+      .append("svg:text")
+      .text(function (d: any, i) {
+        return d.id
+      })
+      .style("fill", "#555")
+      .style("font-family", "Arial")
+      .style("font-size", 12)
       .call((drag() as any)
         .on("start", dragstarted)
         .on("drag", dragged)
-        .on("end", dragended));
-
-    // node.append("svg:text").text(function (d: any, i) {
-    //   return 'test'
-    // }).style("fill", "#555").style("font-family", "Arial").style("font-size", 12).style('z-index',);
+        .on("end", dragended));;
 
     simulation
       .nodes(nodesForD3)
@@ -120,8 +119,10 @@ export class CriticalPath extends Model.store.connect() {
         .attr("y2", function (d) { return (d as any).target.y; });
 
       node
-        .attr("cx", function (d) { return (d as any).x; })
-        .attr("cy", function (d) { return (d as any).y; });
+        .attr("x", function (d) { return (d as any).x; })
+        .attr("y", function (d) { return (d as any).y; })
+      // .attr("x2", function (d) { return (d as any).x; })
+      // .attr("y2", function (d) { return (d as any).y; });
     }
   }
 
@@ -141,7 +142,7 @@ export class CriticalPath extends Model.store.connect() {
         </View>
       </View>
       <SvgContainer>
-        <svg width={960} height={600} className="critical-path-svg" />
+        <svg width={1280} height={800} className="critical-path-svg" />
       </SvgContainer>
     </View>;
   }
