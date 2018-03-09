@@ -63,10 +63,7 @@ const ButtonContainer = styled(View) `
   margin-left: ${styles.space(0)};
 `;
 
-export class Catalog extends Model.store.connect({
-  scope: store => store.catalog,
-  descope: (store, catalog: Model.Catalog) => store.set('catalog', catalog),
-}) {
+export class Catalog extends Model.store.connect() {
 
   onFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -74,19 +71,19 @@ export class Catalog extends Model.store.connect({
 
   onInput = (e: React.FormEvent<HTMLInputElement>) => {
     const value = e.currentTarget.value;
-    this.setStore(store => store.setSearch(value));
+    this.setStore(store => store.updateUi(ui => ui.setSearch(value)));
   }
 
   onNextPage = () => {
-    this.setStore(catalog => catalog.nextPage());
+    // this.setStore(catalog => catalog.nextPage());
   }
 
   onPreviousPage = () => {
-    this.setStore(catalog => catalog.previousPage());
+    // this.setStore(catalog => catalog.previousPage());
   }
 
   onAddToBoxClick(course: Model.Course) {
-    this.setGlobalStore(store => store.addToBox(course));
+    // this.setGlobalStore(store => store.addToBox(course));
   }
 
   render() {
@@ -98,7 +95,7 @@ export class Catalog extends Model.store.connect({
           </Form>
         </SearchContainer>
 
-        <CatalogBody>
+        {/* <CatalogBody>
           {this.store.coursesOnCurrentPage.map(course => <CatalogCourse key={course.id}>
             <CatalogCourseHeader>
               <Text large strong>{course.subjectCode} {course.courseNumber}</Text>
@@ -112,13 +109,13 @@ export class Catalog extends Model.store.connect({
             </CatalogCourseFooter>
 
           </CatalogCourse>)}
-        </CatalogBody>
+        </CatalogBody> */}
 
-        <Pagination>
+        {/* <Pagination>
           <View>
             <Text>Page {this.store.currentPageIndex + 1}/{Math.max(this.store.totalPages, 1)}</Text>
           </View>
-          
+
           <PaginationButtons>
             <ButtonContainer>
               <Button onClick={this.onPreviousPage}>Previous Page</Button>
@@ -128,7 +125,7 @@ export class Catalog extends Model.store.connect({
               <Button onClick={this.onNextPage}>Next Page</Button>
             </ButtonContainer>
           </PaginationButtons>
-        </Pagination>
+        </Pagination> */}
       </CatalogContent>
 
       <CatalogAside>

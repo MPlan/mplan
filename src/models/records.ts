@@ -77,7 +77,7 @@ function _allCombinations(
     for (const b of listB) {
       combined = combined.add(a.union(b))
     }
-  }
+  } 
 
   return _allCombinations([combined, ...listsOfLists.slice(2)]);
 }
@@ -441,7 +441,7 @@ export class Course extends Record.define({
 
 export class Semester extends Record.define({
   _id: ObjectId(),
-  courseMap: Immutable.Map<string, Course>(),
+  courseSet: Immutable.Set<Course>(),
   season: 'Fall' as 'Fall' | 'Winter' | 'Summer',
   year: 0,
 }) {
@@ -461,14 +461,18 @@ export class Semester extends Record.define({
 
   get courseCount() {
     return this.getOrCalculate('courseCount', () => {
-      return this.courseMap.count();
+      return this.courseSet.count();
     });
   }
 
   get courses() {
     return this.getOrCalculate('courses', () => {
-      return this.courseMap.valueSeq().toArray();
+      return this.courseSet.toArray();
     });
+  }
+
+  addCourse(course: Course) {
+    this.update('courseSet', courseSet => courseSet.add(course));
   }
 
   private _previousSemesterSeason() {
@@ -509,7 +513,7 @@ export class Semester extends Record.define({
 
   warningsNeverRanDuringCurrentSeason(catalog: Catalog) {
     return this.getOrCalculate('warningsNeverRanDuringCurrentSeason', [catalog, this], () => {
-      const warnings = this.courseMap.valueSeq().map(course => {
+      const warnings = this.courseSet.valueSeq().map(course => {
         const sectionSet = course.sections.get(this.season);
         const hasNeverRan = oneLine`
           ${course.subjectCode} ${course.courseNumber} has never ran in the ${this.season} past
@@ -571,11 +575,15 @@ export class User extends Record.define({
   registerDate: 0,
   lastLoginDate: 0,
   boxMap: Immutable.Map<string, Course>(),
-  semesterMap: Immutable.Map<string, Semester>(),
+  semesterSet: Immutable.Set<Semester>(),
   degree: Immutable.Set<string | Course>(),
   additionalCourses: Immutable.Set<string | Course>(),
 }) {
   static preferredCoursesMemo = new Map<any, any>();
+
+  addToDegree(course: Course) {
+    return this.update('degree', degree => degree.add(course));
+  }
 
   removeCourseFromBox(course: Course) {
     return this.update('boxMap', boxMap => boxMap.remove(course.id));
@@ -588,9 +596,7 @@ export class User extends Record.define({
   }
 
   get semestersSorted() {
-    return this.getOrCalculate('semestersSorted', [this.semesterMap], () => {
-      return this.semesterMap.valueSeq().sortBy(semester => semester.position);
-    });
+    return this.semesterSet.valueSeq().sortBy(semester => semester.position);
   }
 
   get semesters() {
@@ -616,6 +622,24 @@ export class User extends Record.define({
     const combined = this.degree.union(this.additionalCourses);
     User.preferredCoursesMemo.set(hash, combined);
     return combined;
+  }
+
+  closure(
+    catalog: Catalog,
+    // preferredCourses: Immutable.Set<string | Course>,
+  ) {
+    const closure = (this.degree
+      .map(course => /*if*/ course instanceof Course
+        ? course.closure(catalog, this.preferredCourses)
+        : Immutable.Set<string | Course>().add(course)
+      )
+      .reduce(
+        (closure, courseClosure) => closure.union(courseClosure),
+        Immutable.Set<string | Course>()
+      )
+    );
+
+    return closure;
   }
 
   criticalPath(catalog: Catalog) {
@@ -674,12 +698,22 @@ export class Ui extends Record.define({
   offsetX: 0,
   offsetY: 0,
   mouseIsOverSemester: false,
-  lastMouseOverSemesterId: '',
-  selectedCourseId: '',
-}) { }
+  lastMouseOverSemester: undefined as Semester | undefined,
+  selectedCourse: undefined as Course | undefined,
+  search: '',
+  currentPageIndex: 0,
+}) {
+  setSearch(newSearch: string) {
+    return this.set('search', newSearch);
+  }
+}
 
 export class App extends Record.define({
   catalog: new Catalog(),
   user: new User(),
   ui: new Ui(),
-}) { }
+}) {
+  updateUi(updater: (ui: Ui) => Ui) {
+    return this.update('ui', updater);
+  }
+}

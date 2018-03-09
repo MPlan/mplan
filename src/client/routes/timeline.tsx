@@ -66,10 +66,10 @@ const SideBar = styled(View) `
 export class Timeline extends Model.store.connect() {
 
   handleMouseMove = (e: MouseEvent) => {
-    this.setGlobalStore(store => store
-      .set('x', e.clientX)
-      .set('y', e.clientY)
-    );
+    // this.setGlobalStore(store => store
+    //   .set('x', e.clientX)
+    //   .set('y', e.clientY)
+    // );
   }
 
   componentDidMount() {
@@ -82,92 +82,84 @@ export class Timeline extends Model.store.connect() {
   }
 
   handleCourseMouseDown = (e: React.MouseEvent<HTMLDivElement>, course: Model.Course) => {
-    const offsetLeft = e.currentTarget.offsetLeft;
-    const offsetTop = e.currentTarget.offsetTop;
-    const offsetX = e.pageX - offsetLeft;
-    const offsetY = e.pageY - offsetTop;
+    // const offsetLeft = e.currentTarget.offsetLeft;
+    // const offsetTop = e.currentTarget.offsetTop;
+    // const offsetX = e.pageX - offsetLeft;
+    // const offsetY = e.pageY - offsetTop;
 
-    this.setStore(store => store
-      .set('selectedCourseId', course.id)
-      .set('dragging', true)
-      .set('offsetX', offsetX)
-      .set('offsetY', offsetY)
-    );
+    // this.setStore(store => store
+    //   .set('selectedCourseId', course.id)
+    //   .set('dragging', true)
+    //   .set('offsetX', offsetX)
+    //   .set('offsetY', offsetY)
+    // );
   }
 
   handleCourseMouseUp = (e: React.MouseEvent<HTMLDivElement>, course: Model.Course) => {
-    this.setStore(store => store.set('dragging', false))
+    // this.setStore(store => store.set('dragging', false))
   }
 
   onCreateSemesterBefore = () => {
-    const id = Model.ObjectId();
-    this.setGlobalStore(store => {
-      const firstSemester = store.semesters[0];
-      const { season, year } = firstSemester.previousSemester();
-      return store.update('semesterMap', semesterMap =>
-        semesterMap.set(id.toHexString(), new Model.Semester({
-          _id: id,
-          season,
-          year,
-        })));
-    });
+    // const id = Model.ObjectId();
+    // this.setGlobalStore(store => {
+    //   const firstSemester = store.semesters[0];
+    //   const { season, year } = firstSemester.previousSemester();
+    //   return store.update('semesterMap', semesterMap =>
+    //     semesterMap.set(id.toHexString(), new Model.Semester({
+    //       _id: id,
+    //       season,
+    //       year,
+    //     })));
+    // });
   }
 
   onCreateSemesterAfter = () => {
-    const id = Model.ObjectId();
-    this.setGlobalStore(store => {
-      const firstSemester = store.semesters[store.semesters.length - 1];
-      const { season, year } = firstSemester.nextSemester();
-      return store.update('semesterMap', semesterMap =>
-        semesterMap.set(id.toHexString(), new Model.Semester({
-          _id: id,
-          season,
-          year,
-        })));
-    });
+    // const id = Model.ObjectId();
+    // this.setGlobalStore(store => {
+    //   const firstSemester = store.semesters[store.semesters.length - 1];
+    //   const { season, year } = firstSemester.nextSemester();
+    //   return store.update('semesterMap', semesterMap =>
+    //     semesterMap.set(id.toHexString(), new Model.Semester({
+    //       _id: id,
+    //       season,
+    //       year,
+    //     })));
+    // });
   }
 
   handleMouseEnterSemester = (semester: Model.Semester) => {
-    console.log('mouse enter');
-    this.setGlobalStore(store => store
-      .set('mouseIsOverSemester', true)
-      .set('lastMouseOverSemesterId', semester.id)
-    );
+    // console.log('mouse enter');
+    // this.setGlobalStore(store => store
+    //   .set('mouseIsOverSemester', true)
+    //   .set('lastMouseOverSemesterId', semester.id)
+    // );
   }
 
   handleMouseLeaveSemester = (semester: Model.Semester) => {
-    console.log('mouse elave')
-    this.setGlobalStore(store => store.set('mouseIsOverSemester', false));
+    // console.log('mouse elave')
+    // this.setGlobalStore(store => store.set('mouseIsOverSemester', false));
   }
 
   handleCourseSemesterDeleteClick(course: Model.Course, semester: Model.Semester) {
-    this.setGlobalStore(store => {
-      return store.update('semesterMap', semesterMap =>
-        semesterMap.update(semester.id, s =>
-          s.update('courseMap', courseMap =>
-            courseMap.delete(course.id))));
-    });
+    // this.setGlobalStore(store => {
+    //   return store.update('semesterMap', semesterMap =>
+    //     semesterMap.update(semester.id, s =>
+    //       s.update('courseMap', courseMap =>
+    //         courseMap.delete(course.id))));
+    // });
   }
 
   onCourseMouseDown(course: Model.Course) {
-    this.setGlobalStore(store => store
-      .set('selectedCourseId', course.id)
-      .set('dragging', true)
-    );
+    // this.setGlobalStore(store => store
+    //   .set('selectedCourseId', course.id)
+    //   .set('dragging', true)
+    // );
   }
 
   render() {
     return <TimelineContainer>
-      <FloatingCourseContainer
-        style={{
-          display: /*if*/ this.store.dragging ? 'initial' : 'none',
-          top: this.store.y - 100,
-          left: this.store.x - 100,
-        }}
-      >
-        {this.store.selectedCourse && <Course course={this.store.selectedCourse} />}
-      </FloatingCourseContainer>
-      
+
+
       <Content>
         <Header>
           <HeaderMain>
@@ -183,14 +175,6 @@ export class Timeline extends Model.store.connect() {
 
         <SemesterBlockContainer>
           <CreateSemester onCreateClick={this.onCreateSemesterBefore} />
-          {this.store.semesters.map(semester => <Semester
-            onMouseEnter={() => this.handleMouseEnterSemester(semester)}
-            onMouseLeave={() => this.handleMouseLeaveSemester(semester)}
-            key={semester.id}
-            semester={semester}
-            onCourseDeleteClick={course => this.handleCourseSemesterDeleteClick(course, semester)}
-            onCourseMouseDown={course => this.onCourseMouseDown(course)}
-          />)}
           <CreateSemester onCreateClick={this.onCreateSemesterAfter} />
         </SemesterBlockContainer>
       </Content>

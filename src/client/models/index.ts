@@ -38,7 +38,20 @@ async function fetchCatalog() {
 
 async function updateStoreWithCatalog() {
   const catalog = await fetchCatalog();
-  store.sendUpdate(store => store.update('catalog', () => catalog));
+  const cis4962 = catalog.getCourse('CIS', '4962')!;
+  const cis450 = catalog.getCourse('CIS', '450')!;
+  const comp270 = catalog.getCourse('COMP', '270')!;
+  const cis200 = catalog.getCourse('CIS', '200')!;
+
+  store.sendUpdate(store => store
+    .set('catalog', catalog)
+    .update('user', user => user
+      .addToDegree(cis4962)
+      .addToDegree(cis450)
+      .addToDegree(comp270)
+      .addToDegree(cis200)
+    )
+  );
 }
 
 updateStoreWithCatalog();
