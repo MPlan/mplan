@@ -39,6 +39,7 @@ export function convertCatalogJsonToRecord(courses: Model.Catalog) {
   return catalog;
 }
 
+
 export class Section extends Record.define({
   _id: ObjectId(),
   lastUpdateDate: 0,
@@ -356,37 +357,6 @@ export class Course extends Record.define({
     return value;
   }
 
-  levels(
-    catalog: Catalog,
-    preferredCourses: Immutable.Set<string | Course>,
-  ): Immutable.List<Immutable.Set<string | Course>> {
-    const hash = hashObjects({ course: this, catalog, preferredCourses });
-    if (Course.levelsMemo.has(hash)) {
-      return Course.levelsMemo.get(hash);
-    }
-
-    const closure = this.closure(catalog, preferredCourses);
-    const levelsMutable = [] as Array<Set<string | Course>>;
-
-    for (const course of closure) {
-      if (course instanceof Course) {
-        const depth = course.depth(catalog, preferredCourses);
-        const set = levelsMutable[depth] || new Set<string | Course>();
-        set.add(course);
-        levelsMutable[depth] = set;
-      }
-    }
-
-    const levels = (levelsMutable
-      .reduce((levelsImmutable, mutableLevel) => levelsImmutable.push(
-        Immutable.Set<string | Course>(mutableLevel)
-      ), Immutable.List<Immutable.Set<string | Course>>())
-    );
-
-    Course.levelsMemo.set(hash, levelsMutable);
-    return levels;
-  }
-
   closure(
     catalog: Catalog,
     preferredCourses: Immutable.Set<string | Course>,
@@ -621,9 +591,33 @@ export class User extends Record.define({
     return closure;
   }
 
-  // levels(catalog: Catalog) {
-  //   const hash = hashObjects
-  // }
+  levels(catalog: Catalog): Immutable.List<Immutable.Set<string | Course>> {
+    const hash = hashObjects({ course: this, catalog });
+    if (Course.levelsMemo.has(hash)) {
+      return Course.levelsMemo.get(hash);
+    }
+
+    const closure = this.closure(catalog);
+    const levelsMutable = [] as Array<Set<string | Course>>;
+
+    for (const course of closure) {
+      if (course instanceof Course) {
+        const depth = course.depth(catalog, this.preferredCourses);
+        const set = levelsMutable[depth] || new Set<string | Course>();
+        set.add(course);
+        levelsMutable[depth] = set;
+      }
+    }
+
+    const levels = (levelsMutable
+      .reduce((levelsImmutable, mutableLevel) => levelsImmutable.push(
+        Immutable.Set<string | Course>(mutableLevel)
+      ), Immutable.List<Immutable.Set<string | Course>>())
+    );
+
+    Course.levelsMemo.set(hash, levelsMutable);
+    return levels;
+  }
 }
 
 export class Ui extends Record.define({

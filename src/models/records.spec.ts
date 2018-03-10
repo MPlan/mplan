@@ -158,23 +158,21 @@ ALL
 
   it('levels', () => {
     const cis4962 = catalog.getCourse('CIS', '4962')!;
-
     const cis350 = catalog.getCourse('CIS', '350')!;
     const cis200 = catalog.getCourse('CIS', '200')!;
     const comp270 = catalog.getCourse('COMP', '270')!;
     const comp105 = catalog.getCourse('COMP', '105')!;
     const math115 = catalog.getCourse('MATH', '115')!;
 
-    const preferredCourses = Immutable.Set<string | Record.Course>()
-      .add(cis350)
-      .add(cis200)
-      .add(comp270)
-      .add(math115)
-      .add(comp105);
+    const user = new Record.User()
+      .addToDegree(cis4962)
+      .addToDegree(cis350)
+      .addToDegree(cis200)
+      .addToDegree(comp270)
+      .addToDegree(math115)
+      .addToDegree(comp105);
 
-    const levels = cis4962.levels(catalog, preferredCourses);
-
-    console.log('count', levels.count());
+    const levels = user.levels(catalog);
 
     for (const level of levels) {
       const levelString = level.map(course => /*if*/ course instanceof Record.Course
@@ -182,6 +180,7 @@ ALL
         : course
       ).join(' ');
       console.log(levelString);
+      console.log('---');
     }
   });
 
@@ -199,8 +198,8 @@ ALL
       .add(comp270)
       .add(math115)
       .add(comp105);
-    
-    
+
+
     const closure = catalog.getCourse('CIS', '4962')!.closure(catalog, preferredCourses);
 
     console.log(closure.map(course => /*if*/ course instanceof Record.Course
