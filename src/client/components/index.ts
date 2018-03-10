@@ -6,3 +6,4 @@ export * from './fa';
 export * from './nav';
 export * from './semester';
 export * from './box';
+export * from './prerequisite';

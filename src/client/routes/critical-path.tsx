@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as Model from '../models';
-import { View, Text, Button } from '../components';
+import { View, Text, Button, Prerequisite } from '../components';
 import { forceSimulation, forceLink, forceManyBody, forceCenter } from 'd3-force';
 import { select, event } from 'd3-selection';
 import { drag } from 'd3-drag';
@@ -50,6 +50,7 @@ function Course({ course }: { course: string | Model.Course }) {
   return <CourseContainer>
     <CourseHeader><Text strong>{courseName}</Text></CourseHeader>
     <Text>{course.name}</Text>
+    {/* <Prerequisite prerequisite={course.prerequisites} /> */}
   </CourseContainer>;
 }
 
