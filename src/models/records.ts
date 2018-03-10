@@ -77,7 +77,7 @@ function _allCombinations(
     for (const b of listB) {
       combined = combined.add(a.union(b))
     }
-  } 
+  }
 
   return _allCombinations([combined, ...listsOfLists.slice(2)]);
 }
@@ -365,52 +365,25 @@ export class Course extends Record.define({
       return Course.levelsMemo.get(hash);
     }
 
-    const bestOption = this.bestOption(catalog, preferredCourses);
-    // const depth = this.depth(catalog, preferredCourses);
+    const closure = this.closure(catalog, preferredCourses);
+    const levelsMutable = [] as Array<Set<string | Course>>;
 
-    let levels = Immutable.List<Immutable.Set<string | Course>>();
-    levels = levels
-      .set(0, Immutable.Set<string | Course>()
-        .add(this));
-
-    for (const course of bestOption) {
-      let secondLevel = levels.get(1) || Immutable.Set<string | Course>();
-      secondLevel = secondLevel.add(course);
-      levels = levels.set(1, secondLevel);
+    for (const course of closure) {
       if (course instanceof Course) {
-        const subLevels = course.levels(catalog, preferredCourses);
-        const subLevelCount = subLevels.count();
-        for (let i = 0; i < subLevelCount; i += 1) {
-          const subLevel = subLevels.get(i);
-          if (!subLevel) { continue; }
-          const parentIndex = i + 1;
-          let parentLevel = levels.get(parentIndex) || Immutable.Set<string | Course>();
-          parentLevel = parentLevel.union(subLevel);
-          levels = levels.set(parentIndex, parentLevel);
-        }
+        const depth = course.depth(catalog, preferredCourses);
+        const set = levelsMutable[depth] || new Set<string | Course>();
+        set.add(course);
+        levelsMutable[depth] = set;
       }
     }
 
-    // remove duplicates
-    for (let lastLevelIndex = levels.count() - 1; lastLevelIndex >= 0; lastLevelIndex -= 1) {
-      const lastLevel = levels.get(lastLevelIndex);
-      if (!lastLevel) {
-        console.warn('last level was undefined');
-        continue;
-      }
-      for (let levelsIndex = 0; levelsIndex < lastLevelIndex; levelsIndex += 1) {
-        let parentLevel = levels.get(levelsIndex);
-        if (!parentLevel) {
-          console.warn('parent level was undefined');
-          continue;
-        }
+    const levels = (levelsMutable
+      .reduce((levelsImmutable, mutableLevel) => levelsImmutable.push(
+        Immutable.Set<string | Course>(mutableLevel)
+      ), Immutable.List<Immutable.Set<string | Course>>())
+    );
 
-        parentLevel = parentLevel.subtract(lastLevel);
-        levels = levels.set(levelsIndex, parentLevel);
-      }
-    }
-
-    Course.levelsMemo.set(hash, levels);
+    Course.levelsMemo.set(hash, levelsMutable);
     return levels;
   }
 
@@ -559,7 +532,6 @@ export class Catalog extends Record.define({
 
   get coursesSorted() {
     return this.getOrCalculate('coursesSorted', [this.courseMap], () => {
-      console.log('calculated courses');
       return this.courseMap
         .valueSeq()
         .sortBy(course => `${course.subjectCode} ${course.courseNumber} ${course.name}`);
@@ -580,6 +552,8 @@ export class User extends Record.define({
   additionalCourses: Immutable.Set<string | Course>(),
 }) {
   static preferredCoursesMemo = new Map<any, any>();
+  static closureMemo = new Map<any, any>();
+  static levelsMemo = new Map<any, any>();
 
   addToDegree(course: Course) {
     return this.update('degree', degree => degree.add(course));
@@ -626,8 +600,12 @@ export class User extends Record.define({
 
   closure(
     catalog: Catalog,
-    // preferredCourses: Immutable.Set<string | Course>,
   ) {
+    const hash = hashObjects({ catalog, user: this });
+    if (User.closureMemo.has(hash)) {
+      return User.closureMemo.get(hash);
+    }
+
     const closure = (this.degree
       .map(course => /*if*/ course instanceof Course
         ? course.closure(catalog, this.preferredCourses)
@@ -639,56 +617,13 @@ export class User extends Record.define({
       )
     );
 
+    User.closureMemo.set(hash, closure);
     return closure;
   }
 
-  criticalPath(catalog: Catalog) {
-    let forest = Immutable.Set<Immutable.List<Immutable.Set<string | Course>>>();
-    let closure = Immutable.Set<string | Course>();
-
-    const preferredCoursesSorted = (this
-      .preferredCourses
-      .toList()
-      .sortBy(c => /*if*/ c instanceof Course
-        ? c.depth(catalog, this.preferredCourses)
-        : 0
-      )
-      .reverse()
-    );
-
-    for (const course of preferredCoursesSorted) {
-      if (closure.has(course)) { continue; }
-
-      if (course instanceof Course) {
-        let courseLevels = course.levels(catalog, this.preferredCourses);
-
-        // remove all the repeats
-        const levelsCount = courseLevels.count();
-        for (let courseLevelIndex = 0; courseLevelIndex < levelsCount; courseLevelIndex += 1) {
-          let courseLevel = courseLevels.get(courseLevelIndex);
-          if (!courseLevel) { continue; }
-
-          courseLevel = courseLevel.subtract(closure.intersect(courseLevel));
-          courseLevels = courseLevels.set(courseLevelIndex, courseLevel);
-        }
-
-        closure = closure.union(
-          course.closure(catalog, this.preferredCourses)
-        );
-
-        forest = forest.add(courseLevels.filter(x => !x.isEmpty()));
-      } else if (typeof course === 'string') {
-        forest = forest
-          .add(Immutable.List<Immutable.Set<string | Course>>()
-            .push(
-              Immutable.Set<string | Course>().add(
-                course)));
-      }
-      closure = closure.add(course);
-    }
-
-    return forest;
-  }
+  // levels(catalog: Catalog) {
+  //   const hash = hashObjects
+  // }
 }
 
 export class Ui extends Record.define({

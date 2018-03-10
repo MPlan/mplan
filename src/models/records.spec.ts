@@ -209,35 +209,35 @@ ALL
     ).join(' '));
   });
 
-  it('critical path', () => {
-    const degree = Immutable.Set<string | Record.Course>()
-      .add(catalog.getCourse('CIS', '4962')!)
-      .add(catalog.getCourse('CIS', '200')!)
-      .add(catalog.getCourse('COMP', '270')!)
-      .add(catalog.getCourse('CIS', '450')!)
-      .add(catalog.getCourse('CIS', '450')!)
-      .add(catalog.getCourse('CHEM', '134')!)
-      .add(catalog.getCourse('CHEM', '136')!)
-      .add(catalog.getCourse('PHYS', '126')!)
-      .add(catalog.getCourse('CIS', '421')!)
-      .add(catalog.getCourse('CIS', '435')!)
-      .add(catalog.getCourse('OB', '354')!)
+  // it('critical path', () => {
+  //   const degree = Immutable.Set<string | Record.Course>()
+  //     .add(catalog.getCourse('CIS', '4962')!)
+  //     .add(catalog.getCourse('CIS', '200')!)
+  //     .add(catalog.getCourse('COMP', '270')!)
+  //     .add(catalog.getCourse('CIS', '450')!)
+  //     .add(catalog.getCourse('CIS', '450')!)
+  //     .add(catalog.getCourse('CHEM', '134')!)
+  //     .add(catalog.getCourse('CHEM', '136')!)
+  //     .add(catalog.getCourse('PHYS', '126')!)
+  //     .add(catalog.getCourse('CIS', '421')!)
+  //     .add(catalog.getCourse('CIS', '435')!)
+  //     .add(catalog.getCourse('OB', '354')!)
 
-    const user = new Record.User({
-      degree,
-    });
+  //   const user = new Record.User({
+  //     degree,
+  //   });
 
-    const criticalPath = user.criticalPath(catalog);
+  //   const criticalPath = user.criticalPath(catalog);
 
-    for (const tree of criticalPath) {
-      for (const level of tree) {
-        const levelString = level.map(course => /*if*/ course instanceof Record.Course
-          ? `${course.subjectCode} ${course.courseNumber}`
-          : course
-        ).join(' ');
-        console.log(levelString);
-      }
-      console.log('----');
-    }
-  });
+  //   for (const tree of criticalPath) {
+  //     for (const level of tree) {
+  //       const levelString = level.map(course => /*if*/ course instanceof Record.Course
+  //         ? `${course.subjectCode} ${course.courseNumber}`
+  //         : course
+  //       ).join(' ');
+  //       console.log(levelString);
+  //     }
+  //     console.log('----');
+  //   }
+  // });
 });
