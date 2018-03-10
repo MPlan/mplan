@@ -45,6 +45,7 @@ async function updateStoreWithCatalog() {
   const cis150 = catalog.getCourse('CIS', '150')!;
   const cis3501 = catalog.getCourse('CIS', '3501')!;
   const math115 = catalog.getCourse('MATH', '115')!;
+  const comp105 = catalog.getCourse('COMP', '105')!;
 
   store.sendUpdate(store => store
     .set('catalog', catalog)
@@ -56,6 +57,7 @@ async function updateStoreWithCatalog() {
       .addToDegree(cis3501)
       .addToDegree(cis150)
       .addToDegree(math115)
+      .addToDegree(comp105)
     )
   );
 }

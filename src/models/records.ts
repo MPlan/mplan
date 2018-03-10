@@ -645,4 +645,14 @@ export class App extends Record.define({
   updateUi(updater: (ui: Ui) => Ui) {
     return this.update('ui', updater);
   }
+
+  get levels() {
+    return this.getOrCalculate('levels', () => {
+      return (this.user
+        .levels(this.catalog)
+        .map(level => level.toArray())
+        .toArray()
+      );
+    });
+  }
 }
