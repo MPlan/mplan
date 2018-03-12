@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jasmine-ts \"src/**/*.spec.ts\"",
-    "start": "npm run start:server & npm run start:client",
+    "start": "npm run server & npm run start:client",
     "start:server": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server/index.ts",
     "start:client": "webpack-dev-server",
     "server": "ts-node ./src/server/index.ts",

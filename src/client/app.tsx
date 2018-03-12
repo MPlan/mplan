@@ -49,7 +49,7 @@ const HeaderContent = styled(View) `
 
 const User = styled(View) `
   flex-direction: row;
-  /* align-items: center; */
+  align-items: center;
   margin-left: ${styles.space(0)};
 `;
 

@@ -54,7 +54,7 @@ const HeaderRight = styled(View) ``;
 const SemesterBlockContainer = styled(View) `
   flex: 1;
   flex-direction: row;
-  overflow; auto;
+  overflow: auto;
 `;
 
 const SideBar = styled(View) `

@@ -8,8 +8,15 @@ import styled from 'styled-components';
 const StyledLink = styled(NavLink) `
   color: ${styles.grayLight};
   & { text-decoration: none; }
-  &:hover, &:hover * { color: ${styles.grayLighter}; }
-  &.active, &:active, &:active * { color: ${styles.white}; }
+  &:hover, &:hover * { color: ${styles.beeKeeper}; }
+  
+  &.active:hover,
+  &.active:hover *,
+  &.active,
+  &:active,
+  &:active * {
+    color: ${styles.turbo};
+  }
 `;
 
 const NavButtonContainer = styled(View) `
@@ -17,33 +24,30 @@ const NavButtonContainer = styled(View) `
   align-items: center;
 `;
 
+const NavText = styled(Text) `
+  margin-top: ${styles.space(-1)};
+  text-align: center;
+`;
+
 interface NavButtonProps {
   name: string,
   to: string,
   icon: string,
 }
-interface NavButtonState { }
 
-class NavButton extends React.Component<NavButtonProps, NavButtonState> {
-  constructor(props: NavButtonProps) {
-    super(props);
-    this.state = {
-      hovering: false,
-    }
-  }
-
-  render() {
-    return <StyledLink to={this.props.to} activeClassName="active">
-      <NavButtonContainer>
-        <Fa icon={this.props.icon} size="2x" />
-      </NavButtonContainer>
-    </StyledLink>
-  }
+function NavButton(props: NavButtonProps) {
+  return <StyledLink to={props.to} activeClassName="active">
+    <NavButtonContainer>
+      <Fa icon={props.icon} size="2x" />
+      <NavText small>{props.name}</NavText>
+    </NavButtonContainer>
+  </StyledLink>;
 }
 
 const NavContainer = styled(View) `
-  width: 4rem;
-  background-color: ${styles.blackTer};
+  width: 5rem;
+  min-width: 5rem;
+  background-color: ${styles.deepCove};
   color: ${styles.white};
 `;
 
