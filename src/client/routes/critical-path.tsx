@@ -11,12 +11,14 @@ import { flatten } from '../../utilities/utilities';
 const GraphContainer = styled(View) `
   flex: 1;
   flex-direction: row;
+  /* align-items: flex-start; */
+  overflow: auto;
 `;
 
 const Level = styled(View) `
-  width: 12rem;
-  min-width: 12rem;
-  justify-content: space-around;
+  width: 15rem;
+  min-width: 15rem;
+  margin: auto;
   margin-left: 5rem;
 `;
 
@@ -50,36 +52,22 @@ function Course({ course }: { course: string | Model.Course }) {
   return <CourseContainer>
     <CourseHeader><Text strong>{courseName}</Text></CourseHeader>
     <Text>{course.name}</Text>
-    {/* <Prerequisite prerequisite={course.prerequisites} /> */}
+    <Prerequisite prerequisite={course.prerequisites} />
   </CourseContainer>;
 }
 
 export class CriticalPath extends Model.store.connect() {
 
   render() {
-    return <View>
-      <View>
-        <Text strong>Courses in degree</Text>
-        <View>
-          {this.store.user.degree
-            .map(course => /*if*/ course instanceof Model.Course
-              ? `${course.subjectCode} ${course.courseNumber}`
-              : course
-            )
-            .map((courseName, index) => <Text key={index}>{courseName}</Text>)
-          }
-        </View>
-      </View>
-      <GraphContainer>
-        {this.store.levels.map(level => <Level>
-          {level.map(course => <CourseLevelWrapper>
-            <Course
-              key={/*if*/ course instanceof Model.Course ? course.id : course}
-              course={course}
-            />
-          </CourseLevelWrapper>)}
-        </Level>)}
-      </GraphContainer>
-    </View>;
+    return <GraphContainer>
+      {this.store.levels.map(level => <Level>
+        {level.map(course => <CourseLevelWrapper>
+          <Course
+            key={/*if*/ course instanceof Model.Course ? course.id : course}
+            course={course}
+          />
+        </CourseLevelWrapper>)}
+      </Level>)}
+    </GraphContainer>;
   }
 }

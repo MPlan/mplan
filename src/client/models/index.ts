@@ -50,6 +50,7 @@ async function updateStoreWithCatalog() {
   store.sendUpdate(store => store
     .set('catalog', catalog)
     .update('user', user => user
+      // SOFTWARE ENGINEERING  
       .addToDegree(cis4962)
       .addToDegree(cis450)
       .addToDegree(comp270)
@@ -58,6 +59,25 @@ async function updateStoreWithCatalog() {
       .addToDegree(cis150)
       .addToDegree(math115)
       .addToDegree(comp105)
+
+      // DATA SCIENCE
+      // .addToDegree(catalog.getCourse('CIS', '1501')!)
+      // .addToDegree(catalog.getCourse('MATH', '115')!)
+      // .addToDegree(catalog.getCourse('MATH', '116')!)
+      // .addToDegree(catalog.getCourse('MATH', '215')!)
+      // .addToDegree(catalog.getCourse('MATH', '227')!)
+      // .addToDegree(catalog.getCourse('CIS', '2001')!)
+      // .addToDegree(catalog.getCourse('CIS', '275')!)
+      // .addToDegree(catalog.getCourse('CIS', '350')!)
+      // .addToDegree(catalog.getCourse('CIS', '3200')!)
+      // .addToDegree(catalog.getCourse('CIS', '422')!)
+      // .addToDegree(catalog.getCourse('IMSE', '317')!)
+      // .addToDegree(catalog.getCourse('ENGR', '400')!)
+      // .addToDegree(catalog.getCourse('STAT', '305')!)
+      // .addToDegree(catalog.getCourse('STAT', '326')!)
+      // .addToDegree(catalog.getCourse('CIS', '4971')!)
+      // .addToDegree(catalog.getCourse('CIS', '4972')!)
+      // .addToDegree(catalog.getCourse('STAT', '430')!)
     )
   );
 }
