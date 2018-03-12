@@ -9,8 +9,8 @@ export interface PrerequisiteProps {
 }
 
 const PrerequisiteContainer = styled(View) `
-  /* border: ${styles.border}; */
-  padding-left: ${styles.space(-1)};
+  border: ${styles.border};
+  /* padding-left: ${styles.space(-1)}; */
   padding-bottom: ${styles.space(-1)};
 `;
 
