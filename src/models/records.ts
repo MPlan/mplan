@@ -241,12 +241,19 @@ export class Course
         })
         .reduce((max, next) => (/*if*/ next > max ? next : max), 0);
 
-      return { maxDepth, intersectionCount, option };
+      const closure = option.reduce((fullClosure, course) => {
+        if (course instanceof Course) {
+          return fullClosure.add(course).union(course.closure(catalog, preferredCourses));
+        }
+        return fullClosure.add(course);
+      }, Immutable.Set<string | Course>());
+      const closureCount = closure.count();
+      return { maxDepth, intersectionCount, option, closureCount };
     });
 
     const bestOptionResult = bestOptionMapping.maxBy(
-      ({ maxDepth, intersectionCount }) => {
-        return intersectionCount * 1000 - maxDepth;
+      ({ maxDepth, intersectionCount, closureCount }) => {
+        return intersectionCount * 100000 - maxDepth * 1000 - closureCount;
       }
     );
 
@@ -256,7 +263,18 @@ export class Course
 
     const bestOption = bestOptionResult.option;
 
+    console.log(
+      `best options for ${this.simpleName}`,
+      bestOption
+        .map(course => (course instanceof Course ? course.simpleName : course))
+        .toArray(),
+      `intersection count: ${bestOptionResult.intersectionCount}`,
+      `depth: ${bestOptionResult.maxDepth}`,
+      `full closure count: ${bestOptionResult.closureCount}`
+    );
+
     console.log(`options for ${this.simpleName}`);
+
     bestOptionMapping.forEach(mapping => {
       console.log(
         mapping.option
@@ -265,54 +283,13 @@ export class Course
           )
           .toArray(),
         `intersection count: ${mapping.intersectionCount}`,
-        `depth: ${mapping.maxDepth}`
+        `depth: ${mapping.maxDepth}`,
+        `full closure count: ${mapping.closureCount}`
       );
     });
 
     Course.bestOptionMemo.set(hash, bestOption);
     return bestOption;
-  }
-
-  /**
-   * returns whether or not the given course is in the current course's prerequisite tree
-   */
-  hasCourse(
-    courseToFind: string | Course,
-    catalog: Catalog,
-    preferredCourses: Immutable.Set<string | Course>
-  ) {
-    const hash = hashObjects({
-      courseToFind,
-      catalog,
-      preferredCourses,
-      course: this
-    });
-    if (Course.hasCourseMemo.has(hash)) {
-      return Course.hasCourseMemo.get(hash);
-    }
-
-    const option = this.bestOption(catalog, preferredCourses);
-    if (option.has(courseToFind)) {
-      Course.hasCourseMemo.set(hash, true);
-      return true;
-    }
-
-    for (const course of option) {
-      if (course instanceof Course) {
-        const courseHasPrerequisite = course.hasCourse(
-          courseToFind,
-          catalog,
-          preferredCourses
-        );
-        if (courseHasPrerequisite) {
-          Course.hasCourseMemo.set(hash, true);
-          return true;
-        }
-      }
-    }
-
-    Course.hasCourseMemo.set(hash, false);
-    return false;
   }
 
   /**
