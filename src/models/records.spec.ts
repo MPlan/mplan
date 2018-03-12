@@ -1,33 +1,33 @@
-import * as fs from "fs";
-import * as path from "path";
-import * as Immutable from "immutable";
-import * as Record from "./records";
+import * as fs from 'fs';
+import * as path from 'path';
+import * as Immutable from 'immutable';
+import * as Record from './records';
 const rawCatalog = JSON.parse(
-  fs.readFileSync(path.resolve(__dirname, "./catalog.json")).toString()
+  fs.readFileSync(path.resolve(__dirname, './catalog.json')).toString()
 );
 
-import { convertCatalogJsonToRecord } from "./records";
+import { convertCatalogJsonToRecord } from './records';
 
-describe("record models", () => {
+describe('record models', () => {
   let catalog: Record.Catalog;
 
   beforeAll(() => {
     catalog = convertCatalogJsonToRecord(rawCatalog);
   });
 
-  it("allCombinations", () => {
-    const one = new Record.Course({ name: "1" });
+  it('allCombinations', () => {
+    const one = new Record.Course({ name: '1' });
     const setOne = Immutable.Set<Record.Course>([one]);
     const setSetOne = Immutable.Set<Immutable.Set<Record.Course>>([setOne]);
 
-    const a = new Record.Course({ name: "A" });
-    const b = new Record.Course({ name: "B" });
+    const a = new Record.Course({ name: 'A' });
+    const b = new Record.Course({ name: 'B' });
     const setA = Immutable.Set<Record.Course>([a]);
     const setB = Immutable.Set<Record.Course>([b]);
     const setAB = Immutable.Set<Immutable.Set<Record.Course>>([setA, setB]);
 
-    const x = new Record.Course({ name: "X" });
-    const y = new Record.Course({ name: "Y" });
+    const x = new Record.Course({ name: 'X' });
+    const y = new Record.Course({ name: 'Y' });
     const setX = Immutable.Set<Record.Course>([x]);
     const setY = Immutable.Set<Record.Course>([y]);
     const setXY = Immutable.Set<Immutable.Set<Record.Course>>([setX, setY]);
@@ -43,14 +43,14 @@ describe("record models", () => {
     expect(result.equals(expectedResult)).toBe(true);
   });
 
-  it("convertCatalogJsonToRecord", () => {
+  it('convertCatalogJsonToRecord', () => {
     expect(Immutable.isImmutable(catalog)).toBe(true);
-    const cis450 = catalog.getCourse("CIS", "450")!;
-    expect(cis450.name).toBe("Operating Systems");
+    const cis450 = catalog.getCourse('CIS', '450')!;
+    expect(cis450.name).toBe('Operating Systems');
   });
 
-  it("prerequisitesFlattened", () => {
-    const course = catalog.getCourse("CIS", "450")!;
+  it('prerequisitesFlattened', () => {
+    const course = catalog.getCourse('CIS', '450')!;
     const prerequisitesFlattened = course.options(catalog);
 
     console.log(
@@ -84,12 +84,12 @@ ALL
         course.courseNumber
       }`
     );
-    console.log("EITHER");
-    console.log("|");
+    console.log('EITHER');
+    console.log('|');
     for (const prerequisiteSet of prerequisitesFlattened) {
       const set = prerequisiteSet.map(
         course =>
-          typeof course === "string"
+          typeof course === 'string'
             ? course
             : `${course.subjectCode} ${course.courseNumber}`
       );
@@ -97,18 +97,18 @@ ALL
       for (const course of set) {
         console.log(`|  |--${course}`);
       }
-      console.log("|");
+      console.log('|');
     }
   });
 
-  it("prerequisiteDepth", () => {
+  it('prerequisiteDepth', () => {
     // course we want to find the preferred sequence
-    const cis4962 = catalog.getCourse("CIS", "4962")!;
+    const cis4962 = catalog.getCourse('CIS', '4962')!;
 
     // preferred courses to input into the algorithm
-    const cis350 = catalog.getCourse("CIS", "350")!;
-    const cis200 = catalog.getCourse("CIS", "200")!;
-    const comp270 = catalog.getCourse("COMP", "270")!;
+    const cis350 = catalog.getCourse('CIS', '350')!;
+    const cis200 = catalog.getCourse('CIS', '200')!;
+    const comp270 = catalog.getCourse('COMP', '270')!;
 
     const preferredCourses = Immutable.Set<string | Record.Course>()
       .add(cis350)
@@ -119,10 +119,10 @@ ALL
     console.log(depth);
   });
 
-  it("findPreferredCourses", () => {
-    const cis375 = catalog.getCourse("CIS", "375")!;
-    const cis350 = catalog.getCourse("CIS", "350")!;
-    const cis200 = catalog.getCourse("CIS", "200")!;
+  it('findPreferredCourses', () => {
+    const cis375 = catalog.getCourse('CIS', '375')!;
+    const cis350 = catalog.getCourse('CIS', '350')!;
+    const cis200 = catalog.getCourse('CIS', '200')!;
 
     const preferredCourses = Immutable.Set<string | Record.Course>()
       .add(cis350)
@@ -132,40 +132,40 @@ ALL
     console.log(result.count());
   });
 
-  it("minDepth", () => {
-    const math104 = catalog.getCourse("MATH", "104")!;
+  it('minDepth', () => {
+    const math104 = catalog.getCourse('MATH', '104')!;
 
     expect(math104.minDepth(catalog)).toBe(1);
   });
 
-  it("options", () => {
-    const math115 = catalog.getCourse("MATH", "115")!;
+  it('options', () => {
+    const math115 = catalog.getCourse('MATH', '115')!;
 
     const options = math115.options(catalog);
 
     const optionsAsStrings = options.toArray().map(option => {
       return option
         .map(course => {
-          if (typeof course === "string") {
+          if (typeof course === 'string') {
             return course;
           }
           return course.simpleName;
         })
-        .join(" ");
+        .join(' ');
     });
 
     console.log(optionsAsStrings);
   });
 
-  it("bestOption", () => {
-    const math115 = catalog.getCourse("MATH", "115")!;
+  it('bestOption', () => {
+    const math115 = catalog.getCourse('MATH', '115')!;
 
     const bestOption = math115.bestOption(
       catalog,
       Immutable.Set<string | Record.Course>()
     );
 
-    expect(bestOption.first()).toBe("Mathematics Placement 115");
+    expect(bestOption.first()).toBe('Mathematics Placement 115');
   });
 
   // it('preferredSequence', () => {
@@ -205,13 +205,13 @@ ALL
   //   console.log(JSON.stringify(convertToString(preferredSequence), null, 2));
   // });
 
-  it("levels", () => {
-    const cis4962 = catalog.getCourse("CIS", "4962")!;
-    const cis350 = catalog.getCourse("CIS", "350")!;
-    const cis200 = catalog.getCourse("CIS", "200")!;
-    const comp270 = catalog.getCourse("COMP", "270")!;
-    const comp105 = catalog.getCourse("COMP", "105")!;
-    const math115 = catalog.getCourse("MATH", "115")!;
+  it('levels', () => {
+    const cis4962 = catalog.getCourse('CIS', '4962')!;
+    const cis350 = catalog.getCourse('CIS', '350')!;
+    const cis200 = catalog.getCourse('CIS', '200')!;
+    const comp270 = catalog.getCourse('COMP', '270')!;
+    const comp105 = catalog.getCourse('COMP', '105')!;
+    const math115 = catalog.getCourse('MATH', '115')!;
 
     const user = new Record.User()
       .addToDegree(cis4962)
@@ -231,18 +231,18 @@ ALL
               ? `${course.subjectCode} ${course.courseNumber}`
               : course
         )
-        .join(" ");
+        .join(' ');
       console.log(levelString);
-      console.log("---");
+      console.log('---');
     }
   });
 
-  it("closure", () => {
-    const cis350 = catalog.getCourse("CIS", "350")!;
-    const cis200 = catalog.getCourse("CIS", "200")!;
-    const comp270 = catalog.getCourse("COMP", "270")!;
-    const comp105 = catalog.getCourse("COMP", "105")!;
-    const math115 = catalog.getCourse("MATH", "115")!;
+  it('closure', () => {
+    const cis350 = catalog.getCourse('CIS', '350')!;
+    const cis200 = catalog.getCourse('CIS', '200')!;
+    const comp270 = catalog.getCourse('COMP', '270')!;
+    const comp105 = catalog.getCourse('COMP', '105')!;
+    const math115 = catalog.getCourse('MATH', '115')!;
 
     const preferredCourses = Immutable.Set<string | Record.Course>()
       .add(cis350)
@@ -252,7 +252,7 @@ ALL
       .add(comp105);
 
     const closure = catalog
-      .getCourse("CIS", "4962")!
+      .getCourse('CIS', '4962')!
       .closure(catalog, preferredCourses);
 
     console.log(
@@ -263,7 +263,7 @@ ALL
               ? `${course.subjectCode} ${course.courseNumber}`
               : course
         )
-        .join(" ")
+        .join(' ')
     );
   });
 

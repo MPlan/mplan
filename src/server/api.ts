@@ -13,10 +13,19 @@ api.get('/test', (req, res) => {
 let catalog: Model.Catalog;
 
 function termCodeToSeason(termCode: string) {
-  const endOfTermCode = termCode.substring(termCode.length - 2, termCode.length);
-  if (endOfTermCode === '10') { return 'Fall'; }
-  if (endOfTermCode === '20') { return 'Winter'; }
-  if (endOfTermCode === '30') { return 'Summer'; }
+  const endOfTermCode = termCode.substring(
+    termCode.length - 2,
+    termCode.length
+  );
+  if (endOfTermCode === '10') {
+    return 'Fall';
+  }
+  if (endOfTermCode === '20') {
+    return 'Winter';
+  }
+  if (endOfTermCode === '30') {
+    return 'Summer';
+  }
   return undefined;
 }
 
@@ -26,25 +35,39 @@ api.get('/catalog', compression(), async (req, res) => {
     console.time('catalog');
     const db = await dbConnection;
     const coursesArr = await db.courses.find({}).toArray();
-    const courseWithSections = await Promise.all(coursesArr.map(async course => {
-      const sections = await db.sections.find({ courseId: course._id }).toArray();
-      const courseWithSections: Model.CourseWithSections = {
-        ...course,
-        sections: sections.reduce((sectionsBySemester, section) => {
-          const season = termCodeToSeason(section.termCode);
-          if (!season) { return sectionsBySemester; }
-          sectionsBySemester[season] = sectionsBySemester[season] || [];
-          sectionsBySemester[season].push(section);
-          return sectionsBySemester;
-        }, {} as { [termCode: string]: Model.Section[] })
-      };
-      return courseWithSections;
-    }));
-    catalog = courseWithSections.reduce((catalog, courseWithSection) => {
-      const { subjectCode, courseNumber } = courseWithSection;
-      catalog[`${subjectCode}__|__${courseNumber}`.toUpperCase()] = courseWithSection;
-      return catalog;
-    }, {} as Model.Catalog);
+    const courseWithSections = await Promise.all(
+      coursesArr.map(async course => {
+        const sections = await db.sections
+          .find({ courseId: course._id })
+          .toArray();
+        const courseWithSections: Model.CourseWithSections = {
+          ...course,
+          sections: sections.reduce(
+            (sectionsBySemester, section) => {
+              const season = termCodeToSeason(section.termCode);
+              if (!season) {
+                return sectionsBySemester;
+              }
+              sectionsBySemester[season] = sectionsBySemester[season] || [];
+              sectionsBySemester[season].push(section);
+              return sectionsBySemester;
+            },
+            {} as { [termCode: string]: Model.Section[] }
+          )
+        };
+        return courseWithSections;
+      })
+    );
+    catalog = courseWithSections.reduce(
+      (catalog, courseWithSection) => {
+        const { subjectCode, courseNumber } = courseWithSection;
+        catalog[
+          `${subjectCode}__|__${courseNumber}`.toUpperCase()
+        ] = courseWithSection;
+        return catalog;
+      },
+      {} as Model.Catalog
+    );
     log.info('finished calculating catalog!');
     console.timeEnd('catalog');
   }

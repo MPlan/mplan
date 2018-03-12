@@ -1,7 +1,11 @@
-import { pad, combineUniquely, removeEmptyKeys, combineObjects } from './utilities';
+import {
+  pad,
+  combineUniquely,
+  removeEmptyKeys,
+  combineObjects
+} from './utilities';
 
 describe('shared utilities', () => {
-
   describe('pad', () => {
     it('from the right', () => {
       expect(pad('abc', 5)).toBe('  abc');
@@ -29,13 +33,13 @@ describe('shared utilities', () => {
       const obj = {
         foo: 'something',
         bar: undefined,
-        baz: null,
+        baz: null
       };
 
       const objWithout = removeEmptyKeys(obj);
 
       expect(objWithout).toEqual({
-        foo: 'something',
+        foo: 'something'
       } as any);
     });
   });
@@ -43,25 +47,25 @@ describe('shared utilities', () => {
   describe('combineObjects', () => {
     it('combines objects where the keys are missing', () => {
       interface Something {
-        a: string | null | undefined,
-        b: string | null | undefined,
-        c: number | null | undefined,
+        a: string | null | undefined;
+        b: string | null | undefined;
+        c: number | null | undefined;
       }
-  
+
       const objA: Something = {
         a: 'one',
         b: 'two',
-        c: undefined,
+        c: undefined
       };
-  
+
       const objB: Something = {
         a: null,
         b: 'something else',
         c: 3
       };
-  
+
       const combined = combineObjects(objA, objB);
-  
+
       expect(combined).toEqual({
         a: 'one',
         b: 'something else',

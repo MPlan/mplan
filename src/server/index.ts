@@ -9,7 +9,11 @@ import * as compression from 'compression';
 
 import { api } from './api';
 import { getOrThrow, log } from '../utilities/utilities';
-import { queue, executeSchedulerQueue, restartUnfinishedJobs } from './scheduler/scheduler';
+import {
+  queue,
+  executeSchedulerQueue,
+  restartUnfinishedJobs
+} from './scheduler/scheduler';
 import { dbConnection } from './models/mongo';
 
 const app = express();
@@ -28,11 +32,14 @@ async function start(workerId: number) {
         return;
       }
       next();
-    })
+    });
   }
 
   app.use('/api', api);
-  app.use(compression(), express.static(path.resolve(__dirname, '../web-root')));
+  app.use(
+    compression(),
+    express.static(path.resolve(__dirname, '../web-root'))
+  );
   app.use('*', compression(), (req, res) => {
     res.sendFile(path.resolve(__dirname, '../web-root/index.html'));
   });
@@ -47,7 +54,6 @@ async function start(workerId: number) {
     log.info('Exiting process...');
   });
 
-  
   // process.exit(0);
   // await executeSchedulerQueue();
 }

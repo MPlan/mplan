@@ -1,10 +1,10 @@
-import * as Record from "recordize";
-import * as Model from "./models";
-import * as Immutable from "immutable";
-import * as uuid from "uuid/v4";
-import { ObjectID as _ObjectId } from "bson";
-import { oneLine } from "common-tags";
-import { flatten } from "../utilities/utilities";
+import * as Record from 'recordize';
+import * as Model from './models';
+import * as Immutable from 'immutable';
+import * as uuid from 'uuid/v4';
+import { ObjectID as _ObjectId } from 'bson';
+import { oneLine } from 'common-tags';
+import { flatten } from '../utilities/utilities';
 
 export function ObjectId(id?: string | number | _ObjectId) {
   return (_ObjectId as any)(id) as _ObjectId;
@@ -17,7 +17,7 @@ export function convertCatalogJsonToRecord(courses: Model.Catalog) {
 
       const sections = Object.entries(rawSections).reduce(
         (sections, [_season, sectionList]) => {
-          const season = _season as "Fall" | "Winter" | "Summer";
+          const season = _season as 'Fall' | 'Winter' | 'Summer';
           const sectionSet = sectionList.reduce((sectionSet, rawSection) => {
             const section = new Section({ ...rawSection });
             return sectionSet.add(section);
@@ -25,7 +25,7 @@ export function convertCatalogJsonToRecord(courses: Model.Catalog) {
 
           return sections.set(season, sectionSet);
         },
-        Immutable.Map<"Fall" | "Winter" | "Summer", Immutable.Set<Section>>()
+        Immutable.Map<'Fall' | 'Winter' | 'Summer', Immutable.Set<Section>>()
       );
 
       const courseRecord = new Course({
@@ -46,10 +46,10 @@ export class Section
   extends Record.define({
     _id: ObjectId(),
     lastUpdateDate: 0,
-    lastTermCode: "",
+    lastTermCode: '',
     courseId: ObjectId(),
-    termCode: "",
-    courseRegistrationNumber: "",
+    termCode: '',
+    courseRegistrationNumber: '',
     instructors: [] as string[],
     scheduleTypes: [] as string[],
     times: [] as string[],
@@ -96,7 +96,7 @@ function flattenPrerequisites(
   if (!prerequisite) {
     return Immutable.Set<Immutable.Set<string | Course>>();
   }
-  if (typeof prerequisite === "string") {
+  if (typeof prerequisite === 'string') {
     return Immutable.Set<Immutable.Set<string | Course>>().add(
       Immutable.Set<string | Course>().add(prerequisite)
     );
@@ -112,13 +112,13 @@ function flattenPrerequisites(
       Immutable.Set<string | Course>().add(course)
     );
   }
-  if (typeof prerequisite === "object") {
-    if (prerequisite.g === "&") {
+  if (typeof prerequisite === 'object') {
+    if (prerequisite.g === '&') {
       const operandsPrerequisites = prerequisite.o.map(operand =>
         flattenPrerequisites(operand, catalog)
       );
       return allCombinations(operandsPrerequisites);
-    } else if (prerequisite.g === "|") {
+    } else if (prerequisite.g === '|') {
       const operandSetsFlattened = prerequisite.o
         .map(operand => flattenPrerequisites(operand, catalog))
         .reduce(
@@ -145,9 +145,9 @@ function hashObjects(objects: { [key: string]: any }) {
 export class Course
   extends Record.define({
     _id: ObjectId(),
-    name: "",
-    subjectCode: "",
-    courseNumber: "",
+    name: '',
+    subjectCode: '',
+    courseNumber: '',
     description: undefined as string | undefined | null,
     credits: undefined as number | undefined | null,
     creditsMin: undefined as number | undefined | null,
@@ -159,7 +159,7 @@ export class Course
     crossList: undefined as Array<[string, string]> | undefined | null,
     scheduleTypes: [] as string[],
     lastUpdateDate: 0,
-    lastTermCode: "",
+    lastTermCode: '',
     sections: Immutable.Map<string, Immutable.Set<Section>>()
   })
   implements Model.Course {
@@ -234,7 +234,7 @@ export class Course
 
       const maxDepth = option
         .map(course => {
-          if (typeof course === "string") {
+          if (typeof course === 'string') {
             return 0;
           }
           return course.minDepth(catalog);
@@ -474,7 +474,7 @@ export class Course
 export class Semester extends Record.define({
   _id: ObjectId(),
   courseSet: Immutable.Set<Course>(),
-  season: "Fall" as "Fall" | "Winter" | "Summer",
+  season: 'Fall' as 'Fall' | 'Winter' | 'Summer',
   year: 0
 }) {
   get id() {
@@ -483,9 +483,9 @@ export class Semester extends Record.define({
 
   get position() {
     const seasonNumber =
-      /*if*/ this.season === "Winter"
+      /*if*/ this.season === 'Winter'
         ? 0
-        : /*if*/ this.season === "Summer" ? 1 / 3 : 2 / 3;
+        : /*if*/ this.season === 'Summer' ? 1 / 3 : 2 / 3;
     return seasonNumber + this.year;
   }
 
@@ -494,68 +494,68 @@ export class Semester extends Record.define({
   }
 
   get courseCount() {
-    return this.getOrCalculate("courseCount", () => {
+    return this.getOrCalculate('courseCount', () => {
       return this.courseSet.count();
     });
   }
 
   get courses() {
-    return this.getOrCalculate("courses", () => {
+    return this.getOrCalculate('courses', () => {
       return this.courseSet.toArray();
     });
   }
 
   addCourse(course: Course) {
-    this.update("courseSet", courseSet => courseSet.add(course));
+    this.update('courseSet', courseSet => courseSet.add(course));
   }
 
   private _previousSemesterSeason() {
-    if (this.season === "Winter") {
-      return "Fall";
+    if (this.season === 'Winter') {
+      return 'Fall';
     }
-    if (this.season === "Fall") {
-      return "Summer";
+    if (this.season === 'Fall') {
+      return 'Summer';
     }
-    if (this.season === "Summer") {
-      return "Winter";
+    if (this.season === 'Summer') {
+      return 'Winter';
     }
-    throw new Error("season was neither Winter, Fall, or Summer");
+    throw new Error('season was neither Winter, Fall, or Summer');
   }
 
   private _previousSemesterYear() {
-    if (this.season === "Winter") {
+    if (this.season === 'Winter') {
       return this.year - 1;
     }
     return this.year;
   }
 
   private _nextSemesterSeason() {
-    if (this.season === "Winter") {
-      return "Summer";
+    if (this.season === 'Winter') {
+      return 'Summer';
     }
-    if (this.season === "Fall") {
-      return "Winter";
+    if (this.season === 'Fall') {
+      return 'Winter';
     }
-    if (this.season === "Summer") {
-      return "Fall";
+    if (this.season === 'Summer') {
+      return 'Fall';
     }
-    throw new Error("season was neither Winter, Fall, or Summer");
+    throw new Error('season was neither Winter, Fall, or Summer');
   }
 
   private _nextSemesterYear() {
-    if (this.season === "Fall") {
+    if (this.season === 'Fall') {
       return this.year + 1;
     }
     return this.year;
   }
 
-  previousSemester(): { season: "Fall" | "Winter" | "Summer"; year: number } {
+  previousSemester(): { season: 'Fall' | 'Winter' | 'Summer'; year: number } {
     const season = this._previousSemesterSeason();
     const year = this._previousSemesterYear();
     return { season, year };
   }
 
-  nextSemester(): { season: "Fall" | "Winter" | "Summer"; year: number } {
+  nextSemester(): { season: 'Fall' | 'Winter' | 'Summer'; year: number } {
     const season = this._nextSemesterSeason();
     const year = this._nextSemesterYear();
     return { season, year };
@@ -563,7 +563,7 @@ export class Semester extends Record.define({
 
   warningsNeverRanDuringCurrentSeason(catalog: Catalog) {
     return this.getOrCalculate(
-      "warningsNeverRanDuringCurrentSeason",
+      'warningsNeverRanDuringCurrentSeason',
       [catalog, this],
       () => {
         const warnings = this.courseSet
@@ -624,13 +624,13 @@ export class Catalog extends Record.define({
   }
 
   get courses() {
-    return this.getOrCalculate("courses", [this.coursesSorted], () => {
+    return this.getOrCalculate('courses', [this.coursesSorted], () => {
       return this.coursesSorted.toArray();
     });
   }
 
   get coursesSorted() {
-    return this.getOrCalculate("coursesSorted", [this.courseMap], () => {
+    return this.getOrCalculate('coursesSorted', [this.courseMap], () => {
       return this.courseMap
         .valueSeq()
         .sortBy(
@@ -643,9 +643,9 @@ export class Catalog extends Record.define({
 
 export class User extends Record.define({
   _id: ObjectId(),
-  username: "",
-  name: "",
-  picture: "",
+  username: '',
+  name: '',
+  picture: '',
   registerDate: 0,
   lastLoginDate: 0,
   boxMap: Immutable.Map<string, Course>(),
@@ -658,15 +658,15 @@ export class User extends Record.define({
   static levelsMemo = new Map<any, any>();
 
   addToDegree(course: Course) {
-    return this.update("degree", degree => degree.add(course));
+    return this.update('degree', degree => degree.add(course));
   }
 
   removeCourseFromBox(course: Course) {
-    return this.update("boxMap", boxMap => boxMap.remove(course.id));
+    return this.update('boxMap', boxMap => boxMap.remove(course.id));
   }
 
   get box() {
-    return this.getOrCalculate("box", [this.boxMap], () => {
+    return this.getOrCalculate('box', [this.boxMap], () => {
       return this.boxMap.valueSeq().toArray();
     });
   }
@@ -676,7 +676,7 @@ export class User extends Record.define({
   }
 
   get semesters() {
-    return this.getOrCalculate("semesters", [this.semestersSorted], () => {
+    return this.getOrCalculate('semesters', [this.semestersSorted], () => {
       return this.semestersSorted.toArray();
     });
   }
@@ -686,7 +686,7 @@ export class User extends Record.define({
   }
 
   addToBox(course: Course) {
-    return this.update("boxMap", boxMap => boxMap.set(course.id, course));
+    return this.update('boxMap', boxMap => boxMap.set(course.id, course));
   }
 
   get preferredCourses() {
@@ -765,11 +765,11 @@ export class Ui extends Record.define({
   mouseIsOverSemester: false,
   lastMouseOverSemester: undefined as Semester | undefined,
   selectedCourse: undefined as Course | undefined,
-  search: "",
+  search: '',
   currentPageIndex: 0
 }) {
   setSearch(newSearch: string) {
-    return this.set("search", newSearch);
+    return this.set('search', newSearch);
   }
 }
 
@@ -779,11 +779,11 @@ export class App extends Record.define({
   ui: new Ui()
 }) {
   updateUi(updater: (ui: Ui) => Ui) {
-    return this.update("ui", updater);
+    return this.update('ui', updater);
   }
 
   get levels() {
-    return this.getOrCalculate("levels", () => {
+    return this.getOrCalculate('levels', () => {
       return this.user
         .levels(this.catalog)
         .map(level => level.toArray())
