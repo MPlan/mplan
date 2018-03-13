@@ -16,7 +16,7 @@ const Level = styled(View)`
   width: 15rem;
   min-width: 15rem;
   margin: auto;
-  margin-left: 5rem;
+  margin-left: 1rem;
 `;
 
 const CourseLevelWrapper = styled(View)`
@@ -34,7 +34,13 @@ const CourseHeader = styled(View)`
 
 const CoursePrerequisites = styled(View)``;
 
-function Course({ course }: { course: string | Model.Course }) {
+function Course({
+  course,
+  criticalLevel
+}: {
+  course: string | Model.Course;
+  criticalLevel: number;
+}) {
   const courseName =
     /*if*/ course instanceof Model.Course ? course.simpleName : course;
 
@@ -52,6 +58,7 @@ function Course({ course }: { course: string | Model.Course }) {
         <Text strong>{courseName}</Text>
       </CourseHeader>
       <Text>{course.name}</Text>
+      <Text>Critical level: {criticalLevel}</Text>
       <Prerequisite prerequisite={course.prerequisites} />
     </CourseContainer>
   );
@@ -72,6 +79,14 @@ export class CriticalPath extends Model.store.connect() {
                     /*if*/ course instanceof Model.Course ? course.id : course
                   }
                   course={course}
+                  criticalLevel={
+                    course instanceof Model.Course
+                      ? course.criticalLevel(
+                          this.store.user,
+                          this.store.catalog
+                        )
+                      : 0
+                  }
                 />
               </CourseLevelWrapper>
             ))}

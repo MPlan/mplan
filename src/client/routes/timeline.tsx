@@ -7,7 +7,7 @@ import * as Immutable from 'immutable';
 import { Warnings } from './warnings';
 import styled from 'styled-components';
 
-const CreateSemesterContainer = styled(View) `
+const CreateSemesterContainer = styled(View)`
   border: ${styles.border};
   margin: ${styles.space(0)};
   padding: ${styles.space(0)};
@@ -16,61 +16,64 @@ const CreateSemesterContainer = styled(View) `
 `;
 
 interface CreateSemesterProps {
-  onCreateClick: (e: React.MouseEvent<HTMLButtonElement>) => void,
+  onCreateClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 function CreateSemester(props: CreateSemesterProps) {
-  return <CreateSemesterContainer>
-    <Button onClick={props.onCreateClick}><Text>+ new semester</Text></Button>
-  </CreateSemesterContainer>;
+  return (
+    <CreateSemesterContainer>
+      <Button onClick={props.onCreateClick}>
+        <Text>+ new semester</Text>
+      </Button>
+    </CreateSemesterContainer>
+  );
 }
 
-const TimelineContainer = styled(View) `
+const TimelineContainer = styled(View)`
   flex: 1;
   flex-direction: row;
   position: relative;
 `;
 
-const FloatingCourseContainer = styled(View) `
+const FloatingCourseContainer = styled(View)`
   position: absolute;
 `;
 
-const Content = styled(View) `
+const Content = styled(View)`
   flex: 1;
   overflow: auto;
 `;
 
-const Header = styled(View) `
+const Header = styled(View)`
   padding: ${styles.space(0)};
   flex-direction: row;
 `;
 
-const HeaderMain = styled(View) `
+const HeaderMain = styled(View)`
   flex: 1;
 `;
 
-const HeaderRight = styled(View) ``;
+const HeaderRight = styled(View)``;
 
-const SemesterBlockContainer = styled(View) `
+const SemesterBlockContainer = styled(View)`
   flex: 1;
   flex-direction: row;
   overflow: auto;
 `;
 
-const SideBar = styled(View) `
+const SideBar = styled(View)`
   width: 20rem;
-  border-left: .1rem solid ${styles.borderColor};
+  border-left: 0.1rem solid ${styles.borderColor};
   background-color: ${styles.white};
 `;
 
 export class Timeline extends Model.store.connect() {
-
   handleMouseMove = (e: MouseEvent) => {
     // this.setGlobalStore(store => store
     //   .set('x', e.clientX)
     //   .set('y', e.clientY)
     // );
-  }
+  };
 
   componentDidMount() {
     document.addEventListener('mousemove', this.handleMouseMove);
@@ -81,23 +84,28 @@ export class Timeline extends Model.store.connect() {
     document.removeEventListener('mousemove', this.handleMouseMove);
   }
 
-  handleCourseMouseDown = (e: React.MouseEvent<HTMLDivElement>, course: Model.Course) => {
+  handleCourseMouseDown = (
+    e: React.MouseEvent<HTMLDivElement>,
+    course: Model.Course
+  ) => {
     // const offsetLeft = e.currentTarget.offsetLeft;
     // const offsetTop = e.currentTarget.offsetTop;
     // const offsetX = e.pageX - offsetLeft;
     // const offsetY = e.pageY - offsetTop;
-
     // this.setStore(store => store
     //   .set('selectedCourseId', course.id)
     //   .set('dragging', true)
     //   .set('offsetX', offsetX)
     //   .set('offsetY', offsetY)
     // );
-  }
+  };
 
-  handleCourseMouseUp = (e: React.MouseEvent<HTMLDivElement>, course: Model.Course) => {
+  handleCourseMouseUp = (
+    e: React.MouseEvent<HTMLDivElement>,
+    course: Model.Course
+  ) => {
     // this.setStore(store => store.set('dragging', false))
-  }
+  };
 
   onCreateSemesterBefore = () => {
     // const id = Model.ObjectId();
@@ -111,7 +119,7 @@ export class Timeline extends Model.store.connect() {
     //       year,
     //     })));
     // });
-  }
+  };
 
   onCreateSemesterAfter = () => {
     // const id = Model.ObjectId();
@@ -125,7 +133,7 @@ export class Timeline extends Model.store.connect() {
     //       year,
     //     })));
     // });
-  }
+  };
 
   handleMouseEnterSemester = (semester: Model.Semester) => {
     // console.log('mouse enter');
@@ -133,14 +141,17 @@ export class Timeline extends Model.store.connect() {
     //   .set('mouseIsOverSemester', true)
     //   .set('lastMouseOverSemesterId', semester.id)
     // );
-  }
+  };
 
   handleMouseLeaveSemester = (semester: Model.Semester) => {
     // console.log('mouse elave')
     // this.setGlobalStore(store => store.set('mouseIsOverSemester', false));
-  }
+  };
 
-  handleCourseSemesterDeleteClick(course: Model.Course, semester: Model.Semester) {
+  handleCourseSemesterDeleteClick(
+    course: Model.Course,
+    semester: Model.Semester
+  ) {
     // this.setGlobalStore(store => {
     //   return store.update('semesterMap', semesterMap =>
     //     semesterMap.update(semester.id, s =>
@@ -157,32 +168,36 @@ export class Timeline extends Model.store.connect() {
   }
 
   render() {
-    return <TimelineContainer>
+    return (
+      <TimelineContainer>
+        <Content>
+          <Header>
+            <HeaderMain>
+              <Text strong extraLarge>
+                Timeline
+              </Text>
+              <Text>Create your MPlan here.</Text>
+            </HeaderMain>
 
+            <HeaderRight>
+              <Text strong>Expected Graduation:</Text>
+              <Text strong large>
+                April 2018
+              </Text>
+            </HeaderRight>
+          </Header>
 
-      <Content>
-        <Header>
-          <HeaderMain>
-            <Text strong extraLarge>Timeline</Text>
-            <Text>Create your MPlan here.</Text>
-          </HeaderMain>
+          <SemesterBlockContainer>
+            <CreateSemester onCreateClick={this.onCreateSemesterBefore} />
+            <CreateSemester onCreateClick={this.onCreateSemesterAfter} />
+          </SemesterBlockContainer>
+        </Content>
 
-          <HeaderRight>
-            <Text strong>Expected Graduation:</Text>
-            <Text strong large>April 2018</Text>
-          </HeaderRight>
-        </Header>
-
-        <SemesterBlockContainer>
-          <CreateSemester onCreateClick={this.onCreateSemesterBefore} />
-          <CreateSemester onCreateClick={this.onCreateSemesterAfter} />
-        </SemesterBlockContainer>
-      </Content>
-
-      <SideBar>
-        <Box />
-        <Warnings />
-      </SideBar>
-    </TimelineContainer>
+        <SideBar>
+          <Box />
+          <Warnings />
+        </SideBar>
+      </TimelineContainer>
+    );
   }
 }

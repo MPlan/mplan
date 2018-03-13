@@ -172,13 +172,53 @@ export class Course
 
   static optionsMemo = new Map<any, any>();
   static bestOptionMemo = new Map<any, any>();
-  static hasCourseMemo = new Map<any, any>();
   static intersectionMemo = new Map<any, any>();
   static depthMemo = new Map<any, any>();
   static minDepthMemo = new Map<any, any>();
   static levelsMemo = new Map<any, any>();
   static closureMemo = new Map<any, any>();
   static fullClosureMemo = new Map<any, any>();
+  static criticalMemo = new Map<any, any>();
+
+  criticalLevel(user: User, catalog: Catalog) {
+    const hash = hashObjects({ catalog, user, course: this });
+    if (Course.criticalMemo.has(hash)) {
+      return Course.criticalMemo.get(hash);
+    }
+
+    const levels = user.levels(catalog);
+    const levelCount = levels.count();
+    const levelIndex = levels.findIndex(level => level.has(this));
+    if (levelIndex <= -1) {
+      Course.criticalMemo.set(hash, -1);
+      return -1;
+    }
+
+    let criticalLevel = 0;
+
+    while (levelIndex + criticalLevel + 1 < levelCount) {
+      const nextLevel = levels.get(levelIndex + criticalLevel + 1);
+      if (!nextLevel) {
+        continue;
+      }
+
+      const levelHasCourse = nextLevel
+        .filter(course => course instanceof Course)
+        .map(x => x as Course)
+        .some(course =>
+          course.bestOption(catalog, user.preferredCourses).has(this)
+        );
+
+      if (levelHasCourse) {
+        Course.criticalMemo.set(hash, criticalLevel);
+        return criticalLevel;
+      }
+      criticalLevel += 1;
+    }
+
+    Course.criticalMemo.set(hash, criticalLevel);
+    return criticalLevel;
+  }
 
   /**
    * calculates all possible options of prerequisites. e.g. for CIS 350, you can take either
@@ -243,7 +283,9 @@ export class Course
 
       const closure = option.reduce((fullClosure, course) => {
         if (course instanceof Course) {
-          return fullClosure.add(course).union(course.closure(catalog, preferredCourses));
+          return fullClosure
+            .add(course)
+            .union(course.closure(catalog, preferredCourses));
         }
         return fullClosure.add(course);
       }, Immutable.Set<string | Course>());
@@ -262,31 +304,6 @@ export class Course
     }
 
     const bestOption = bestOptionResult.option;
-
-    console.log(
-      `best options for ${this.simpleName}`,
-      bestOption
-        .map(course => (course instanceof Course ? course.simpleName : course))
-        .toArray(),
-      `intersection count: ${bestOptionResult.intersectionCount}`,
-      `depth: ${bestOptionResult.maxDepth}`,
-      `full closure count: ${bestOptionResult.closureCount}`
-    );
-
-    console.log(`options for ${this.simpleName}`);
-
-    bestOptionMapping.forEach(mapping => {
-      console.log(
-        mapping.option
-          .map(
-            course => (course instanceof Course ? course.simpleName : course)
-          )
-          .toArray(),
-        `intersection count: ${mapping.intersectionCount}`,
-        `depth: ${mapping.maxDepth}`,
-        `full closure count: ${mapping.closureCount}`
-      );
-    });
 
     Course.bestOptionMemo.set(hash, bestOption);
     return bestOption;
@@ -638,6 +655,12 @@ export class User extends Record.define({
     return this.update('degree', degree => degree.add(course));
   }
 
+  addToAdditionalCourses(course: Course) {
+    return this.update('additionalCourses', additionalCourses =>
+      additionalCourses.add(course)
+    );
+  }
+
   removeCourseFromBox(course: Course) {
     return this.update('boxMap', boxMap => boxMap.remove(course.id));
   }
@@ -728,7 +751,7 @@ export class User extends Record.define({
       Immutable.List<Immutable.Set<string | Course>>()
     );
 
-    Course.levelsMemo.set(hash, levelsMutable);
+    Course.levelsMemo.set(hash, levels);
     return levels;
   }
 }
