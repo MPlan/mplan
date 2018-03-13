@@ -8,6 +8,7 @@ import { flatten } from '../../utilities/utilities';
 const GraphContainer = styled(View)`
   flex: 1;
   flex-direction: row;
+  overflow: auto;
 `;
 
 const Level = styled(View)`
@@ -54,6 +55,19 @@ const CriticalInfo = styled(View)`
 `;
 
 const PrerequisiteContainer = styled(View)``;
+
+const Header = styled(View)`
+  padding: ${styles.space(0)};
+  flex-direction: row;
+`;
+
+const HeaderMain = styled(View)`
+  flex: 1;
+`;
+
+const HeaderRight = styled(View)``;
+
+const CriticalPathContainer = styled(View)``;
 
 function Course({
   course,
@@ -104,38 +118,51 @@ function Course({
 export class CriticalPath extends Model.store.connect() {
   render() {
     return (
-      <GraphContainer>
-        {this.store.levels.map((level, levelIndex) => (
-          <Level key={levelIndex}>
-            <LevelHeader>
-              <Text large strong>
-                Level {levelIndex + 1}
-              </Text>
-              <Text>
-                {level.length} {level.length > 1 ? 'courses' : 'course'}
-              </Text>
-            </LevelHeader>
-            <LevelCard>
-              {level.map(course => (
-                <Course
-                  key={
-                    /*if*/ course instanceof Model.Course ? course.id : course
-                  }
-                  course={course}
-                  criticalLevel={
-                    course instanceof Model.Course
-                      ? course.criticalLevel(
-                          this.store.user,
-                          this.store.catalog
-                        )
-                      : 0
-                  }
-                />
-              ))}
-            </LevelCard>
-          </Level>
-        ))}
-      </GraphContainer>
+      <CriticalPathContainer>
+        <Header>
+          <HeaderMain>
+            <Text strong extraLarge>
+              Critical Path
+            </Text>
+            <Text>
+              To take a course in one level, all courses in the previous level
+              must be taken.
+            </Text>
+          </HeaderMain>
+        </Header>
+        <GraphContainer>
+          {this.store.levels.map((level, levelIndex) => (
+            <Level key={levelIndex}>
+              <LevelHeader>
+                <Text large strong>
+                  Level {levelIndex + 1}
+                </Text>
+                <Text>
+                  {level.length} {level.length > 1 ? 'courses' : 'course'}
+                </Text>
+              </LevelHeader>
+              <LevelCard>
+                {level.map(course => (
+                  <Course
+                    key={
+                      /*if*/ course instanceof Model.Course ? course.id : course
+                    }
+                    course={course}
+                    criticalLevel={
+                      course instanceof Model.Course
+                        ? course.criticalLevel(
+                            this.store.user,
+                            this.store.catalog
+                          )
+                        : 0
+                    }
+                  />
+                ))}
+              </LevelCard>
+            </Level>
+          ))}
+        </GraphContainer>
+      </CriticalPathContainer>
     );
   }
 }
