@@ -51,14 +51,14 @@ async function updateStoreWithCatalog() {
       user =>
         user
           // SOFTWARE ENGINEERING
-          .addToDegree(catalog.getCourse('CIS', '4962')!)
-          .addToDegree(catalog.getCourse('CIS', '450')!)
-          .addToDegree(catalog.getCourse('COMP', '270')!)
-          .addToDegree(catalog.getCourse('CIS', '200')!)
-          .addToDegree(catalog.getCourse('CIS', '150')!)
-          .addToDegree(catalog.getCourse('CIS', '3501')!)
-          .addToDegree(catalog.getCourse('MATH', '115')!)
-          .addToDegree(catalog.getCourse('COMP', '105')!)
+          // .addToDegree(catalog.getCourse('CIS', '4962')!)
+          // .addToDegree(catalog.getCourse('CIS', '450')!)
+          // .addToDegree(catalog.getCourse('COMP', '270')!)
+          // .addToDegree(catalog.getCourse('CIS', '200')!)
+          // .addToDegree(catalog.getCourse('CIS', '150')!)
+          // .addToDegree(catalog.getCourse('CIS', '3501')!)
+          // .addToDegree(catalog.getCourse('MATH', '115')!)
+          // .addToDegree(catalog.getCourse('COMP', '105')!)
 
       // DATA SCIENCE
       // .addToDegree(catalog.getCourse('CIS', '1501')!)
@@ -80,53 +80,53 @@ async function updateStoreWithCatalog() {
       // .addToDegree(catalog.getCourse('STAT', '430')!)
 
       // CE/EE DUAL MAJOR
-      // // written and oral communication
-      // .addToDegree(catalog.getCourse('COMP', '105')!)
-      // .addToDegree(catalog.getCourse('COMP', '270')!)
-      // // social and behavioral analysis
-      // .addToDegree(catalog.getCourse('ECON', '201')!)
-      // // intersections
-      // .addToDegree(catalog.getCourse('ENGR', '400')!)
-      // // intro to engineering
-      // .addToDegree(catalog.getCourse('ENGR', '100')!)
-      // // mathematics
-      // .addToDegree(catalog.getCourse('MATH', '115')!)
-      // .addToDegree(catalog.getCourse('MATH', '116')!)
-      // .addToDegree(catalog.getCourse('MATH', '205')!)
-      // .addToDegree(catalog.getCourse('MATH', '216')!)
-      // .addToDegree(catalog.getCourse('MATH', '217')!)
-      // // chemistry and physics
-      // .addToDegree(catalog.getCourse('CHEM', '134')!)
-      // .addToDegree(catalog.getCourse('PHYS', '150')!)
-      // .addToDegree(catalog.getCourse('PHYS', '151')!)
-      // // discrete math and probability/statistics
-      // .addToDegree(catalog.getCourse('ECE', '276')!)
-      // .addToDegree(catalog.getCourse('IMSE', '317')!)
-      // // ece core
-      // .addToDegree(catalog.getCourse('ECE', '210')!)
-      // .addToDegree(catalog.getCourse('ECE', '270')!)
-      // .addToDegree(catalog.getCourse('ECE', '273')!)
-      // .addToDegree(catalog.getCourse('ECE', '311')!)
-      // .addToDegree(catalog.getCourse('ECE', '3731')!)
-      // // ce core
-      // .addToDegree(catalog.getCourse('ECE', '370')!)
-      // .addToDegree(catalog.getCourse('ECE', '375')!)
-      // .addToDegree(catalog.getCourse('ECE', '471')!)
-      // .addToDegree(catalog.getCourse('ECE', '473')!)
-      // .addToDegree(catalog.getCourse('ECE', '475')!)
-      // .addToDegree(catalog.getCourse('ECE', '478')!)
-      // // ee core
-      // .addToDegree(catalog.getCourse('ECE', '3171')!)
-      // .addToDegree(catalog.getCourse('ECE', '385')!)
-      // .addToDegree(catalog.getCourse('ECE', '450')!)
-      // .addToDegree(catalog.getCourse('ECE', '460')!)
-      // .addToDegree(catalog.getCourse('ECE', '480')!)
-      // .addToDegree(catalog.getCourse('ECE', '4951')!)
-      // // applied business
-      // .addToDegree(catalog.getCourse('ENGR', '400')!)
-      // // capstone
-      // .addToDegree(catalog.getCourse('ECE', '4981')!)
-      // .addToDegree(catalog.getCourse('ECE', '4983')!)
+      // written and oral communication
+      .addToDegree(catalog.getCourse('COMP', '105')!)
+      .addToDegree(catalog.getCourse('COMP', '270')!)
+      // social and behavioral analysis
+      .addToDegree(catalog.getCourse('ECON', '201')!)
+      // intersections
+      .addToDegree(catalog.getCourse('ENGR', '400')!)
+      // intro to engineering
+      .addToDegree(catalog.getCourse('ENGR', '100')!)
+      // mathematics
+      .addToDegree(catalog.getCourse('MATH', '115')!)
+      .addToDegree(catalog.getCourse('MATH', '116')!)
+      .addToDegree(catalog.getCourse('MATH', '205')!)
+      .addToDegree(catalog.getCourse('MATH', '216')!)
+      .addToDegree(catalog.getCourse('MATH', '217')!)
+      // chemistry and physics
+      .addToDegree(catalog.getCourse('CHEM', '134')!)
+      .addToDegree(catalog.getCourse('PHYS', '150')!)
+      .addToDegree(catalog.getCourse('PHYS', '151')!)
+      // discrete math and probability/statistics
+      .addToDegree(catalog.getCourse('ECE', '276')!)
+      .addToDegree(catalog.getCourse('IMSE', '317')!)
+      // ece core
+      .addToDegree(catalog.getCourse('ECE', '210')!)
+      .addToDegree(catalog.getCourse('ECE', '270')!)
+      .addToDegree(catalog.getCourse('ECE', '273')!)
+      .addToDegree(catalog.getCourse('ECE', '311')!)
+      .addToDegree(catalog.getCourse('ECE', '3731')!)
+      // ce core
+      .addToDegree(catalog.getCourse('ECE', '370')!)
+      .addToDegree(catalog.getCourse('ECE', '375')!)
+      .addToDegree(catalog.getCourse('ECE', '471')!)
+      .addToDegree(catalog.getCourse('ECE', '473')!)
+      .addToDegree(catalog.getCourse('ECE', '475')!)
+      .addToDegree(catalog.getCourse('ECE', '478')!)
+      // ee core
+      .addToDegree(catalog.getCourse('ECE', '3171')!)
+      .addToDegree(catalog.getCourse('ECE', '385')!)
+      .addToDegree(catalog.getCourse('ECE', '450')!)
+      .addToDegree(catalog.getCourse('ECE', '460')!)
+      .addToDegree(catalog.getCourse('ECE', '480')!)
+      .addToDegree(catalog.getCourse('ECE', '4951')!)
+      // applied business
+      .addToDegree(catalog.getCourse('ENGR', '400')!)
+      // capstone
+      .addToDegree(catalog.getCourse('ECE', '4981')!)
+      .addToDegree(catalog.getCourse('ECE', '4983')!)
     )
   );
 }

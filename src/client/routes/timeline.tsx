@@ -8,11 +8,13 @@ import { Warnings } from './warnings';
 import styled from 'styled-components';
 
 const CreateSemesterContainer = styled(View)`
-  border: ${styles.border};
+  /* border: ${styles.border}; */
   margin: ${styles.space(0)};
   padding: ${styles.space(0)};
   justify-content: center;
   align-items: center;
+  background-color: white;
+  box-shadow: ${styles.boxShadow(0)};
 `;
 
 interface CreateSemesterProps {
@@ -63,8 +65,8 @@ const SemesterBlockContainer = styled(View)`
 
 const SideBar = styled(View)`
   width: 20rem;
-  border-left: 0.1rem solid ${styles.borderColor};
   background-color: ${styles.white};
+  box-shadow: ${styles.boxShadow(0)};
 `;
 
 export class Timeline extends Model.store.connect() {

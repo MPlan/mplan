@@ -45,7 +45,9 @@ const Header = styled(View)`
   padding: ${styles.space(0)};
   flex-direction: row;
   background-color: ${styles.white};
-  border-bottom: ${styles.border};
+  /* border-bottom: ${styles.border}; */
+  box-shadow: ${styles.boxShadow(-2)};
+  z-index: 10;
 `;
 
 const HeaderContent = styled(View)`
@@ -141,6 +143,7 @@ const AppContent = styled(View)`
   width: 100vw;
   height: 100vh;
   overflow: hidden;
+  background-color: ${styles.background};
 `;
 
 export function App() {

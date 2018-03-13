@@ -8,31 +8,52 @@ import { flatten } from '../../utilities/utilities';
 const GraphContainer = styled(View)`
   flex: 1;
   flex-direction: row;
-  /* align-items: flex-start; */
-  overflow: auto;
 `;
 
 const Level = styled(View)`
-  width: 15rem;
-  min-width: 15rem;
-  margin: auto;
-  margin-left: 1rem;
+  width: 20rem;
+  min-width: 20rem;
+  margin: 1rem;
 `;
 
-const CourseLevelWrapper = styled(View)`
+const LevelCard = styled(View)`
+  background-color: ${styles.white};
+  box-shadow: ${styles.boxShadow(0)};
+  overflow: auto;
+  flex: 1;
+
+  & > * {
+    flex-shrink: 0;
+  }
+`;
+
+const LevelHeader = styled(View)`
   margin: ${styles.space(0)};
-  border: ${styles.border};
+  /* margin-left: ${styles.space(-1)}; */
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: space-between;
 `;
 
 const CourseContainer = styled(View)`
   padding: ${styles.space(0)};
+  /* border-bottom: ${styles.border}; */
 `;
 
 const CourseHeader = styled(View)`
   margin-bottom: ${styles.space(-1)};
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: baseline;
 `;
 
 const CoursePrerequisites = styled(View)``;
+
+const CriticalInfo = styled(View)`
+  margin-bottom: ${styles.space(-1)};
+`;
+
+const PrerequisiteContainer = styled(View)``;
 
 function Course({
   course,
@@ -56,9 +77,25 @@ function Course({
     <CourseContainer>
       <CourseHeader>
         <Text strong>{courseName}</Text>
+        <Text>{course.name}</Text>
       </CourseHeader>
-      <Text>{course.name}</Text>
-      <Text>Critical level: {criticalLevel}</Text>
+      <CriticalInfo>
+        {/*if*/ criticalLevel > 0 ? (
+          <Text small>Can be moved up {criticalLevel} levels.</Text>
+        ) : (
+          <Text small>
+            <Text small strong color={styles.red}>
+              Critical:
+            </Text>{' '}
+            delaying this course will delay graduation.
+          </Text>
+        )}
+      </CriticalInfo>
+      {/*if*/ course.prerequisites ? (
+        <Text small strong>
+          Prerequisites:
+        </Text>
+      ) : null}
       <Prerequisite prerequisite={course.prerequisites} />
     </CourseContainer>
   );
@@ -70,10 +107,16 @@ export class CriticalPath extends Model.store.connect() {
       <GraphContainer>
         {this.store.levels.map((level, levelIndex) => (
           <Level key={levelIndex}>
-            {level.map(course => (
-              <CourseLevelWrapper
-                key={course instanceof Model.Course ? course.id : course}
-              >
+            <LevelHeader>
+              <Text large strong>
+                Level {levelIndex + 1}
+              </Text>
+              <Text>
+                {level.length} {level.length > 1 ? 'courses' : 'course'}
+              </Text>
+            </LevelHeader>
+            <LevelCard>
+              {level.map(course => (
                 <Course
                   key={
                     /*if*/ course instanceof Model.Course ? course.id : course
@@ -88,8 +131,8 @@ export class CriticalPath extends Model.store.connect() {
                       : 0
                   }
                 />
-              </CourseLevelWrapper>
-            ))}
+              ))}
+            </LevelCard>
           </Level>
         ))}
       </GraphContainer>

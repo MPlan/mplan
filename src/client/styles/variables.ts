@@ -3,7 +3,9 @@ import { hsl, darken, lighten } from 'polished';
 
 export function parsePercentOrDecimal(percentageOrDecimal: string) {
   const match = /([0-9.]*)%/.exec(percentageOrDecimal);
-  if (!match) { return parseFloat(percentageOrDecimal); }
+  if (!match) {
+    return parseFloat(percentageOrDecimal);
+  }
   const percentValue = parseFloat(match[1]);
   return percentValue / 100;
 }
@@ -94,7 +96,7 @@ export const warning = yellow;
 export const danger = red;
 export const light = grayLighter;
 export const dark = grayDarker;
-export const background = whiteTer;
+export const background = '#F7F7F8';
 export const borderColor = lighten(0.1, soaringEagle);
 export const borderHover = grayLight;
 export const text = grayDark;
@@ -115,3 +117,5 @@ export const linkActiveBorder = grayDark;
 
 // BORDERS
 export const border = `${borderWidth} solid ${borderColor}`;
+
+

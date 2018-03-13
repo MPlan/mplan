@@ -22,6 +22,7 @@ const StyledLink = styled(NavLink) `
 const NavButtonContainer = styled(View) `
   padding: ${styles.space(0)};
   align-items: center;
+  box-shadow: ${styles.boxShadow(0)};
 `;
 
 const NavText = styled(Text) `
