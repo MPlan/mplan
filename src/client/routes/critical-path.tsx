@@ -121,12 +121,10 @@ export class CriticalPath extends Model.store.connect() {
       <CriticalPathContainer>
         <Header>
           <HeaderMain>
-            <Text strong extraLarge>
-              Critical Path
-            </Text>
+            <Text strong extraLarge>Critical Path</Text>
             <Text>
-              To take a course in one level, all courses in the previous level
-              must be taken.
+              To take a course in one level, at least one course in every
+              previous level must be taken.
             </Text>
           </HeaderMain>
         </Header>
