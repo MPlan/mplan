@@ -1,95 +1,100 @@
 import * as Mongo from 'mongodb';
 
 export interface DbSynced {
-  _id: Mongo.ObjectId,
-  lastUpdateDate: number,
-  lastTermCode: string,
+  _id: Mongo.ObjectId;
+  lastUpdateDate: number;
+  lastTermCode: string;
 }
 
 export interface Term extends DbSynced {
-  code: string,
-  season: string,
-  year: number,
+  code: string;
+  season: string;
+  year: number;
 }
 
 export interface Subject extends DbSynced {
-  code: string,
-  name: string,
+  code: string;
+  name: string;
 }
 
-export type Prerequisite = undefined | null | [string, string] | string | {
-  /** the logic gate to use */
-  g: '&' | '|',
-  /**
-   * the operands of the logic gate
-   * 
-   * can be:
-   * 
-   * * another `Prerequisite`
-   * * a tuple of `[subjectCode, courseNumber]` e.g. `["CIS", "310"]`
-   * * or a simple string e.g. `"Remedial Math"`
-   */
-  o: Prerequisite[],
-}
+export type Prerequisite =
+  | undefined
+  | null
+  | [string, string]
+  | string
+  | {
+      /** the logic gate to use */
+      g: '&' | '|';
+      /**
+       * the operands of the logic gate
+       *
+       * can be:
+       *
+       * * another `Prerequisite`
+       * * a tuple of `[subjectCode, courseNumber]` e.g. `["CIS", "310"]`
+       * * or a simple string e.g. `"Remedial Math"`
+       */
+      o: Prerequisite[];
+    };
 
 export interface Course extends DbSynced {
   /** the subject code of this course. e.g. `CIS` */
-  subjectCode: string,
+  subjectCode: string;
   /** the course number of this course. e.g. `450` */
-  courseNumber: string,
+  courseNumber: string;
   /** the full name of the course */
-  name: string,
+  name: string;
   /** the description of the course */
-  description: string | undefined | null,
+  description: string | undefined | null;
   /**
    * the number of credit hours of the course determined by the most recent sections in the most
    * recent terms of this course
    */
-  credits: number | undefined | null,
+  credits: number | undefined | null;
   /**
    * a credit range is possible if the `creditsMin` is present.
    */
-  creditsMin: number | undefined | null,
-  creditHours: number | undefined | null,
-  creditHoursMin: number | undefined | null,
+  creditsMin: number | undefined | null;
+  creditHours: number | undefined | null;
+  creditHoursMin: number | undefined | null;
   /** the restriction placed on this course */
-  restrictions: string | undefined | null,
+  restrictions: string | undefined | null;
   /** represents the set of courses needed to have been taken before the course */
-  prerequisites: Prerequisite,
+  prerequisites: Prerequisite;
   /** represents the set of courses needed to be taken either before or during the course */
-  corequisites: Prerequisite,
+  corequisites: Prerequisite;
   /** tuples of courses that this course is cross listed with */
-  crossList: Array<[string, string]> | undefined | null,
-  scheduleTypes: string[],
+  crossList: Array<[string, string]> | undefined | null;
+  scheduleTypes: string[];
 }
 
 export interface Section extends DbSynced {
   /** a link to the course id this section belongs to */
-  courseId: Mongo.ObjectId,
+  courseId: Mongo.ObjectId;
   /** the term for this section */
-  termCode: string,
+  termCode: string;
   /** the course registration number */
-  courseRegistrationNumber: string,
+  courseRegistrationNumber: string;
   /** unique name of the instructor */
-  instructors: string[],
+  instructors: string[];
   /** schedule type of this section e.g. Lecture or Internet */
-  scheduleTypes: string[],
+  scheduleTypes: string[];
   /** time of day of this schedule */
-  times: string[],
+  times: string[];
   /** the days this schedule was offered on e.g. TR for Tuesday Thursdays */
-  days: string[],
+  days: string[];
   /** the location of this section as it appears on the SIS */
-  locations: string[],
+  locations: string[];
   /** the total capacity *including* cross-listed seats */
-  capacity: number,
+  capacity: number;
   /** the remaining seats *including* cross-listed seats */
-  remaining: number,
+  remaining: number;
 }
 
 export interface CourseWithSections extends Course {
-  sections: { [termCode: string]: Section[] }
+  sections: { [termCode: string]: Section[] };
 }
 
 export interface Catalog {
-  [courseId: string]: CourseWithSections,
+  [courseId: string]: CourseWithSections;
 }

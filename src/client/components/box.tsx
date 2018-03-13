@@ -22,19 +22,18 @@ export class Box extends Model.store.connect() {
 
   documentMouseUp = (e: MouseEvent) => {
     this.setStore(store => {
-      const newStore = store.set('dragging', false);
-      if (!store.dragging) { return newStore; }
-      if (!store.mouseIsOverSemester) { return newStore; }
-      const lastMouseOverSemesterId = store.lastMouseOverSemesterId;
-      const hasMousedOverSemester = store.semesterMap.has(store.lastMouseOverSemesterId);
+      const newStore = store.update('ui', ui => ui.set('dragging', false));
+      if (!store.ui.dragging) { return newStore; }
+      if (!store.ui.mouseIsOverSemester) { return newStore; }
+      const lastMouseOverSemester = store.ui.lastMouseOverSemester;
+      if (!lastMouseOverSemester) { return newStore; }
+      const hasMousedOverSemester = store.user.semesterSet.has(lastMouseOverSemester);
       if (!hasMousedOverSemester) { return newStore; }
-      const selectedCourse = store.selectedCourse;
+      const selectedCourse = store.ui.selectedCourse;
       if (!selectedCourse) { return newStore; }
 
-      return newStore.update('semesterMap', semesterMap =>
-        semesterMap.update(lastMouseOverSemesterId, semester =>
-          semester.update('courseMap', courseMap =>
-            courseMap.set(selectedCourse.id, selectedCourse))));
+      return newStore;
+      // return newStore.update('user', / user => user.update('semesterSet', semesterSet => semesterSet.update()));
     });
   }
 
@@ -48,14 +47,16 @@ export class Box extends Model.store.connect() {
   }
 
   onDeleteClick(course: Model.Course) {
-    this.setStore(store => store.removeCourseFromBox(course));
+    this.setStore(store =>
+      store.update('user', user =>
+        user.removeCourseFromBox(course)));
   }
 
   onCourseMouseDown(course: Model.Course) {
-    this.setStore(store => store
-      .set('selectedCourseId', course.id)
-      .set('dragging', true)
-    );
+    // this.setStore(store => store
+    //   .set('selectedCourseId', course.id)
+    //   .set('dragging', true)
+    // );
   }
 
   render() {
@@ -65,7 +66,7 @@ export class Box extends Model.store.connect() {
         <Text>A quick place to put some course in.</Text>
       </BoxHeader>
       <BoxContent>
-        {this.store.box.map(course => <Course
+        {this.store.user.box.map(course => <Course
           key={course.id}
           course={course}
           onDeleteClick={() => this.onDeleteClick(course)}

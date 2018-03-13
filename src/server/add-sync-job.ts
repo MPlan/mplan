@@ -9,7 +9,7 @@ async function main() {
   await queue({
     jobName: 'sync',
     plannedStartTime: new Date().getTime(),
-    priority: 10,
+    priority: 10
   });
   process.exit(0);
 }

@@ -10,7 +10,8 @@
     "start:client": "webpack-dev-server",
     "server": "ts-node ./src/server/index.ts",
     "build": "./node_modules/.bin/webpack -p",
-    "heroku-prebuild": "npm install --only=dev && npm install && npm run build"
+    "heroku-prebuild": "npm install --only=dev && npm install && npm run build",
+    "pretty": "prettier --single-quote --write ./src/**/*.ts ./src/**/*.tsx"
   },
   "private": true,
   "author": "",
@@ -28,6 +29,7 @@
     "html-webpack-plugin": "^2.30.1",
     "jasmine-spec-reporter": "^4.2.1",
     "jasmine-ts": "^0.2.1",
+    "prettier": "^1.11.1",
     "style-loader": "^0.19.1",
     "typescript": "^2.6.2",
     "webpack": "^3.10.0",

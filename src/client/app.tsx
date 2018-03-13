@@ -11,98 +11,123 @@ import { Callback } from './routes/callback';
 import { createBrowserHistory } from 'history';
 export const history = createBrowserHistory();
 
-const StyledView = styled(View) `
-  &, & * {
+const StyledView = styled(View)`
+  &,
+  & * {
     color: ${styles.gray};
   }
-  &:hover, &:hover * {
+  &:hover,
+  &:hover * {
     color: ${styles.grayDark};
   }
-  &:active, &:active * {
+  &:active,
+  &:active * {
     color: ${styles.black};
   }
 `;
 
 function renderApp() {
-  if (Auth.loggedIn()) { return <AuthenticatedRoute />; }
-  return <Redirect to="/login" />
+  if (Auth.loggedIn()) {
+    return <AuthenticatedRoute />;
+  }
+  return <Redirect to="/login" />;
 }
 
 function onSignOutClick() {
   return Auth.logout();
 }
 
-const AuthenticatedRouteContainer = styled(View) ` flex: 1; `;
+const AuthenticatedRouteContainer = styled(View)`
+  flex: 1;
+`;
 
-const Header = styled(View) `
+const Header = styled(View)`
   padding: ${styles.space(0)};
   flex-direction: row;
   background-color: ${styles.white};
-  border-bottom: ${styles.border};
+  /* border-bottom: ${styles.border}; */
+  box-shadow: ${styles.boxShadow(-2)};
+  z-index: 10;
 `;
 
-const HeaderContent = styled(View) `
+const HeaderContent = styled(View)`
   flex-direction: row;
   justify-content: flex-end;
   flex: 1;
 `;
 
-const User = styled(View) `
+const User = styled(View)`
   flex-direction: row;
   align-items: center;
   margin-left: ${styles.space(0)};
 `;
 
-const UserName = styled(Text) ` margin-left: ${styles.space(0)}; `;
-const Settings = styled(View) ` margin-left: ${styles.space(0)}; `;
-const SignOut = styled(View) ` margin-left: ${styles.space(0)}; `;
+const UserName = styled(Text)`
+  margin-left: ${styles.space(0)};
+`;
+const Settings = styled(View)`
+  margin-left: ${styles.space(0)};
+`;
+const SignOut = styled(View)`
+  margin-left: ${styles.space(0)};
+`;
 
-const Body = styled(View) `
+const Body = styled(View)`
   flex-direction: row;
   flex: 1;
   overflow: auto;
 `;
 
-const Content = styled(View) `
+const Content = styled(View)`
   flex: 1;
   overflow: auto;
 `;
 
-const Brand = styled(Text) `
+const Brand = styled(Text)`
   color: ${styles.signatureBlue};
 `;
 
 export function AuthenticatedRoute() {
-  return <AuthenticatedRouteContainer>
-    <Header>
-      <View>
-        <Brand large strong>MPlan</Brand>
-      </View>
+  return (
+    <AuthenticatedRouteContainer>
+      <Header>
+        <View>
+          <Brand large strong>
+            MPlan
+          </Brand>
+        </View>
 
-      <HeaderContent>
-        <User>
-          <Fa icon="user" size="2x" />
-          <UserName>{Auth.userDisplayName() || ''}</UserName>
-        </User>
-        <Settings><Fa icon="cog" size="2x" /></Settings>
-        <SignOut onClick={onSignOutClick}><Fa icon="signOut" size="2x" /></SignOut>
-      </HeaderContent>
-    </Header>
+        <HeaderContent>
+          <User>
+            <Fa icon="user" size="2x" />
+            <UserName>{Auth.userDisplayName() || ''}</UserName>
+          </User>
+          <Settings>
+            <Fa icon="cog" size="2x" />
+          </Settings>
+          <SignOut onClick={onSignOutClick}>
+            <Fa icon="signOut" size="2x" />
+          </SignOut>
+        </HeaderContent>
+      </Header>
 
-    <Body>
-      <Nav />
-      <Content>
-        <Switch>
-          {Routes.map(route => <Route
-            key={route.path}
-            path={route.path}
-            component={route.component as any}
-          />)}
-          <Redirect from="/" to={Routes[0].path} />
-        </Switch>
-      </Content>
-    </Body>
-  </AuthenticatedRouteContainer>;
+      <Body>
+        <Nav />
+        <Content>
+          <Switch>
+            {Routes.map(route => (
+              <Route
+                key={route.path}
+                path={route.path}
+                component={route.component as any}
+              />
+            ))}
+            <Redirect from="/" to={Routes[0].path} />
+          </Switch>
+        </Content>
+      </Body>
+    </AuthenticatedRouteContainer>
+  );
 }
 
 function renderLanding() {
@@ -112,22 +137,25 @@ function renderLanding() {
   return <Landing />;
 }
 
-const AppContent = styled(View) `
+const AppContent = styled(View)`
   max-width: 100vw;
   max-height: 100vh;
   width: 100vw;
   height: 100vh;
   overflow: hidden;
+  background-color: ${styles.background};
 `;
 
 export function App() {
-  return <AppContent>
-    <Router history={history}>
-      <Switch>
-        <Route path="/callback" component={Callback} />
-        <Route path="/login" render={renderLanding} />
-        <Route render={renderApp} />
-      </Switch>
-    </Router>
-  </AppContent>;
+  return (
+    <AppContent>
+      <Router history={history}>
+        <Switch>
+          <Route path="/callback" component={Callback} />
+          <Route path="/login" render={renderLanding} />
+          <Route render={renderApp} />
+        </Switch>
+      </Router>
+    </AppContent>
+  );
 }

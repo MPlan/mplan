@@ -25,19 +25,21 @@ const Warning = styled(View) `
 export class Warnings extends Model.store.connect() {
   render() {
 
-    const warnings = flatten(
-      this.store.semesters.map(semester =>
-        semester.warningsNeverRanDuringCurrentSeason(this.store.catalog)
-      )
-    );
+    // const warnings = flatten(
+    //   this.store.semesters.map(semester =>
+    //     semester.warningsNeverRanDuringCurrentSeason(this.store.catalog)
+    //   )
+    // );
 
-    return <WarningsContainer>
-      <View><Text strong large>Warnings</Text></View>
-      <WarningsContent>{
-        warnings.map((warning, i) => <Warning key={i}>
-          <Text>{warning}</Text>
-        </Warning>)}
-      </WarningsContent>
-    </WarningsContainer>;
+    // return <WarningsContainer>
+    //   <View><Text strong large>Warnings</Text></View>
+    //   <WarningsContent>{
+    //     warnings.map((warning, i) => <Warning key={i}>
+    //       <Text>{warning}</Text>
+    //     </Warning>)}
+    //   </WarningsContent>
+    // </WarningsContainer>;
+
+    return <View><Text>WIP</Text></View>;
   }
 }

@@ -22,26 +22,41 @@ function logout() {
 
 function loggedIn() {
   const idToken = localStorage.getItem('idToken');
-  if (!idToken) { return false; }
+  if (!idToken) {
+    return false;
+  }
   const decoded = jwtDecode(idToken) as any;
-  if (!decoded) { return false; }
-  if (new Date().getTime() >= decoded.exp * 1000) { return false; } 
+  if (!decoded) {
+    return false;
+  }
+  if (new Date().getTime() >= decoded.exp * 1000) {
+    return false;
+  }
   return true;
 }
 
 function userDisplayName() {
   const idToken = localStorage.getItem('idToken');
-  if (!idToken) { return undefined; }
+  if (!idToken) {
+    return undefined;
+  }
   const decoded = jwtDecode(idToken) as any;
-  if (!decoded) { return undefined; }
+  if (!decoded) {
+    return undefined;
+  }
   return decoded.name || decoded.nickname || undefined;
 }
 
 function handleCallback() {
   return new Promise<void>((resolve, reject) => {
     webAuth.parseHash((error, decoded) => {
-      if (error) { reject(error); }
-      if (!decoded.idToken) { reject(new Error('No id token present in decoded hash')); return; }
+      if (error) {
+        reject(error);
+      }
+      if (!decoded.idToken) {
+        reject(new Error('No id token present in decoded hash'));
+        return;
+      }
       localStorage.setItem('idToken', decoded.idToken);
       resolve();
     });
@@ -53,5 +68,5 @@ export const Auth = {
   logout,
   loggedIn,
   userDisplayName,
-  handleCallback,
+  handleCallback
 };
