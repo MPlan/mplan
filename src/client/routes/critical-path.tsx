@@ -1,6 +1,12 @@
 import * as React from 'react';
 import * as Model from '../models';
-import { View, Text, Button, Prerequisite } from '../components';
+import {
+  View,
+  Text,
+  Button,
+  Prerequisite,
+  CourseWithPrerequisites
+} from '../components';
 import styled from 'styled-components';
 import * as styles from '../styles';
 import { flatten } from '../../utilities/utilities';
@@ -36,24 +42,6 @@ const LevelHeader = styled(View)`
   justify-content: space-between;
 `;
 
-const CourseContainer = styled(View)`
-  padding: ${styles.space(0)};
-  /* border-bottom: ${styles.border}; */
-`;
-
-const CourseHeader = styled(View)`
-  margin-bottom: ${styles.space(-1)};
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: baseline;
-`;
-
-const CoursePrerequisites = styled(View)``;
-
-const CriticalInfo = styled(View)`
-  margin-bottom: ${styles.space(-1)};
-`;
-
 const PrerequisiteContainer = styled(View)``;
 
 const Header = styled(View)`
@@ -69,59 +57,15 @@ const HeaderRight = styled(View)``;
 
 const CriticalPathContainer = styled(View)``;
 
-function Course({
-  course,
-  criticalLevel
-}: {
-  course: string | Model.Course;
-  criticalLevel: number;
-}) {
-  const courseName =
-    /*if*/ course instanceof Model.Course ? course.simpleName : course;
-
-  if (typeof course === 'string') {
-    return (
-      <CourseContainer>
-        <Text>{courseName}</Text>
-      </CourseContainer>
-    );
-  }
-
-  return (
-    <CourseContainer>
-      <CourseHeader>
-        <Text strong>{courseName}</Text>
-        <Text>{course.name}</Text>
-      </CourseHeader>
-      <CriticalInfo>
-        {/*if*/ criticalLevel > 0 ? (
-          <Text small>Can be moved up {criticalLevel} levels.</Text>
-        ) : (
-          <Text small>
-            <Text small strong color={styles.red}>
-              Critical:
-            </Text>{' '}
-            delaying this course will delay graduation.
-          </Text>
-        )}
-      </CriticalInfo>
-      {/*if*/ course.prerequisites ? (
-        <Text small strong>
-          Prerequisites:
-        </Text>
-      ) : null}
-      <Prerequisite prerequisite={course.prerequisites} />
-    </CourseContainer>
-  );
-}
-
 export class CriticalPath extends Model.store.connect() {
   render() {
     return (
       <CriticalPathContainer>
         <Header>
           <HeaderMain>
-            <Text strong extraLarge>Critical Path</Text>
+            <Text strong extraLarge>
+              Critical Path
+            </Text>
             <Text>
               To take a course in one level, at least one course in every
               previous level must be taken.
@@ -141,7 +85,7 @@ export class CriticalPath extends Model.store.connect() {
               </LevelHeader>
               <LevelCard>
                 {level.map(course => (
-                  <Course
+                  <CourseWithPrerequisites
                     key={
                       /*if*/ course instanceof Model.Course ? course.id : course
                     }

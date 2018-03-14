@@ -7,3 +7,4 @@ export * from './nav';
 export * from './semester';
 export * from './box';
 export * from './prerequisite';
+export * from './course-with-prerequisites';
