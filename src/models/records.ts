@@ -179,6 +179,21 @@ export class Course
   static closureMemo = new Map<any, any>();
   static fullClosureMemo = new Map<any, any>();
   static criticalMemo = new Map<any, any>();
+  static priorityMemo = new Map<any, any>();
+
+  priority(user: User, catalog: Catalog): number {
+    const hash = hashObjects({ user, catalog, course: this });
+    if (Course.priorityMemo.has(hash)) {
+      return Course.priorityMemo.get(hash);
+    }
+
+    const priority =
+      this.depth(catalog, user.preferredCourses) +
+      this.criticalLevel(user, catalog);
+
+    Course.priorityMemo.set(hash, priority);
+    return priority;
+  }
 
   criticalLevel(user: User, catalog: Catalog) {
     const hash = hashObjects({ catalog, user, course: this });
@@ -643,7 +658,7 @@ export class User extends Record.define({
   registerDate: 0,
   lastLoginDate: 0,
   boxMap: Immutable.Map<string, Course>(),
-  semesterSet: Immutable.Set<Semester>(),
+  semesters: Immutable.Set<Semester>(),
   degree: Immutable.Set<string | Course>(),
   additionalCourses: Immutable.Set<string | Course>()
 }) {
@@ -753,6 +768,30 @@ export class User extends Record.define({
 
     Course.levelsMemo.set(hash, levels);
     return levels;
+  }
+
+  assignCoursesToSemesters(
+    catalog: Catalog
+  ): Immutable.List<Immutable.Set<string | Course>> {
+    const coursesSorted = this.degree
+      .sort(
+        course =>
+          course instanceof Course ? course.priority(this, catalog) : 99999
+      )
+      .toArray();
+
+    let semesters = Immutable.List<Immutable.Set<string | Course>>();
+    let currentSemester = Immutable.Set<string | Course>();
+
+    for (const course of coursesSorted) {
+      if (currentSemester.count() > 4) {
+        semesters = semesters.push(currentSemester);
+        currentSemester = Immutable.Set<string | Course>();
+      }
+      currentSemester = currentSemester.add(course);
+    }
+
+    return semesters;
   }
 }
 
