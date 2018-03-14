@@ -21,20 +21,20 @@ const BoxContent = styled(View) `
 export class Box extends Model.store.connect() {
 
   documentMouseUp = (e: MouseEvent) => {
-    this.setStore(store => {
-      const newStore = store.update('ui', ui => ui.set('dragging', false));
-      if (!store.ui.dragging) { return newStore; }
-      if (!store.ui.mouseIsOverSemester) { return newStore; }
-      const lastMouseOverSemester = store.ui.lastMouseOverSemester;
-      if (!lastMouseOverSemester) { return newStore; }
-      const hasMousedOverSemester = store.user.semesterSet.has(lastMouseOverSemester);
-      if (!hasMousedOverSemester) { return newStore; }
-      const selectedCourse = store.ui.selectedCourse;
-      if (!selectedCourse) { return newStore; }
+    // this.setStore(store => {
+    //   const newStore = store.update('ui', ui => ui.set('dragging', false));
+    //   if (!store.ui.dragging) { return newStore; }
+    //   if (!store.ui.mouseIsOverSemester) { return newStore; }
+    //   const lastMouseOverSemester = store.ui.lastMouseOverSemester;
+    //   if (!lastMouseOverSemester) { return newStore; }
+    //   const hasMousedOverSemester = store.user.semesterSet.has(lastMouseOverSemester);
+    //   if (!hasMousedOverSemester) { return newStore; }
+    //   const selectedCourse = store.ui.selectedCourse;
+    //   if (!selectedCourse) { return newStore; }
 
-      return newStore;
-      // return newStore.update('user', / user => user.update('semesterSet', semesterSet => semesterSet.update()));
-    });
+    //   return newStore;
+    //   // return newStore.update('user', / user => user.update('semesterSet', semesterSet => semesterSet.update()));
+    // });
   }
 
   componentDidMount() {

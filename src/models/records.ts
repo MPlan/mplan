@@ -784,7 +784,7 @@ export class User extends Record.define({
     let currentSemester = Immutable.Set<string | Course>();
 
     for (const course of coursesSorted) {
-      if (currentSemester.count() > 4) {
+      if (currentSemester.count() >= 4) {
         semesters = semesters.push(currentSemester);
         currentSemester = Immutable.Set<string | Course>();
       }

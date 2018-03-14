@@ -1,5 +1,13 @@
 import * as React from 'react';
-import { View, Text, Box, Button, Course, Semester } from '../components';
+import {
+  View,
+  Text,
+  Box,
+  Button,
+  Course,
+  Semester,
+  CourseWithPrerequisites
+} from '../components';
 import * as styles from '../styles';
 import * as Record from 'recordize';
 import * as Model from '../models';
@@ -15,6 +23,31 @@ const CreateSemesterContainer = styled(View)`
   align-items: center;
   background-color: white;
   box-shadow: ${styles.boxShadow(0)};
+`;
+
+const Level = styled(View)`
+  width: 20rem;
+  min-width: 20rem;
+  margin: 1rem;
+`;
+
+const LevelCard = styled(View)`
+  background-color: ${styles.white};
+  box-shadow: ${styles.boxShadow(0)};
+  overflow: auto;
+  flex: 1;
+
+  & > * {
+    flex-shrink: 0;
+  }
+`;
+
+const LevelHeader = styled(View)`
+  margin: ${styles.space(0)};
+  /* margin-left: ${styles.space(-1)}; */
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: space-between;
 `;
 
 interface CreateSemesterProps {
@@ -190,15 +223,45 @@ export class Timeline extends Model.store.connect() {
           </Header>
 
           <SemesterBlockContainer>
-            <CreateSemester onCreateClick={this.onCreateSemesterBefore} />
-            <CreateSemester onCreateClick={this.onCreateSemesterAfter} />
+            {this.store.user
+              .assignCoursesToSemesters(this.store.catalog)
+              .map(semesterSet => {
+                const courseCount = semesterSet.count();
+                return (
+                  <Level>
+                    <LevelHeader>
+                      <Text large strong>
+                        Fall XX
+                      </Text>
+                      <Text>
+                        {courseCount} {courseCount > 1 ? 'courses' : 'course'}
+                      </Text>
+                    </LevelHeader>
+                    <LevelCard>
+                      {semesterSet.map(course => (
+                        <CourseWithPrerequisites
+                          key={
+                            /*if*/ course instanceof Model.Course
+                              ? course.id
+                              : course
+                          }
+                          course={course}
+                          criticalLevel={
+                            course instanceof Model.Course
+                              ? course.criticalLevel(
+                                  this.store.user,
+                                  this.store.catalog
+                                )
+                              : 0
+                          }
+                        />
+                      ))}
+                    </LevelCard>
+                  </Level>
+                );
+              })}
           </SemesterBlockContainer>
         </Content>
-
-        <SideBar>
-          <Box />
-          <Warnings />
-        </SideBar>
       </TimelineContainer>
     );
   }
