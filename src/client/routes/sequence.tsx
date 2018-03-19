@@ -50,7 +50,7 @@ const LevelHeader = styled(View)`
 const PrerequisiteContainer = styled(View)``;
 
 const Header = styled(View)`
-  padding: ${styles.space(0)};
+  padding: ${styles.space(1)};
   flex-direction: row;
 `;
 
