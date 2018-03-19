@@ -55,16 +55,16 @@ const HeaderMain = styled(View)`
 
 const HeaderRight = styled(View)``;
 
-const CriticalPathContainer = styled(View)``;
+const SequenceContainer = styled(View)``;
 
-export class CriticalPath extends Model.store.connect() {
+export class Sequence extends Model.store.connect() {
   render() {
     return (
-      <CriticalPathContainer>
+      <SequenceContainer>
         <Header>
           <HeaderMain>
             <Text strong extraLarge>
-              Critical Path
+              Sequence
             </Text>
             <Text>
               To take a course in one level, at least one course in every
@@ -104,7 +104,7 @@ export class CriticalPath extends Model.store.connect() {
             </Level>
           ))}
         </GraphContainer>
-      </CriticalPathContainer>
+      </SequenceContainer>
     );
   }
 }

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Catalog } from './catalog';
 import { Timeline } from './timeline';
 import { Warnings } from './warnings';
-import { CriticalPath } from './critical-path';
+import { Sequence } from './sequence';
 import { View, Text } from '../components';
 import styled from 'styled-components';
 
@@ -23,6 +23,6 @@ export const Routes = [
   { path: '/timeline', name: 'Timeline', icon: 'codeBranch', component: Timeline, },
   { path: '/warnings', name: 'Warnings', icon: 'exclamationTriangle', component: Warnings, },
   { path: '/catalog', name: 'Catalog', icon: 'list', component: Catalog, },
-  { path: '/critical-path', name: 'Critical Path', icon: 'sitemap', component: CriticalPath, },
+  { path: '/sequence', name: 'Sequence', icon: 'sitemap', component: Sequence, },
   { path: '/degree-checklist', name: 'Degree Checklist', icon: 'check', component: Wip, },
 ];
