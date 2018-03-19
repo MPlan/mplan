@@ -195,7 +195,7 @@ export class Course
     return priority;
   }
 
-  criticalLevel(user: User, catalog: Catalog) {
+  criticalLevel(user: User, catalog: Catalog): number {
     const hash = hashObjects({ catalog, user, course: this });
     if (Course.criticalMemo.has(hash)) {
       return Course.criticalMemo.get(hash);

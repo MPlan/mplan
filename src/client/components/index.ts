@@ -8,3 +8,5 @@ export * from './semester';
 export * from './box';
 export * from './prerequisite';
 export * from './course-with-prerequisites';
+export * from './sequence-course';
+export * from './actionable-text';

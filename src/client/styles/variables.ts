@@ -101,6 +101,7 @@ export const borderColor = lighten(0.1, soaringEagle);
 export const borderHover = grayLight;
 export const text = grayDarker;
 export const textStrong = blackBis;
+export const textLight = gray;
 export const code = red;
 export const codeBackground = background;
 export const pre = text;
