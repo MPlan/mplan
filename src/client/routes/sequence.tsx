@@ -65,7 +65,8 @@ const SequenceContainer = styled(View)``;
 
 export class Sequence extends Model.store.connect({
   initialState: {
-    mouseOverCourse: undefined as undefined | string | Model.Course
+    mouseOverCourse: undefined as undefined | string | Model.Course,
+    selectedCourse: undefined as undefined | string | Model.Course
   }
 }) {
   handleCourseMouseOver(course: string | Model.Course) {
@@ -80,6 +81,56 @@ export class Sequence extends Model.store.connect({
       ...previousState,
       mouseOverCourse: undefined
     }));
+  }
+
+  handleCourseFocus(course: string | Model.Course) {
+    this.setState(previousState => ({
+      ...previousState,
+      selectedCourse: course
+    }));
+  }
+  handleCourseBlur(course: string | Model.Course) {
+    this.setState(previousState => ({
+      ...previousState,
+      selectedCourse: undefined
+    }));
+  }
+
+  handleDocumentKeyDown = (event: KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      this.setState(previousState => ({
+        ...previousState,
+        selectedCourse: undefined
+      }));
+    }
+  };
+
+  componentDidMount() {
+    document.addEventListener('keydown', this.handleDocumentKeyDown);
+  }
+
+  componentWillUnmount() {
+    super.componentWillUnmount();
+    document.removeEventListener('keydown', this.handleDocumentKeyDown);
+  }
+
+  courseHighlighted(course: string | Model.Course) {
+    if (typeof course === 'string') return false;
+    const bestOption = course.bestOption(
+      this.store.catalog,
+      this.store.user.preferredCourses
+    );
+    if (this.state.mouseOverCourse === undefined) {
+      return bestOption.contains(this.state.selectedCourse || '');
+    }
+    return bestOption.contains(this.state.mouseOverCourse || '');
+  }
+
+  courseFocused(course: string | Model.Course) {
+    if (this.state.mouseOverCourse === undefined) {
+      return course === this.state.selectedCourse;
+    }
+    return this.state.mouseOverCourse === course;
   }
 
   render() {
@@ -127,16 +178,10 @@ export class Sequence extends Model.store.connect({
                     user={this.store.user}
                     onMouseOver={() => this.handleCourseMouseOver(course)}
                     onMouseExit={() => this.handleCourseMouseExit(course)}
-                    selected={course === this.state.mouseOverCourse}
-                    highlighted={
-                      course instanceof Model.Course &&
-                      course
-                        .bestOption(
-                          this.store.catalog,
-                          this.store.user.preferredCourses
-                        )
-                        .contains(this.state.mouseOverCourse || '')
-                    }
+                    onBlur={() => this.handleCourseBlur(course)}
+                    onFocus={() => this.handleCourseFocus(course)}
+                    focused={this.courseFocused(course)}
+                    highlighted={this.courseHighlighted(course)}
                   />
                 ))}
               </LevelCard>

@@ -11,8 +11,7 @@ const Container = styled(View)`
   padding: ${styles.space(1)};
   margin-bottom: ${styles.space(1)};
   box-shadow: ${styles.boxShadow(1)};
-  /* margin-top: auto; */
-  /* margin-bottom: ${styles.space(2)}; */
+  cursor: pointer;
 `;
 
 const SimpleName = styled(Text)``;
@@ -41,9 +40,11 @@ export interface SequenceCourseProps {
   catalog: Model.Catalog;
   user: Model.User;
   highlighted: boolean;
-  selected: boolean;
+  focused: boolean;
   onMouseOver: () => void;
   onMouseExit: () => void;
+  onFocus: () => void;
+  onBlur: () => void;
 }
 
 export function SequenceCourse(props: SequenceCourseProps) {
@@ -61,14 +62,17 @@ export function SequenceCourse(props: SequenceCourseProps) {
       className="sequence-course"
       onMouseEnter={props.onMouseOver}
       onMouseLeave={props.onMouseExit}
+      tabIndex={0}
       style={{
         backgroundColor: /*if*/ props.highlighted
           ? styles.highlight
           : styles.white,
-        outline: /*if*/ props.selected
+        outline: /*if*/ props.focused
           ? `${styles.borderWidth} solid ${styles.focusBorderColor}`
           : 'none'
       }}
+      onFocus={props.onFocus}
+      onBlur={props.onBlur}
     >
       <SimpleName strong>{course.simpleName}</SimpleName>
       <Name>
