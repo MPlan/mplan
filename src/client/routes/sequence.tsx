@@ -6,7 +6,8 @@ import {
   Button,
   Prerequisite,
   SequenceCourse,
-  ActionableText
+  ActionableText,
+  FloatingActionButton
 } from '../components';
 import styled from 'styled-components';
 import * as styles from '../styles';
@@ -215,6 +216,10 @@ export class Sequence extends Model.store.connect({
             </Level>
           ))}
         </GraphContainer>
+        <FloatingActionButton
+          message="add course to degree"
+          actions={['one', 'two']}
+        />
       </SequenceContainer>
     );
   }

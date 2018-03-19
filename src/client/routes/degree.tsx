@@ -1,6 +1,11 @@
 import * as React from 'react';
 import * as Model from '../models';
-import { View, Text, ActionableText } from '../components';
+import {
+  View,
+  Text,
+  ActionableText,
+  FloatingActionButton
+} from '../components';
 import styled from 'styled-components';
 import * as styles from '../styles';
 
@@ -17,7 +22,7 @@ const HeaderMain = styled(View)`
   flex: 1;
 `;
 
-const HeaderRight = styled(View) `
+const HeaderRight = styled(View)`
   align-items: flex-end;
 `;
 
@@ -67,6 +72,10 @@ export class Degree extends Model.store.connect() {
             <Percentage>75% complete</Percentage>
           </HeaderRight>
         </Header>
+        <FloatingActionButton
+          message="Add…"
+          actions={['New course group', 'Course to existing group']}
+        />
       </Container>
     );
   }

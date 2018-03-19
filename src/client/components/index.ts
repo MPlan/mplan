@@ -10,3 +10,4 @@ export * from './prerequisite';
 export * from './course-with-prerequisites';
 export * from './sequence-course';
 export * from './actionable-text';
+export * from './floating-action-button';
