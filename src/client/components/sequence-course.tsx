@@ -40,9 +40,14 @@ export interface SequenceCourseProps {
   course: string | Model.Course;
   catalog: Model.Catalog;
   user: Model.User;
+  highlighted: boolean;
+  selected: boolean;
+  onMouseOver: () => void;
+  onMouseExit: () => void;
 }
 
-export function SequenceCourse({ course, catalog, user }: SequenceCourseProps) {
+export function SequenceCourse(props: SequenceCourseProps) {
+  const { course, catalog, user } = props;
   if (typeof course === 'string') {
     return (
       <Container>
@@ -52,7 +57,19 @@ export function SequenceCourse({ course, catalog, user }: SequenceCourseProps) {
   }
 
   return (
-    <Container>
+    <Container
+      className="sequence-course"
+      onMouseEnter={props.onMouseOver}
+      onMouseLeave={props.onMouseExit}
+      style={{
+        backgroundColor: /*if*/ props.highlighted
+          ? styles.highlight
+          : styles.white,
+        outline: /*if*/ props.selected
+          ? `${styles.borderWidth} solid ${styles.focusBorderColor}`
+          : 'none'
+      }}
+    >
       <SimpleName strong>{course.simpleName}</SimpleName>
       <Name>
         <ActionableText>{course.name}</ActionableText>
@@ -67,7 +84,7 @@ export function SequenceCourse({ course, catalog, user }: SequenceCourseProps) {
           </Text>
         ) : (
           <Text small>
-            Can be take as many as {course.criticalLevel(user, catalog)}{' '}
+            Can be taken as many as {course.criticalLevel(user, catalog)}{' '}
             semesters later.
           </Text>
         )}

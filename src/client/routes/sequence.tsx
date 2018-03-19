@@ -15,6 +15,9 @@ import { flatten } from '../../utilities/utilities';
 const GraphContainer = styled(View)`
   flex: 1;
   flex-direction: row;
+  & > *:last-child {
+    padding-right: 5rem;
+  }
 `;
 
 const Level = styled(View)`
@@ -60,7 +63,25 @@ const HeaderRight = styled(View)``;
 
 const SequenceContainer = styled(View)``;
 
-export class Sequence extends Model.store.connect() {
+export class Sequence extends Model.store.connect({
+  initialState: {
+    mouseOverCourse: undefined as undefined | string | Model.Course
+  }
+}) {
+  handleCourseMouseOver(course: string | Model.Course) {
+    this.setState(previousState => ({
+      ...previousState,
+      mouseOverCourse: course
+    }));
+  }
+
+  handleCourseMouseExit(course: string | Model.Course) {
+    this.setState(previousState => ({
+      ...previousState,
+      mouseOverCourse: undefined
+    }));
+  }
+
   render() {
     return (
       <SequenceContainer>
@@ -104,6 +125,18 @@ export class Sequence extends Model.store.connect() {
                     course={course}
                     catalog={this.store.catalog}
                     user={this.store.user}
+                    onMouseOver={() => this.handleCourseMouseOver(course)}
+                    onMouseExit={() => this.handleCourseMouseExit(course)}
+                    selected={course === this.state.mouseOverCourse}
+                    highlighted={
+                      course instanceof Model.Course &&
+                      course
+                        .bestOption(
+                          this.store.catalog,
+                          this.store.user.preferredCourses
+                        )
+                        .contains(this.state.mouseOverCourse || '')
+                    }
                   />
                 ))}
               </LevelCard>

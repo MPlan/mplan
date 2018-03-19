@@ -114,6 +114,8 @@ export const linkFocus = grayDarker;
 export const linkFocusBorder = blue;
 export const linkActive = grayDarker;
 export const linkActiveBorder = grayDark;
+export const highlight = '#FFFEE7';
+export const focusBorderColor = '#65C4FF';
 
 // BORDERS
 export const border = `${borderWidth} solid ${borderColor}`;
