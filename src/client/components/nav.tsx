@@ -5,48 +5,56 @@ import { Routes } from '../routes';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
-const StyledLink = styled(NavLink) `
+const StyledLink = styled(NavLink)`
   color: ${styles.grayLight};
-  & { text-decoration: none; }
-  &:hover, &:hover * { color: ${styles.beeKeeper}; }
-  
+  & {
+    text-decoration: none;
+  }
+  &:hover,
+  &:hover * {
+    color: ${styles.beeKeeper};
+  }
+
   &.active:hover,
   &.active:hover *,
   &.active,
+  &.active *,
   &:active,
   &:active * {
-    color: ${styles.turbo};
+    color: ${styles.turbo} !important;
   }
 `;
 
-const NavButtonContainer = styled(View) `
+const NavButtonContainer = styled(View)`
   padding: ${styles.space(0)};
   align-items: center;
   box-shadow: ${styles.boxShadow(0)};
 `;
 
-const NavText = styled(Text) `
+const NavText = styled(Text)`
   color: ${styles.grayLight};
   margin-top: ${styles.space(-1)};
   text-align: center;
 `;
 
 interface NavButtonProps {
-  name: string,
-  to: string,
-  icon: string,
+  name: string;
+  to: string;
+  icon: string;
 }
 
 function NavButton(props: NavButtonProps) {
-  return <StyledLink to={props.to} activeClassName="active">
-    <NavButtonContainer>
-      <Fa icon={props.icon} size="2x" />
-      <NavText small>{props.name}</NavText>
-    </NavButtonContainer>
-  </StyledLink>;
+  return (
+    <StyledLink to={props.to} activeClassName="active">
+      <NavButtonContainer>
+        <Fa icon={props.icon} size="2x" />
+        <NavText small>{props.name}</NavText>
+      </NavButtonContainer>
+    </StyledLink>
+  );
 }
 
-const NavContainer = styled(View) `
+const NavContainer = styled(View)`
   width: 5rem;
   min-width: 5rem;
   background-color: ${styles.deepCove};
@@ -54,12 +62,16 @@ const NavContainer = styled(View) `
 `;
 
 export function Nav() {
-  return <NavContainer>
-    {Routes.map(route => <NavButton
-      key={route.path}
-      to={route.path}
-      name={route.name}
-      icon={route.icon}
-    />)}
-  </NavContainer>
+  return (
+    <NavContainer>
+      {Routes.map(route => (
+        <NavButton
+          key={route.path}
+          to={route.path}
+          name={route.name}
+          icon={route.icon}
+        />
+      ))}
+    </NavContainer>
+  );
 }
