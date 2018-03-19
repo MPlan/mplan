@@ -686,15 +686,15 @@ export class User extends Record.define({
     });
   }
 
-  get semestersSorted() {
-    return this.semesterSet.valueSeq().sortBy(semester => semester.position);
-  }
+  // get semestersSorted() {
+  //   return this.semesterSet.valueSeq().sortBy(semester => semester.position);
+  // }
 
-  get semesters() {
-    return this.getOrCalculate('semesters', [this.semestersSorted], () => {
-      return this.semestersSorted.toArray();
-    });
-  }
+  // get semesters() {
+  //   return this.getOrCalculate('semesters', [this.semestersSorted], () => {
+  //     return this.semestersSorted.toArray();
+  //   });
+  // }
 
   selectedCourse(selectedCourseId: string, catalog: Catalog) {
     return catalog.courseMap.get(selectedCourseId);

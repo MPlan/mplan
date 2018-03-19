@@ -99,9 +99,8 @@ export const dark = grayDarker;
 export const background = '#F7F7F8';
 export const borderColor = lighten(0.1, soaringEagle);
 export const borderHover = grayLight;
-export const text = blackBis;
-export const textLight = gray;
-export const textStrong = grayDarker;
+export const text = grayDarker;
+export const textStrong = blackBis;
 export const code = red;
 export const codeBackground = background;
 export const pre = text;
@@ -117,5 +116,3 @@ export const linkActiveBorder = grayDark;
 
 // BORDERS
 export const border = `${borderWidth} solid ${borderColor}`;
-
-

@@ -26,6 +26,7 @@ const NavButtonContainer = styled(View) `
 `;
 
 const NavText = styled(Text) `
+  color: ${styles.grayLight};
   margin-top: ${styles.space(-1)};
   text-align: center;
 `;

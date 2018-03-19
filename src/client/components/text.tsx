@@ -34,50 +34,18 @@ const textCache = {} as {
       >;
 };
 
-const StyledSpan = styled.span`
-  font-weight: 300;
+export const Text = styled<TextProps, 'span'>('span')`
+  font-size: ${({ small, large, extraLarge }) => {
+    const size = (small && -1) || (large && 1) || (extraLarge && 2) || 0;
+    return styles.space(size);
+  }};
+  font-family: ${styles.fontFamily};
+  font-weight: ${({ strong, light }) => {
+    const fontWeight =
+      (light && styles.lightTextWeight) || (strong && styles.bold) || 'normal';
+    return fontWeight;
+  }};
+  color: ${({ color }) => {
+    return color || styles.text;
+  }};
 `;
-
-export function Text(props: TextProps) {
-  const {
-    small,
-    large,
-    extraLarge,
-    light,
-    strong,
-    color,
-    ref,
-    ...restOfProps
-  } = props;
-
-  const size = (small && -1) || (large && 1) || (extraLarge && 2) || 0;
-  const fontWeight =
-    (light && styles.lightTextWeight) || (strong && styles.bold) || undefined;
-
-  const css = `
-    font-size: ${styles.space(size)};
-    font-family: ${styles.fontFamily};
-    ${/*if*/ fontWeight ? `font-weight: ${fontWeight};` : ''}
-    ${/*if*/ color ? `color: ${color};` : ''}
-
-  `;
-
-  const MaybeStyledSpan = textCache[css];
-  if (!MaybeStyledSpan) {
-    textCache[css] = styled.span`
-      ${css};
-    `;
-  }
-  const StyledSpan = textCache[css]!;
-
-  return (
-    <StyledSpan
-      innerRef={element => {
-        if (typeof ref === 'function') {
-          ref(element);
-        }
-      }}
-      {...restOfProps}
-    />
-  );
-}
