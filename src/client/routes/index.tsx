@@ -3,6 +3,7 @@ import { Catalog } from './catalog';
 import { Timeline } from './timeline';
 import { Warnings } from './warnings';
 import { Sequence } from './sequence';
+import { Degree } from './degree';
 import { View, Text } from '../components';
 import styled from 'styled-components';
 
@@ -24,5 +25,5 @@ export const Routes = [
   { path: '/warnings', name: 'Warnings', icon: 'exclamationTriangle', component: Warnings, },
   { path: '/catalog', name: 'Catalog', icon: 'list', component: Catalog, },
   { path: '/sequence', name: 'Sequence', icon: 'sitemap', component: Sequence, },
-  { path: '/degree-checklist', name: 'Degree Checklist', icon: 'check', component: Wip, },
+  { path: '/degree', name: 'Degree', icon: 'check', component: Degree, },
 ];
