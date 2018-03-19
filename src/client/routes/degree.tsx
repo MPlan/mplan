@@ -53,6 +53,8 @@ const Percentage = styled(Text)`
   color: ${styles.textLight};
 `;
 
+const DegreeGroupContainer = styled(View)``;
+
 export class Degree extends Model.store.connect() {
   render() {
     return (
@@ -74,7 +76,13 @@ export class Degree extends Model.store.connect() {
         </Header>
         <FloatingActionButton
           message="Add…"
-          actions={['New course group', 'Course to existing group']}
+          actions={{
+            group: 'New course group',
+            course: 'Course to existing group'
+          }}
+          onAction={action => {
+            console.log(action);
+          }}
         />
       </Container>
     );

@@ -43,7 +43,6 @@ const LevelCard = styled(View)`
 
 const LevelHeader = styled(View)`
   margin: ${styles.space(0)};
-  /* margin-left: ${styles.space(-1)}; */
   justify-content: flex-end;
   min-height: 4rem;
 `;
@@ -218,7 +217,7 @@ export class Sequence extends Model.store.connect({
         </GraphContainer>
         <FloatingActionButton
           message="add course to degree"
-          actions={['one', 'two']}
+          actions={{ one: 'one', two: 'two' }}
         />
       </SequenceContainer>
     );

@@ -122,13 +122,14 @@ const MenuHeader = styled(Text)`
   bottom: calc(100% + ${styles.space(0)});
 `;
 
-export interface FloatingActionButtonProps
+export interface FloatingActionButtonProps<T extends { [key: string]: string }>
   extends React.DetailedHTMLProps<
       React.ButtonHTMLAttributes<HTMLButtonElement>,
       HTMLButtonElement
     > {
   message: string;
-  actions: string[];
+  actions: T;
+  onAction?: (action: keyof T) => void;
 }
 
 interface FloatingActionButtonState {
@@ -136,16 +137,15 @@ interface FloatingActionButtonState {
   open: boolean;
 }
 
-export class FloatingActionButton extends React.Component<
-  FloatingActionButtonProps,
+export class FloatingActionButton<
+  T extends { [key: string]: string }
+> extends React.Component<
+  FloatingActionButtonProps<T>,
   FloatingActionButtonState
 > {
-  constructor(props: FloatingActionButtonProps) {
+  constructor(props: FloatingActionButtonProps<T>) {
     super(props);
-    this.state = {
-      hovering: false,
-      open: false
-    };
+    this.state = { hovering: false, open: false };
   }
 
   handleMouseEnter = () => {
@@ -168,6 +168,10 @@ export class FloatingActionButton extends React.Component<
       open: !previousState.open
     }));
   };
+
+  handleMenuClick(action: keyof T) {
+    this.props.onAction && this.props.onAction(action);
+  }
 
   handleBlur = () => {
     this.setState(previousState => ({
@@ -195,8 +199,15 @@ export class FloatingActionButton extends React.Component<
           >
             {this.props.message}
           </MenuHeader>
-          {this.props.actions.map((action, index) => (
-            <MenuItem key={index}>{action}</MenuItem>
+          {Object.entries(this.props.actions).map(([action, text]) => (
+            <MenuItem
+              key={action}
+              onClick={() => {
+                this.handleMenuClick(action);
+              }}
+            >
+              {text}
+            </MenuItem>
           ))}
         </Menu>
         <Message
