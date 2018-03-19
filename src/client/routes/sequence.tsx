@@ -66,9 +66,17 @@ const SequenceContainer = styled(View)``;
 export class Sequence extends Model.store.connect({
   initialState: {
     mouseOverCourse: undefined as undefined | string | Model.Course,
-    selectedCourse: undefined as undefined | string | Model.Course
+    selectedCourse: undefined as undefined | string | Model.Course,
+    compactMode: false
   }
 }) {
+  handleCompactModeToggle = () => {
+    this.setState(previousState => ({
+      ...previousState,
+      compactMode: !previousState.compactMode
+    }));
+  };
+
   handleCourseMouseOver(course: string | Model.Course) {
     this.setState(previousState => ({
       ...previousState,
@@ -147,26 +155,44 @@ export class Sequence extends Model.store.connect({
               first. <ActionableText>Click here for more info.</ActionableText>
             </Text>
           </HeaderMain>
+          <HeaderRight>
+            <label>
+              <Text>Compact mode?&nbsp;</Text>
+              <input
+                type="checkbox"
+                defaultChecked={this.state.compactMode}
+                onChange={this.handleCompactModeToggle}
+              />
+            </label>
+          </HeaderRight>
         </Header>
         <GraphContainer>
           {this.store.levels.map((level, levelIndex) => (
-            <Level key={levelIndex}>
-              <LevelHeader>
-                <Text large strong color={styles.textLight}>
-                  Level {levelIndex + 1}
-                </Text>
-                {/*if*/ levelIndex <= 0 ? (
-                  <Text small color={styles.textLight}>
-                    These classes have been found to have no prerequisites.
+            <Level
+              key={levelIndex}
+              style={{
+                width: this.state.compactMode ? '4rem' : '13rem',
+                minWidth: this.state.compactMode ? '4rem' : '13rem'
+              }}
+            >
+              {/*if*/ !this.state.compactMode ? (
+                <LevelHeader>
+                  <Text large strong color={styles.textLight}>
+                    Level {levelIndex + 1}
                   </Text>
-                ) : (
-                  <Text small color={styles.textLight}>
-                    You need to have taken at least {levelIndex}{' '}
-                    {levelIndex > 1 ? 'semesters' : 'semester'} before taking
-                    any classes in this level.
-                  </Text>
-                )}
-              </LevelHeader>
+                  {/*if*/ levelIndex <= 0 ? (
+                    <Text small color={styles.textLight}>
+                      These classes have been found to have no prerequisites.
+                    </Text>
+                  ) : (
+                    <Text small color={styles.textLight}>
+                      You need to have taken at least {levelIndex}{' '}
+                      {levelIndex > 1 ? 'semesters' : 'semester'} before taking
+                      any classes in this level.
+                    </Text>
+                  )}
+                </LevelHeader>
+              ) : null}
               <LevelCard>
                 {level.map(course => (
                   <SequenceCourse
@@ -182,6 +208,7 @@ export class Sequence extends Model.store.connect({
                     onFocus={() => this.handleCourseFocus(course)}
                     focused={this.courseFocused(course)}
                     highlighted={this.courseHighlighted(course)}
+                    compactMode={this.state.compactMode}
                   />
                 ))}
               </LevelCard>

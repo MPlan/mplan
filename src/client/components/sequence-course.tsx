@@ -8,7 +8,7 @@ import * as Immutable from 'immutable';
 
 const Container = styled(View)`
   background-color: ${styles.white};
-  padding: ${styles.space(1)};
+  padding: ${styles.space(0)};
   margin-bottom: ${styles.space(1)};
   box-shadow: ${styles.boxShadow(1)};
   cursor: pointer;
@@ -41,6 +41,7 @@ export interface SequenceCourseProps {
   user: Model.User;
   highlighted: boolean;
   focused: boolean;
+  compactMode: boolean;
   onMouseOver: () => void;
   onMouseExit: () => void;
   onFocus: () => void;
@@ -64,56 +65,72 @@ export function SequenceCourse(props: SequenceCourseProps) {
       onMouseLeave={props.onMouseExit}
       tabIndex={0}
       style={{
-        backgroundColor: /*if*/ props.highlighted
-          ? styles.highlight
-          : styles.white,
+        backgroundColor: /*if*/ props.focused
+          ? styles.highlightBlue
+          : /*if*/ props.highlighted ? styles.highlight : styles.white,
         outline: /*if*/ props.focused
           ? `${styles.borderWidth} solid ${styles.focusBorderColor}`
-          : 'none'
+          : 'none',
+        width: props.compactMode ? '5rem' : 'auto',
+        minWidth: props.compactMode ? '5rem' : 'auto',
+        padding: props.compactMode ? styles.space(-1) : styles.space(0)
       }}
       onFocus={props.onFocus}
       onBlur={props.onBlur}
     >
-      <SimpleName strong>{course.simpleName}</SimpleName>
-      <Name>
-        <ActionableText>{course.name}</ActionableText>
-      </Name>
-      <Critical>
-        {/*if*/ course.criticalLevel(user, catalog) <= 0 ? (
-          <Text small>
-            <Text color={styles.red} small>
-              Critical:&nbsp;
-            </Text>
-            delaying this course may delay graduation.
-          </Text>
-        ) : (
-          <Text small>
-            Can be taken as many as {course.criticalLevel(user, catalog)}{' '}
-            semesters later.
-          </Text>
-        )}
-      </Critical>
+      {/*if*/ props.compactMode ? (
+        <View>
+          <SimpleName strong>{course.simpleName}</SimpleName>
+          <Name>
+            <ActionableText small>{course.name}</ActionableText>
+          </Name>
+        </View>
+      ) : (
+        <View>
+          <SimpleName strong>{course.simpleName}</SimpleName>
+          <Name>
+            <ActionableText>{course.name}</ActionableText>
+          </Name>
+          <Critical>
+            {/*if*/ course.criticalLevel(user, catalog) <= 0 ? (
+              <Text small>
+                <Text color={styles.red} small>
+                  Critical:&nbsp;
+                </Text>
+                delaying this course may delay graduation.
+              </Text>
+            ) : (
+              <Text small>
+                Can be taken as many as {course.criticalLevel(user, catalog)}{' '}
+                semesters later.
+              </Text>
+            )}
+          </Critical>
 
-      {/*if*/ course.prerequisites ? (
-        <PrerequisiteContainer>
-          <PreferredPrerequisiteHeader small>
-            Preferred prerequisites:
-          </PreferredPrerequisiteHeader>
-          <PreferredPrerequisiteList>
-            {course
-              .bestOption(catalog, user.preferredCourses)
-              .map(
-                course =>
-                  course instanceof Model.Course ? course.simpleName : course
-              )
-              .map(course => (
-                <PreferredPrerequisiteItem key={course}>
-                  <Text small>{course}</Text>
-                </PreferredPrerequisiteItem>
-              ))}
-          </PreferredPrerequisiteList>
-        </PrerequisiteContainer>
-      ) : null}
+          {/*if*/ course.prerequisites ? (
+            <PrerequisiteContainer>
+              <PreferredPrerequisiteHeader small>
+                Preferred prerequisites:
+              </PreferredPrerequisiteHeader>
+              <PreferredPrerequisiteList>
+                {course
+                  .bestOption(catalog, user.preferredCourses)
+                  .map(
+                    course =>
+                      course instanceof Model.Course
+                        ? course.simpleName
+                        : course
+                  )
+                  .map(course => (
+                    <PreferredPrerequisiteItem key={course}>
+                      <Text small>{course}</Text>
+                    </PreferredPrerequisiteItem>
+                  ))}
+              </PreferredPrerequisiteList>
+            </PrerequisiteContainer>
+          ) : null}
+        </View>
+      )}
     </Container>
   );
 }
