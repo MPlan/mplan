@@ -84,6 +84,17 @@ export function SequenceCourse(props: SequenceCourseProps) {
           <Name>
             <ActionableText small>{course.name}</ActionableText>
           </Name>
+          <Critical>
+            {/*if*/ course.criticalLevel(user, catalog) <= 0 ? (
+              <Text color={styles.red} small>
+                Critical
+              </Text>
+            ) : (
+              <Text small>
+                Can move {course.criticalLevel(user, catalog)}{' '} later
+              </Text>
+            )}
+          </Critical>
         </View>
       ) : (
         <View>

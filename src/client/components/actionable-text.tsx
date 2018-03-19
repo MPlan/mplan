@@ -6,11 +6,11 @@ import { Text } from './';
 export const ActionableText = styled(Text)`
   font-family: ${styles.fontFamily};
   color: ${styles.link};
-  text-decoration: underline;
   &:active {
     ${styles.linkActive};
   }
   &:hover {
+    text-decoration: underline;
     ${styles.linkHover};
     cursor: pointer;
   }
