@@ -7,7 +7,7 @@ import {
   Prerequisite,
   SequenceCourse,
   ActionableText,
-  FloatingActionButton
+  FloatingActionButton,
 } from '../components';
 import styled from 'styled-components';
 import * as styles from '../styles';
@@ -67,40 +67,40 @@ export class Sequence extends Model.store.connect({
   initialState: {
     mouseOverCourse: undefined as undefined | string | Model.Course,
     selectedCourse: undefined as undefined | string | Model.Course,
-    compactMode: false
-  }
+    compactMode: false,
+  },
 }) {
   handleCompactModeToggle = () => {
     this.setState(previousState => ({
       ...previousState,
-      compactMode: !previousState.compactMode
+      compactMode: !previousState.compactMode,
     }));
   };
 
   handleCourseMouseOver(course: string | Model.Course) {
     this.setState(previousState => ({
       ...previousState,
-      mouseOverCourse: course
+      mouseOverCourse: course,
     }));
   }
 
   handleCourseMouseExit(course: string | Model.Course) {
     this.setState(previousState => ({
       ...previousState,
-      mouseOverCourse: undefined
+      mouseOverCourse: undefined,
     }));
   }
 
   handleCourseFocus(course: string | Model.Course) {
     this.setState(previousState => ({
       ...previousState,
-      selectedCourse: course
+      selectedCourse: course,
     }));
   }
   handleCourseBlur(course: string | Model.Course) {
     this.setState(previousState => ({
       ...previousState,
-      selectedCourse: undefined
+      selectedCourse: undefined,
     }));
   }
 
@@ -108,7 +108,7 @@ export class Sequence extends Model.store.connect({
     if (event.key === 'Escape') {
       this.setState(previousState => ({
         ...previousState,
-        selectedCourse: undefined
+        selectedCourse: undefined,
       }));
     }
   };
@@ -124,14 +124,28 @@ export class Sequence extends Model.store.connect({
 
   courseHighlighted(course: string | Model.Course) {
     if (typeof course === 'string') return false;
-    const bestOption = course.bestOption(
-      this.store.catalog,
-      this.store.user.preferredCourses
-    );
+    const bestOption = course.bestOption(this.store.catalog, this.store.user.preferredCourses);
     if (this.state.mouseOverCourse === undefined) {
-      return bestOption.contains(this.state.selectedCourse || '');
+      const selectedCourse = this.state.selectedCourse;
+      if (bestOption.contains(selectedCourse || '')) return true;
+      if (
+        selectedCourse instanceof Model.Course &&
+        selectedCourse
+          .bestOption(this.store.catalog, this.store.user.preferredCourses)
+          .contains(course || '')
+      ) {
+        return true;
+      }
+      return false;
     }
-    return bestOption.contains(this.state.mouseOverCourse || '');
+    if (bestOption.contains(this.state.mouseOverCourse || '')) return true;
+      const selectedCourse = this.state.mouseOverCourse;
+    if (selectedCourse instanceof Model.Course && selectedCourse
+        .bestOption(this.store.catalog, this.store.user.preferredCourses)
+        .contains(course || '')) {
+      return true;
+    }
+    return false;
   }
 
   courseFocused(course: string | Model.Course) {
@@ -150,9 +164,9 @@ export class Sequence extends Model.store.connect({
               Course Sequence
             </Text>
             <Text color={styles.textLight}>
-              This page includes every course and their prerequisites from the
-              degree page. Use this page to see what classes you have to take
-              first. <ActionableText>Click here for more info.</ActionableText>
+              This page includes every course and their prerequisites from the degree page. Use this
+              page to see what classes you have to take first.{' '}
+              <ActionableText>Click here for more info.</ActionableText>
             </Text>
           </HeaderMain>
           <HeaderRight>
@@ -172,7 +186,7 @@ export class Sequence extends Model.store.connect({
               key={levelIndex}
               style={{
                 width: this.state.compactMode ? '4rem' : '13rem',
-                minWidth: this.state.compactMode ? '4rem' : '13rem'
+                minWidth: this.state.compactMode ? '4rem' : '13rem',
               }}
             >
               {/*if*/ !this.state.compactMode ? (
@@ -187,8 +201,8 @@ export class Sequence extends Model.store.connect({
                   ) : (
                     <Text small color={styles.textLight}>
                       You need to have taken at least {levelIndex}{' '}
-                      {levelIndex > 1 ? 'semesters' : 'semester'} before taking
-                      any classes in this level.
+                      {levelIndex > 1 ? 'semesters' : 'semester'} before taking any classes in this
+                      level.
                     </Text>
                   )}
                 </LevelHeader>
@@ -196,9 +210,7 @@ export class Sequence extends Model.store.connect({
               <LevelCard>
                 {level.map(course => (
                   <SequenceCourse
-                    key={
-                      /*if*/ course instanceof Model.Course ? course.id : course
-                    }
+                    key={/*if*/ course instanceof Model.Course ? course.id : course}
                     course={course}
                     catalog={this.store.catalog}
                     user={this.store.user}
@@ -215,10 +227,7 @@ export class Sequence extends Model.store.connect({
             </Level>
           ))}
         </GraphContainer>
-        <FloatingActionButton
-          message="add course to degree"
-          actions={{ one: 'one', two: 'two' }}
-        />
+        <FloatingActionButton message="add course to degree" actions={{ one: 'one', two: 'two' }} />
       </SequenceContainer>
     );
   }
