@@ -35,6 +35,10 @@ const GraphContainer = styled(View)`
   & > *:last-child {
     padding-right: 5rem;
   }
+  position: relative;
+  overflow: auto;
+  flex: 1;
+  align-items: flex-start;
 `;
 
 const Level = styled(View)`
@@ -91,31 +95,28 @@ const SvgArrowContainer = styled(View)`
   z-index: -10;
 `;
 
+const GraphWrapper = styled(View)`
+  flex-direction: row;
+  position: relative;
+  margin: auto;
+`;
+
 export class Sequence extends Model.store.connect({
   initialState: {
     mouseOverCourse: undefined as undefined | string | Model.Course,
     selectedCourse: undefined as undefined | string | Model.Course,
     compactMode: false,
     edges: [] as Edge[],
-    scrollOffset: 0,
-    scrolling: false,
   },
 }) {
-  containerElement: HTMLElement | undefined;
+  graphContainerElement: HTMLElement | undefined;
   mounted = false;
-  scrollEvents$ = new Subject<void>();
+  reflowEvents$ = new Subject<void>();
 
   reflowArrows() {
-    const containerElement = this.containerElement;
-    if (!containerElement) return;
-    const firstCourse = containerElement.querySelector('.sequence-course');
-    if (!firstCourse) return;
-    const rect = firstCourse.getBoundingClientRect();
     const edges = this.calculateEdges();
     this.setState(previousState => ({
       ...previousState,
-      scrollOffset: rect.left + rect.width,
-      scrolling: false,
       edges,
     }));
   }
@@ -124,47 +125,31 @@ export class Sequence extends Model.store.connect({
     this.mounted = true;
     document.addEventListener('keydown', this.handleDocumentKeyDown);
 
-    this.scrollEvents$.subscribe(() => {
-      this.setState(previousState => ({
-        ...previousState,
-        scrolling: true,
-      }));
-    });
-
-    this.scrollEvents$.pipe(debounceTime(200)).subscribe(() => {
+    this.reflowEvents$.pipe(debounceTime(200)).subscribe(() => {
       this.reflowArrows();
     });
 
-    this.handleUpdateOffset();
-  }
-
-  reflowEdges() {
-    const edges = this.calculateEdges();
-    this.setState(previousState => ({
-      ...previousState,
-      edges,
-    }));
+    this.reflowTrigger();
   }
 
   componentWillUnmount() {
     super.componentWillUnmount();
     document.removeEventListener('keydown', this.handleDocumentKeyDown);
     this.mounted = false;
-    if (!this.containerElement) return;
-    this.containerElement.removeEventListener('scroll', this.handleUpdateOffset);
+    if (!this.graphContainerElement) return;
+    this.graphContainerElement.removeEventListener('scroll', this.reflowTrigger);
   }
 
-  handleRef = (element: HTMLElement | undefined) => {
-    this.containerElement = element;
+  handleGraphContainerRef = (element: HTMLElement | undefined) => {
+    this.graphContainerElement = element;
     if (!element) return;
-    element.addEventListener('scroll', this.handleUpdateOffset);
+    element.addEventListener('scroll', this.reflowTrigger);
   };
 
   handleCompactModeToggle = async () => {
     this.setState(previousState => ({
       ...previousState,
       compactMode: !previousState.compactMode,
-      scrolling: true,
     }));
 
     await wait(500);
@@ -216,15 +201,18 @@ export class Sequence extends Model.store.connect({
       .map(course => {
         const sequenceCourseElement = document.querySelector(`.${courseIdClassName(course)}`);
         if (!sequenceCourseElement) return undefined;
+        const parentElement = document.querySelector('.graph-wrapper');
+        if (!parentElement) return undefined;
 
+        const parentRect = parentElement.getBoundingClientRect();
         const rect = sequenceCourseElement.getBoundingClientRect();
         const left = {
-          y: rect.top + rect.height / 2,
-          x: rect.left,
+          y: (rect.top + rect.height / 2 - parentRect.top) / parentRect.height,
+          x: (rect.left - parentRect.left) / parentRect.width,
         };
         const right = {
-          y: rect.top + rect.height / 2,
-          x: rect.left + rect.width,
+          y: (rect.top + rect.height / 2 - parentRect.top) / parentRect.height,
+          x: (rect.left + rect.width - parentRect.left) / parentRect.width,
         };
 
         return { course, left, right };
@@ -309,9 +297,8 @@ export class Sequence extends Model.store.connect({
     return adjustedEdges;
   }
 
-  // transform `this.store.UIEventer.preferredCourses` to edge pairs
-  handleUpdateOffset = () => {
-    this.scrollEvents$.next();
+  reflowTrigger = () => {
+    this.reflowEvents$.next();
   };
 
   courseHighlighted(course: string | Model.Course) {
@@ -352,7 +339,7 @@ export class Sequence extends Model.store.connect({
 
   render() {
     return (
-      <SequenceContainer innerRef={this.handleRef}>
+      <SequenceContainer onMouseMove={this.reflowTrigger}>
         <Header>
           <HeaderMain>
             <Text strong extraLarge color={styles.textLight}>
@@ -375,76 +362,78 @@ export class Sequence extends Model.store.connect({
             </label>
           </HeaderRight>
         </Header>
-        <GraphContainer className="graph-container">
-          {this.store.levels.map((level, levelIndex) => (
-            <Level
-              key={levelIndex}
-              style={{
-                width: this.state.compactMode ? '4rem' : '13rem',
-                minWidth: this.state.compactMode ? '4rem' : '13rem',
-              }}
-            >
-              {/*if*/ !this.state.compactMode ? (
-                <LevelHeader>
-                  <Text large strong color={styles.textLight}>
-                    Level {levelIndex + 1}
-                  </Text>
-                  {/*if*/ levelIndex <= 0 ? (
-                    <Text small color={styles.textLight}>
-                      These classes have been found to have no prerequisites.
+        <GraphContainer className="graph-container" innerRef={this.handleGraphContainerRef}>
+          <GraphWrapper className="graph-wrapper">
+            {this.store.levels.map((level, levelIndex) => (
+              <Level
+                key={levelIndex}
+                style={{
+                  width: this.state.compactMode ? '4rem' : '13rem',
+                  minWidth: this.state.compactMode ? '4rem' : '13rem',
+                }}
+              >
+                {/*if*/ !this.state.compactMode ? (
+                  <LevelHeader>
+                    <Text large strong color={styles.textLight}>
+                      Level {levelIndex + 1}
                     </Text>
-                  ) : (
-                    <Text small color={styles.textLight}>
-                      You need to have taken at least {levelIndex}{' '}
-                      {levelIndex > 1 ? 'semesters' : 'semester'} before taking any classes in this
-                      level.
-                    </Text>
-                  )}
-                </LevelHeader>
-              ) : null}
-              <LevelCard>
-                {level.map(course => (
-                  <SequenceCourse
-                    key={/*if*/ course instanceof Model.Course ? course.id : course}
-                    course={course}
-                    catalog={this.store.catalog}
-                    user={this.store.user}
-                    onMouseOver={() => this.handleCourseMouseOver(course)}
-                    onMouseExit={() => this.handleCourseMouseExit(course)}
-                    onBlur={() => this.handleCourseBlur(course)}
-                    onFocus={() => this.handleCourseFocus(course)}
-                    focused={this.courseFocused(course)}
-                    highlighted={this.courseHighlighted(course)}
-                    compactMode={this.state.compactMode}
-                  />
-                ))}
-              </LevelCard>
-            </Level>
-          ))}
-        </GraphContainer>
-        <FloatingActionButton message="add course to degree" actions={{ one: 'one', two: 'two' }} />
-        <SvgArrowContainer className="svg-arrow-container">
-          <svg width={'100%'} height={'100%'}>
-            {/*if*/ !this.state.scrolling
-              ? this.state.edges.map((edge, index) => {
+                    {/*if*/ levelIndex <= 0 ? (
+                      <Text small color={styles.textLight}>
+                        These classes have been found to have no prerequisites.
+                      </Text>
+                    ) : (
+                      <Text small color={styles.textLight}>
+                        You need to have taken at least {levelIndex}{' '}
+                        {levelIndex > 1 ? 'semesters' : 'semester'} before taking any classes in
+                        this level.
+                      </Text>
+                    )}
+                  </LevelHeader>
+                ) : null}
+                <LevelCard>
+                  {level.map(course => (
+                    <SequenceCourse
+                      key={/*if*/ course instanceof Model.Course ? course.id : course}
+                      course={course}
+                      catalog={this.store.catalog}
+                      user={this.store.user}
+                      onMouseOver={() => this.handleCourseMouseOver(course)}
+                      onMouseExit={() => this.handleCourseMouseExit(course)}
+                      onBlur={() => this.handleCourseBlur(course)}
+                      onFocus={() => this.handleCourseFocus(course)}
+                      focused={this.courseFocused(course)}
+                      highlighted={this.courseHighlighted(course)}
+                      compactMode={this.state.compactMode}
+                    />
+                  ))}
+                </LevelCard>
+              </Level>
+            ))}
+            <SvgArrowContainer className="svg-arrow-container">
+              <svg
+                width={'100%'}
+                height={'100%'}
+                style={{ marginLeft: this.state.compactMode ? '11.2rem' : '18rem' }}
+              >
+                {this.state.edges.map((edge, index) => {
                   return (
                     <line
                       key={edge.key}
-                      x1={edge.x1}
-                      y1={edge.y1}
-                      x2={edge.x2}
-                      y2={edge.y2}
+                      x1={edge.x1 * 100 + '%'}
+                      y1={edge.y1 * 100 + '%'}
+                      x2={edge.x2 * 100 + '%'}
+                      y2={edge.y2 * 100 + '%'}
                       style={{
                         stroke: styles.black,
-                        transform: `translateX(${this.state.scrollOffset}px)`,
-                        transition: 'all 0.1s',
                       }}
                     />
                   );
-                })
-              : null}
-          </svg>
-        </SvgArrowContainer>
+                })}
+              </svg>
+            </SvgArrowContainer>
+          </GraphWrapper>
+        </GraphContainer>
+        <FloatingActionButton message="add course to degree" actions={{ one: 'one', two: 'two' }} />
       </SequenceContainer>
     );
   }
