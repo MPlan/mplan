@@ -14,6 +14,8 @@ import styled from 'styled-components';
 import * as styles from '../styles';
 import { flatten, createClassName, wait } from '../../utilities/utilities';
 import * as Immutable from 'immutable';
+import { Subject } from 'rxjs/Subject';
+import { debounceTime } from 'rxjs/operators';
 
 interface Point {
   y: number;
@@ -96,23 +98,52 @@ export class Sequence extends Model.store.connect({
     compactMode: false,
     edges: [] as Edge[],
     scrollOffset: 0,
+    scrolling: false,
   },
 }) {
   containerElement: HTMLElement | undefined;
   mounted = false;
+  scrollEvents$ = new Subject<void>();
+
+  reflowArrows() {
+    const containerElement = this.containerElement;
+    if (!containerElement) return;
+    const firstCourse = containerElement.querySelector('.sequence-course');
+    if (!firstCourse) return;
+    const rect = firstCourse.getBoundingClientRect();
+    const edges = this.calculateEdges();
+    this.setState(previousState => ({
+      ...previousState,
+      scrollOffset: rect.left + rect.width,
+      scrolling: false,
+      edges,
+    }));
+  }
 
   async componentDidMount() {
     this.mounted = true;
     document.addEventListener('keydown', this.handleDocumentKeyDown);
-    this.handleUpdateOffset();
-    while (this.mounted) {
-      await wait(1000);
-      const edges = this.calculateEdges();
+
+    this.scrollEvents$.subscribe(() => {
       this.setState(previousState => ({
         ...previousState,
-        edges,
+        scrolling: true,
       }));
-    }
+    });
+
+    this.scrollEvents$.pipe(debounceTime(200)).subscribe(() => {
+      this.reflowArrows();
+    });
+
+    this.handleUpdateOffset();
+  }
+
+  reflowEdges() {
+    const edges = this.calculateEdges();
+    this.setState(previousState => ({
+      ...previousState,
+      edges,
+    }));
   }
 
   componentWillUnmount() {
@@ -129,11 +160,15 @@ export class Sequence extends Model.store.connect({
     element.addEventListener('scroll', this.handleUpdateOffset);
   };
 
-  handleCompactModeToggle = () => {
+  handleCompactModeToggle = async () => {
     this.setState(previousState => ({
       ...previousState,
       compactMode: !previousState.compactMode,
+      scrolling: true,
     }));
+
+    await wait(500);
+    this.reflowArrows();
   };
 
   handleCourseMouseOver(course: string | Model.Course) {
@@ -274,18 +309,9 @@ export class Sequence extends Model.store.connect({
     return adjustedEdges;
   }
 
-  // transform `this.store.user.preferredCourses` to edge pairs
+  // transform `this.store.UIEventer.preferredCourses` to edge pairs
   handleUpdateOffset = () => {
-    const containerElement = this.containerElement;
-    if (!containerElement) return;
-    const firstCourse = containerElement.querySelector('.sequence-course');
-    if (!firstCourse) return;
-    const rect = firstCourse.getBoundingClientRect();
-    console.log(rect);
-    this.setState(previousState => ({
-      ...previousState,
-      scrollOffset: rect.left + rect.width,
-    }));
+    this.scrollEvents$.next();
   };
 
   courseHighlighted(course: string | Model.Course) {
@@ -326,7 +352,7 @@ export class Sequence extends Model.store.connect({
 
   render() {
     return (
-      <SequenceContainer innerRef={this.handleRef} onMouseMove={this.handleUpdateOffset}>
+      <SequenceContainer innerRef={this.handleRef}>
         <Header>
           <HeaderMain>
             <Text strong extraLarge color={styles.textLight}>
@@ -399,22 +425,24 @@ export class Sequence extends Model.store.connect({
         <FloatingActionButton message="add course to degree" actions={{ one: 'one', two: 'two' }} />
         <SvgArrowContainer className="svg-arrow-container">
           <svg width={'100%'} height={'100%'}>
-            {this.state.edges.map((edge, index) => {
-              return (
-                <line
-                  key={edge.key}
-                  x1={edge.x1}
-                  y1={edge.y1}
-                  x2={edge.x2}
-                  y2={edge.y2}
-                  style={{
-                    stroke: styles.black,
-                    transform: `translateX(${this.state.scrollOffset}px)`,
-                    transition: 'all 0.1s',
-                  }}
-                />
-              );
-            })}
+            {/*if*/ !this.state.scrolling
+              ? this.state.edges.map((edge, index) => {
+                  return (
+                    <line
+                      key={edge.key}
+                      x1={edge.x1}
+                      y1={edge.y1}
+                      x2={edge.x2}
+                      y2={edge.y2}
+                      style={{
+                        stroke: styles.black,
+                        transform: `translateX(${this.state.scrollOffset}px)`,
+                        transition: 'all 0.1s',
+                      }}
+                    />
+                  );
+                })
+              : null}
           </svg>
         </SvgArrowContainer>
       </SequenceContainer>
