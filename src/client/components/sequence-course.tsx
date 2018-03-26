@@ -13,6 +13,7 @@ const Container = styled(View)`
   margin-bottom: ${styles.space(1)};
   box-shadow: ${styles.boxShadow(1)};
   cursor: pointer;
+  transition: all 0.2s;
 `;
 
 const SimpleName = styled(Text)``;
