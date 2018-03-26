@@ -21,9 +21,20 @@ const Name = styled(ActionableText)`
   margin-bottom: ${styles.space(-1)};
 `;
 
+const NameCompact = styled(ActionableText)`
+  margin-bottom: ${styles.space(-1)};
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+const TooltipName = styled(Text)``;
+
 const Critical = styled(View)`
   margin-bottom: ${styles.space(-1)};
 `;
+
+const CriticalCompact = styled(View)``;
 
 const PrerequisiteContainer = styled(View)``;
 const PreferredPrerequisiteHeader = styled(Text)`
@@ -76,8 +87,8 @@ export function SequenceCourse(props: SequenceCourseProps) {
         outline: /*if*/ props.focused
           ? `${styles.borderWidth} solid ${styles.focusBorderColor}`
           : 'none',
-        width: props.compactMode ? '5rem' : 'auto',
-        minWidth: props.compactMode ? '5rem' : 'auto',
+        width: props.compactMode ? '6rem' : 'auto',
+        minWidth: props.compactMode ? '6rem' : 'auto',
         padding: props.compactMode ? styles.space(-1) : styles.space(0),
       }}
       onFocus={props.onFocus}
@@ -86,10 +97,10 @@ export function SequenceCourse(props: SequenceCourseProps) {
       {/*if*/ props.compactMode ? (
         <View>
           <SimpleName strong>{course.simpleName}</SimpleName>
-          <Name>
+          <NameCompact>
             <ActionableText small>{course.name}</ActionableText>
-          </Name>
-          <Critical>
+          </NameCompact>
+          <CriticalCompact>
             {/*if*/ course.criticalLevel(user, catalog) <= 0 ? (
               <Text color={styles.red} small>
                 Critical
@@ -97,7 +108,7 @@ export function SequenceCourse(props: SequenceCourseProps) {
             ) : (
               <Text small>Can move {course.criticalLevel(user, catalog)} later</Text>
             )}
-          </Critical>
+          </CriticalCompact>
         </View>
       ) : (
         <View>

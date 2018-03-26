@@ -107,7 +107,7 @@ export class Sequence extends Model.store.connect({
   initialState: {
     mouseOverCourse: undefined as undefined | string | Model.Course,
     selectedCourse: undefined as undefined | string | Model.Course,
-    compactMode: false,
+    compactMode: true,
     edges: [] as Edge[],
     graphWrapperWidth: 1000,
     graphWrapperHeight: 1000,
@@ -364,7 +364,7 @@ export class Sequence extends Model.store.connect({
         <Header>
           <HeaderMain>
             <Text strong extraLarge color={styles.textLight}>
-              Course Sequence
+              Data Science Sequence
             </Text>
             <Text color={styles.textLight}>
               This page includes every course and their prerequisites from the degree page. Use this
@@ -389,8 +389,8 @@ export class Sequence extends Model.store.connect({
               <Level
                 key={levelIndex}
                 style={{
-                  width: this.state.compactMode ? '4rem' : '13rem',
-                  minWidth: this.state.compactMode ? '4rem' : '13rem',
+                  width: this.state.compactMode ? '5rem' : '13rem',
+                  minWidth: this.state.compactMode ? '5rem' : '13rem',
                 }}
               >
                 {/*if*/ !this.state.compactMode ? (
@@ -434,7 +434,7 @@ export class Sequence extends Model.store.connect({
               <svg
                 width={'100%'}
                 height={'100%'}
-                style={{ marginLeft: this.state.compactMode ? '11.2rem' : '18rem' }}
+                style={{ marginLeft: this.state.compactMode ? '12.3rem' : '18rem' }}
                 viewBox={`0 0 ${graphWidth} ${graphHeight}`}
                 preserveAspectRatio="none"
               >
