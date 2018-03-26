@@ -3,9 +3,7 @@ import * as colors from 'colors';
 import { oneLine } from 'common-tags';
 
 export function wait(milliseconds: number) {
-  return new Promise<'TIMER'>(resolve =>
-    setTimeout(() => resolve('TIMER'), milliseconds)
-  );
+  return new Promise<'TIMER'>(resolve => setTimeout(() => resolve('TIMER'), milliseconds));
 }
 
 export function getOrThrow<T>(value: T | undefined | null) {
@@ -52,7 +50,7 @@ const _logger = {
   info: colors.blue,
   debug: colors.cyan,
   warn: colors.yellow,
-  error: colors.red
+  error: colors.red,
 };
 
 export const log = Object.keys(_logger)
@@ -66,7 +64,7 @@ export const log = Object.keys(_logger)
       };
       return obj;
     },
-    {} as { [P in keyof typeof _logger]: (message: any) => void }
+    {} as { [P in keyof typeof _logger]: (message: any) => void },
   );
 
 export function combineUniquely(arrA: string[], arrB: string[]) {
@@ -75,7 +73,7 @@ export function combineUniquely(arrA: string[], arrB: string[]) {
       obj[next] = true;
       return obj;
     },
-    {} as { [key: string]: true }
+    {} as { [key: string]: true },
   );
 
   const objB = arrB.reduce(
@@ -83,7 +81,7 @@ export function combineUniquely(arrA: string[], arrB: string[]) {
       obj[next] = true;
       return obj;
     },
-    {} as { [key: string]: true }
+    {} as { [key: string]: true },
   );
 
   const uniqueAWithNoB = Object.keys(objA).filter(a => !objB[a]);
@@ -119,7 +117,7 @@ export function removeEmptyKeys<T extends { [key: string]: any }>(obj: T) {
         newObj[key] = value;
         return newObj;
       },
-      {} as T
+      {} as T,
     );
   return newObj;
 }
@@ -128,16 +126,13 @@ export function combineObjects<T>(...objects: any[]) {
   return objects.reduce(
     (combined, nextObject) => ({
       ...removeEmptyKeys(combined as any),
-      ...removeEmptyKeys(nextObject as any)
+      ...removeEmptyKeys(nextObject as any),
     }),
-    {}
+    {},
   ) as T;
 }
 
-export async function sequentially<T, R>(
-  list: T[],
-  asyncFunction: (t: T) => Promise<R>
-) {
+export async function sequentially<T, R>(list: T[], asyncFunction: (t: T) => Promise<R>) {
   const newList = [] as R[];
   for (const i of list) {
     newList.push(await asyncFunction(i));
@@ -148,6 +143,15 @@ export async function sequentially<T, R>(
 export function flatten<T>(listOfLists: T[][]) {
   return listOfLists.reduce(
     (flattenedList, nextList) => [...flattenedList, ...nextList],
-    [] as T[]
+    [] as T[],
   );
+}
+
+export function createClassName(s: string) {
+  return s
+    .toLowerCase()
+    .trim()
+    .split(' ')
+    .map(s => s.replace(/\W/g, ''))
+    .join('-');
 }

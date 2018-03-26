@@ -5,6 +5,7 @@ import { View, Text } from './';
 import * as Model from '../models';
 import * as styles from '../styles';
 import * as Immutable from 'immutable';
+import { createClassName } from '../../utilities/utilities';
 
 const Container = styled(View)`
   background-color: ${styles.white};
@@ -48,6 +49,10 @@ export interface SequenceCourseProps {
   onBlur: () => void;
 }
 
+export function courseIdClassName(course: string | Model.Course) {
+  return `course-id-${createClassName(course instanceof Model.Course ? course.id : course)}`;
+}
+
 export function SequenceCourse(props: SequenceCourseProps) {
   const { course, catalog, user } = props;
   if (typeof course === 'string') {
@@ -60,7 +65,7 @@ export function SequenceCourse(props: SequenceCourseProps) {
 
   return (
     <Container
-      className="sequence-course"
+      className={['sequence-course', courseIdClassName(course)].join(' ')}
       onMouseEnter={props.onMouseOver}
       onMouseLeave={props.onMouseExit}
       tabIndex={0}
@@ -73,7 +78,7 @@ export function SequenceCourse(props: SequenceCourseProps) {
           : 'none',
         width: props.compactMode ? '5rem' : 'auto',
         minWidth: props.compactMode ? '5rem' : 'auto',
-        padding: props.compactMode ? styles.space(-1) : styles.space(0)
+        padding: props.compactMode ? styles.space(-1) : styles.space(0),
       }}
       onFocus={props.onFocus}
       onBlur={props.onBlur}
@@ -90,9 +95,7 @@ export function SequenceCourse(props: SequenceCourseProps) {
                 Critical
               </Text>
             ) : (
-              <Text small>
-                Can move {course.criticalLevel(user, catalog)}{' '} later
-              </Text>
+              <Text small>Can move {course.criticalLevel(user, catalog)} later</Text>
             )}
           </Critical>
         </View>
@@ -112,8 +115,8 @@ export function SequenceCourse(props: SequenceCourseProps) {
               </Text>
             ) : (
               <Text small>
-                Can be taken as many as {course.criticalLevel(user, catalog)}{' '}
-                semesters later.
+                Can be taken as many as {course.criticalLevel(user, catalog)} semesters later
+                without delaying graduation.
               </Text>
             )}
           </Critical>
@@ -126,12 +129,7 @@ export function SequenceCourse(props: SequenceCourseProps) {
               <PreferredPrerequisiteList>
                 {course
                   .bestOption(catalog, user.preferredCourses)
-                  .map(
-                    course =>
-                      course instanceof Model.Course
-                        ? course.simpleName
-                        : course
-                  )
+                  .map(course => (course instanceof Model.Course ? course.simpleName : course))
                   .map(course => (
                     <PreferredPrerequisiteItem key={course}>
                       <Text small>{course}</Text>
