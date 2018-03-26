@@ -16,6 +16,7 @@ import { flatten, createClassName, wait } from '../../utilities/utilities';
 import * as Immutable from 'immutable';
 import { Subject } from 'rxjs/Subject';
 import { debounceTime } from 'rxjs/operators';
+import { oneLine } from 'common-tags';
 
 interface Point {
   y: number;
@@ -108,9 +109,12 @@ export class Sequence extends Model.store.connect({
     selectedCourse: undefined as undefined | string | Model.Course,
     compactMode: false,
     edges: [] as Edge[],
+    graphWrapperWidth: 1000,
+    graphWrapperHeight: 1000,
   },
 }) {
   graphContainerElement: HTMLElement | undefined;
+  graphWrapperElement: HTMLElement | undefined;
   mounted = false;
   reflowEvents$ = new Subject<void>();
 
@@ -119,6 +123,9 @@ export class Sequence extends Model.store.connect({
     this.setState(previousState => ({
       ...previousState,
       edges,
+      graphWrapperHeight:
+        (this.graphWrapperElement && this.graphWrapperElement.clientHeight) || 1000,
+      graphWrapperWidth: (this.graphWrapperElement && this.graphWrapperElement.clientWidth) || 1000,
     }));
   }
 
@@ -142,9 +149,14 @@ export class Sequence extends Model.store.connect({
   }
 
   handleGraphContainerRef = (element: HTMLElement | undefined) => {
-    this.graphContainerElement = element;
     if (!element) return;
+    this.graphContainerElement = element;
     element.addEventListener('scroll', this.reflowTrigger);
+  };
+
+  handleGraphWrapperRef = (element: HTMLElement | undefined) => {
+    if (!element) return;
+    this.graphWrapperElement = element;
   };
 
   handleCompactModeToggle = async () => {
@@ -345,6 +357,8 @@ export class Sequence extends Model.store.connect({
   }
 
   render() {
+    const graphWidth = this.state.graphWrapperWidth;
+    const graphHeight = this.state.graphWrapperHeight;
     return (
       <SequenceContainer onMouseMove={this.reflowTrigger}>
         <Header>
@@ -370,7 +384,7 @@ export class Sequence extends Model.store.connect({
           </HeaderRight>
         </Header>
         <GraphContainer className="graph-container" innerRef={this.handleGraphContainerRef}>
-          <GraphWrapper className="graph-wrapper">
+          <GraphWrapper className="graph-wrapper" innerRef={this.handleGraphWrapperRef}>
             {this.store.levels.map((level, levelIndex) => (
               <Level
                 key={levelIndex}
@@ -421,19 +435,31 @@ export class Sequence extends Model.store.connect({
                 width={'100%'}
                 height={'100%'}
                 style={{ marginLeft: this.state.compactMode ? '11.2rem' : '18rem' }}
+                viewBox={`0 0 ${graphWidth} ${graphHeight}`}
+                preserveAspectRatio="none"
               >
                 {this.state.edges.map((edge, index) => {
                   const nodesFocused = edge.nodes.some(node => this.courseFocused(node));
+                  const startingPointX = edge.x1;
+                  const startingPointY = edge.y1;
+                  const finalPointX = edge.x2;
+                  const finalPointY = edge.y2;
+                  const bezierPoint1X = (finalPointX - startingPointX) / 2 + startingPointX;
+                  const bezierPoint1Y = edge.y1;
+                  const bezierPoint2X = (finalPointX - startingPointX) / 2 + startingPointX;
+                  const bezierPoint2Y = edge.y2;
                   return (
-                    <line
-                      key={edge.key}
-                      x1={edge.x1 * 100 + '%'}
-                      y1={edge.y1 * 100 + '%'}
-                      x2={edge.x2 * 100 + '%'}
-                      y2={edge.y2 * 100 + '%'}
+                    <path
+                      d={oneLine`
+                      M ${startingPointX * graphWidth},${startingPointY * graphHeight}
+                      C ${bezierPoint1X * graphWidth},${bezierPoint1Y * graphHeight}
+                        ${bezierPoint2X * graphWidth},${bezierPoint2Y * graphHeight}
+                        ${finalPointX * graphWidth},${finalPointY * graphHeight}
+                      `}
                       style={{
+                        fill: 'none',
                         stroke: /*if*/ nodesFocused ? styles.blue : styles.grayLight,
-                        zIndex: /*if*/ nodesFocused ? 10 : 0,
+                        zIndex: /*if*/ nodesFocused ? 100 : 0,
                         strokeWidth: /*if*/ nodesFocused ? 3 : 1,
                       }}
                     />
