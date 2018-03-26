@@ -12,7 +12,7 @@ import {
 } from '../components';
 import styled from 'styled-components';
 import * as styles from '../styles';
-import { flatten, createClassName } from '../../utilities/utilities';
+import { flatten, createClassName, wait } from '../../utilities/utilities';
 import * as Immutable from 'immutable';
 
 interface Point {
@@ -95,26 +95,38 @@ export class Sequence extends Model.store.connect({
     selectedCourse: undefined as undefined | string | Model.Course,
     compactMode: false,
     edges: [] as Edge[],
+    scrollOffset: 0,
   },
 }) {
   containerElement: HTMLElement | undefined;
+  mounted = false;
 
-  componentDidMount() {
+  async componentDidMount() {
+    this.mounted = true;
     document.addEventListener('keydown', this.handleDocumentKeyDown);
-    this.handleContainerScroll();
+    this.handleUpdateOffset();
+    while (this.mounted) {
+      await wait(1000);
+      const edges = this.calculateEdges();
+      this.setState(previousState => ({
+        ...previousState,
+        edges,
+      }));
+    }
   }
 
   componentWillUnmount() {
     super.componentWillUnmount();
     document.removeEventListener('keydown', this.handleDocumentKeyDown);
+    this.mounted = false;
     if (!this.containerElement) return;
-    this.containerElement.removeEventListener('scroll', this.handleContainerScroll);
+    this.containerElement.removeEventListener('scroll', this.handleUpdateOffset);
   }
 
   handleRef = (element: HTMLElement | undefined) => {
     this.containerElement = element;
     if (!element) return;
-    element.addEventListener('scroll', this.handleContainerScroll);
+    element.addEventListener('scroll', this.handleUpdateOffset);
   };
 
   handleCompactModeToggle = () => {
@@ -243,15 +255,36 @@ export class Sequence extends Model.store.connect({
         .toArray(),
     );
 
-    return edges;
+    const minX = edges.reduce((minX, edge) => {
+      if (edge.x1 < minX) return edge.x1;
+      if (edge.x2 < minX) return edge.x2;
+      return minX;
+    }, 999999999);
+
+    if (minX === 999999999) {
+      return [];
+    }
+
+    const adjustedEdges = edges.map(edge => ({
+      ...edge,
+      x1: edge.x1 - minX,
+      x2: edge.x2 - minX,
+    }));
+
+    return adjustedEdges;
   }
 
   // transform `this.store.user.preferredCourses` to edge pairs
-  handleContainerScroll = () => {
-    const edges = this.calculateEdges();
+  handleUpdateOffset = () => {
+    const containerElement = this.containerElement;
+    if (!containerElement) return;
+    const firstCourse = containerElement.querySelector('.sequence-course');
+    if (!firstCourse) return;
+    const rect = firstCourse.getBoundingClientRect();
+    console.log(rect);
     this.setState(previousState => ({
       ...previousState,
-      edges,
+      scrollOffset: rect.left + rect.width,
     }));
   };
 
@@ -293,7 +326,7 @@ export class Sequence extends Model.store.connect({
 
   render() {
     return (
-      <SequenceContainer innerRef={this.handleRef}>
+      <SequenceContainer innerRef={this.handleRef} onMouseMove={this.handleUpdateOffset}>
         <Header>
           <HeaderMain>
             <Text strong extraLarge color={styles.textLight}>
@@ -316,7 +349,7 @@ export class Sequence extends Model.store.connect({
             </label>
           </HeaderRight>
         </Header>
-        <GraphContainer>
+        <GraphContainer className="graph-container">
           {this.store.levels.map((level, levelIndex) => (
             <Level
               key={levelIndex}
@@ -374,7 +407,11 @@ export class Sequence extends Model.store.connect({
                   y1={edge.y1}
                   x2={edge.x2}
                   y2={edge.y2}
-                  style={{ stroke: styles.black }}
+                  style={{
+                    stroke: styles.black,
+                    transform: `translateX(${this.state.scrollOffset}px)`,
+                    transition: 'all 0.1s',
+                  }}
                 />
               );
             })}
