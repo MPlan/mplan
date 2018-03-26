@@ -28,6 +28,7 @@ interface Edge {
   y1: number;
   x2: number;
   y2: number;
+  nodes: Immutable.Set<string | Model.Course>;
 }
 
 const GraphContainer = styled(View)`
@@ -253,7 +254,10 @@ export class Sequence extends Model.store.connect({
                 ]
                   .sort()
                   .join('__')}`;
-                return { key, x1, y1, x2, y2 };
+                const nodes = Immutable.Set<string | Model.Course>()
+                  .add(option)
+                  .add(course);
+                return { key, x1, y1, x2, y2, nodes };
               } else {
                 const x1 = coursePoints.right.x;
                 const y1 = coursePoints.right.y;
@@ -265,7 +269,10 @@ export class Sequence extends Model.store.connect({
                 ]
                   .sort()
                   .join('__')}`;
-                return { key, x1, y1, x2, y2 };
+                const nodes = Immutable.Set<string | Model.Course>()
+                  .add(option)
+                  .add(course);
+                return { key, x1, y1, x2, y2, nodes };
               }
             })
             .filter(x => !!x)
@@ -416,6 +423,7 @@ export class Sequence extends Model.store.connect({
                 style={{ marginLeft: this.state.compactMode ? '11.2rem' : '18rem' }}
               >
                 {this.state.edges.map((edge, index) => {
+                  const nodesFocused = edge.nodes.some(node => this.courseFocused(node));
                   return (
                     <line
                       key={edge.key}
@@ -424,7 +432,9 @@ export class Sequence extends Model.store.connect({
                       x2={edge.x2 * 100 + '%'}
                       y2={edge.y2 * 100 + '%'}
                       style={{
-                        stroke: styles.black,
+                        stroke: /*if*/ nodesFocused ? styles.blue : styles.grayLight,
+                        zIndex: /*if*/ nodesFocused ? 10 : 0,
+                        strokeWidth: /*if*/ nodesFocused ? 3 : 1,
                       }}
                     />
                   );
