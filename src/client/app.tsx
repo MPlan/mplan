@@ -143,7 +143,6 @@ const AppContent = styled(View)`
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  background-color: ${styles.background};
 `;
 
 export function App() {

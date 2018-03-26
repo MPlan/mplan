@@ -33,7 +33,6 @@ const GraphContainer = styled(View)`
   & > *:last-child {
     padding-right: 5rem;
   }
-  z-index: 20;
 `;
 
 const Level = styled(View)`
@@ -87,7 +86,7 @@ const SvgArrowContainer = styled(View)`
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 10;
+  z-index: -10;
 `;
 
 export class Sequence extends Model.store.connect({
@@ -102,6 +101,7 @@ export class Sequence extends Model.store.connect({
 
   componentDidMount() {
     document.addEventListener('keydown', this.handleDocumentKeyDown);
+    this.handleContainerScroll();
   }
 
   componentWillUnmount() {
@@ -111,8 +111,9 @@ export class Sequence extends Model.store.connect({
     this.containerElement.removeEventListener('scroll', this.handleContainerScroll);
   }
 
-  handleRef = (element: any) => {
+  handleRef = (element: HTMLElement | undefined) => {
     this.containerElement = element;
+    if (!element) return;
     element.addEventListener('scroll', this.handleContainerScroll);
   };
 
@@ -159,8 +160,7 @@ export class Sequence extends Model.store.connect({
     }
   };
 
-  // transform `this.store.user.preferredCourses` to edge pairs
-  handleContainerScroll = (event: UIEvent) => {
+  calculateEdges() {
     const catalog = this.store.catalog;
     const user = this.store.user;
 
@@ -243,6 +243,12 @@ export class Sequence extends Model.store.connect({
         .toArray(),
     );
 
+    return edges;
+  }
+
+  // transform `this.store.user.preferredCourses` to edge pairs
+  handleContainerScroll = () => {
+    const edges = this.calculateEdges();
     this.setState(previousState => ({
       ...previousState,
       edges,
@@ -359,7 +365,7 @@ export class Sequence extends Model.store.connect({
         </GraphContainer>
         <FloatingActionButton message="add course to degree" actions={{ one: 'one', two: 'two' }} />
         <SvgArrowContainer className="svg-arrow-container">
-          <svg width={9999} height={9999}>
+          <svg width={'100%'} height={'100%'}>
             {this.state.edges.map((edge, index) => {
               return (
                 <line
