@@ -54,6 +54,7 @@ export interface SequenceCourseProps {
   highlighted: boolean;
   focused: boolean;
   compactMode: boolean;
+  dimmed: boolean;
   onMouseOver: () => void;
   onMouseExit: () => void;
   onFocus: () => void;
@@ -66,9 +67,23 @@ export function courseIdClassName(course: string | Model.Course) {
 
 export function SequenceCourse(props: SequenceCourseProps) {
   const { course, catalog, user } = props;
+
+  const style = {
+    backgroundColor: /*if*/ props.focused
+      ? styles.highlightBlue
+      : /*if*/ props.highlighted ? styles.highlight : styles.white,
+    outline: /*if*/ props.focused
+      ? `${styles.borderWidth} solid ${styles.focusBorderColor}`
+      : 'none',
+    width: props.compactMode ? '6rem' : 'auto',
+    minWidth: props.compactMode ? '6rem' : 'auto',
+    padding: props.compactMode ? styles.space(-1) : styles.space(0),
+    opacity: props.dimmed ? 0.25 : 1,
+  };
+
   if (typeof course === 'string') {
     return (
-      <Container>
+      <Container style={style}>
         <Text>{course}</Text>
       </Container>
     );
@@ -80,17 +95,7 @@ export function SequenceCourse(props: SequenceCourseProps) {
       onMouseEnter={props.onMouseOver}
       onMouseLeave={props.onMouseExit}
       tabIndex={0}
-      style={{
-        backgroundColor: /*if*/ props.focused
-          ? styles.highlightBlue
-          : /*if*/ props.highlighted ? styles.highlight : styles.white,
-        outline: /*if*/ props.focused
-          ? `${styles.borderWidth} solid ${styles.focusBorderColor}`
-          : 'none',
-        width: props.compactMode ? '6rem' : 'auto',
-        minWidth: props.compactMode ? '6rem' : 'auto',
-        padding: props.compactMode ? styles.space(-1) : styles.space(0),
-      }}
+      style={style}
       onFocus={props.onFocus}
       onBlur={props.onBlur}
     >

@@ -118,17 +118,6 @@ export class Sequence extends Model.store.connect({
   mounted = false;
   reflowEvents$ = new Subject<void>();
 
-  reflowArrows() {
-    const edges = this.calculateEdges();
-    this.setState(previousState => ({
-      ...previousState,
-      edges,
-      graphWrapperHeight:
-        (this.graphWrapperElement && this.graphWrapperElement.clientHeight) || 1000,
-      graphWrapperWidth: (this.graphWrapperElement && this.graphWrapperElement.clientWidth) || 1000,
-    }));
-  }
-
   async componentDidMount() {
     this.mounted = true;
     document.addEventListener('keydown', this.handleDocumentKeyDown);
@@ -146,6 +135,21 @@ export class Sequence extends Model.store.connect({
     this.mounted = false;
     if (!this.graphContainerElement) return;
     this.graphContainerElement.removeEventListener('scroll', this.reflowTrigger);
+  }
+
+  get focusMode() {
+    return !!(this.state.mouseOverCourse || this.state.selectedCourse);
+  }
+
+  reflowArrows() {
+    const edges = this.calculateEdges();
+    this.setState(previousState => ({
+      ...previousState,
+      edges,
+      graphWrapperHeight:
+        (this.graphWrapperElement && this.graphWrapperElement.clientHeight) || 1000,
+      graphWrapperWidth: (this.graphWrapperElement && this.graphWrapperElement.clientWidth) || 1000,
+    }));
   }
 
   handleGraphContainerRef = (element: HTMLElement | undefined) => {
@@ -356,6 +360,13 @@ export class Sequence extends Model.store.connect({
     return this.state.mouseOverCourse === course;
   }
 
+  courseDimmed(course: string | Model.Course) {
+    if (!this.focusMode) return false;
+    if (this.courseHighlighted(course)) return false;
+    if (this.courseFocused(course)) return false;
+    return true;
+  }
+
   render() {
     const graphWidth = this.state.graphWrapperWidth;
     const graphHeight = this.state.graphWrapperHeight;
@@ -425,6 +436,7 @@ export class Sequence extends Model.store.connect({
                       focused={this.courseFocused(course)}
                       highlighted={this.courseHighlighted(course)}
                       compactMode={this.state.compactMode}
+                      dimmed={this.courseDimmed(course)}
                     />
                   ))}
                 </LevelCard>
@@ -440,13 +452,15 @@ export class Sequence extends Model.store.connect({
               >
                 {this.state.edges.map((edge, index) => {
                   const nodesFocused = edge.nodes.some(node => this.courseFocused(node));
+                  const nodesDimmed = edge.nodes.some(node => this.courseDimmed(node));
                   const startingPointX = edge.x1;
                   const startingPointY = edge.y1;
                   const finalPointX = edge.x2;
                   const finalPointY = edge.y2;
-                  const bezierPoint1X = (finalPointX - startingPointX) / 2 + startingPointX;
+                  const midPoint = (finalPointX - startingPointX) / 2 + startingPointX;
+                  const bezierPoint1X = midPoint;
                   const bezierPoint1Y = edge.y1;
-                  const bezierPoint2X = (finalPointX - startingPointX) / 2 + startingPointX;
+                  const bezierPoint2X = midPoint;
                   const bezierPoint2Y = edge.y2;
                   return (
                     <path
@@ -461,6 +475,7 @@ export class Sequence extends Model.store.connect({
                         stroke: /*if*/ nodesFocused ? styles.blue : styles.grayLight,
                         zIndex: /*if*/ nodesFocused ? 100 : 0,
                         strokeWidth: /*if*/ nodesFocused ? 3 : 1,
+                        opacity: nodesDimmed ? 0.25 : 1,
                       }}
                     />
                   );
