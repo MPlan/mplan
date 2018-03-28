@@ -6,12 +6,14 @@ import * as styles from '../styles';
 
 const Container = styled(View)`
   padding: ${styles.space(1)};
+  overflow: auto;
 `;
 
 const Header = styled(View)`
   flex-direction: row;
   align-items: baseline;
   margin-bottom: ${styles.space(1)};
+  flex-shrink: 0;
 `;
 
 const HeaderMain = styled(View)`
@@ -51,6 +53,10 @@ const Percentage = styled(Text)`
 
 const DegreeGroupContainer = styled(View)`
   flex: 1;
+  flex-wrap: wrap;
+  flex-direction: row;
+  margin-right: -${styles.space(2)};
+  margin-bottom: -${styles.space(2)};
 `;
 
 export class Degree extends Model.store.connect() {
@@ -72,6 +78,9 @@ export class Degree extends Model.store.connect() {
           </HeaderRight>
         </Header>
         <DegreeGroupContainer>
+          {this.store.user.degreeGroups.map(group => <DegreeGroup degreeGroup={group} />)}
+          {this.store.user.degreeGroups.map(group => <DegreeGroup degreeGroup={group} />)}
+          {this.store.user.degreeGroups.map(group => <DegreeGroup degreeGroup={group} />)}
           {this.store.user.degreeGroups.map(group => <DegreeGroup degreeGroup={group} />)}
         </DegreeGroupContainer>
         <FloatingActionButton

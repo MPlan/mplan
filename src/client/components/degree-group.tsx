@@ -9,6 +9,8 @@ import * as styles from '../styles';
 
 const Container = styled(View)`
   max-width: 25rem;
+  margin-right: ${styles.space(2)};
+  margin-bottom: ${styles.space(2)};
 `;
 const Header = styled(View)`
   margin-bottom: ${styles.space(0)};

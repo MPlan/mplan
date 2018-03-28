@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as Model from '../models';
 import { View } from './view';
 import { Text } from './text';
+import { ActionableText } from './actionable-text';
 import styled from 'styled-components';
 import * as styles from '../styles';
 
@@ -27,7 +28,8 @@ const Credits = styled(Text)`
 const NameAndCredits = styled(View)`
   flex: 1;
 `;
-const FullName = styled(Text)`
+const FullName = styled(ActionableText)`
+  color: ${styles.text};
   margin-bottom: ${styles.space(-2)};
 `;
 const CheckboxContainer = styled(View)`
