@@ -159,6 +159,16 @@ export class Course
     return `${this.subjectCode} ${this.courseNumber}`;
   }
 
+  get creditsString() {
+    const max = this.credits || this.creditHours || 0;
+    const min = this.creditsMin || this.creditHoursMin || max;
+
+    if (min === max) {
+      return `${min} credits`;
+    }
+    return `${min} - ${max} credits`;
+  }
+
   static optionsMemo = new Map<any, any>();
   static bestOptionMemo = new Map<any, any>();
   static intersectionMemo = new Map<any, any>();
@@ -604,6 +614,20 @@ export class Catalog extends Record.define({
   }
 }
 
+export class DegreeGroup extends Record.define({
+  name: '',
+  description: '',
+  courses: Immutable.List<string | Course>(),
+}) {
+  addCourse(course: string | Course) {
+    return this.update('courses', courses => courses.push(course));
+  }
+
+  deleteCourse(course: string | Course) {
+    return this.update('courses', courses => courses.filter(c => c !== course));
+  }
+}
+
 export class User extends Record.define({
   _id: ObjectId(),
   username: '',
@@ -615,6 +639,31 @@ export class User extends Record.define({
   semesters: Immutable.Set<Semester>(),
   degree: Immutable.Set<string | Course>(),
   additionalCourses: Immutable.Set<string | Course>(),
+  degreeGroups: Immutable.List<DegreeGroup>().push(
+    new DegreeGroup({
+      name: 'Written and Oral Comm',
+      description: oneLine`
+        Composition placement exam required. COMP 105 and COMP 270 are the default required courses.
+      `,
+      courses: Immutable.List<string | Course>().push(
+        new Course({
+          subjectCode: 'COMP',
+          courseNumber: '1002',
+          name: 'Writing and Rhetoric III',
+          description: 'something thing',
+          credits: 4,
+        }),
+      ).push(
+        new Course({
+          subjectCode: 'CIS',
+          courseNumber: '4200',
+          name: 'Computer Science III',
+          description: 'something thing',
+          credits: 4,
+        }),
+      ),
+    }),
+  ),
 }) {
   static preferredCoursesMemo = new Map<any, any>();
   static closureMemo = new Map<any, any>();
@@ -637,16 +686,6 @@ export class User extends Record.define({
       return this.boxMap.valueSeq().toArray();
     });
   }
-
-  // get semestersSorted() {
-  //   return this.semesterSet.valueSeq().sortBy(semester => semester.position);
-  // }
-
-  // get semesters() {
-  //   return this.getOrCalculate('semesters', [this.semestersSorted], () => {
-  //     return this.semestersSorted.toArray();
-  //   });
-  // }
 
   selectedCourse(selectedCourseId: string, catalog: Catalog) {
     return catalog.courseMap.get(selectedCourseId);
@@ -737,6 +776,10 @@ export class User extends Record.define({
     }
 
     return semesters;
+  }
+
+  addDegreeGroup(group: DegreeGroup) {
+    return this.update('degreeGroups', groups => groups.push(group));
   }
 }
 

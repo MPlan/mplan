@@ -11,3 +11,5 @@ export * from './course-with-prerequisites';
 export * from './sequence-course';
 export * from './actionable-text';
 export * from './floating-action-button';
+export * from './degree-group';
+export * from './degree-group-course';

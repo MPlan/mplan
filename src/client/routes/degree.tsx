@@ -1,11 +1,6 @@
 import * as React from 'react';
 import * as Model from '../models';
-import {
-  View,
-  Text,
-  ActionableText,
-  FloatingActionButton
-} from '../components';
+import { View, Text, ActionableText, FloatingActionButton, DegreeGroup } from '../components';
 import styled from 'styled-components';
 import * as styles from '../styles';
 
@@ -16,6 +11,7 @@ const Container = styled(View)`
 const Header = styled(View)`
   flex-direction: row;
   align-items: baseline;
+  margin-bottom: ${styles.space(1)};
 `;
 
 const HeaderMain = styled(View)`
@@ -53,7 +49,9 @@ const Percentage = styled(Text)`
   color: ${styles.textLight};
 `;
 
-const DegreeGroupContainer = styled(View)``;
+const DegreeGroupContainer = styled(View)`
+  flex: 1;
+`;
 
 export class Degree extends Model.store.connect() {
   render() {
@@ -63,9 +61,8 @@ export class Degree extends Model.store.connect() {
           <HeaderMain>
             <Major>Software Engineering</Major>
             <Disclaimer>
-              <Underline>Disclaimer:</Underline> This page is{' '}
-              <Underline>not</Underline> a degree audit and should not be
-              treated like one.{' '}
+              <Underline>Disclaimer:</Underline> This page is <Underline>not</Underline> a degree
+              audit and should not be treated like one.{' '}
               <ActionableText>Click here for more info.</ActionableText>
             </Disclaimer>
           </HeaderMain>
@@ -74,11 +71,14 @@ export class Degree extends Model.store.connect() {
             <Percentage>75% complete</Percentage>
           </HeaderRight>
         </Header>
+        <DegreeGroupContainer>
+          {this.store.user.degreeGroups.map(group => <DegreeGroup degreeGroup={group} />)}
+        </DegreeGroupContainer>
         <FloatingActionButton
           message="Add…"
           actions={{
             group: 'New course group',
-            course: 'Course to existing group'
+            course: 'Course to existing group',
           }}
           onAction={action => {
             console.log(action);
