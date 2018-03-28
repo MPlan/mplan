@@ -615,10 +615,14 @@ export class Catalog extends Record.define({
 }
 
 export class DegreeGroup extends Record.define({
+  _id: ObjectId(),
   name: '',
   description: '',
   courses: Immutable.List<string | Course>(),
 }) {
+  get id() {
+    return this._id.toHexString();
+  }
   addCourse(course: string | Course) {
     return this.update('courses', courses => courses.push(course));
   }
@@ -641,27 +645,32 @@ export class User extends Record.define({
   additionalCourses: Immutable.Set<string | Course>(),
   degreeGroups: Immutable.List<DegreeGroup>().push(
     new DegreeGroup({
+      _id: ObjectId(),
       name: 'Written and Oral Comm',
       description: oneLine`
         Composition placement exam required. COMP 105 and COMP 270 are the default required courses.
       `,
-      courses: Immutable.List<string | Course>().push(
-        new Course({
-          subjectCode: 'COMP',
-          courseNumber: '1002',
-          name: 'Writing and Rhetoric III',
-          description: 'something thing',
-          credits: 4,
-        }),
-      ).push(
-        new Course({
-          subjectCode: 'CIS',
-          courseNumber: '4200',
-          name: 'Computer Science III',
-          description: 'something thing',
-          credits: 4,
-        }),
-      ),
+      courses: Immutable.List<string | Course>()
+        .push(
+          new Course({
+            _id: ObjectId(),
+            subjectCode: 'COMP',
+            courseNumber: '1002',
+            name: 'Writing and Rhetoric III',
+            description: 'something thing',
+            credits: 4,
+          }),
+        )
+        .push(
+          new Course({
+            _id: ObjectId(),
+            subjectCode: 'CIS',
+            courseNumber: '4200',
+            name: 'Computer Science III',
+            description: 'something thing',
+            credits: 4,
+          }),
+        ),
     }),
   ),
 }) {
@@ -781,6 +790,13 @@ export class User extends Record.define({
   addDegreeGroup(group: DegreeGroup) {
     return this.update('degreeGroups', groups => groups.push(group));
   }
+
+  updateDegreeGroup(group: DegreeGroup, update: (group: DegreeGroup) => DegreeGroup) {
+    return this.update('degreeGroups', groups => {
+      const index = groups.findIndex(g => g === group);
+      return groups.update(index, update);
+    });
+  }
 }
 
 export class Ui extends Record.define({
@@ -807,6 +823,10 @@ export class App extends Record.define({
 }) {
   updateUi(updater: (ui: Ui) => Ui) {
     return this.update('ui', updater);
+  }
+
+  updateUser(updater: (user: User) => User) {
+    return this.update('user', updater);
   }
 
   get levels() {

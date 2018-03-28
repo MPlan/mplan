@@ -122,7 +122,7 @@ const MenuHeader = styled(Text)`
   bottom: calc(100% + ${styles.space(0)});
 `;
 
-export interface FloatingActionButtonProps<T extends { [key: string]: string }>
+export interface FloatingActionButtonProps<T>
   extends React.DetailedHTMLProps<
       React.ButtonHTMLAttributes<HTMLButtonElement>,
       HTMLButtonElement
@@ -137,9 +137,7 @@ interface FloatingActionButtonState {
   open: boolean;
 }
 
-export class FloatingActionButton<
-  T extends { [key: string]: string }
-> extends React.Component<
+export class FloatingActionButton<T> extends React.Component<
   FloatingActionButtonProps<T>,
   FloatingActionButtonState
 > {
@@ -151,21 +149,21 @@ export class FloatingActionButton<
   handleMouseEnter = () => {
     this.setState(previousState => ({
       ...previousState,
-      hovering: true
+      hovering: true,
     }));
   };
 
   handleMouseLeave = () => {
     this.setState(previousState => ({
       ...previousState,
-      hovering: false
+      hovering: false,
     }));
   };
 
   handleClick = () => {
     this.setState(previousState => ({
       ...previousState,
-      open: !previousState.open
+      open: !previousState.open,
     }));
   };
 
@@ -176,7 +174,7 @@ export class FloatingActionButton<
   handleBlur = () => {
     this.setState(previousState => ({
       ...previousState,
-      open: false
+      open: false,
     }));
   };
 
@@ -194,7 +192,7 @@ export class FloatingActionButton<
         <Menu style={{ display: this.state.open ? 'flex' : 'none' }}>
           <MenuHeader
             style={{
-              display: this.state.open ? 'block' : 'none'
+              display: this.state.open ? 'block' : 'none',
             }}
           >
             {this.props.message}
@@ -203,7 +201,7 @@ export class FloatingActionButton<
             <MenuItem
               key={action}
               onClick={() => {
-                this.handleMenuClick(action);
+                this.handleMenuClick(action as keyof T);
               }}
             >
               {text}
@@ -213,7 +211,7 @@ export class FloatingActionButton<
         <Message
           className="message"
           style={{
-            display: this.state.hovering && !this.state.open ? 'block' : 'none'
+            display: this.state.hovering && !this.state.open ? 'block' : 'none',
           }}
         >
           {this.props.message}

@@ -11,7 +11,6 @@ const Container = styled(View)`
   align-items: center;
   margin-bottom: ${styles.space(0)};
 `;
-
 const SimpleNameAndCredits = styled(View)`
   flex-direction: row;
   margin-bottom: ${styles.space(-2)};

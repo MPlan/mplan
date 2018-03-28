@@ -1,14 +1,16 @@
 import * as React from 'react';
 import * as Model from '../models';
-import { View } from './view';
+import { View, ViewProps } from './view';
 import { Text } from './text';
 import { ActionableText } from './actionable-text';
 import styled from 'styled-components';
 import { DegreeGroupCourse } from './degree-group-course';
 import * as styles from '../styles';
+import { wait } from '../../utilities/utilities';
 
 const Container = styled(View)`
   max-width: 25rem;
+  width: 25rem;
   margin-right: ${styles.space(2)};
   margin-bottom: ${styles.space(2)};
 `;
@@ -22,10 +24,28 @@ const Header = styled(View)`
 const NameAndCredits = styled(View)`
   flex-direction: row;
 `;
-const Name = styled(Text)`
+interface NameProps extends ViewProps {
+  editable?: boolean;
+}
+const Name = styled<NameProps>(Text)`
   flex: 1;
   font-size: ${styles.space(1)};
   font-weight: ${styles.bold};
+  &:hover {
+    ${props => (props.editable ? 'text-decoration: underline;' : '')};
+  }
+`;
+const NameForm = styled.form`
+  margin-right: auto;
+`;
+const NameInput = styled.input`
+  font-size: ${styles.space(1)};
+  font-weight: ${styles.bold};
+  background-color: transparent;
+  border: none;
+  border-bottom: solid 0.1rem ${styles.textLight};
+  outline: none;
+  font-family: ${styles.fontFamily};
 `;
 const Credits = styled(Text)``;
 const Description = styled(Text)``;
@@ -52,52 +72,118 @@ const AddCourseContainer = styled(View)``;
 
 export interface DegreeGroupProps {
   degreeGroup: Model.DegreeGroup;
+  onNameChange: (newName: string) => void;
 }
 
-export function DegreeGroup(props: DegreeGroupProps) {
-  const { degreeGroup } = props;
-  const creditHoursMin = props.degreeGroup.courses.reduce(
-    (creditHoursMin, next) =>
-      next instanceof Model.Course ? next.creditsMin || next.creditHoursMin || 0 : creditHoursMin,
-    0,
-  );
-  const creditHoursMax = props.degreeGroup.courses.reduce(
-    (creditHoursMax, next) =>
-      next instanceof Model.Course ? next.credits || next.creditHours || 0 : 0,
-    0,
-  );
+interface DegreeGroupState {
+  editingName: boolean;
+}
 
-  return (
-    <Container>
-      <Header>
-        <NameAndCredits>
-          <Name>{degreeGroup.name}</Name>
-          <Credits>
-            {/*if*/ creditHoursMin === creditHoursMax
-              ? `${creditHoursMin}`
-              : `${creditHoursMin} - ${creditHoursMax}`}&nbsp;credits
-          </Credits>
-        </NameAndCredits>
-        <Description>{degreeGroup.description}</Description>
-      </Header>
-      <Card>
-        <CardHeaders>
-          <NameHeader>Course name</NameHeader>
-          <CompletedHeader>Completed ?</CompletedHeader>
-        </CardHeaders>
-        <Courses>
-          {degreeGroup.courses.map(course => (
-            <DegreeGroupCourse
-              key={course instanceof Model.Course ? course.id : course}
-              course={course}
-              onChange={() => {}}
-            />
-          ))}
-        </Courses>
-        <AddCourseContainer>
-          <ActionableText small>Add course to this group...</ActionableText>
-        </AddCourseContainer>
-      </Card>
-    </Container>
-  );
+export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupState> {
+  constructor(props: DegreeGroupProps) {
+    super(props);
+
+    this.state = {
+      editingName: false,
+    };
+  }
+
+  nameInputElement: HTMLInputElement | undefined;
+
+  handleNameClick = async () => {
+    this.setState(previousState => ({
+      ...previousState,
+      editingName: true,
+    }));
+    await wait(0);
+    if (!this.nameInputElement) return;
+
+    this.nameInputElement.focus();
+    this.nameInputElement.select();
+  };
+
+  handleNameSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    this.setState(previousState => ({
+      ...previousState,
+      editingName: false,
+    }));
+  };
+
+  handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.currentTarget.value;
+    this.props.onNameChange(value);
+  };
+
+  handleNameBlur = () => {
+    this.setState(previousState => ({
+      ...previousState,
+      editingName: false,
+    }));
+  };
+
+  handleNameInputRef = (e: HTMLInputElement | undefined) => {
+    this.nameInputElement = e;
+  };
+
+  render() {
+    const { degreeGroup } = this.props;
+    const creditHoursMin = this.props.degreeGroup.courses.reduce(
+      (creditHoursMin, next) =>
+        next instanceof Model.Course ? next.creditsMin || next.creditHoursMin || 0 : creditHoursMin,
+      0,
+    );
+    const creditHoursMax = this.props.degreeGroup.courses.reduce(
+      (creditHoursMax, next) =>
+        next instanceof Model.Course ? next.credits || next.creditHours || 0 : 0,
+      0,
+    );
+
+    return (
+      <Container>
+        <Header>
+          <NameAndCredits>
+            {this.state.editingName ? (
+              <NameForm onSubmit={this.handleNameSubmit}>
+                <NameInput
+                  innerRef={this.handleNameInputRef}
+                  onChange={this.handleNameChange}
+                  onBlur={this.handleNameBlur}
+                  defaultValue={degreeGroup.name}
+                />
+              </NameForm>
+            ) : (
+              <Name onClick={this.handleNameClick} editable={true}>
+                {degreeGroup.name}
+              </Name>
+            )}
+            <Credits>
+              {/*if*/ creditHoursMin === creditHoursMax
+                ? `${creditHoursMin}`
+                : `${creditHoursMin} - ${creditHoursMax}`}&nbsp;credits
+            </Credits>
+          </NameAndCredits>
+          <Description>{degreeGroup.description}</Description>
+        </Header>
+        <Card>
+          <CardHeaders>
+            <NameHeader>Course name</NameHeader>
+            <CompletedHeader>Completed ?</CompletedHeader>
+          </CardHeaders>
+          <Courses>
+            {degreeGroup.courses.map(course => (
+              <DegreeGroupCourse
+                key={course instanceof Model.Course ? course.id : course}
+                course={course}
+                onChange={() => {}}
+              />
+            ))}
+          </Courses>
+          <AddCourseContainer>
+            <ActionableText small>Add course to this group...</ActionableText>
+          </AddCourseContainer>
+        </Card>
+      </Container>
+    );
+  }
 }

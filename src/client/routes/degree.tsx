@@ -7,6 +7,7 @@ import * as styles from '../styles';
 const Container = styled(View)`
   padding: ${styles.space(1)};
   overflow: auto;
+  flex: 1;
 `;
 
 const Header = styled(View)`
@@ -59,7 +60,35 @@ const DegreeGroupContainer = styled(View)`
   margin-bottom: -${styles.space(2)};
 `;
 
+const fabActions = {
+  group: 'New course group',
+  course: 'Course to existing group',
+};
+
 export class Degree extends Model.store.connect() {
+  handleFab = (action: keyof typeof fabActions) => {
+    if (action === 'group') {
+      this.setStore(store =>
+        store.updateUser(user =>
+          user.addDegreeGroup(
+            new Model.DegreeGroup({
+              name: 'New Group',
+              description: 'Custom group',
+            }),
+          ),
+        ),
+      );
+    }
+  };
+
+  handleDegreeGroupNameChange(degreeGroup: Model.DegreeGroup, newName: string) {
+    this.setStore(store =>
+      store.updateUser(user =>
+        user.updateDegreeGroup(degreeGroup, degreeGroup => degreeGroup.set('name', newName)),
+      ),
+    );
+  }
+
   render() {
     return (
       <Container>
@@ -78,21 +107,15 @@ export class Degree extends Model.store.connect() {
           </HeaderRight>
         </Header>
         <DegreeGroupContainer>
-          {this.store.user.degreeGroups.map(group => <DegreeGroup degreeGroup={group} />)}
-          {this.store.user.degreeGroups.map(group => <DegreeGroup degreeGroup={group} />)}
-          {this.store.user.degreeGroups.map(group => <DegreeGroup degreeGroup={group} />)}
-          {this.store.user.degreeGroups.map(group => <DegreeGroup degreeGroup={group} />)}
+          {this.store.user.degreeGroups.map(group => (
+            <DegreeGroup
+              key={group.id}
+              degreeGroup={group}
+              onNameChange={newName => this.handleDegreeGroupNameChange(group, newName)}
+            />
+          ))}
         </DegreeGroupContainer>
-        <FloatingActionButton
-          message="Add…"
-          actions={{
-            group: 'New course group',
-            course: 'Course to existing group',
-          }}
-          onAction={action => {
-            console.log(action);
-          }}
-        />
+        <FloatingActionButton message="Add…" actions={fabActions} onAction={this.handleFab} />
       </Container>
     );
   }
