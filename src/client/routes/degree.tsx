@@ -1,6 +1,13 @@
 import * as React from 'react';
 import * as Model from '../models';
-import { View, Text, ActionableText, FloatingActionButton, DegreeGroup } from '../components';
+import {
+  View,
+  Text,
+  ActionableText,
+  FloatingActionButton,
+  DegreeGroup,
+  Modal,
+} from '../components';
 import styled from 'styled-components';
 import * as styles from '../styles';
 
@@ -65,7 +72,11 @@ const fabActions = {
   course: 'Course to existing group',
 };
 
-export class Degree extends Model.store.connect() {
+export class Degree extends Model.store.connect({
+  initialState: {
+    modalOpen: false,
+  },
+}) {
   handleFab = (action: keyof typeof fabActions) => {
     if (action === 'group') {
       this.setStore(store =>
@@ -88,6 +99,21 @@ export class Degree extends Model.store.connect() {
       ),
     );
   }
+
+  handleAddCourseClick(degreeGroup: Model.DegreeGroup) {
+    this.setState(previousState => ({
+      ...previousState,
+      modalOpen: true,
+    }));
+  }
+
+  handleBackdropClick = () => {
+    console.log('licked backdrop')
+    this.setState(previousState => ({
+      ...previousState,
+      modalOpen: false,
+    }));
+  };
 
   render() {
     return (
@@ -112,10 +138,19 @@ export class Degree extends Model.store.connect() {
               key={group.id}
               degreeGroup={group}
               onNameChange={newName => this.handleDegreeGroupNameChange(group, newName)}
+              onAddCourseClick={() => this.handleAddCourseClick(group)}
             />
           ))}
         </DegreeGroupContainer>
         <FloatingActionButton message="Add…" actions={fabActions} onAction={this.handleFab} />
+        <Modal
+          open={this.state.modalOpen}
+          title="Adding a course to Mathematics"
+          size="medium"
+          onBlurCancel={this.handleBackdropClick}
+        >
+        test
+        </Modal>
       </Container>
     );
   }

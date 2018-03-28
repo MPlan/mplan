@@ -73,6 +73,7 @@ const AddCourseContainer = styled(View)``;
 export interface DegreeGroupProps {
   degreeGroup: Model.DegreeGroup;
   onNameChange: (newName: string) => void;
+  onAddCourseClick: () => void;
 }
 
 interface DegreeGroupState {
@@ -180,7 +181,9 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
             ))}
           </Courses>
           <AddCourseContainer>
-            <ActionableText small>Add course to this group...</ActionableText>
+            <ActionableText small onClick={this.props.onAddCourseClick}>
+              Add course to this group...
+            </ActionableText>
           </AddCourseContainer>
         </Card>
       </Container>
