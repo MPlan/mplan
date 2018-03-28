@@ -612,6 +612,23 @@ export class Catalog extends Record.define({
         .sortBy(course => `${course.subjectCode} ${course.courseNumber} ${course.name}`);
     });
   }
+
+  search(query: string) {
+    const querySplit = query.toLowerCase().split(' ');
+    const results = this.courseMap.valueSeq().sortBy(course => {
+      const rank = querySplit
+        .map(part => {
+          if (course.subjectCode.toLowerCase().includes(part)) return 3;
+          if (course.courseNumber.toLowerCase().includes(part)) return 3;
+          if (course.name.toLowerCase().includes(part)) return 2;
+          if (course.description && course.description.toLowerCase().includes(part)) return 1;
+          return 0;
+        })
+        .reduce((sum, next) => sum + next, 0 as number);
+      return rank;
+    }).reverse();
+    return results;
+  }
 }
 
 export class DegreeGroup extends Record.define({

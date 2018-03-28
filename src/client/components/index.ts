@@ -14,3 +14,4 @@ export * from './floating-action-button';
 export * from './degree-group';
 export * from './degree-group-course';
 export * from './modal';
+export * from './search-result-course';

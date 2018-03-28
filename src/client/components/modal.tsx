@@ -50,9 +50,10 @@ const Card = styled<CardProps>(View)`
   }};
   overflow: auto;
 `;
-const Header = styled(Text)`
+const Title = styled(Text)`
   font-size: ${styles.space(1)};
   font-weight: ${styles.bold};
+  margin-bottom: ${styles.space(-1)};
 `;
 const Body = styled(View)``;
 
@@ -85,7 +86,7 @@ export class Modal extends React.Component<ModalProps, {}> {
         <Backdrop onClick={this.props.onBlurCancel} />
         <Content>
           <Card size={this.props.size}>
-            <Header>{this.props.title}</Header>
+            <Title>{this.props.title}</Title>
             <Body>{this.props.children}</Body>
           </Card>
         </Content>
