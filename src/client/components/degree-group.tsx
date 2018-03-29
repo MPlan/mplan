@@ -75,6 +75,7 @@ export interface DegreeGroupProps {
   degreeGroup: Model.DegreeGroup;
   onNameChange: (newName: string) => void;
   onAddCourseClick: () => void;
+  onDeleteCourse: (course: string | Model.Course) => void;
 }
 
 interface DegreeGroupState {
@@ -178,6 +179,8 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
                 key={course instanceof Model.Course ? course.id : course}
                 course={course}
                 onChange={() => {}}
+                onRearrange={() => {}}
+                onDelete={() => this.props.onDeleteCourse(course)}
               />
             ))}
           </Courses>

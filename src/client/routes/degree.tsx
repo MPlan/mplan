@@ -162,8 +162,20 @@ export class Degree extends Model.store.connect({
     this.searchInput$.next(e.currentTarget.value);
   };
 
-  handleAddCourse(course: Model.Course) {
+  handleAddCourse(course: string | Model.Course) {
+    const currentDegreeGroup = this.state.currentDegreeGroup;
+    if (!currentDegreeGroup) return;
+    this.setStore(store =>
+      store.updateUser(user =>
+        user.updateDegreeGroup(currentDegreeGroup, group => group.addCourse(course)),
+      ),
+    );
+  }
 
+  handleDeleteCourse(group: Model.DegreeGroup, course: string | Model.Course) {
+    this.setStore(store =>
+      store.updateUser(user => user.updateDegreeGroup(group, group => group.deleteCourse(course))),
+    );
   }
 
   render() {
@@ -191,6 +203,7 @@ export class Degree extends Model.store.connect({
               degreeGroup={group}
               onNameChange={newName => this.handleDegreeGroupNameChange(group, newName)}
               onAddCourseClick={() => this.handleAddCourseClick(group)}
+              onDeleteCourse={course => this.handleDeleteCourse(group, course)}
             />
           ))}
         </DegreeGroupContainer>
@@ -210,7 +223,13 @@ export class Degree extends Model.store.connect({
             />
           </CourseSearchForm>
           <SearchResults>
-            {this.state.searchResults.map(result => <SearchResultCourse course={result} onAddCourse={() => {}} />)}
+            {this.state.searchResults.map(result => (
+              <SearchResultCourse
+                key={result.id}
+                course={result}
+                onAddCourse={() => this.handleAddCourse(result)}
+              />
+            ))}
           </SearchResults>
         </Modal>
       </Container>

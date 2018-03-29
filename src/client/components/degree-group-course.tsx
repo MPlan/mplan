@@ -69,9 +69,21 @@ const EllipsisButton = styled.button`
 export interface DegreeGroupCourseProps {
   course: string | Model.Course;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onRearrange: () => void;
+  onDelete: () => void;
 }
 
-export function DegreeGroupCourse({ course, onChange }: DegreeGroupCourseProps) {
+const actions = {
+  rearrange: { text: 'Rearrange', icon: 'bars' },
+  delete: { text: 'Delete', icon: 'trash', color: styles.red },
+};
+
+export function DegreeGroupCourse({
+  course,
+  onChange,
+  onDelete,
+  onRearrange,
+}: DegreeGroupCourseProps) {
   if (typeof course === 'string') {
     return (
       <Container>
@@ -94,11 +106,14 @@ export function DegreeGroupCourse({ course, onChange }: DegreeGroupCourseProps) 
         <Checkbox type="checkbox" onChange={onChange} />
       </CheckboxContainer>
       <DropdownMenu
-        actions={{
-          rearrange: { text: 'Rearrange', icon: 'bars' },
-          delete: { text: 'Delete', icon: 'trash', color: styles.red },
+        actions={actions}
+        onAction={action => {
+          if (action === 'delete') {
+            onDelete();
+          } else if (action === 'rearrange') {
+            onRearrange();
+          }
         }}
-        onAction={action => console.log({ action })}
       />
     </Container>
   );
