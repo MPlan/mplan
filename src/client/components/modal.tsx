@@ -67,6 +67,7 @@ interface ModalProps {
 
 export class Modal extends React.Component<ModalProps, {}> {
   handleKeydown = (e: KeyboardEvent) => {
+    if (!this.props.open) return;
     if (e.key === 'Escape') {
       this.props.onBlurCancel && this.props.onBlurCancel();
     }

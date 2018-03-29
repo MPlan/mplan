@@ -2,7 +2,9 @@ import * as React from 'react';
 import * as Model from '../models';
 import { View } from './view';
 import { Text } from './text';
+import { Fa } from './fa';
 import { ActionableText } from './actionable-text';
+import { DropdownMenu } from './dropdown-menu';
 import styled from 'styled-components';
 import * as styles from '../styles';
 
@@ -31,13 +33,38 @@ const FullName = styled(ActionableText)`
   color: ${styles.text};
   margin-bottom: ${styles.space(-2)};
 `;
-const CheckboxContainer = styled(View)`
+const CheckboxContainer = styled.label`
+  display: flex;
   min-width: 5rem;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  padding: ${styles.space(-1)} 0;
+`;
+const Checkbox = styled.input`
+  margin-right: ${styles.space(0)};
+`;
+const EllipsisButton = styled.button`
+  display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  width: ${styles.space(1)};
+  height: ${styles.space(1)};
+  border-radius: 99999px;
+  outline: none;
+  border: none;
+  margin-top: 0.2rem;
+  &:hover,
+  &:focus {
+    color: ${styles.blue};
+    background-color: ${styles.whiteTer};
+  }
+  &:active {
+    background-color: ${styles.grayLighter};
+  }
+  transition: all 0.2;
 `;
-const Checkbox = styled.input``;
 
 export interface DegreeGroupCourseProps {
   course: string | Model.Course;
@@ -49,9 +76,7 @@ export function DegreeGroupCourse({ course, onChange }: DegreeGroupCourseProps) 
     return (
       <Container>
         <NonCourseName>{course}</NonCourseName>
-        <CheckboxContainer>
-          <Checkbox type="checkbox" onChange={onChange} />
-        </CheckboxContainer>
+        <Checkbox type="checkbox" onChange={onChange} />
       </Container>
     );
   }
@@ -68,6 +93,13 @@ export function DegreeGroupCourse({ course, onChange }: DegreeGroupCourseProps) 
       <CheckboxContainer>
         <Checkbox type="checkbox" onChange={onChange} />
       </CheckboxContainer>
+      <DropdownMenu
+        actions={{
+          rearrange: { text: 'Rearrange', icon: 'bars' },
+          delete: { text: 'Delete', icon: 'trash', color: styles.red },
+        }}
+        onAction={action => console.log({ action })}
+      />
     </Container>
   );
 }

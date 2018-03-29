@@ -148,7 +148,6 @@ export class Degree extends Model.store.connect({
   }
 
   handleBackdropClick = () => {
-    console.log('licked backdrop');
     this.setState(previousState => ({
       ...previousState,
       modalOpen: false,

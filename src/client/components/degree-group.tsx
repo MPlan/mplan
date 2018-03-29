@@ -61,7 +61,8 @@ const NameHeader = styled(Text)`
 const CompletedHeader = styled(Text)`
   font-size: ${styles.space(-1)};
   width: 5rem;
-  text-align: center;
+  text-align: right;
+  margin-right: ${styles.space(0)};
 `;
 const CardHeaders = styled(View)`
   flex-direction: row;
