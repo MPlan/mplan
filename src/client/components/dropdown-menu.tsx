@@ -8,6 +8,10 @@ import { wait } from '../../utilities/utilities';
 
 const Container = styled(View)`
   position: relative;
+  color: ${styles.text};
+  & ${Text} {
+    color: ${styles.text};
+  }
 `;
 const Menu = styled.ul`
   display: flex;
@@ -49,6 +53,7 @@ const EllipsisButton = styled.button`
   outline: none;
   border: none;
   margin-top: 0.2rem;
+  background-color: transparent;
   &:hover,
   &:focus {
     color: ${styles.blue};
@@ -238,7 +243,7 @@ export class DropdownMenu<T extends { [P in keyof T]: Item }> extends React.Comp
     return (
       <Container innerRef={this.handleContainerRef}>
         <EllipsisButton onClick={this.handleEllipsisClick} onBlur={this.handleEllipsisBlur}>
-          <Fa icon="ellipsisV" />
+          <Fa icon="ellipsisH" size="lg" />
         </EllipsisButton>
         <Menu style={{ display: this.state.open ? 'flex' : 'none' }}>
           {Object.keys(this.props.actions)

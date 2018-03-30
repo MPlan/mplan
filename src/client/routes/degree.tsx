@@ -178,6 +178,10 @@ export class Degree extends Model.store.connect({
     );
   }
 
+  handleDeleteGroup(group: Model.DegreeGroup) {
+    this.setStore(store => store.updateUser(user => user.deleteDegreeGroup(group)));
+  }
+
   render() {
     const currentDegreeGroup = this.state.currentDegreeGroup;
     return (
@@ -204,13 +208,14 @@ export class Degree extends Model.store.connect({
               onNameChange={newName => this.handleDegreeGroupNameChange(group, newName)}
               onAddCourseClick={() => this.handleAddCourseClick(group)}
               onDeleteCourse={course => this.handleDeleteCourse(group, course)}
+              onDeleteGroup={() => this.handleDeleteGroup(group)}
             />
           ))}
         </DegreeGroupContainer>
         <FloatingActionButton message="Add…" actions={fabActions} onAction={this.handleFab} />
         <Modal
           open={this.state.modalOpen}
-          title={`Adding a course to ${currentDegreeGroup ? currentDegreeGroup.name : ''}`}
+          title={`Adding courses to ${currentDegreeGroup ? currentDegreeGroup.name : ''}`}
           size="medium"
           onBlurCancel={this.handleBackdropClick}
         >

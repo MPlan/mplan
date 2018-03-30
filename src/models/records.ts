@@ -812,6 +812,10 @@ export class User extends Record.define({
     return this.update('degreeGroups', groups => groups.push(group));
   }
 
+  deleteDegreeGroup(group: DegreeGroup) {
+    return this.update('degreeGroups', groups => groups.filter(g => g !== group));
+  }
+
   updateDegreeGroup(group: DegreeGroup, update: (group: DegreeGroup) => DegreeGroup) {
     return this.update('degreeGroups', groups => {
       const index = groups.findIndex(g => g === group);

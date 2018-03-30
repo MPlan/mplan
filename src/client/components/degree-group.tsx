@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import { DegreeGroupCourse } from './degree-group-course';
 import * as styles from '../styles';
 import { wait } from '../../utilities/utilities';
+import { DropdownMenu } from './dropdown-menu';
 
 const Container = styled(View)`
   max-width: 25rem;
@@ -17,12 +18,13 @@ const Container = styled(View)`
 const Header = styled(View)`
   margin-bottom: ${styles.space(0)};
   color: ${styles.textLight};
-  & * {
+  & ${Text} {
     color: ${styles.textLight};
   }
 `;
 const NameAndCredits = styled(View)`
   flex-direction: row;
+  align-items: baseline;
 `;
 interface NameProps extends ViewProps {
   editable?: boolean;
@@ -47,7 +49,9 @@ const NameInput = styled.input`
   outline: none;
   font-family: ${styles.fontFamily};
 `;
-const Credits = styled(Text)``;
+const Credits = styled(Text)`
+  margin-right: ${styles.space(-1)};
+`;
 const Description = styled(Text)``;
 const Card = styled(View)`
   background-color: ${styles.white};
@@ -76,11 +80,17 @@ export interface DegreeGroupProps {
   onNameChange: (newName: string) => void;
   onAddCourseClick: () => void;
   onDeleteCourse: (course: string | Model.Course) => void;
+  onDeleteGroup: () => void;
 }
 
 interface DegreeGroupState {
   editingName: boolean;
 }
+
+const groupActions = {
+  rearrange: { text: 'Rearrange', icon: 'bars' },
+  delete: { text: 'Delete', icon: 'trash', color: styles.red },
+};
 
 export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupState> {
   constructor(props: DegreeGroupProps) {
@@ -129,6 +139,12 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
     this.nameInputElement = e;
   };
 
+  handleGroupAction = (action: keyof typeof groupActions) => {
+    if (action === 'delete') {
+      this.props.onDeleteGroup();
+    }
+  };
+
   render() {
     const { degreeGroup } = this.props;
     const creditHoursMin = this.props.degreeGroup.courses.reduce(
@@ -165,6 +181,7 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
                 ? `${creditHoursMin}`
                 : `${creditHoursMin} - ${creditHoursMax}`}&nbsp;credits
             </Credits>
+            <DropdownMenu actions={groupActions} onAction={this.handleGroupAction} />
           </NameAndCredits>
           <Description>{degreeGroup.description}</Description>
         </Header>
