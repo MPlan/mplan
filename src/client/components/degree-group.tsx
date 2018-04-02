@@ -8,6 +8,7 @@ import { DegreeGroupCourse } from './degree-group-course';
 import * as styles from '../styles';
 import { wait } from '../../utilities/utilities';
 import { DropdownMenu } from './dropdown-menu';
+import { RightClickMenu } from './right-click-menu';
 
 const Container = styled(View)`
   max-width: 25rem;
@@ -140,6 +141,7 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
   };
 
   handleGroupAction = (action: keyof typeof groupActions) => {
+    console.log('action', action);
     if (action === 'delete') {
       this.props.onDeleteGroup();
     }
@@ -159,55 +161,57 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
     );
 
     return (
-      <Container>
-        <Header>
-          <NameAndCredits>
-            {this.state.editingName ? (
-              <NameForm onSubmit={this.handleNameSubmit}>
-                <NameInput
-                  innerRef={this.handleNameInputRef}
-                  onChange={this.handleNameChange}
-                  onBlur={this.handleNameBlur}
-                  defaultValue={degreeGroup.name}
+      <RightClickMenu actions={groupActions} onAction={this.handleGroupAction}>
+        <Container>
+          <Header>
+            <NameAndCredits>
+              {this.state.editingName ? (
+                <NameForm onSubmit={this.handleNameSubmit}>
+                  <NameInput
+                    innerRef={this.handleNameInputRef}
+                    onChange={this.handleNameChange}
+                    onBlur={this.handleNameBlur}
+                    defaultValue={degreeGroup.name}
+                  />
+                </NameForm>
+              ) : (
+                <Name onClick={this.handleNameClick} editable={true}>
+                  {degreeGroup.name}
+                </Name>
+              )}
+              <Credits>
+                {/*if*/ creditHoursMin === creditHoursMax
+                  ? `${creditHoursMin}`
+                  : `${creditHoursMin} - ${creditHoursMax}`}&nbsp;credits
+              </Credits>
+              <DropdownMenu actions={groupActions} onAction={this.handleGroupAction} />
+            </NameAndCredits>
+            <Description>{degreeGroup.description}</Description>
+          </Header>
+          <Card>
+            <CardHeaders>
+              <NameHeader>Course name</NameHeader>
+              <CompletedHeader>Completed ?</CompletedHeader>
+            </CardHeaders>
+            <Courses>
+              {degreeGroup.courses.map(course => (
+                <DegreeGroupCourse
+                  key={course instanceof Model.Course ? course.id : course}
+                  course={course}
+                  onChange={() => {}}
+                  onRearrange={() => {}}
+                  onDelete={() => this.props.onDeleteCourse(course)}
                 />
-              </NameForm>
-            ) : (
-              <Name onClick={this.handleNameClick} editable={true}>
-                {degreeGroup.name}
-              </Name>
-            )}
-            <Credits>
-              {/*if*/ creditHoursMin === creditHoursMax
-                ? `${creditHoursMin}`
-                : `${creditHoursMin} - ${creditHoursMax}`}&nbsp;credits
-            </Credits>
-            <DropdownMenu actions={groupActions} onAction={this.handleGroupAction} />
-          </NameAndCredits>
-          <Description>{degreeGroup.description}</Description>
-        </Header>
-        <Card>
-          <CardHeaders>
-            <NameHeader>Course name</NameHeader>
-            <CompletedHeader>Completed ?</CompletedHeader>
-          </CardHeaders>
-          <Courses>
-            {degreeGroup.courses.map(course => (
-              <DegreeGroupCourse
-                key={course instanceof Model.Course ? course.id : course}
-                course={course}
-                onChange={() => {}}
-                onRearrange={() => {}}
-                onDelete={() => this.props.onDeleteCourse(course)}
-              />
-            ))}
-          </Courses>
-          <AddCourseContainer>
-            <ActionableText small onClick={this.props.onAddCourseClick}>
-              Add course to this group...
-            </ActionableText>
-          </AddCourseContainer>
-        </Card>
-      </Container>
+              ))}
+            </Courses>
+            <AddCourseContainer>
+              <ActionableText small onClick={this.props.onAddCourseClick}>
+                Add course to this group...
+              </ActionableText>
+            </AddCourseContainer>
+          </Card>
+        </Container>
+      </RightClickMenu>
     );
   }
 }

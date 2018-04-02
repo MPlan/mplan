@@ -20,11 +20,11 @@ const Menu = styled.ul`
   padding: 0;
   background-color: ${styles.white};
   list-style-type: none;
-  box-shadow: ${styles.boxShadow(-1)};
+  box-shadow: 0 0.3rem 1rem 0 rgba(12,0,51,0.2);
   top: 100%;
   right: 0;
-  min-width: 10rem;
-  width: 10rem;
+  max-width: 12rem;
+  width: 12rem;
   z-index: 50;
 `;
 const Item = styled.li`
@@ -67,6 +67,7 @@ export class Dropdown<T extends { [P in keyof T]: DropdownItem }> extends React.
   DropdownState<T>
 > {
   containerElement: HTMLElement | undefined;
+  menuElement: HTMLElement | undefined;
 
   constructor(props: DropdownProps<T>) {
     super(props);
@@ -95,6 +96,10 @@ export class Dropdown<T extends { [P in keyof T]: DropdownItem }> extends React.
 
   handleContainerRef = (e: HTMLElement | undefined) => {
     this.containerElement = e;
+  };
+
+  handleMenuRef = (e: HTMLUListElement | undefined) => {
+    this.menuElement = e;
   };
 
   handleKeydown = (e: KeyboardEvent) => {
@@ -215,7 +220,11 @@ export class Dropdown<T extends { [P in keyof T]: DropdownItem }> extends React.
   render() {
     return (
       <Container innerRef={this.handleContainerRef} onBlur={this.handleContainerBlur}>
-        <Menu style={{ display: this.props.open ? 'flex' : 'none' }}>
+        <Menu
+          className="menu"
+          innerRef={this.handleMenuRef}
+          style={{ display: this.props.open ? 'flex' : 'none' }}
+        >
           {Object.keys(this.props.actions)
             .map(key => key as keyof T)
             .map(key => ({
