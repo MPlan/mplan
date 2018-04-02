@@ -141,7 +141,6 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
   };
 
   handleGroupAction = (action: keyof typeof groupActions) => {
-    console.log('action', action);
     if (action === 'delete') {
       this.props.onDeleteGroup();
     }

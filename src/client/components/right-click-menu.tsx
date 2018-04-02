@@ -136,6 +136,7 @@ export class RightClickMenu<T extends { [P in keyof T]: DropdownItem }> extends 
         <DropdownContainer style={{ top: this.state.y, left: this.state.x }}>
           <Dropdown
             actions={this.props.actions}
+            onAction={this.props.onAction}
             open={this.state.open}
             onBlur={this.handleDropdownBlur}
           />
