@@ -3,6 +3,8 @@ import { Dropdown, DropdownProps, DropdownItem } from './dropdown';
 import styled from 'styled-components';
 import { View } from './view';
 import { wait } from '../../utilities/utilities';
+import * as Model from '../models';
+import * as uuid from 'uuid/v4';
 
 const Container = styled(View)`
   position: relative;
@@ -19,130 +21,107 @@ export interface RightClickMenuProps<T extends { [P in keyof T]: DropdownItem }>
   children: JSX.Element;
 }
 
-const initialState = {
-  open: false,
-  x: 0,
-  y: 0,
-  lastX: 0,
-  lastY: 0,
-};
-
 function moved(point0: { y: number; x: number }, point1: { y: number; x: number }) {
   if (point0.y !== point1.y) return true;
   if (point0.x !== point1.x) return true;
   return false;
 }
 
-type InitialState = typeof initialState;
-export interface RightClickMenuState extends InitialState {}
+export const RightClickMenu = (function BaseClass<T extends { [P in keyof T]: DropdownItem }>() {
+  const BaseClass = Model.store.connect({
+    scope: store => store.contextMenu,
+    descope: (store: Model.App, contextMenu: Model.ContextMenu) =>
+      store.set('contextMenu', contextMenu),
+    propsExample: (undefined as any) as RightClickMenuProps<T>,
+  });
 
-export class RightClickMenu<T extends { [P in keyof T]: DropdownItem }> extends React.Component<
-  RightClickMenuProps<T>,
-  RightClickMenuState
-> {
-  containerRef: HTMLDivElement | null | undefined;
+  return class RightClickMenu extends BaseClass {
+    containerRef: HTMLDivElement | null | undefined;
+    menuId = uuid();
 
-  constructor(props: RightClickMenuProps<T>) {
-    super(props);
-
-    this.state = initialState;
-  }
-
-  componentDidMount() {
-    document.addEventListener('click', this.handleClick);
-    document.addEventListener('contextmenu', this.handleClick);
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('click', this.handleClick);
-    document.removeEventListener('contextmenu', this.handleClick);
-  }
-
-  handleContextMenu = async (e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    const containerRect = e.currentTarget.getBoundingClientRect();
-
-    const clientX = e.clientX;
-    const clientY = e.clientY;
-
-    const y = clientY - containerRect.top;
-    const x = clientX - containerRect.left;
-
-    this.setState(previousState => {
-      const newPoint = { y, x };
-      if (moved(previousState, newPoint)) {
-        return {
-          ...previousState,
-          open: true,
-          y,
-          x,
-          lastY: previousState.y,
-          lastX: previousState.x,
-        };
-      }
-      return {
-        ...previousState,
-        open: !previousState.open,
-        y,
-        x,
-        lastY: y,
-        lastX: x,
-      };
-    });
-  };
-
-  handleClick = (e: MouseEvent) => {
-    const containerRef = this.containerRef;
-    if (!containerRef) {
-      this.closeMenu();
-      return;
+    componentDidMount() {
+      document.addEventListener('click', this.handleClick);
+      document.addEventListener('contextmenu', this.handleClick);
     }
-    const eventTarget = e.target as HTMLElement | null | undefined;
-    if (!eventTarget) {
-      this.closeMenu();
-      return;
+
+    componentWillUnmount() {
+      document.removeEventListener('click', this.handleClick);
+      document.removeEventListener('contextmenu', this.handleClick);
     }
-    if (containerRef.contains(eventTarget)) {
-      if (e.button !== 2) {
-        this.closeMenu();
+
+    handleContextMenu = async (e: React.MouseEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      const containerRect = e.currentTarget.getBoundingClientRect();
+
+      const clientX = e.clientX;
+      const clientY = e.clientY;
+
+      const y = clientY - containerRect.top;
+      const x = clientX - containerRect.left;
+
+      this.setStore(store => {
+        const newPoint = { y, x };
+        if (moved(store, newPoint)) {
+          return store
+            .set('currentMenuId', this.menuId)
+            .set('y', y)
+            .set('x', x)
+            .set('lastY', store.y)
+            .set('lastX', store.x);
+        }
+
+        return store
+          .set('currentMenuId', /*if*/ !!store.currentMenuId ? undefined : store.currentMenuId)
+          .set('y', y)
+          .set('x', x)
+          .set('lastY', y)
+          .set('lastX', x);
+      });
+    };
+
+    handleClick = (e: MouseEvent) => {
+      const containerRef = this.containerRef;
+      if (!containerRef) {
+        this.handleDropdownBlur();
         return;
       }
-      return;
+      const eventTarget = e.target as HTMLElement | null | undefined;
+      if (!eventTarget) {
+        this.handleDropdownBlur();
+        return;
+      }
+      if (containerRef.contains(eventTarget)) {
+        if (e.button !== 2) {
+          this.handleDropdownBlur();
+          return;
+        }
+        return;
+      }
+      this.handleDropdownBlur();
+    };
+
+    handleDropdownBlur = () => {
+      this.setStore(store => store.set('currentMenuId', undefined))
     }
-    this.closeMenu();
+
+    handleContainerRef = (e: HTMLDivElement | null | undefined) => {
+      this.containerRef = e;
+    };
+
+    render() {
+      return (
+        <Container onContextMenu={this.handleContextMenu} innerRef={this.handleContainerRef}>
+          <DropdownContainer style={{ top: this.store.y, left: this.store.x }}>
+            <Dropdown
+              actions={this.props.actions}
+              onAction={this.props.onAction}
+              open={this.store.open}
+              onBlur={this.handleDropdownBlur}
+            />
+          </DropdownContainer>
+          {this.props.children}
+        </Container>
+      );
+    }
   };
-
-  closeMenu() {
-    this.setState(previousState => ({
-      ...previousState,
-      open: false,
-    }));
-  }
-
-  handleDropdownBlur = () => {
-    this.setState(previousState => ({
-      ...previousState,
-      open: false,
-    }));
-  };
-
-  handleContainerRef = (e: HTMLDivElement | null | undefined) => {
-    this.containerRef = e;
-  };
-
-  render() {
-    return (
-      <Container onContextMenu={this.handleContextMenu} innerRef={this.handleContainerRef}>
-        <DropdownContainer style={{ top: this.state.y, left: this.state.x }}>
-          <Dropdown
-            actions={this.props.actions}
-            onAction={this.props.onAction}
-            open={this.state.open}
-            onBlur={this.handleDropdownBlur}
-          />
-        </DropdownContainer>
-        {this.props.children}
-      </Container>
-    );
-  }
-}
+})();

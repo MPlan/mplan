@@ -824,6 +824,18 @@ export class User extends Record.define({
   }
 }
 
+export class ContextMenu extends Record.define({
+  currentMenuId: undefined as string | undefined,
+  y: 0,
+  x: 0,
+  lastY: 0,
+  lastX: 0,
+}) {
+  get open() {
+    return !!this.currentMenuId;
+  }
+}
+
 export class Ui extends Record.define({
   dragging: false,
   x: 0,
@@ -845,6 +857,7 @@ export class App extends Record.define({
   catalog: new Catalog(),
   user: new User(),
   ui: new Ui(),
+  contextMenu: new ContextMenu(),
 }) {
   updateUi(updater: (ui: Ui) => Ui) {
     return this.update('ui', updater);
