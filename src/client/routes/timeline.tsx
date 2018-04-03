@@ -4,7 +4,6 @@ import * as styles from '../styles';
 import * as Record from 'recordize';
 import * as Model from '../models';
 import * as Immutable from 'immutable';
-import { Warnings } from './warnings';
 import styled from 'styled-components';
 
 const CreateSemesterContainer = styled(View)`
@@ -191,15 +190,17 @@ export class Timeline extends Model.store.connect() {
         <Content>
           <Header>
             <HeaderMain>
-              <Text strong extraLarge>
+              <Text strong extraLarge color={styles.textLight}>
                 Timeline
               </Text>
-              <Text>Create your MPlan here.</Text>
+              <Text color={styles.textLight}>Create your MPlan here.</Text>
             </HeaderMain>
 
             <HeaderRight>
-              <Text strong>Expected Graduation:</Text>
-              <Text strong large>
+              <Text strong color={styles.textLight}>
+                Expected Graduation:
+              </Text>
+              <Text strong large color={styles.textLight}>
                 April 2018
               </Text>
             </HeaderRight>
