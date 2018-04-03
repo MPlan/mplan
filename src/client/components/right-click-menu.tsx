@@ -16,6 +16,7 @@ const DropdownContainer = styled(View)`
 export interface RightClickMenuProps<T extends { [P in keyof T]: DropdownItem }> {
   actions: T;
   onAction: (action: keyof T) => void;
+  header: string;
   children: JSX.Element;
 }
 
@@ -162,6 +163,7 @@ export class RightClickMenu<T extends { [P in keyof T]: DropdownItem }> extends 
       >
         <DropdownContainer style={{ top: this.state.y, left: this.state.x }}>
           <Dropdown
+            header={this.props.header}
             actions={this.props.actions}
             onAction={this.props.onAction}
             open={this.state.open}

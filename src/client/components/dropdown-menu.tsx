@@ -43,6 +43,7 @@ const Icon = styled(Fa)`
 export interface DropdownMenuProps<T extends { [P in keyof T]: DropdownItem }> {
   actions: T;
   onAction: (action: keyof T) => void;
+  header: string;
 }
 
 interface DropdownMenuState<T extends { [P in keyof T]: DropdownItem }> {
@@ -110,6 +111,7 @@ export class DropdownMenu<T extends { [P in keyof T]: DropdownItem }> extends Re
           <Fa icon="ellipsisH" size="lg" />
         </EllipsisButton>
         <Dropdown
+          header={this.props.header}
           ref={this.handleDropdownRef}
           open={this.state.open}
           onBlur={this.handleDropdownBlur}

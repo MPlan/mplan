@@ -20,7 +20,7 @@ const Menu = styled.ul`
   padding: 0;
   background-color: ${styles.white};
   list-style-type: none;
-  box-shadow: 0 0.3rem 1rem 0 rgba(12,0,51,0.2);
+  box-shadow: 0 0.3rem 1rem 0 rgba(12, 0, 51, 0.2);
   top: 100%;
   right: 0;
   max-width: 12rem;
@@ -40,6 +40,12 @@ const Item = styled.li`
     background-color: ${styles.grayLighter};
   }
 `;
+const Title = styled.li`
+  margin: 0;
+  padding: ${styles.space(-1)} ${styles.space(0)};
+  outline: none;
+  border-bottom: solid ${styles.borderWidth} ${styles.grayLighter};
+`;
 const Icon = styled(Fa)`
   margin-right: ${styles.space(0)};
 `;
@@ -53,6 +59,7 @@ export interface DropdownItem {
 export interface DropdownProps<T extends { [P in keyof T]: DropdownItem }> {
   open: boolean;
   onBlur: () => void;
+  header: string;
   actions: T;
   onAction?: (action: keyof T) => void;
 }
@@ -225,6 +232,9 @@ export class Dropdown<T extends { [P in keyof T]: DropdownItem }> extends React.
           innerRef={this.handleMenuRef}
           style={{ display: this.props.open ? 'flex' : 'none' }}
         >
+          <Title>
+            <Text>{this.props.header}</Text>
+          </Title>
           {Object.keys(this.props.actions)
             .map(key => key as keyof T)
             .map(key => ({

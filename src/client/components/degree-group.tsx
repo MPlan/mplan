@@ -159,8 +159,10 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
       0,
     );
 
+    const menuHeader = this.props.degreeGroup.name;
+
     return (
-      <RightClickMenu actions={groupActions} onAction={this.handleGroupAction}>
+      <RightClickMenu header={menuHeader} actions={groupActions} onAction={this.handleGroupAction}>
         <Container>
           <Header>
             <NameAndCredits>
@@ -183,7 +185,11 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
                   ? `${creditHoursMin}`
                   : `${creditHoursMin} - ${creditHoursMax}`}&nbsp;credits
               </Credits>
-              <DropdownMenu actions={groupActions} onAction={this.handleGroupAction} />
+              <DropdownMenu
+                header={menuHeader}
+                actions={groupActions}
+                onAction={this.handleGroupAction}
+              />
             </NameAndCredits>
             <Description>{degreeGroup.description}</Description>
           </Header>

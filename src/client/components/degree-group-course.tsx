@@ -93,9 +93,11 @@ export function DegreeGroupCourse({
     }
   }
 
+  const menuHeader = course instanceof Model.Course ? course.simpleName : course;
+
   if (typeof course === 'string') {
     return (
-      <RightClickMenu actions={actions} onAction={handleActions}>
+      <RightClickMenu header={menuHeader} actions={actions} onAction={handleActions}>
         <Container>
           <NonCourseName>{course}</NonCourseName>
           <Checkbox type="checkbox" onChange={onChange} />
@@ -105,7 +107,7 @@ export function DegreeGroupCourse({
   }
 
   return (
-    <RightClickMenu actions={actions} onAction={handleActions}>
+    <RightClickMenu header={menuHeader} actions={actions} onAction={handleActions}>
       <Container>
         <NameAndCredits>
           <SimpleNameAndCredits>
@@ -117,7 +119,7 @@ export function DegreeGroupCourse({
         <CheckboxContainer>
           <Checkbox type="checkbox" onChange={onChange} />
         </CheckboxContainer>
-        <DropdownMenu actions={actions} onAction={handleActions} />
+        <DropdownMenu header={menuHeader} actions={actions} onAction={handleActions} />
       </Container>
     </RightClickMenu>
   );
