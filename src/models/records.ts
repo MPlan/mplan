@@ -613,7 +613,8 @@ export class Catalog extends Record.define({
     });
   }
 
-  search(query: string) {
+  search(query: string): Immutable.Seq.Indexed<Course> {
+    if (query === '') return Immutable.Seq.Indexed();
     const querySplit = query.toLowerCase().split(' ');
     const results = this.courseMap
       .valueSeq()
@@ -669,6 +670,30 @@ export class User extends Record.define({
   static preferredCoursesMemo = new Map<any, any>();
   static closureMemo = new Map<any, any>();
   static levelsMemo = new Map<any, any>();
+
+  get totalCredits(): number {
+    return this.getOrCalculate('totalCredits', () => {
+      return this.degreeGroups.reduce(
+        (totalCredits, group) =>
+          totalCredits +
+          group.courses.reduce(
+            (totalCredits, course) =>
+              totalCredits +
+              (course instanceof Course ? course.credits || course.creditHours || 0 : 0),
+            0,
+          ),
+        0,
+      );
+    });
+  }
+
+  get completedCredits(): number {
+    return 0;
+  }
+
+  get percentComplete() {
+    return this.completedCredits / this.totalCredits;
+  }
 
   addToDegree(course: Course) {
     return this.update('degree', degree => degree.add(course));

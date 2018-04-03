@@ -198,8 +198,10 @@ export class Degree extends Model.store.connect({
             </Disclaimer>
           </HeaderMain>
           <HeaderRight>
-            <Credits>90/120 credits</Credits>
-            <Percentage>75% complete</Percentage>
+            <Credits>
+              {this.store.user.completedCredits}/{this.store.user.totalCredits} credits
+            </Credits>
+            <Percentage>{this.store.user.percentComplete.toFixed(2)}% complete</Percentage>
           </HeaderRight>
         </Header>
         <DegreeGroupContainer>
