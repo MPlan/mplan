@@ -33,6 +33,14 @@ function moved(point0: { y: number; x: number }, point1: { y: number; x: number 
   return false;
 }
 
+function findClosestRightClickParent(
+  element: HTMLElement | undefined | null,
+): HTMLElement | undefined | null {
+  if (!element) return element;
+  if (element.classList.contains('right-click-menu')) return element;
+  return findClosestRightClickParent(element.parentElement);
+}
+
 type InitialState = typeof initialState;
 export interface RightClickMenuState extends InitialState {}
 
@@ -58,9 +66,24 @@ export class RightClickMenu<T extends { [P in keyof T]: DropdownItem }> extends 
     document.removeEventListener('contextmenu', this.handleClick);
   }
 
+  nestedRightClickMenuCount() {
+    const containerRef = this.containerRef;
+    if (!containerRef) return Number.POSITIVE_INFINITY;
+    return containerRef.querySelectorAll('.right-click-menu').length;
+  }
+
   handleContextMenu = async (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     const containerRect = e.currentTarget.getBoundingClientRect();
+
+    const closestRightClickParent = findClosestRightClickParent(e.target as HTMLElement);
+    if (closestRightClickParent !== this.containerRef) {
+      this.setState(previousState => ({
+        ...previousState,
+        open: false,
+      }));
+      return;
+    }
 
     const clientX = e.clientX;
     const clientY = e.clientY;
@@ -132,7 +155,11 @@ export class RightClickMenu<T extends { [P in keyof T]: DropdownItem }> extends 
 
   render() {
     return (
-      <Container onContextMenu={this.handleContextMenu} innerRef={this.handleContainerRef}>
+      <Container
+        className="right-click-menu"
+        onContextMenu={this.handleContextMenu}
+        innerRef={this.handleContainerRef}
+      >
         <DropdownContainer style={{ top: this.state.y, left: this.state.x }}>
           <Dropdown
             actions={this.props.actions}

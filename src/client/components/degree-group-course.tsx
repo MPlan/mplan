@@ -7,6 +7,7 @@ import { ActionableText } from './actionable-text';
 import { DropdownMenu } from './dropdown-menu';
 import styled from 'styled-components';
 import * as styles from '../styles';
+import { RightClickMenu } from './right-click-menu';
 
 const Container = styled(View)`
   flex-direction: row;
@@ -84,37 +85,40 @@ export function DegreeGroupCourse({
   onDelete,
   onRearrange,
 }: DegreeGroupCourseProps) {
+  function handleActions(action: keyof typeof actions) {
+    if (action === 'delete') {
+      onDelete();
+    } else if (action === 'rearrange') {
+      onRearrange();
+    }
+  }
+
   if (typeof course === 'string') {
     return (
-      <Container>
-        <NonCourseName>{course}</NonCourseName>
-        <Checkbox type="checkbox" onChange={onChange} />
-      </Container>
+      <RightClickMenu actions={actions} onAction={handleActions}>
+        <Container>
+          <NonCourseName>{course}</NonCourseName>
+          <Checkbox type="checkbox" onChange={onChange} />
+        </Container>
+      </RightClickMenu>
     );
   }
 
   return (
-    <Container>
-      <NameAndCredits>
-        <SimpleNameAndCredits>
-          <SimpleName>{course.simpleName}</SimpleName>
-          <Credits>{course.creditsString}</Credits>
-        </SimpleNameAndCredits>
-        <FullName>{course.name}</FullName>
-      </NameAndCredits>
-      <CheckboxContainer>
-        <Checkbox type="checkbox" onChange={onChange} />
-      </CheckboxContainer>
-      <DropdownMenu
-        actions={actions}
-        onAction={action => {
-          if (action === 'delete') {
-            onDelete();
-          } else if (action === 'rearrange') {
-            onRearrange();
-          }
-        }}
-      />
-    </Container>
+    <RightClickMenu actions={actions} onAction={handleActions}>
+      <Container>
+        <NameAndCredits>
+          <SimpleNameAndCredits>
+            <SimpleName>{course.simpleName}</SimpleName>
+            <Credits>{course.creditsString}</Credits>
+          </SimpleNameAndCredits>
+          <FullName>{course.name}</FullName>
+        </NameAndCredits>
+        <CheckboxContainer>
+          <Checkbox type="checkbox" onChange={onChange} />
+        </CheckboxContainer>
+        <DropdownMenu actions={actions} onAction={handleActions} />
+      </Container>
+    </RightClickMenu>
   );
 }
