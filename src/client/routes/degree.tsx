@@ -17,7 +17,8 @@ import { Subscription } from 'rxjs/Subscription';
 
 const Container = styled(View)`
   padding: ${styles.space(1)};
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   flex: 1;
 `;
 const Header = styled(View)`
@@ -59,7 +60,7 @@ const DegreeGroupContainer = styled(View)`
   flex-wrap: wrap;
   flex-direction: row;
   margin-right: -${styles.space(2)};
-  margin-bottom: -${styles.space(2)};
+  align-items: flex-start;
 `;
 const CourseSearchForm = styled.form`
   display: flex;
@@ -121,6 +122,7 @@ export class Degree extends Model.store.connect({
         store.updateUser(user =>
           user.addDegreeGroup(
             new Model.DegreeGroup({
+              _id: Model.ObjectId(),
               name: 'New Group',
               description: 'Custom group',
             }),
