@@ -213,13 +213,7 @@ ALL
     const comp105 = catalog.getCourse('COMP', '105')!;
     const math115 = catalog.getCourse('MATH', '115')!;
 
-    const user = new Record.User()
-      .addToDegree(cis4962)
-      .addToDegree(cis350)
-      .addToDegree(cis200)
-      .addToDegree(comp270)
-      .addToDegree(math115)
-      .addToDegree(comp105);
+    const user = new Record.User();
 
     const levels = user.levels(catalog);
 

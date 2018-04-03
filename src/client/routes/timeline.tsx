@@ -1,13 +1,5 @@
 import * as React from 'react';
-import {
-  View,
-  Text,
-  Box,
-  Button,
-  Course,
-  Semester,
-  CourseWithPrerequisites
-} from '../components';
+import { View, Text, Box, Button, Course, Semester, CourseWithPrerequisites } from '../components';
 import * as styles from '../styles';
 import * as Record from 'recordize';
 import * as Model from '../models';
@@ -119,10 +111,7 @@ export class Timeline extends Model.store.connect() {
     document.removeEventListener('mousemove', this.handleMouseMove);
   }
 
-  handleCourseMouseDown = (
-    e: React.MouseEvent<HTMLDivElement>,
-    course: Model.Course
-  ) => {
+  handleCourseMouseDown = (e: React.MouseEvent<HTMLDivElement>, course: Model.Course) => {
     // const offsetLeft = e.currentTarget.offsetLeft;
     // const offsetTop = e.currentTarget.offsetTop;
     // const offsetX = e.pageX - offsetLeft;
@@ -135,10 +124,7 @@ export class Timeline extends Model.store.connect() {
     // );
   };
 
-  handleCourseMouseUp = (
-    e: React.MouseEvent<HTMLDivElement>,
-    course: Model.Course
-  ) => {
+  handleCourseMouseUp = (e: React.MouseEvent<HTMLDivElement>, course: Model.Course) => {
     // this.setStore(store => store.set('dragging', false))
   };
 
@@ -183,10 +169,7 @@ export class Timeline extends Model.store.connect() {
     // this.setGlobalStore(store => store.set('mouseIsOverSemester', false));
   };
 
-  handleCourseSemesterDeleteClick(
-    course: Model.Course,
-    semester: Model.Semester
-  ) {
+  handleCourseSemesterDeleteClick(course: Model.Course, semester: Model.Semester) {
     // this.setGlobalStore(store => {
     //   return store.update('semesterMap', semesterMap =>
     //     semesterMap.update(semester.id, s =>
@@ -222,45 +205,7 @@ export class Timeline extends Model.store.connect() {
             </HeaderRight>
           </Header>
 
-          <SemesterBlockContainer>
-            {this.store.user
-              .assignCoursesToSemesters(this.store.catalog)
-              .map(semesterSet => {
-                const courseCount = semesterSet.count();
-                return (
-                  <Level>
-                    <LevelHeader>
-                      <Text large strong>
-                        Fall XX
-                      </Text>
-                      <Text>
-                        {courseCount} {courseCount > 1 ? 'courses' : 'course'}
-                      </Text>
-                    </LevelHeader>
-                    <LevelCard>
-                      {semesterSet.map(course => (
-                        <CourseWithPrerequisites
-                          key={
-                            /*if*/ course instanceof Model.Course
-                              ? course.id
-                              : course
-                          }
-                          course={course}
-                          criticalLevel={
-                            course instanceof Model.Course
-                              ? course.criticalLevel(
-                                  this.store.user,
-                                  this.store.catalog
-                                )
-                              : 0
-                          }
-                        />
-                      ))}
-                    </LevelCard>
-                  </Level>
-                );
-              })}
-          </SemesterBlockContainer>
+          <SemesterBlockContainer />
         </Content>
       </TimelineContainer>
     );

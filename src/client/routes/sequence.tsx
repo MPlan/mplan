@@ -375,7 +375,7 @@ export class Sequence extends Model.store.connect({
         <Header>
           <HeaderMain>
             <Text strong extraLarge color={styles.textLight}>
-              Data Science Sequence
+              Computer Engineering Sequence
             </Text>
             <Text color={styles.textLight}>
               This page includes every course and their prerequisites from the degree page. Use this

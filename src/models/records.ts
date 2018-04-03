@@ -663,8 +663,6 @@ export class User extends Record.define({
   lastLoginDate: 0,
   boxMap: Immutable.Map<string, Course>(),
   semesters: Immutable.Set<Semester>(),
-  degree: Immutable.Set<string | Course>(),
-  additionalCourses: Immutable.Set<string | Course>(),
   degreeGroups: Immutable.List<DegreeGroup>(),
 }) {
   static preferredCoursesMemo = new Map<any, any>();
@@ -695,14 +693,6 @@ export class User extends Record.define({
     return this.completedCredits / this.totalCredits;
   }
 
-  addToDegree(course: Course) {
-    return this.update('degree', degree => degree.add(course));
-  }
-
-  addToAdditionalCourses(course: Course) {
-    return this.update('additionalCourses', additionalCourses => additionalCourses.add(course));
-  }
-
   removeCourseFromBox(course: Course) {
     return this.update('boxMap', boxMap => boxMap.remove(course.id));
   }
@@ -723,14 +713,16 @@ export class User extends Record.define({
 
   get preferredCourses() {
     const hash = hashObjects({
-      degree: this.degree,
-      additionalCourses: this.additionalCourses,
+      degreeGroups: this.degreeGroups,
     });
     if (User.preferredCoursesMemo.has(hash)) {
       return User.preferredCoursesMemo.get(hash) as Immutable.Set<string | Course>;
     }
 
-    const combined = this.degree.union(this.additionalCourses);
+    const combined = this.degreeGroups.reduce(
+      (combined, group) => combined.union(group.courses),
+      Immutable.Set<string | Course>(),
+    );
     User.preferredCoursesMemo.set(hash, combined);
     return combined;
   }
@@ -783,25 +775,6 @@ export class User extends Record.define({
 
     Course.levelsMemo.set(hash, levels);
     return levels;
-  }
-
-  assignCoursesToSemesters(catalog: Catalog): Immutable.List<Immutable.Set<string | Course>> {
-    const coursesSorted = this.degree
-      .sort(course => (course instanceof Course ? course.priority(this, catalog) : 99999))
-      .toArray();
-
-    let semesters = Immutable.List<Immutable.Set<string | Course>>();
-    let currentSemester = Immutable.Set<string | Course>();
-
-    for (const course of coursesSorted) {
-      if (currentSemester.count() >= 4) {
-        semesters = semesters.push(currentSemester);
-        currentSemester = Immutable.Set<string | Course>();
-      }
-      currentSemester = currentSemester.add(course);
-    }
-
-    return semesters;
   }
 
   addDegreeGroup(group: DegreeGroup) {
