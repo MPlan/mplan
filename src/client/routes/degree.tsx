@@ -206,7 +206,7 @@ export class Degree extends Model.store.connect({
               key={group.id}
               degreeGroup={group}
               onNameChange={newName => this.handleDegreeGroupNameChange(group, newName)}
-              onAddCourseClick={() => this.handleAddCourseClick(group)}
+              onAddCourse={() => this.handleAddCourseClick(group)}
               onDeleteCourse={course => this.handleDeleteCourse(group, course)}
               onDeleteGroup={() => this.handleDeleteGroup(group)}
             />

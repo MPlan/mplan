@@ -79,7 +79,7 @@ const AddCourseContainer = styled(View)``;
 export interface DegreeGroupProps {
   degreeGroup: Model.DegreeGroup;
   onNameChange: (newName: string) => void;
-  onAddCourseClick: () => void;
+  onAddCourse: () => void;
   onDeleteCourse: (course: string | Model.Course) => void;
   onDeleteGroup: () => void;
 }
@@ -90,6 +90,8 @@ interface DegreeGroupState {
 
 const groupActions = {
   rearrange: { text: 'Rearrange', icon: 'bars' },
+  rename: { text: 'Rename', icon: 'pencil' },
+  add: { text: 'Add course', icon: 'plus', color: styles.blue },
   delete: { text: 'Delete', icon: 'trash', color: styles.red },
 };
 
@@ -104,7 +106,7 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
 
   nameInputElement: HTMLInputElement | undefined;
 
-  handleNameClick = async () => {
+  handleRename = async () => {
     this.setState(previousState => ({
       ...previousState,
       editingName: true,
@@ -144,6 +146,12 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
     if (action === 'delete') {
       this.props.onDeleteGroup();
     }
+    if (action === 'rename') {
+      this.handleRename();
+    }
+    if (action === 'add') {
+      this.props.onAddCourse();
+    }
   };
 
   render() {
@@ -176,7 +184,7 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
                   />
                 </NameForm>
               ) : (
-                <Name onClick={this.handleNameClick} editable={true}>
+                <Name onClick={this.handleRename} editable={true}>
                   {degreeGroup.name}
                 </Name>
               )}
@@ -210,7 +218,7 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
               ))}
             </Courses>
             <AddCourseContainer>
-              <ActionableText small onClick={this.props.onAddCourseClick}>
+              <ActionableText small onClick={this.props.onAddCourse}>
                 Add course to this group...
               </ActionableText>
             </AddCourseContainer>

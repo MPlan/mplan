@@ -40,7 +40,7 @@ const Item = styled.li`
     background-color: ${styles.grayLighter};
   }
 `;
-const Title = styled.li`
+const Header = styled.li`
   margin: 0;
   padding: ${styles.space(-1)} ${styles.space(0)};
   outline: none;
@@ -232,9 +232,9 @@ export class Dropdown<T extends { [P in keyof T]: DropdownItem }> extends React.
           innerRef={this.handleMenuRef}
           style={{ display: this.props.open ? 'flex' : 'none' }}
         >
-          <Title>
-            <Text>{this.props.header}</Text>
-          </Title>
+          <Header>
+            <Text strong>{this.props.header}</Text>
+          </Header>
           {Object.keys(this.props.actions)
             .map(key => key as keyof T)
             .map(key => ({
