@@ -190,7 +190,7 @@ export class Degree extends Model.store.connect({
       <Container>
         <Header>
           <HeaderMain>
-            <Major>Software Engineering</Major>
+            <Major>Computer Engineering</Major>
             <Disclaimer>
               <Underline>Disclaimer:</Underline> This page is <Underline>not</Underline> a degree
               audit and should not be treated like one.{' '}

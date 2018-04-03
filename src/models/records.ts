@@ -664,36 +664,7 @@ export class User extends Record.define({
   semesters: Immutable.Set<Semester>(),
   degree: Immutable.Set<string | Course>(),
   additionalCourses: Immutable.Set<string | Course>(),
-  degreeGroups: Immutable.List<DegreeGroup>().push(
-    new DegreeGroup({
-      _id: ObjectId(),
-      name: 'Written and Oral Comm',
-      description: oneLine`
-        Composition placement exam required. COMP 105 and COMP 270 are the default required courses.
-      `,
-      courses: Immutable.List<string | Course>()
-        .push(
-          new Course({
-            _id: ObjectId(),
-            subjectCode: 'COMP',
-            courseNumber: '1002',
-            name: 'Writing and Rhetoric III',
-            description: 'something thing',
-            credits: 4,
-          }),
-        )
-        .push(
-          new Course({
-            _id: ObjectId(),
-            subjectCode: 'CIS',
-            courseNumber: '4200',
-            name: 'Computer Science III',
-            description: 'something thing',
-            credits: 4,
-          }),
-        ),
-    }),
-  ),
+  degreeGroups: Immutable.List<DegreeGroup>(),
 }) {
   static preferredCoursesMemo = new Map<any, any>();
   static closureMemo = new Map<any, any>();
