@@ -48,6 +48,7 @@ const Header = styled.li`
 `;
 const Icon = styled(Fa)`
   margin-right: ${styles.space(0)};
+  min-width: ${styles.space(0)};
 `;
 
 export interface DropdownItem {
@@ -233,7 +234,9 @@ export class Dropdown<T extends { [P in keyof T]: DropdownItem }> extends React.
           style={{ display: this.props.open ? 'flex' : 'none' }}
         >
           <Header>
-            <Text strong>{this.props.header}</Text>
+            <Text style={{ color: styles.text }} strong>
+              {this.props.header}
+            </Text>
           </Header>
           {Object.keys(this.props.actions)
             .map(key => key as keyof T)
@@ -259,7 +262,7 @@ export class Dropdown<T extends { [P in keyof T]: DropdownItem }> extends React.
                   }
                 >
                   <Icon icon={icon} color={color} />
-                  <Text>{text}</Text>
+                  <Text style={{ color: styles.text }}>{text}</Text>
                 </Item>
               );
             })}

@@ -92,7 +92,7 @@ const groupActions = {
   rearrange: { text: 'Rearrange', icon: 'bars' },
   rename: { text: 'Rename', icon: 'pencil' },
   add: { text: 'Add course', icon: 'plus', color: styles.blue },
-  delete: { text: 'Delete', icon: 'trash', color: styles.red },
+  delete: { text: 'Delete group', icon: 'trash', color: styles.red },
 };
 
 export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupState> {

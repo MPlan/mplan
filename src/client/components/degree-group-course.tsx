@@ -76,7 +76,8 @@ export interface DegreeGroupCourseProps {
 
 const actions = {
   rearrange: { text: 'Rearrange', icon: 'bars' },
-  delete: { text: 'Delete', icon: 'trash', color: styles.red },
+  view: { text: 'View in catalog', icon: 'chevronRight', color: styles.blue },
+  delete: { text: 'Delete course', icon: 'trash', color: styles.red },
 };
 
 export function DegreeGroupCourse({
