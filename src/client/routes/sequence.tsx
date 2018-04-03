@@ -211,9 +211,9 @@ export class Sequence extends Model.store.connect({
 
   calculateEdges() {
     const catalog = this.store.catalog;
-    const user = this.store.user;
+    const degree = this.store.user.degree;
 
-    const pointMap = user
+    const pointMap = degree
       .closure(catalog)
       .map(course => {
         const sequenceCourseElement = document.querySelector(`.${courseIdClassName(course)}`);
@@ -242,20 +242,20 @@ export class Sequence extends Model.store.connect({
       );
 
     const edges = flatten(
-      user
+      degree
         .closure(catalog)
         .filter(course => course instanceof Model.Course)
         .map(course => course as Model.Course)
         .map(course => {
-          const options = course.bestOption(catalog, user.preferredCourses);
+          const options = course.bestOption(catalog, degree.preferredCourses());
           const coursePoints = pointMap.get(course);
           if (!coursePoints) return undefined;
-          const courseDepth = course.depth(catalog, user.preferredCourses);
+          const courseDepth = course.depth(catalog, degree.preferredCourses());
           const edges = options
             .map(option => {
               const depth =
                 /*if*/ option instanceof Model.Course
-                  ? option.depth(catalog, user.preferredCourses)
+                  ? option.depth(catalog, degree.preferredCourses())
                   : 0;
               const optionPoints = pointMap.get(option);
               if (!optionPoints) return undefined;
@@ -326,14 +326,14 @@ export class Sequence extends Model.store.connect({
 
   courseHighlighted(course: string | Model.Course) {
     if (typeof course === 'string') return false;
-    const bestOption = course.bestOption(this.store.catalog, this.store.user.preferredCourses);
+    const bestOption = course.bestOption(this.store.catalog, this.store.user.degree.preferredCourses());
     if (this.state.mouseOverCourse === undefined) {
       const selectedCourse = this.state.selectedCourse;
       if (bestOption.contains(selectedCourse || '')) return true;
       if (
         selectedCourse instanceof Model.Course &&
         selectedCourse
-          .bestOption(this.store.catalog, this.store.user.preferredCourses)
+          .bestOption(this.store.catalog, this.store.user.degree.preferredCourses())
           .contains(course || '')
       ) {
         return true;
@@ -345,7 +345,7 @@ export class Sequence extends Model.store.connect({
     if (
       selectedCourse instanceof Model.Course &&
       selectedCourse
-        .bestOption(this.store.catalog, this.store.user.preferredCourses)
+        .bestOption(this.store.catalog, this.store.user.degree.preferredCourses())
         .contains(course || '')
     ) {
       return true;
@@ -396,7 +396,7 @@ export class Sequence extends Model.store.connect({
         </Header>
         <GraphContainer className="graph-container" innerRef={this.handleGraphContainerRef}>
           <GraphWrapper className="graph-wrapper" innerRef={this.handleGraphWrapperRef}>
-            {this.store.levels.map((level, levelIndex) => (
+            {this.store.user.degree.levels(this.store.catalog).map((level, levelIndex) => (
               <Level
                 key={levelIndex}
                 style={{
@@ -428,7 +428,7 @@ export class Sequence extends Model.store.connect({
                       key={/*if*/ course instanceof Model.Course ? course.id : course}
                       course={course}
                       catalog={this.store.catalog}
-                      user={this.store.user}
+                      degree={this.store.user.degree}
                       onMouseOver={() => this.handleCourseMouseOver(course)}
                       onMouseExit={() => this.handleCourseMouseExit(course)}
                       onBlur={() => this.handleCourseBlur(course)}

@@ -4,8 +4,6 @@ export * from './button';
 export * from './course';
 export * from './fa';
 export * from './nav';
-export * from './semester';
-export * from './box';
 export * from './prerequisite';
 export * from './course-with-prerequisites';
 export * from './sequence-course';

@@ -38,9 +38,8 @@ async function updateStoreWithCatalog() {
   const catalog = await fetchCatalog();
 
   store.sendUpdate(store =>
-    store.set('catalog', catalog).update('user', user =>
-      user
-
+    store.set('catalog', catalog).updateDegree(degree =>
+      degree
         .addDegreeGroup(
           new Record.DegreeGroup({
             _id: Record.ObjectId(),

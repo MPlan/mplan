@@ -180,25 +180,26 @@ export class Course
   static criticalMemo = new Map<any, any>();
   static priorityMemo = new Map<any, any>();
 
-  priority(user: User, catalog: Catalog): number {
-    const hash = hashObjects({ user, catalog, course: this });
+  priority(degree: Degree, catalog: Catalog): number {
+    const hash = hashObjects({ degree, catalog, course: this });
     if (Course.priorityMemo.has(hash)) {
       return Course.priorityMemo.get(hash);
     }
 
-    const priority = this.depth(catalog, user.preferredCourses) + this.criticalLevel(user, catalog);
+    const priority =
+      this.depth(catalog, degree.preferredCourses()) + this.criticalLevel(degree, catalog);
 
     Course.priorityMemo.set(hash, priority);
     return priority;
   }
 
-  criticalLevel(user: User, catalog: Catalog): number {
-    const hash = hashObjects({ catalog, user, course: this });
+  criticalLevel(degree: Degree, catalog: Catalog): number {
+    const hash = hashObjects({ catalog, degree, course: this });
     if (Course.criticalMemo.has(hash)) {
       return Course.criticalMemo.get(hash);
     }
 
-    const levels = user.levels(catalog);
+    const levels = degree.levels(catalog);
     const levelCount = levels.count();
     const levelIndex = levels.findIndex(level => level.has(this));
     if (levelIndex <= -1) {
@@ -217,7 +218,7 @@ export class Course
       const levelHasCourse = nextLevel
         .filter(course => course instanceof Course)
         .map(x => x as Course)
-        .some(course => course.bestOption(catalog, user.preferredCourses).has(this));
+        .some(course => course.bestOption(catalog, degree.preferredCourses()).has(this));
 
       if (levelHasCourse) {
         Course.criticalMemo.set(hash, criticalLevel);
@@ -467,7 +468,7 @@ export class Course
 
 export class Semester extends Record.define({
   _id: ObjectId(),
-  courseSet: Immutable.Set<Course>(),
+  _courses: Immutable.Set<Course>(),
   season: 'Fall' as 'Fall' | 'Winter' | 'Summer',
   year: 0,
 }) {
@@ -487,18 +488,18 @@ export class Semester extends Record.define({
 
   get courseCount() {
     return this.getOrCalculate('courseCount', () => {
-      return this.courseSet.count();
+      return this._courses.count();
     });
   }
 
   get courses() {
     return this.getOrCalculate('courses', () => {
-      return this.courseSet.toArray();
+      return this._courses.toArray();
     });
   }
 
   addCourse(course: Course) {
-    this.update('courseSet', courseSet => courseSet.add(course));
+    this.update('_courses', courses => courses.add(course));
   }
 
   private _previousSemesterSeason() {
@@ -555,7 +556,7 @@ export class Semester extends Record.define({
 
   warningsNeverRanDuringCurrentSeason(catalog: Catalog) {
     return this.getOrCalculate('warningsNeverRanDuringCurrentSeason', [catalog, this], () => {
-      const warnings = this.courseSet
+      const warnings = this._courses
         .valueSeq()
         .map(course => {
           const sectionSet = course.sections.get(this.season);
@@ -654,64 +655,10 @@ export class DegreeGroup extends Record.define({
   }
 }
 
-export class User extends Record.define({
-  _id: ObjectId(),
-  username: '',
-  name: '',
-  picture: '',
-  registerDate: 0,
-  lastLoginDate: 0,
-  boxMap: Immutable.Map<string, Course>(),
-  semesters: Immutable.Set<Semester>(),
+export class Degree extends Record.define({
   degreeGroups: Immutable.List<DegreeGroup>(),
 }) {
-  static preferredCoursesMemo = new Map<any, any>();
-  static closureMemo = new Map<any, any>();
-  static levelsMemo = new Map<any, any>();
-
-  get totalCredits(): number {
-    return this.getOrCalculate('totalCredits', () => {
-      return this.degreeGroups.reduce(
-        (totalCredits, group) =>
-          totalCredits +
-          group.courses.reduce(
-            (totalCredits, course) =>
-              totalCredits +
-              (course instanceof Course ? course.credits || course.creditHours || 0 : 0),
-            0,
-          ),
-        0,
-      );
-    });
-  }
-
-  get completedCredits(): number {
-    return 0;
-  }
-
-  get percentComplete() {
-    return this.completedCredits / this.totalCredits;
-  }
-
-  removeCourseFromBox(course: Course) {
-    return this.update('boxMap', boxMap => boxMap.remove(course.id));
-  }
-
-  get box() {
-    return this.getOrCalculate('box', [this.boxMap], () => {
-      return this.boxMap.valueSeq().toArray();
-    });
-  }
-
-  selectedCourse(selectedCourseId: string, catalog: Catalog) {
-    return catalog.courseMap.get(selectedCourseId);
-  }
-
-  addToBox(course: Course) {
-    return this.update('boxMap', boxMap => boxMap.set(course.id, course));
-  }
-
-  get preferredCourses() {
+  preferredCourses() {
     const hash = hashObjects({
       degreeGroups: this.degreeGroups,
     });
@@ -733,11 +680,11 @@ export class User extends Record.define({
       return User.closureMemo.get(hash);
     }
 
-    const closure = this.preferredCourses
+    const closure = this.preferredCourses()
       .map(
         course =>
           /*if*/ course instanceof Course
-            ? course.closure(catalog, this.preferredCourses)
+            ? course.closure(catalog, this.preferredCourses())
             : Immutable.Set<string | Course>().add(course),
       )
       .reduce(
@@ -760,7 +707,7 @@ export class User extends Record.define({
 
     for (const course of closure) {
       if (course instanceof Course) {
-        const depth = course.depth(catalog, this.preferredCourses);
+        const depth = course.depth(catalog, this.preferredCourses());
         const set = levelsMutable[depth] || new Set<string | Course>();
         set.add(course);
         levelsMutable[depth] = set;
@@ -775,6 +722,30 @@ export class User extends Record.define({
 
     Course.levelsMemo.set(hash, levels);
     return levels;
+  }
+
+  totalCredits(): number {
+    return this.getOrCalculate('totalCredits', () => {
+      return this.degreeGroups.reduce(
+        (totalCredits, group) =>
+          totalCredits +
+          group.courses.reduce(
+            (totalCredits, course) =>
+              totalCredits +
+              (course instanceof Course ? course.credits || course.creditHours || 0 : 0),
+            0,
+          ),
+        0,
+      );
+    });
+  }
+
+  completedCredits(): number {
+    return 0;
+  }
+
+  percentComplete() {
+    return this.completedCredits() / this.totalCredits();
   }
 
   addDegreeGroup(group: DegreeGroup) {
@@ -793,22 +764,30 @@ export class User extends Record.define({
   }
 }
 
-export class Ui extends Record.define({
-  dragging: false,
-  x: 0,
-  y: 0,
-  offsetX: 0,
-  offsetY: 0,
-  mouseIsOverSemester: false,
-  lastMouseOverSemester: undefined as Semester | undefined,
-  selectedCourse: undefined as Course | undefined,
-  search: '',
-  currentPageIndex: 0,
+export class Plan extends Record.define({
+  semesters: Immutable.Set<Semester>(),
+}) {}
+
+export class User extends Record.define({
+  _id: ObjectId(),
+  username: '',
+  name: '',
+  picture: '',
+  registerDate: 0,
+  lastLoginDate: 0,
+  plan: new Plan(),
+  degree: new Degree(),
 }) {
-  setSearch(newSearch: string) {
-    return this.set('search', newSearch);
+  static preferredCoursesMemo = new Map<any, any>();
+  static closureMemo = new Map<any, any>();
+  static levelsMemo = new Map<any, any>();
+
+  updateDegree(updater: (degree: Degree) => Degree) {
+    return this.update('degree', updater);
   }
 }
+
+export class Ui extends Record.define({}) {}
 
 export class App extends Record.define({
   catalog: new Catalog(),
@@ -823,12 +802,7 @@ export class App extends Record.define({
     return this.update('user', updater);
   }
 
-  get levels() {
-    return this.getOrCalculate('levels', () => {
-      return this.user
-        .levels(this.catalog)
-        .map(level => level.toArray())
-        .toArray();
-    });
+  updateDegree(updater: (degree: Degree) => Degree) {
+    return this.updateUser(user => user.updateDegree(updater));
   }
 }

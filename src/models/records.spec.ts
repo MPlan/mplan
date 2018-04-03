@@ -205,31 +205,7 @@ ALL
   //   console.log(JSON.stringify(convertToString(preferredSequence), null, 2));
   // });
 
-  it('levels', () => {
-    const cis4962 = catalog.getCourse('CIS', '4962')!;
-    const cis350 = catalog.getCourse('CIS', '350')!;
-    const cis200 = catalog.getCourse('CIS', '200')!;
-    const comp270 = catalog.getCourse('COMP', '270')!;
-    const comp105 = catalog.getCourse('COMP', '105')!;
-    const math115 = catalog.getCourse('MATH', '115')!;
-
-    const user = new Record.User();
-
-    const levels = user.levels(catalog);
-
-    for (const level of levels) {
-      const levelString = level
-        .map(
-          course =>
-            /*if*/ course instanceof Record.Course
-              ? `${course.subjectCode} ${course.courseNumber}`
-              : course
-        )
-        .join(' ');
-      console.log(levelString);
-      console.log('---');
-    }
-  });
+  it('levels');
 
   it('closure', () => {
     const cis350 = catalog.getCourse('CIS', '350')!;

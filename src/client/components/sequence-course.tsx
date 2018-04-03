@@ -51,7 +51,7 @@ const PreferredPrerequisiteItem = styled.li``;
 export interface SequenceCourseProps {
   course: string | Model.Course;
   catalog: Model.Catalog;
-  user: Model.User;
+  degree: Model.Degree;
   highlighted: boolean;
   focused: boolean;
   compactMode: boolean;
@@ -67,7 +67,7 @@ export function courseIdClassName(course: string | Model.Course) {
 }
 
 export function SequenceCourse(props: SequenceCourseProps) {
-  const { course, catalog, user } = props;
+  const { course, catalog, degree } = props;
 
   const style = {
     backgroundColor: /*if*/ props.focused
@@ -107,12 +107,12 @@ export function SequenceCourse(props: SequenceCourseProps) {
             <ActionableText small>{course.name}</ActionableText>
           </NameCompact>
           <CriticalCompact>
-            {/*if*/ course.criticalLevel(user, catalog) <= 0 ? (
+            {/*if*/ course.criticalLevel(degree, catalog) <= 0 ? (
               <Text color={styles.red} small>
                 Critical
               </Text>
             ) : (
-              <Text small>Can move {course.criticalLevel(user, catalog)} later</Text>
+              <Text small>Can move {course.criticalLevel(degree, catalog)} later</Text>
             )}
           </CriticalCompact>
         </View>
@@ -123,7 +123,7 @@ export function SequenceCourse(props: SequenceCourseProps) {
             <ActionableText>{course.name}</ActionableText>
           </Name>
           <Critical>
-            {/*if*/ course.criticalLevel(user, catalog) <= 0 ? (
+            {/*if*/ course.criticalLevel(degree, catalog) <= 0 ? (
               <Text small>
                 <Text color={styles.red} small>
                   Critical:&nbsp;
@@ -132,7 +132,7 @@ export function SequenceCourse(props: SequenceCourseProps) {
               </Text>
             ) : (
               <Text small>
-                Can be taken as many as {course.criticalLevel(user, catalog)} semesters later
+                Can be taken as many as {course.criticalLevel(degree, catalog)} semesters later
                 without delaying graduation.
               </Text>
             )}
@@ -145,7 +145,7 @@ export function SequenceCourse(props: SequenceCourseProps) {
               </PreferredPrerequisiteHeader>
               <PreferredPrerequisiteList>
                 {course
-                  .bestOption(catalog, user.preferredCourses)
+                  .bestOption(catalog, degree.preferredCourses())
                   .map(course => (course instanceof Model.Course ? course.simpleName : course))
                   .map(course => (
                     <PreferredPrerequisiteItem key={course}>

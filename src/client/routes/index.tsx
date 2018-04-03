@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Catalog } from './catalog';
 import { Timeline } from './timeline';
 import { Sequence } from './sequence';
 import { Degree } from './degree';

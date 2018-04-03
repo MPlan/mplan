@@ -119,8 +119,8 @@ export class Degree extends Model.store.connect({
   handleFab = (action: keyof typeof fabActions) => {
     if (action === 'group') {
       this.setStore(store =>
-        store.updateUser(user =>
-          user.addDegreeGroup(
+        store.updateDegree(degree =>
+          degree.addDegreeGroup(
             new Model.DegreeGroup({
               _id: Model.ObjectId(),
               name: 'New Group',
@@ -134,8 +134,8 @@ export class Degree extends Model.store.connect({
 
   handleDegreeGroupNameChange(degreeGroup: Model.DegreeGroup, newName: string) {
     this.setStore(store =>
-      store.updateUser(user =>
-        user.updateDegreeGroup(degreeGroup, degreeGroup => degreeGroup.set('name', newName)),
+      store.updateDegree(degree =>
+        degree.updateDegreeGroup(degreeGroup, degreeGroup => degreeGroup.set('name', newName)),
       ),
     );
   }
@@ -168,24 +168,27 @@ export class Degree extends Model.store.connect({
     const currentDegreeGroup = this.state.currentDegreeGroup;
     if (!currentDegreeGroup) return;
     this.setStore(store =>
-      store.updateUser(user =>
-        user.updateDegreeGroup(currentDegreeGroup, group => group.addCourse(course)),
+      store.updateDegree(degree =>
+        degree.updateDegreeGroup(currentDegreeGroup, group => group.addCourse(course)),
       ),
     );
   }
 
   handleDeleteCourse(group: Model.DegreeGroup, course: string | Model.Course) {
     this.setStore(store =>
-      store.updateUser(user => user.updateDegreeGroup(group, group => group.deleteCourse(course))),
+      store.updateDegree(degree =>
+        degree.updateDegreeGroup(group, group => group.deleteCourse(course)),
+      ),
     );
   }
 
   handleDeleteGroup(group: Model.DegreeGroup) {
-    this.setStore(store => store.updateUser(user => user.deleteDegreeGroup(group)));
+    this.setStore(store => store.updateDegree(degree => degree.deleteDegreeGroup(group)));
   }
 
   render() {
     const currentDegreeGroup = this.state.currentDegreeGroup;
+    const degree = this.store.user.degree;
     return (
       <Container>
         <Header>
@@ -199,13 +202,13 @@ export class Degree extends Model.store.connect({
           </HeaderMain>
           <HeaderRight>
             <Credits>
-              {this.store.user.completedCredits}/{this.store.user.totalCredits} credits
+              {degree.completedCredits()}/{degree.totalCredits()} credits
             </Credits>
-            <Percentage>{this.store.user.percentComplete.toFixed(2)}% complete</Percentage>
+            <Percentage>{degree.percentComplete().toFixed(2)}% complete</Percentage>
           </HeaderRight>
         </Header>
         <DegreeGroupContainer>
-          {this.store.user.degreeGroups.map(group => (
+          {degree.degreeGroups.map(group => (
             <DegreeGroup
               key={group.id}
               degreeGroup={group}
