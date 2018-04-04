@@ -117,6 +117,7 @@ export class Sequence extends Model.store.connect({
   graphWrapperElement: HTMLElement | undefined;
   mounted = false;
   reflowEvents$ = new Subject<void>();
+  static edgesMemo = new Map<any, any>();
 
   async componentDidMount() {
     this.mounted = true;
@@ -212,6 +213,11 @@ export class Sequence extends Model.store.connect({
   calculateEdges() {
     const catalog = this.store.catalog;
     const degree = this.store.user.degree;
+
+    const hash = Model.hashObjects({ catalog, degree });
+    if (Sequence.edgesMemo.has(hash)) {
+      return Sequence.edgesMemo.get(hash);
+    }
 
     const pointMap = degree
       .closure(catalog)
@@ -317,7 +323,9 @@ export class Sequence extends Model.store.connect({
       x2: edge.x2 - minX,
     }));
 
-    return adjustedEdges;
+    const value = adjustedEdges;
+    Sequence.edgesMemo.set(hash, value);
+    return value;
   }
 
   reflowTrigger = () => {
@@ -326,7 +334,10 @@ export class Sequence extends Model.store.connect({
 
   courseHighlighted(course: string | Model.Course) {
     if (typeof course === 'string') return false;
-    const bestOption = course.bestOption(this.store.catalog, this.store.user.degree.preferredCourses());
+    const bestOption = course.bestOption(
+      this.store.catalog,
+      this.store.user.degree.preferredCourses(),
+    );
     if (this.state.mouseOverCourse === undefined) {
       const selectedCourse = this.state.selectedCourse;
       if (bestOption.contains(selectedCourse || '')) return true;
@@ -423,22 +434,24 @@ export class Sequence extends Model.store.connect({
                   </LevelHeader>
                 ) : null}
                 <LevelCard>
-                  {level.map(course => (
-                    <SequenceCourse
-                      key={/*if*/ course instanceof Model.Course ? course.id : course}
-                      course={course}
-                      catalog={this.store.catalog}
-                      degree={this.store.user.degree}
-                      onMouseOver={() => this.handleCourseMouseOver(course)}
-                      onMouseExit={() => this.handleCourseMouseExit(course)}
-                      onBlur={() => this.handleCourseBlur(course)}
-                      onFocus={() => this.handleCourseFocus(course)}
-                      focused={this.courseFocused(course)}
-                      highlighted={this.courseHighlighted(course)}
-                      compactMode={this.state.compactMode}
-                      dimmed={this.courseDimmed(course)}
-                    />
-                  ))}
+                  {level
+                    .sortBy(course => (course instanceof Model.Course ? course.simpleName : course))
+                    .map(course => (
+                      <SequenceCourse
+                        key={/*if*/ course instanceof Model.Course ? course.id : course}
+                        course={course}
+                        catalog={this.store.catalog}
+                        degree={this.store.user.degree}
+                        onMouseOver={() => this.handleCourseMouseOver(course)}
+                        onMouseExit={() => this.handleCourseMouseExit(course)}
+                        onBlur={() => this.handleCourseBlur(course)}
+                        onFocus={() => this.handleCourseFocus(course)}
+                        focused={this.courseFocused(course)}
+                        highlighted={this.courseHighlighted(course)}
+                        compactMode={this.state.compactMode}
+                        dimmed={this.courseDimmed(course)}
+                      />
+                    ))}
                 </LevelCard>
               </Level>
             ))}
