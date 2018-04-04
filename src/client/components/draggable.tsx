@@ -10,7 +10,7 @@ const Container = styled(View)`
 
 const FloatingChild = styled.div`
   position: absolute;
-  z-index: 50;
+  z-index: 200;
   box-shadow: 0 0.4rem 1.3rem 0 rgba(12, 0, 51, 0.20);
 `;
 const ChildWrapper = styled.div`
@@ -65,8 +65,8 @@ export class Draggable extends Model.store.connect({
         .set('startX', x)
         .set('currentY', y)
         .set('currentX', x)
-        .set('offsetY', y - (childBoundingRect && childBoundingRect.top || 0))
-        .set('offsetX', x - (childBoundingRect && childBoundingRect.left || 0))
+        .set('offsetY', y - (childBoundingRect && childBoundingRect.top || 0) + this.getContainerTop())
+        .set('offsetX', x - (childBoundingRect && childBoundingRect.left || 0) + this.getContainerLeft())
         .set('childHeight', childBoundingRect && childBoundingRect.height)
         .set('childWidth', childBoundingRect && childBoundingRect.width),
     );
@@ -112,8 +112,8 @@ export class Draggable extends Model.store.connect({
             style={{
               height: this.store.childHeight,
               width: this.store.childWidth,
-              top: this.store.currentY - this.getContainerTop() - this.store.offsetY,
-              left: this.store.currentX - this.getContainerLeft() - this.store.offsetX,
+              top: this.store.currentY - this.store.offsetY,
+              left: this.store.currentX - this.store.offsetX,
             }}
           >
             {this.props.children}
