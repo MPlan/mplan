@@ -8,8 +8,18 @@ const Container = styled(View)``;
 
 const FloatingChild = styled.div`
   position: absolute;
+  z-index: 50;
+  box-shadow: 0 0.4rem 1.3rem 0 rgba(12, 0, 51, 0.20);
 `;
-const ChildWrapper = styled.div``;
+const ChildWrapper = styled.div`
+  transition: all 0.2s;
+  &.dragging {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+  }
+  max-height: 20rem;
+`;
 
 export interface DraggableProps {
   children: JSX.Element;
@@ -40,6 +50,7 @@ export class Draggable extends Model.store.connect({
   }
 
   handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.button !== 0) return;
     const y = e.clientY;
     const x = e.clientX;
     const childBoundingRect = this.getChildBoundingRect();
@@ -82,13 +93,17 @@ export class Draggable extends Model.store.connect({
             style={{
               height: this.store.childHeight,
               width: this.store.childWidth,
+              top: this.store.currentY,
+              left: this.store.currentX,
             }}
           >
             {this.props.children}
           </FloatingChild>
-        ) : (
-          <ChildWrapper innerRef={this.handleChildWrapperRef}>{this.props.children}</ChildWrapper>
-        )}
+        ) : null}
+        <ChildWrapper
+          className={this.dragging ? 'dragging' : ''}
+          innerRef={this.handleChildWrapperRef}
+        >{this.props.children}</ChildWrapper>
       </Container>
     );
   }
