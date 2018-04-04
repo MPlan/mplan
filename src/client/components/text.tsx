@@ -4,8 +4,8 @@ import * as styles from '../styles';
 
 export interface TextProps
   extends React.DetailedHTMLProps<
-      React.HTMLAttributes<HTMLDivElement>,
-      HTMLDivElement
+      React.HTMLAttributes<HTMLSpanElement>,
+      HTMLSpanElement
     > {
   children?: any;
   // sizing

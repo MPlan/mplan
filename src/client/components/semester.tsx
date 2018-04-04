@@ -5,10 +5,12 @@ import { Text } from './text';
 import { SemesterCourse } from './semester-course';
 import styled from 'styled-components';
 import * as styles from '../styles';
+import { Dropzone } from './dropzone';
 
 const Container = styled(View)`
   width: 20rem;
   max-width: 20rem;
+  min-width: 20rem;
   margin-right: ${styles.space(2)};
 `;
 const Header = styled(View)`
@@ -52,17 +54,19 @@ export class Semester extends Model.store.connect({
             {semester.courseCount} {semester.courseCount === 1 ? 'course' : 'courses'}
           </CourseCount>
         </Header>
-        <Card>
-          {semester.courses.map(course => (
-            <SemesterCourse
-              key={course.id}
-              course={course}
-              degree={degree}
-              catalog={catalog}
-              onMouseDown={() => {}}
-            />
-          ))}
-        </Card>
+        <Dropzone>
+          <Card>
+            {semester.courses.map(course => (
+              <SemesterCourse
+                key={course.id}
+                course={course}
+                degree={degree}
+                catalog={catalog}
+                onMouseDown={() => {}}
+              />
+            ))}
+          </Card>
+        </Dropzone>
       </Container>
     );
   }
