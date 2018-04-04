@@ -127,7 +127,7 @@ function flattenPrerequisites(
   throw new Error(`Could not flatten prerequisite because its type could not be matched.`);
 }
 
-function hashObjects(objects: { [key: string]: any }) {
+export function hashObjects(objects: { [key: string]: any }) {
   return Immutable.Map(objects).hashCode();
 }
 
@@ -468,7 +468,7 @@ export class Course
 
 export class Semester extends Record.define({
   _id: ObjectId(),
-  _courses: Immutable.Set<Course>(),
+  _courses: Immutable.List<Course>(),
   season: 'Fall' as 'Fall' | 'Winter' | 'Summer',
   year: 0,
 }) {
@@ -499,7 +499,7 @@ export class Semester extends Record.define({
   }
 
   addCourse(course: Course) {
-    this.update('_courses', courses => courses.add(course));
+    return this.update('_courses', courses => courses.push(course));
   }
 
   private _previousSemesterSeason() {
@@ -658,26 +658,30 @@ export class DegreeGroup extends Record.define({
 export class Degree extends Record.define({
   degreeGroups: Immutable.List<DegreeGroup>(),
 }) {
+  static preferredCoursesMemo = new Map<any, any>();
+  static closureMemo = new Map<any, any>();
+  static levelsMemo = new Map<any, any>();
+
   preferredCourses() {
     const hash = hashObjects({
-      degreeGroups: this.degreeGroups,
+      degree: this,
     });
-    if (User.preferredCoursesMemo.has(hash)) {
-      return User.preferredCoursesMemo.get(hash) as Immutable.Set<string | Course>;
+    if (Degree.preferredCoursesMemo.has(hash)) {
+      return Degree.preferredCoursesMemo.get(hash) as Immutable.Set<string | Course>;
     }
 
     const combined = this.degreeGroups.reduce(
       (combined, group) => combined.union(group.courses),
       Immutable.Set<string | Course>(),
     );
-    User.preferredCoursesMemo.set(hash, combined);
+    Degree.preferredCoursesMemo.set(hash, combined);
     return combined;
   }
 
   closure(catalog: Catalog): Immutable.Set<string | Course> {
-    const hash = hashObjects({ catalog, user: this });
-    if (User.closureMemo.has(hash)) {
-      return User.closureMemo.get(hash);
+    const hash = hashObjects({ catalog, degree: this });
+    if (Degree.closureMemo.has(hash)) {
+      return Degree.closureMemo.get(hash);
     }
 
     const closure = this.preferredCourses()
@@ -692,14 +696,14 @@ export class Degree extends Record.define({
         Immutable.Set<string | Course>(),
       );
 
-    User.closureMemo.set(hash, closure);
+    Degree.closureMemo.set(hash, closure);
     return closure;
   }
 
   levels(catalog: Catalog): Immutable.List<Immutable.Set<string | Course>> {
-    const hash = hashObjects({ course: this, catalog });
-    if (Course.levelsMemo.has(hash)) {
-      return Course.levelsMemo.get(hash);
+    const hash = hashObjects({ degree: this, catalog });
+    if (Degree.levelsMemo.has(hash)) {
+      return Degree.levelsMemo.get(hash);
     }
 
     const closure = this.closure(catalog);
@@ -720,7 +724,7 @@ export class Degree extends Record.define({
       Immutable.List<Immutable.Set<string | Course>>(),
     );
 
-    Course.levelsMemo.set(hash, levels);
+    Degree.levelsMemo.set(hash, levels);
     return levels;
   }
 
@@ -747,6 +751,22 @@ export class Degree extends Record.define({
   percentComplete() {
     return this.completedCredits() / this.totalCredits();
   }
+
+  // generatePlan(catalog: Catalog) {
+  //   const sortedCourses = this.closure(catalog)
+  //     .toList()
+  //     .sortBy(course => (course instanceof Course ? course.priority(this, catalog) : 99999));
+
+  //   return this._generatePlan(sortedCourses);
+  // }
+
+  // private _generatePlan(courses: Immutable.List<string | Course>): Immutable.List<Immutable.Set<Course>> {
+  //   // if too many courses in current semester, create new semester
+  //   const currentSemester = 
+  //   for (const course of courses) {
+  //     // if can place course, add it and recursively call _generatePlan
+  //   }
+  // }
 
   addDegreeGroup(group: DegreeGroup) {
     return this.update('degreeGroups', groups => groups.push(group));
@@ -778,12 +798,12 @@ export class User extends Record.define({
   plan: new Plan(),
   degree: new Degree(),
 }) {
-  static preferredCoursesMemo = new Map<any, any>();
-  static closureMemo = new Map<any, any>();
-  static levelsMemo = new Map<any, any>();
-
   updateDegree(updater: (degree: Degree) => Degree) {
     return this.update('degree', updater);
+  }
+
+  updatePlan(updater: (plan: Plan) => Plan) {
+    return this.update('plan', updater);
   }
 }
 
@@ -804,5 +824,9 @@ export class App extends Record.define({
 
   updateDegree(updater: (degree: Degree) => Degree) {
     return this.updateUser(user => user.updateDegree(updater));
+  }
+
+  updatePlan(updater: (plan: Plan) => Plan) {
+    return this.updateUser(user => user.updatePlan(updater));
   }
 }

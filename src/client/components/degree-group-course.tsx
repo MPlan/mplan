@@ -45,27 +45,6 @@ const CheckboxContainer = styled.label`
 const Checkbox = styled.input`
   margin-right: ${styles.space(0)};
 `;
-const EllipsisButton = styled.button`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  width: ${styles.space(1)};
-  height: ${styles.space(1)};
-  border-radius: 99999px;
-  outline: none;
-  border: none;
-  margin-top: 0.2rem;
-  &:hover,
-  &:focus {
-    color: ${styles.blue};
-    background-color: ${styles.whiteTer};
-  }
-  &:active {
-    background-color: ${styles.grayLighter};
-  }
-  transition: all 0.2;
-`;
 
 export interface DegreeGroupCourseProps {
   course: string | Model.Course;

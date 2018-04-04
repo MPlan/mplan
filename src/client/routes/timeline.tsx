@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Text } from '../components';
+import { View, Text, Semester } from '../components';
 import * as styles from '../styles';
 import * as Model from '../models';
 import * as Immutable from 'immutable';
@@ -7,13 +7,13 @@ import styled from 'styled-components';
 
 const Container = styled(View)`
   flex: 1;
-  flex-direction: row;
   position: relative;
+  padding: ${styles.space(1)};
 `;
 
 const Header = styled(View)`
-  padding: ${styles.space(0)};
   flex-direction: row;
+  margin-bottom: ${styles.space(1)};
 `;
 
 const HeaderMain = styled(View)`
@@ -22,7 +22,7 @@ const HeaderMain = styled(View)`
 
 const HeaderRight = styled(View)``;
 
-const SemesterBlockContainer = styled(View)`
+const SemestersContainer = styled(View)`
   flex: 1;
   flex-direction: row;
   overflow: auto;
@@ -50,7 +50,16 @@ export class Timeline extends Model.store.connect() {
           </HeaderRight>
         </Header>
 
-        <SemesterBlockContainer />
+        <SemestersContainer>
+          {this.store.user.plan.semesters.map(semester => (
+            <Semester
+              key={semester.id}
+              semester={semester}
+              degree={this.store.user.degree}
+              catalog={this.store.catalog}
+            />
+          ))}
+        </SemestersContainer>
       </Container>
     );
   }

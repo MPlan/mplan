@@ -14,3 +14,4 @@ export * from './degree-group-course';
 export * from './modal';
 export * from './search-result-course';
 export * from './dropdown-menu';
+export * from './semester';
