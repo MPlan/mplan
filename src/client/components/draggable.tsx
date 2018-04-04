@@ -57,6 +57,12 @@ export class Draggable extends Model.store.connect({
     const y = e.clientY;
     const x = e.clientX;
     const childBoundingRect = this.getChildBoundingRect();
+    const containerBoundingRect = this.getContainerBoundingRect();
+
+    const childTop = childBoundingRect && childBoundingRect.top || 0;
+    const containerTop = containerBoundingRect && containerBoundingRect.top || 0;
+    const childLeft = childBoundingRect && childBoundingRect.left || 0;
+    const containerLeft = containerBoundingRect && containerBoundingRect.left || 0;
     this.setStore(store =>
       store
         .set('mouseDown', true)
@@ -65,8 +71,8 @@ export class Draggable extends Model.store.connect({
         .set('startX', x)
         .set('currentY', y)
         .set('currentX', x)
-        .set('offsetY', y - (childBoundingRect && childBoundingRect.top || 0) + this.getContainerTop())
-        .set('offsetX', x - (childBoundingRect && childBoundingRect.left || 0) + this.getContainerLeft())
+        .set('offsetY', y - childTop + containerTop)
+        .set('offsetX', x - childLeft + containerLeft)
         .set('childHeight', childBoundingRect && childBoundingRect.height)
         .set('childWidth', childBoundingRect && childBoundingRect.width),
     );
@@ -94,14 +100,9 @@ export class Draggable extends Model.store.connect({
     return this.childWrapperRef.getBoundingClientRect();
   }
 
-  getContainerTop() {
-    if (!this.containerRef) return 0;
-    return this.containerRef.getBoundingClientRect().top;
-  }
-
-  getContainerLeft() {
-    if (!this.containerRef) return 0;
-    return this.containerRef.getBoundingClientRect().left;
+  getContainerBoundingRect() {
+    if (!this.containerRef) return undefined;
+    return this.containerRef.getBoundingClientRect();
   }
 
   render() {
