@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Text, Semester } from '../components';
+import { View, Text, Semester, FloatingActionButton } from '../components';
 import * as styles from '../styles';
 import * as Model from '../models';
 import * as Immutable from 'immutable';
@@ -60,6 +60,8 @@ export class Timeline extends Model.store.connect() {
             />
           ))}
         </SemestersContainer>
+
+        <FloatingActionButton actions={{ one: 'test' }} message="Add..." />
       </Container>
     );
   }

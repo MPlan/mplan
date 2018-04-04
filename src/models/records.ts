@@ -762,7 +762,7 @@ export class Degree extends Record.define({
 
   // private _generatePlan(courses: Immutable.List<string | Course>): Immutable.List<Immutable.Set<Course>> {
   //   // if too many courses in current semester, create new semester
-  //   const currentSemester = 
+  //   const currentSemester =
   //   for (const course of courses) {
   //     // if can place course, add it and recursively call _generatePlan
   //   }
@@ -807,7 +807,29 @@ export class User extends Record.define({
   }
 }
 
-export class Ui extends Record.define({}) {}
+export class Draggables extends Record.define({
+  selectedDraggableId: '',
+  mouseDown: false,
+  startY: 0,
+  startX: 0,
+  currentY: 0,
+  currentX: 0,
+  childHeight: undefined as undefined | number,
+  childWidth: undefined as undefined | number,
+}) {
+  get dragging() {
+    if (!this.mouseDown) return false;
+    const distance = Math.sqrt(
+      Math.pow(this.currentY - this.startY, 2) + Math.pow(this.currentX - this.startX, 2),
+    );
+    if (distance < 5) return false;
+    return true;
+  }
+}
+
+export class Ui extends Record.define({
+  draggables: new Draggables(),
+}) {}
 
 export class App extends Record.define({
   catalog: new Catalog(),

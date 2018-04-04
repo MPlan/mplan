@@ -7,6 +7,7 @@ import * as styles from '../styles';
 import { DropdownMenu } from './dropdown-menu';
 import { Fa } from './fa';
 import { PreferredPrerequisite } from './preferred-prerequisite';
+import { Draggable } from './draggable';
 
 const Container = styled(View)`
   padding: ${styles.space(-1)} ${styles.space(0)};
@@ -30,38 +31,41 @@ const Body = styled(View)`
   flex: 1;
 `;
 
-export interface SemesterCourseProps {
+export interface SemesterCourseProps
+  extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
   course: Model.Course;
   degree: Model.Degree;
   catalog: Model.Catalog;
 }
 
 export function SemesterCourse(props: SemesterCourseProps) {
-  const { course, degree, catalog } = props;
+  const { course, degree, catalog, ref, ...restOfProps } = props;
   const criticalLevel = course.criticalLevel(degree, catalog);
   return (
-    <Container>
-      <Body>
-        <SimpleName>{course.simpleName}</SimpleName>
-        <FullName>{course.name}</FullName>
-        <CriticalLevel>
-          {criticalLevel <= 0 ? (
-            <Text>
-              <Text color={styles.red}>Critical:</Text>&nbsp;delaying this course may delay others
-            </Text>
-          ) : (
-            <Text>Can move ${criticalLevel} semesters.</Text>
-          )}
-        </CriticalLevel>
-        {course.prerequisites ? (
-          <PreferredPrerequisite course={course} degree={degree} catalog={catalog} />
-        ) : null}
-      </Body>
-      <DropdownMenu
-        header="fdsa"
-        actions={{ one: { text: 'something', icon: 'rocket' } }}
-        onAction={() => {}}
-      />
-    </Container>
+    <Draggable>
+      <Container {...restOfProps}>
+        <Body>
+          <SimpleName>{course.simpleName}</SimpleName>
+          <FullName>{course.name}</FullName>
+          <CriticalLevel>
+            {criticalLevel <= 0 ? (
+              <Text>
+                <Text color={styles.red}>Critical:</Text>&nbsp;delaying this course may delay others
+              </Text>
+            ) : (
+              <Text>Can move ${criticalLevel} semesters.</Text>
+            )}
+          </CriticalLevel>
+          {course.prerequisites ? (
+            <PreferredPrerequisite course={course} degree={degree} catalog={catalog} />
+          ) : null}
+        </Body>
+        <DropdownMenu
+          header="fdsa"
+          actions={{ one: { text: 'something', icon: 'rocket' } }}
+          onAction={() => {}}
+        />
+      </Container>
+    </Draggable>
   );
 }

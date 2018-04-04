@@ -244,6 +244,14 @@ async function updateStoreWithCatalog() {
             })
               .addCourse(catalog.getCourse('ENGR', '100')!)
               .addCourse(catalog.getCourse('COMP', '105')!),
+          ).add(
+            new Record.Semester({
+              _id: Record.ObjectId(),
+              season: 'Winter',
+              year: 2018,
+            })
+              .addCourse(catalog.getCourse('ECE', '270')!)
+              .addCourse(catalog.getCourse('COMP', '270')!),
           ),
         ),
       ),

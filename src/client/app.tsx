@@ -7,6 +7,7 @@ import * as styles from './styles';
 import { Auth } from './auth';
 import { Landing } from './routes/landing';
 import { Callback } from './routes/callback';
+import * as Model from './models';
 
 import { createBrowserHistory } from 'history';
 export const history = createBrowserHistory();
@@ -116,11 +117,7 @@ export function AuthenticatedRoute() {
         <Content>
           <Switch>
             {Routes.map(route => (
-              <Route
-                key={route.path}
-                path={route.path}
-                component={route.component as any}
-              />
+              <Route key={route.path} path={route.path} component={route.component as any} />
             ))}
             <Redirect from="/" to={Routes[0].path} />
           </Switch>
@@ -137,24 +134,36 @@ function renderLanding() {
   return <Landing />;
 }
 
-const AppContent = styled(View)`
+export interface AppContentProps
+  extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+  disableSelecting?: boolean;
+}
+
+const AppContent = styled<AppContentProps>(View)`
   max-width: 100vw;
   max-height: 100vh;
   width: 100vw;
   height: 100vh;
   overflow: hidden;
+  ${props => (props.disableSelecting ? '& * { user-select: none; }' : '')};
 `;
 
-export function App() {
-  return (
-    <AppContent>
-      <Router history={history}>
-        <Switch>
-          <Route path="/callback" component={Callback} />
-          <Route path="/login" render={renderLanding} />
-          <Route render={renderApp} />
-        </Switch>
-      </Router>
-    </AppContent>
-  );
+export class App extends Model.store.connect({
+  scope: store => store.ui.draggables,
+  descope: (store, draggables: Model.Draggables) =>
+    store.updateUi(ui => ui.set('draggables', draggables)),
+}) {
+  render() {
+    return (
+      <AppContent disableSelecting={this.store.mouseDown}>
+        <Router history={history}>
+          <Switch>
+            <Route path="/callback" component={Callback} />
+            <Route path="/login" render={renderLanding} />
+            <Route render={renderApp} />
+          </Switch>
+        </Router>
+      </AppContent>
+    );
+  }
 }
