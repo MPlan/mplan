@@ -6,6 +6,7 @@ import * as Model from '../models';
 import * as styles from '../styles';
 import * as Immutable from 'immutable';
 import { createClassName } from '../../utilities/utilities';
+import { PreferredPrerequisite } from './preferred-prerequisite';
 
 const Container = styled(View)`
   background-color: ${styles.white};
@@ -36,17 +37,6 @@ const Critical = styled(View)`
 `;
 
 const CriticalCompact = styled(View)``;
-
-const PrerequisiteContainer = styled(View)``;
-const PreferredPrerequisiteHeader = styled(Text)`
-  text-decoration: underline;
-  margin-bottom: ${styles.space(-1)};
-`;
-const PreferredPrerequisiteList = styled.ul`
-  margin: 0;
-  padding: 0 0 0 ${styles.space(1)};
-`;
-const PreferredPrerequisiteItem = styled.li``;
 
 export interface SequenceCourseProps {
   course: string | Model.Course;
@@ -139,21 +129,7 @@ export function SequenceCourse(props: SequenceCourseProps) {
           </Critical>
 
           {/*if*/ course.prerequisites ? (
-            <PrerequisiteContainer>
-              <PreferredPrerequisiteHeader small>
-                Preferred prerequisites:
-              </PreferredPrerequisiteHeader>
-              <PreferredPrerequisiteList>
-                {course
-                  .bestOption(catalog, degree.preferredCourses())
-                  .map(course => (course instanceof Model.Course ? course.simpleName : course))
-                  .map(course => (
-                    <PreferredPrerequisiteItem key={course}>
-                      <Text small>{course}</Text>
-                    </PreferredPrerequisiteItem>
-                  ))}
-              </PreferredPrerequisiteList>
-            </PrerequisiteContainer>
+            <PreferredPrerequisite course={course} degree={degree} catalog={catalog} />
           ) : null}
         </View>
       )}

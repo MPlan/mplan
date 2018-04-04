@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import * as styles from '../styles';
 import { DropdownMenu } from './dropdown-menu';
 import { Fa } from './fa';
+import { PreferredPrerequisite } from './preferred-prerequisite';
 
 const Container = styled(View)`
   padding: ${styles.space(-1)} ${styles.space(0)};
@@ -22,7 +23,9 @@ const SimpleName = styled(Text)`
 const FullName = styled(Text)`
   margin-bottom: ${styles.space(-1)};
 `;
-const CriticalLevel = styled(View)``;
+const CriticalLevel = styled(View)`
+  margin-bottom: ${styles.space(-1)};
+`;
 const Body = styled(View)`
   flex: 1;
 `;
@@ -44,12 +47,15 @@ export function SemesterCourse(props: SemesterCourseProps) {
         <CriticalLevel>
           {criticalLevel <= 0 ? (
             <Text>
-              <Text color={styles.red}>Critical:</Text>&nbsp;take as soon as possible
+              <Text color={styles.red}>Critical:</Text>&nbsp;delaying this course may delay others
             </Text>
           ) : (
             <Text>Can move ${criticalLevel} semesters.</Text>
           )}
         </CriticalLevel>
+        {course.prerequisites ? (
+          <PreferredPrerequisite course={course} degree={degree} catalog={catalog} />
+        ) : null}
       </Body>
       <DropdownMenu
         header="fdsa"

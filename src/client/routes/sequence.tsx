@@ -477,6 +477,7 @@ export class Sequence extends Model.store.connect({
                   const bezierPoint2Y = edge.y2;
                   return (
                     <path
+                      // key={index}
                       d={oneLine`
                       M ${startingPointX * graphWidth},${startingPointY * graphHeight}
                       C ${bezierPoint1X * graphWidth},${bezierPoint1Y * graphHeight}
