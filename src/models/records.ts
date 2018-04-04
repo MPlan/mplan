@@ -814,6 +814,8 @@ export class Draggables extends Record.define({
   startX: 0,
   currentY: 0,
   currentX: 0,
+  offsetY: 0,
+  offsetX: 0,
   childHeight: undefined as undefined | number,
   childWidth: undefined as undefined | number,
 }) {

@@ -4,7 +4,9 @@ import styled from 'styled-components';
 import { View } from './view';
 import * as uuid from 'uuid/v4';
 
-const Container = styled(View)``;
+const Container = styled(View)`
+  position: relative;
+`;
 
 const FloatingChild = styled.div`
   position: absolute;
@@ -33,6 +35,7 @@ export class Draggable extends Model.store.connect({
 }) {
   draggableId = uuid();
   childWrapperRef: HTMLElement | null | undefined;
+  containerRef: HTMLElement | null | undefined;
 
   componentDidMount() {
     document.addEventListener('mousemove', this.handleMouseMove);
@@ -62,6 +65,8 @@ export class Draggable extends Model.store.connect({
         .set('startX', x)
         .set('currentY', y)
         .set('currentX', x)
+        .set('offsetY', y - (childBoundingRect && childBoundingRect.top || 0))
+        .set('offsetX', x - (childBoundingRect && childBoundingRect.left || 0))
         .set('childHeight', childBoundingRect && childBoundingRect.height)
         .set('childWidth', childBoundingRect && childBoundingRect.width),
     );
@@ -80,21 +85,35 @@ export class Draggable extends Model.store.connect({
     this.childWrapperRef = e;
   };
 
+  handleContainerRef = (e: HTMLElement | null | undefined) => {
+    this.containerRef = e;
+  };
+
   getChildBoundingRect() {
     if (!this.childWrapperRef) return undefined;
     return this.childWrapperRef.getBoundingClientRect();
   }
 
+  getContainerTop() {
+    if (!this.containerRef) return 0;
+    return this.containerRef.getBoundingClientRect().top;
+  }
+
+  getContainerLeft() {
+    if (!this.containerRef) return 0;
+    return this.containerRef.getBoundingClientRect().left;
+  }
+
   render() {
     return (
-      <Container onMouseDown={this.handleMouseDown}>
+      <Container innerRef={this.handleContainerRef} onMouseDown={this.handleMouseDown}>
         {this.dragging ? (
           <FloatingChild
             style={{
               height: this.store.childHeight,
               width: this.store.childWidth,
-              top: this.store.currentY,
-              left: this.store.currentX,
+              top: this.store.currentY - this.getContainerTop() - this.store.offsetY,
+              left: this.store.currentX - this.getContainerLeft() - this.store.offsetX,
             }}
           >
             {this.props.children}
