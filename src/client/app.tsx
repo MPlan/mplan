@@ -145,7 +145,6 @@ const AppContent = styled<AppContentProps>(View)`
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  ${props => (props.disableSelecting ? '& * { user-select: none; }' : '')};
 `;
 
 export class App extends Model.store.connect({
@@ -155,7 +154,7 @@ export class App extends Model.store.connect({
 }) {
   render() {
     return (
-      <AppContent disableSelecting={this.store.mouseDown}>
+      <AppContent>
         <Router history={history}>
           <Switch>
             <Route path="/callback" component={Callback} />

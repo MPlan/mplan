@@ -36,7 +36,7 @@ export class Dropzone extends Model.store.connect({
 
   handleContainerRef = (e: HTMLDivElement | null | undefined) => {
     e = this.containerRef;
-  }
+  };
 
   render() {
     return (
@@ -45,7 +45,14 @@ export class Dropzone extends Model.store.connect({
         className="dropzone"
         onMouseEnter={this.handleMouseEnter}
         onMouseLeave={this.handleMouseLeave}
-
+        onDrop={e => {
+          e.preventDefault();
+          console.log('drop',);
+        }}
+        onDragOver={e => {
+          e.preventDefault();
+          console.log('dragover', e.clientX);
+        }}
       >
         {this.props.children}
       </Container>

@@ -11,15 +11,16 @@ const Container = styled(View)`
 const FloatingChild = styled.div`
   position: absolute;
   z-index: 200;
-  box-shadow: 0 0.4rem 1.3rem 0 rgba(12, 0, 51, 0.20);
+  box-shadow: 0 0.4rem 1.3rem 0 rgba(12, 0, 51, 0.2);
 `;
 const ChildWrapper = styled.div`
-  transition: all 0.2s;
+  transition: all 5ms;
   &.dragging {
-    max-height: 0;
-    opacity: 0;
-    overflow: hidden;
+    transform:translateX(-9999px)
   }
+`;
+const Spacer = styled.div`
+  transition: all 0.2s;
   max-height: 20rem;
 `;
 
@@ -37,54 +38,33 @@ export class Draggable extends Model.store.connect({
   childWrapperRef: HTMLElement | null | undefined;
   containerRef: HTMLElement | null | undefined;
 
-  componentDidMount() {
-    document.addEventListener('mousemove', this.handleMouseMove);
-    document.addEventListener('mouseup', this.handleMouseUp);
-  }
+  componentDidMount() {}
 
   componentWillUnmount() {
     super.componentWillUnmount();
-    document.removeEventListener('mousemove', this.handleMouseMove);
-    document.removeEventListener('mouseup', this.handleMouseUp);
   }
 
   get dragging() {
     return this.store.dragging && this.store.selectedDraggableId === this.draggableId;
   }
 
-  handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.button !== 0) return;
-    const y = e.clientY;
-    const x = e.clientX;
-    const childBoundingRect = this.getChildBoundingRect();
-    const containerBoundingRect = this.getContainerBoundingRect();
+  handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+    e.dataTransfer.setData('text', this.draggableId);
+    console.log('drag start');
+    const childWrapperRef = this.childWrapperRef;
+    const childHeight = childWrapperRef && childWrapperRef.getBoundingClientRect().height;
 
-    const childTop = childBoundingRect && childBoundingRect.top || 0;
-    const containerTop = containerBoundingRect && containerBoundingRect.top || 0;
-    const childLeft = childBoundingRect && childBoundingRect.left || 0;
-    const containerLeft = containerBoundingRect && containerBoundingRect.left || 0;
     this.setStore(store =>
       store
-        .set('mouseDown', true)
+        .set('dragging', true)
         .set('selectedDraggableId', this.draggableId)
-        .set('startY', y)
-        .set('startX', x)
-        .set('currentY', y)
-        .set('currentX', x)
-        .set('offsetY', y - childTop + containerTop)
-        .set('offsetX', x - childLeft + containerLeft)
-        .set('childHeight', childBoundingRect && childBoundingRect.height)
-        .set('childWidth', childBoundingRect && childBoundingRect.width),
+        .set('height', childHeight || 0),
     );
   };
-  handleMouseUp = () => {
-    this.setStore(store => store.set('mouseDown', false));
-  };
-  handleMouseMove = (e: MouseEvent) => {
-    if (!this.store.mouseDown) return;
-    const y = e.clientY;
-    const x = e.clientX;
-    this.setStore(store => store.set('currentY', y).set('currentX', x));
+
+  handleDragEnd = () => {
+    console.log('drag end');
+    this.setStore(store => store.set('dragging', false));
   };
 
   handleChildWrapperRef = (e: HTMLElement | null | undefined) => {
@@ -107,23 +87,20 @@ export class Draggable extends Model.store.connect({
 
   render() {
     return (
-      <Container innerRef={this.handleContainerRef} onMouseDown={this.handleMouseDown}>
-        {this.dragging ? (
-          <FloatingChild
-            style={{
-              height: this.store.childHeight,
-              width: this.store.childWidth,
-              top: this.store.currentY - this.store.offsetY,
-              left: this.store.currentX - this.store.offsetX,
-            }}
-          >
-            {this.props.children}
-          </FloatingChild>
-        ) : null}
+      <Container innerRef={this.handleContainerRef}>
         <ChildWrapper
+          draggable
           className={this.dragging ? 'dragging' : ''}
           innerRef={this.handleChildWrapperRef}
-        >{this.props.children}</ChildWrapper>
+          onDragStart={this.handleDragStart}
+          onDragEnd={this.handleDragEnd}
+        >
+          {this.props.children}
+        </ChildWrapper>
+        {/* <Spacer
+          className={this.dragging ? 'dragging' : ''}
+          style={{ height: this.dragging ? this.store.height : 0 }}
+        /> */}
       </Container>
     );
   }

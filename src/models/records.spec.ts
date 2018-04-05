@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as Immutable from 'immutable';
 import * as Record from './records';
 const rawCatalog = JSON.parse(
-  fs.readFileSync(path.resolve(__dirname, './catalog.json')).toString()
+  fs.readFileSync(path.resolve(__dirname, './catalog.json')).toString(),
 );
 
 import { convertCatalogJsonToRecord } from './records';
@@ -54,9 +54,7 @@ describe('record models', () => {
     const prerequisitesFlattened = course.options(catalog);
 
     console.log(
-      `unflattened course prerequisite options for ${course.subjectCode} ${
-        course.courseNumber
-      }`
+      `unflattened course prerequisite options for ${course.subjectCode} ${course.courseNumber}`,
     );
     console.log(`
 ALL
@@ -80,18 +78,14 @@ ALL
 `);
 
     console.log(
-      `flattend course prerequisite options for ${course.subjectCode} ${
-        course.courseNumber
-      }`
+      `flattend course prerequisite options for ${course.subjectCode} ${course.courseNumber}`,
     );
     console.log('EITHER');
     console.log('|');
     for (const prerequisiteSet of prerequisitesFlattened) {
       const set = prerequisiteSet.map(
         course =>
-          typeof course === 'string'
-            ? course
-            : `${course.subjectCode} ${course.courseNumber}`
+          typeof course === 'string' ? course : `${course.subjectCode} ${course.courseNumber}`,
       );
       console.log(`|--ALL`);
       for (const course of set) {
@@ -160,10 +154,7 @@ ALL
   it('bestOption', () => {
     const math115 = catalog.getCourse('MATH', '115')!;
 
-    const bestOption = math115.bestOption(
-      catalog,
-      Immutable.Set<string | Record.Course>()
-    );
+    const bestOption = math115.bestOption(catalog, Immutable.Set<string | Record.Course>());
 
     expect(bestOption.first()).toBe('Mathematics Placement 115');
   });
@@ -221,9 +212,7 @@ ALL
       .add(math115)
       .add(comp105);
 
-    const closure = catalog
-      .getCourse('CIS', '4962')!
-      .closure(catalog, preferredCourses);
+    const closure = catalog.getCourse('CIS', '4962')!.closure(catalog, preferredCourses);
 
     console.log(
       closure
@@ -231,9 +220,9 @@ ALL
           course =>
             /*if*/ course instanceof Record.Course
               ? `${course.subjectCode} ${course.courseNumber}`
-              : course
+              : course,
         )
-        .join(' ')
+        .join(' '),
     );
   });
 
@@ -268,4 +257,29 @@ ALL
   //     console.log('----');
   //   }
   // });
+
+  it('generate plan', () => {
+    console.log('gen plan');
+    const degree = new Record.Degree().addDegreeGroup(
+      new Record.DegreeGroup({
+        _id: Record.ObjectId(),
+        name: 'Test',
+        description: '',
+        courses: Immutable.List<string | Record.Course>([catalog.getCourse('CIS', '4962')!]),
+      }),
+    );
+
+    // const plan = degre e.generatePlan(catalog);
+    const levels = degree.levels(catalog);
+
+    console.log('plan');
+    for (const level of levels) {
+      console.log(
+        level
+          .map(course => (course instanceof Record.Course ? course.simpleName : course))
+          .join(', '),
+      );
+    }
+    console.log('end plan');
+  });
 });

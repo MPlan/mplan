@@ -179,6 +179,7 @@ export class Course
   static fullClosureMemo = new Map<any, any>();
   static criticalMemo = new Map<any, any>();
   static priorityMemo = new Map<any, any>();
+  static prerequisitesSatisfiedMemo = new Map<any, any>();
 
   priority(degree: Degree, catalog: Catalog): number {
     const hash = hashObjects({ degree, catalog, course: this });
@@ -463,6 +464,36 @@ export class Course
 
     Course.closureMemo.set(hash, coursesInClosure);
     return coursesInClosure;
+  }
+
+  prerequisitesSatisfied(
+    catalog: Catalog,
+    previousCourses: Immutable.Set<string | Course>,
+  ): boolean {
+    const hash = hashObjects({ catalog, previousCourses, course: this });
+    if (Course.prerequisitesSatisfiedMemo.has(hash)) {
+      return Course.prerequisitesSatisfiedMemo.get(hash);
+    }
+    const value = this._prerequisitesSatisfied(catalog, previousCourses);
+    Course.prerequisitesSatisfiedMemo.set(hash, value);
+    return value;
+  }
+
+  private _prerequisitesSatisfied(
+    catalog: Catalog,
+    previousCourses: Immutable.Set<string | Course>,
+  ): boolean {
+    const options = this.options(catalog);
+    for (const option of options) {
+      if (
+        option
+          .filter(course => course instanceof Course)
+          .every(course => previousCourses.has(course))
+      ) {
+        return true;
+      }
+    }
+    return false;
   }
 }
 
@@ -752,21 +783,24 @@ export class Degree extends Record.define({
     return this.completedCredits() / this.totalCredits();
   }
 
-  // generatePlan(catalog: Catalog) {
-  //   const sortedCourses = this.closure(catalog)
-  //     .toList()
-  //     .sortBy(course => (course instanceof Course ? course.priority(this, catalog) : 99999));
+  generatePlan(catalog: Catalog) {
+    const closure = this.closure(catalog);
+    const coursesSorted = closure
+      .toList()
+      .filter(course => course instanceof Course)
+      .map(course => course as Course)
+      .sortBy(course => course.priority(this, catalog))
+      .toArray();
 
-  //   return this._generatePlan(sortedCourses);
-  // }
+    const processedCourses = closure
+      .filter(course => typeof course === 'string')
+      .reduce((set, nonCourse) => set.add(nonCourse), Immutable.Set<string | Course>());
+  }
 
-  // private _generatePlan(courses: Immutable.List<string | Course>): Immutable.List<Immutable.Set<Course>> {
-  //   // if too many courses in current semester, create new semester
-  //   const currentSemester =
-  //   for (const course of courses) {
-  //     // if can place course, add it and recursively call _generatePlan
-  //   }
-  // }
+  private _generatePlan(
+    coursesSorted: Course[],
+    processedCourses: Immutable.Set<string | Course>,
+  ) {}
 
   addDegreeGroup(group: DegreeGroup) {
     return this.update('degreeGroups', groups => groups.push(group));
@@ -809,25 +843,9 @@ export class User extends Record.define({
 
 export class Draggables extends Record.define({
   selectedDraggableId: '',
-  mouseDown: false,
-  startY: 0,
-  startX: 0,
-  currentY: 0,
-  currentX: 0,
-  offsetY: 0,
-  offsetX: 0,
-  childHeight: undefined as undefined | number,
-  childWidth: undefined as undefined | number,
-}) {
-  get dragging() {
-    if (!this.mouseDown) return false;
-    const distance = Math.sqrt(
-      Math.pow(this.currentY - this.startY, 2) + Math.pow(this.currentX - this.startX, 2),
-    );
-    if (distance < 5) return false;
-    return true;
-  }
-}
+  dragging: false,
+  height: 0,
+}) {}
 
 export class Ui extends Record.define({
   draggables: new Draggables(),

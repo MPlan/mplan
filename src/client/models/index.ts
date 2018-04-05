@@ -243,6 +243,7 @@ async function updateStoreWithCatalog() {
               year: 2018,
             })
               .addCourse(catalog.getCourse('ENGR', '100')!)
+              .addCourse(catalog.getCourse('CIS', '150')!)
               .addCourse(catalog.getCourse('COMP', '105')!),
           ).add(
             new Record.Semester({
