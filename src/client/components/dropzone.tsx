@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import { View } from './view';
 import * as uuid from 'uuid/v4';
 import { oneLine } from 'common-tags';
+import { Subject } from 'rxjs/Subject';
+import { throttleTime } from 'rxjs/operators';
 const { sqrt, pow } = Math;
 
 export interface ContainerProps
@@ -28,15 +30,17 @@ export class Dropzone extends Model.store.connect({
 }) {
   dropzoneId = uuid();
   containerRef: HTMLDivElement | null | undefined;
+  dragOver$ = new Subject<{ clientY: number; clientX: number }>();
+
+  componentDidMount() {
+    this.dragOver$.pipe(throttleTime(150)).subscribe(this.handleDragOverThrottled);
+  }
 
   handleContainerRef = (e: HTMLDivElement | null | undefined) => {
     e = this.containerRef;
   };
 
-  handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    const clientY = e.clientY;
-    const clientX = e.clientX;
+  handleDragOverThrottled = ({ clientY, clientX }: { clientY: number; clientX: number }) => {
     const draggables = Array.from(
       document.querySelectorAll(oneLine`
         .dropzone-${this.dropzoneId}
@@ -83,6 +87,13 @@ export class Dropzone extends Model.store.connect({
     this.setStore(store =>
       store.set('closestDraggableId', closestDraggableId).set('direction', direction),
     );
+  };
+
+  handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const clientY = e.clientY;
+    const clientX = e.clientX;
+    this.dragOver$.next({ clientY, clientX });
   };
 
   render() {
