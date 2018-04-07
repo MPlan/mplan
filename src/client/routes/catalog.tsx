@@ -22,19 +22,39 @@ const CategoryHeader = styled(Text)`
 const CategoryItem = styled(Text)`
   margin-left: ${styles.space(0)};
 `;
+const MoreCategories = styled(Text)`
+  font-size: ${styles.space(-1)};
+`;
 
 export class Catalog extends Model.store.connect() {
   render() {
-    return <Container>
-      <Sidebar>
-        <Category>
-          <CategoryHeader>Subject code</CategoryHeader>
-          <CategoryItem>CIS</CategoryItem>
-          <CategoryItem>ECE</CategoryItem>
-          <CategoryItem>MATH</CategoryItem>
-        </Category>
-      </Sidebar>
-      <Content><Text>Content</Text></Content>
-    </Container>;
+    const distinctSubjectCodes = this.store.catalog
+      .getDistinctCategories(course => course.subjectCode)
+      .toList()
+      .sort();
+
+    const firstTenSubjectCodes = distinctSubjectCodes.take(10);
+
+    const remainingSubjectCodes = distinctSubjectCodes.count() - firstTenSubjectCodes.count();
+
+    // this.store.catalog.getDistinctCategories
+    return (
+      <Container>
+        <Sidebar>
+          <Category>
+            <CategoryHeader>Subject code</CategoryHeader>
+            {firstTenSubjectCodes.map(subjectCode => (
+              <CategoryItem key={subjectCode}>{subjectCode}</CategoryItem>
+            ))}
+            <MoreCategories>
+              There are {remainingSubjectCodes} more subject codes. Click here to expand.
+            </MoreCategories>
+          </Category>
+        </Sidebar>
+        <Content>
+          <Text>Content</Text>
+        </Content>
+      </Container>
+    );
   }
 }

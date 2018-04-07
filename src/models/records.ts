@@ -627,6 +627,8 @@ export class Semester extends Record.define({
 export class Catalog extends Record.define({
   courseMap: Immutable.Map<string, Course>(),
 }) {
+  // TODO
+  // static distinctCategoriesMemo = new Map<any, any>();
   getCourse(subjectCode: string, courseNumber: string) {
     return this.courseMap.get(`${subjectCode}__|__${courseNumber}`.toUpperCase());
   }
@@ -664,6 +666,16 @@ export class Catalog extends Record.define({
       })
       .reverse();
     return results;
+  }
+
+  getDistinctCategories<Category>(categoryPicker: (course: Course) => Category) {
+    const categories = this.courseMap
+      .valueSeq()
+      .map(course => categoryPicker(course))
+      .reduce((distinctCategories, next) => {
+        return distinctCategories.add(next);
+      }, Immutable.Set<Category>());
+    return categories;
   }
 }
 
