@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as Model from '../models';
 import styled from 'styled-components';
-import { View, Text } from '../components';
+import { View, Text, ActionableText } from '../components';
 import * as styles from '../styles';
 
 const Container = styled(View)`
@@ -22,11 +22,19 @@ const CategoryHeader = styled(Text)`
 const CategoryItem = styled(Text)`
   margin-left: ${styles.space(0)};
 `;
-const MoreCategories = styled(Text)`
-  font-size: ${styles.space(-1)};
-`;
 
-export class Catalog extends Model.store.connect() {
+export class Catalog extends Model.store.connect({
+  initialState: {
+    subjectCodesExpanded: false,
+  },
+}) {
+  handleSubjectCodeMore = () => {
+    this.setState(previousState => ({
+      ...previousState,
+      subjectCodesExpanded: true,
+    }));
+  };
+
   render() {
     const distinctSubjectCodes = this.store.catalog
       .getDistinctCategories(course => course.subjectCode)
@@ -34,7 +42,6 @@ export class Catalog extends Model.store.connect() {
       .sort();
 
     const firstTenSubjectCodes = distinctSubjectCodes.take(10);
-
     const remainingSubjectCodes = distinctSubjectCodes.count() - firstTenSubjectCodes.count();
 
     // this.store.catalog.getDistinctCategories
@@ -43,12 +50,16 @@ export class Catalog extends Model.store.connect() {
         <Sidebar>
           <Category>
             <CategoryHeader>Subject code</CategoryHeader>
-            {firstTenSubjectCodes.map(subjectCode => (
-              <CategoryItem key={subjectCode}>{subjectCode}</CategoryItem>
-            ))}
-            <MoreCategories>
+            {/*if*/ !this.state.subjectCodesExpanded
+              ? firstTenSubjectCodes.map(subjectCode => (
+                  <CategoryItem key={subjectCode}>{subjectCode}</CategoryItem>
+                ))
+              : distinctSubjectCodes.map(subjectCode => (
+                  <CategoryItem key={subjectCode}>{subjectCode}</CategoryItem>
+                ))}
+            <ActionableText onClick={this.handleSubjectCodeMore}>
               There are {remainingSubjectCodes} more subject codes. Click here to expand.
-            </MoreCategories>
+            </ActionableText>
           </Category>
         </Sidebar>
         <Content>
