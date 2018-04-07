@@ -33,7 +33,7 @@ export class Dropzone extends Model.store.connect({
   dragOver$ = new Subject<{ clientY: number; clientX: number }>();
 
   componentDidMount() {
-    this.dragOver$.pipe(throttleTime(150)).subscribe(this.handleDragOverThrottled);
+    this.dragOver$.pipe(throttleTime(300)).subscribe(this.handleDragOverThrottled);
   }
 
   handleContainerRef = (e: HTMLDivElement | null | undefined) => {
