@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { View } from './view';
 import { Text } from './text';
 import { ActionableText } from './actionable-text';
+import { CategoryItem } from './category-item';
 import * as styles from '../styles';
 import * as Model from '../models';
 import * as Immutable from 'immutable';
@@ -32,19 +33,23 @@ export interface Filter {
   apply: (course: Model.Course) => boolean;
 }
 
-export interface CategoryProps<T> {
+export interface CategoryProps {
   name: string;
-  categoryPicker: (course: Model.Course) => T;
   courses: Immutable.Seq.Indexed<Model.Course>;
+  categoryPicker: (course: Model.Course) => string;
   onFilterChange: (filter: Filter) => void;
 }
-interface CategoryState {}
+interface CategoryState {
+  activeCategories: { [key: string]: boolean | undefined };
+}
 
-export class Category<T> extends React.Component<CategoryProps<T>, CategoryState> {
+export class Category extends React.Component<CategoryProps, CategoryState> {
   categoryId = uuid();
-  constructor(props: CategoryProps<T>) {
+  constructor(props: CategoryProps) {
     super(props);
-    this.state = {};
+    this.state = {
+      activeCategories: {},
+    };
   }
 
   get distinctCategories() {
@@ -52,7 +57,34 @@ export class Category<T> extends React.Component<CategoryProps<T>, CategoryState
       .map(course => this.props.categoryPicker(course))
       .reduce((distinctSet, pickedCategory) => {
         return distinctSet.set(pickedCategory, (distinctSet.get(pickedCategory) || 0) + 1);
-      }, Immutable.Map<T, number>());
+      }, Immutable.Map<string, number>());
+  }
+
+  handleCategoryChange(category: string) {
+    this.setState(previousState => {
+      const previousActiveCategories = previousState.activeCategories;
+
+      const newActiveCategories = {
+        ...previousActiveCategories,
+        [category]: !previousActiveCategories[category],
+      };
+
+      this.props.onFilterChange({
+        id: this.categoryId,
+        apply: (course: Model.Course) => {
+          const category = this.props.categoryPicker(course);
+          if (!newActiveCategories[category]) {
+            return false;
+          }
+          return true;
+        },
+      });
+
+      return {
+        ...previousState,
+        activeCategories: newActiveCategories,
+      };
+    });
   }
 
   render() {
@@ -65,9 +97,14 @@ export class Category<T> extends React.Component<CategoryProps<T>, CategoryState
             .sortBy(c => c[0])
             .take(10)
             .map(([category, count]) => (
-              <Item>
-                {category} {count}
-              </Item>
+              <CategoryItem
+                category={category}
+                count={count}
+                checked={!!this.state.activeCategories[category]}
+                onCategoryChange={() => {
+                  this.handleCategoryChange(category);
+                }}
+              />
             ))}
         </List>
       </Container>

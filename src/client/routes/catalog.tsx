@@ -61,7 +61,7 @@ export class Catalog extends Model.store.connect({
           />
           <Category
             name="Credit hours"
-            categoryPicker={course => course.credits}
+            categoryPicker={course => `${course.credits}`}
             courses={this.filteredCourses}
             onFilterChange={this.handleFilterChange}
           />
