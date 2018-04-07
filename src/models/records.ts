@@ -845,6 +845,8 @@ export class Draggables extends Record.define({
   selectedDraggableId: '',
   dragging: false,
   height: 0,
+  closestDraggableId: '',
+  direction: 'top' as 'top' | 'bottom',
 }) {}
 
 export class Ui extends Record.define({

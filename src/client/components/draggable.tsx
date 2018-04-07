@@ -15,8 +15,10 @@ const FloatingChild = styled.div`
 `;
 const ChildWrapper = styled.div`
   transition: all 5ms;
+  max-height: 20rem;
   &.dragging {
-    transform:translateX(-9999px)
+    max-height: 0;
+    opacity: 0;
   }
 `;
 const Spacer = styled.div`
@@ -46,6 +48,22 @@ export class Draggable extends Model.store.connect({
 
   get dragging() {
     return this.store.dragging && this.store.selectedDraggableId === this.draggableId;
+  }
+
+  get topSpacer() {
+    return (
+      this.store.dragging &&
+      this.store.closestDraggableId === this.draggableId &&
+      this.store.direction === 'top'
+    );
+  }
+
+  get bottomSpacer() {
+    return (
+      this.store.dragging &&
+      this.store.closestDraggableId === this.draggableId &&
+      this.store.direction === 'bottom'
+    );
   }
 
   handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
@@ -87,7 +105,11 @@ export class Draggable extends Model.store.connect({
 
   render() {
     return (
-      <Container innerRef={this.handleContainerRef}>
+      <Container
+        className={['draggable', `draggable-${this.draggableId}`].join(' ')}
+        innerRef={this.handleContainerRef}
+      >
+        <Spacer style={{ height: this.topSpacer ? this.store.height : 0 }} />
         <ChildWrapper
           draggable
           className={this.dragging ? 'dragging' : ''}
@@ -97,10 +119,7 @@ export class Draggable extends Model.store.connect({
         >
           {this.props.children}
         </ChildWrapper>
-        {/* <Spacer
-          className={this.dragging ? 'dragging' : ''}
-          style={{ height: this.dragging ? this.store.height : 0 }}
-        /> */}
+        <Spacer style={{ height: this.bottomSpacer ? this.store.height : 0 }} />
       </Container>
     );
   }
