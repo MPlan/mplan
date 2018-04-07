@@ -1,8 +1,9 @@
 import * as React from 'react';
 import * as Model from '../models';
 import styled from 'styled-components';
-import { View, Text, ActionableText } from '../components';
+import { View, Text, ActionableText, Category, Filter } from '../components';
 import * as styles from '../styles';
+import * as Immutable from 'immutable';
 
 const Container = styled(View)`
   flex: 1;
@@ -13,25 +14,29 @@ const Sidebar = styled(View)`
   background-color: ${styles.grayLighter};
 `;
 const Content = styled(View)``;
-const Category = styled(View)`
-  padding: ${styles.space(0)};
-`;
-const CategoryHeader = styled(Text)`
-  font-weight: ${styles.bold};
-`;
-const CategoryItem = styled(Text)`
-  margin-left: ${styles.space(0)};
-`;
 
 export class Catalog extends Model.store.connect({
   initialState: {
-    subjectCodesExpanded: false,
+    filters: Immutable.Map<string, Filter>(),
   },
 }) {
   handleSubjectCodeMore = () => {
     this.setState(previousState => ({
       ...previousState,
       subjectCodesExpanded: true,
+    }));
+  };
+
+  get filteredCourses() {
+    return this.store.catalog.courseMap
+      .valueSeq()
+      .filter(course => this.state.filters.every(filter => filter.apply(course)));
+  }
+
+  handleFilterChange = (filter: Filter) => {
+    this.setState(previousState => ({
+      ...previousState,
+      filters: previousState.filters.remove(filter.id).set(filter.id, filter),
     }));
   };
 
@@ -48,19 +53,18 @@ export class Catalog extends Model.store.connect({
     return (
       <Container>
         <Sidebar>
-          <Category>
-            <CategoryHeader>Subject code</CategoryHeader>
-            {/*if*/ !this.state.subjectCodesExpanded
-              ? firstTenSubjectCodes.map(subjectCode => (
-                  <CategoryItem key={subjectCode}>{subjectCode}</CategoryItem>
-                ))
-              : distinctSubjectCodes.map(subjectCode => (
-                  <CategoryItem key={subjectCode}>{subjectCode}</CategoryItem>
-                ))}
-            <ActionableText onClick={this.handleSubjectCodeMore}>
-              There are {remainingSubjectCodes} more subject codes. Click here to expand.
-            </ActionableText>
-          </Category>
+          <Category
+            name="Subject code"
+            categoryPicker={course => course.subjectCode}
+            courses={this.filteredCourses}
+            onFilterChange={this.handleFilterChange}
+          />
+          <Category
+            name="Credit hours"
+            categoryPicker={course => course.credits}
+            courses={this.filteredCourses}
+            onFilterChange={this.handleFilterChange}
+          />
         </Sidebar>
         <Content>
           <Text>Content</Text>

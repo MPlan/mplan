@@ -15,3 +15,4 @@ export * from './modal';
 export * from './search-result-course';
 export * from './dropdown-menu';
 export * from './semester';
+export * from './category';
