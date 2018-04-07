@@ -3,6 +3,7 @@ import * as Model from '../models';
 import styled from 'styled-components';
 import { View } from './view';
 import * as uuid from 'uuid/v4';
+import * as styles from '../styles';
 
 const Container = styled(View)`
   position: relative;
@@ -24,6 +25,7 @@ const ChildWrapper = styled.div`
 const Spacer = styled.div`
   transition: all 0.2s;
   max-height: 20rem;
+  background-color: ${styles.whiteBis};
 `;
 
 export interface DraggableProps {
