@@ -76,31 +76,32 @@ export class Dropzone extends Model.store.connect({
       .map(({ top, left, width, height, dragId }) => ({
         y: top + height,
         x: left + width / 2,
+        midpoint: top + height / 2,
         dragId,
       }));
 
     let closestElementId = '';
     let closestDistance = Number.POSITIVE_INFINITY;
     let closestY = 0;
+    let aboveMidpoint = false;
 
-    for (const { y, x, dragId } of draggables) {
+    for (const { y, x, dragId, midpoint } of draggables) {
       const distance = abs(clientY - y);
       if (distance < closestDistance) {
         closestDistance = distance;
         closestElementId = dragId;
         closestY = y;
+        aboveMidpoint = clientY < midpoint;
       }
     }
 
     if (!closestElementId) return;
 
-    const direction = /*if*/ clientY < closestY ? 'top' : 'bottom';
-
     this.setStore(store =>
       store
         .set('closestElementId', closestElementId)
-        .set('direction', direction)
-        .set('selectedDropzoneId', this.props.id),
+        .set('selectedDropzoneId', this.props.id)
+        .set('aboveMidpoint', aboveMidpoint),
     );
   };
 
@@ -136,8 +137,7 @@ export class Dropzone extends Model.store.connect({
     );
 
     if (closestElementIdIndex <= -1) return;
-    const newIndex =
-      this.store.direction === 'top' ? closestElementIdIndex : closestElementIdIndex;
+    const newIndex = this.store.direction === 'top' ? closestElementIdIndex : closestElementIdIndex;
 
     this.props.onChangeSort({
       fromDropzoneId,
@@ -156,10 +156,10 @@ export class Dropzone extends Model.store.connect({
         onDrop={this.handleDrop}
         onDragOver={this.handleDragOver}
       >
-        {this.props.elements.map(element => {
+        {this.props.elements.map((element, index) => {
           const draggableKey = this.props.getKey(element);
           return (
-            <Draggable id={draggableKey} key={draggableKey}>
+            <Draggable id={draggableKey} key={draggableKey} firstElement={index === 0}>
               {this.props.render(element)}
             </Draggable>
           );

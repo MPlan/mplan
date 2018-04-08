@@ -33,12 +33,13 @@ const Spacer = styled(Text)`
   font-weight: ${styles.bold};
   color: ${styles.grayLighter};
   max-height: 20rem;
-  box-shadow: inset 0 0 1.3rem 0 rgba(12, 0, 51, 0.1);
+  box-shadow: inset 0 0 1rem 0 rgba(12, 0, 51, 0.1);
   transition: all 0.12s;
 `;
 
 export interface DraggableProps {
   id: string;
+  firstElement: boolean;
   children: JSX.Element;
 }
 
@@ -64,14 +65,19 @@ export class Draggable extends Model.store.connect({
 
   get topSpacer() {
     return (
+      this.props.firstElement &&
       this.store.dragging &&
       this.store.closestElementId === this.props.id &&
-      this.store.direction === 'top'
+      this.store.aboveMidpoint
     );
   }
 
   get bottomSpacer() {
-    return this.store.dragging && this.store.closestElementId === this.props.id;
+    return (
+      !this.topSpacer &&
+      this.store.dragging &&
+      this.store.closestElementId === this.props.id
+    );
   }
 
   handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
@@ -118,7 +124,7 @@ export class Draggable extends Model.store.connect({
         className={['draggable', `draggable-${this.draggableId}`].join(' ')}
         innerRef={this.handleContainerRef}
       >
-        {/* <Spacer style={{ height: this.topSpacer ? this.store.height : 0 }} /> */}
+        <Spacer style={{ height: this.topSpacer ? this.store.height : 0 }}>Incoming!</Spacer>
         <ChildWrapper
           draggable
           className={['drag', `drag-id-${this.props.id}`, this.dragging ? 'dragging' : ''].join(
@@ -130,7 +136,7 @@ export class Draggable extends Model.store.connect({
         >
           {this.props.children}
         </ChildWrapper>
-        <Spacer style={{ height: this.bottomSpacer ? this.store.height : 0 }}>Drop!</Spacer>
+        <Spacer style={{ height: this.bottomSpacer ? this.store.height : 0 }}>Incoming!</Spacer>
       </Container>
     );
   }
