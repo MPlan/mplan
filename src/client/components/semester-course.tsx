@@ -51,18 +51,6 @@ export function SemesterCourse(props: SemesterCourseProps) {
       <Body>
         <SimpleName>{course.simpleName}</SimpleName>
         <FullName>{course.name}</FullName>
-        <CriticalLevel>
-          {criticalLevel <= 0 ? (
-            <Text>
-              <Text color={styles.red}>Critical:</Text>&nbsp;delaying this course may delay others
-            </Text>
-          ) : (
-            <Text>Can move ${criticalLevel} semesters.</Text>
-          )}
-        </CriticalLevel>
-        {course.prerequisites ? (
-          <PreferredPrerequisite course={course} degree={degree} catalog={catalog} />
-        ) : null}
       </Body>
       <DropdownMenu
         header="fdsa"
