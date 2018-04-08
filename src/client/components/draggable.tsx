@@ -8,6 +8,7 @@ import * as styles from '../styles';
 
 const Container = styled(View)`
   position: relative;
+  flex-shrink: 0;
 `;
 
 const FloatingChild = styled.div`

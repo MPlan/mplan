@@ -33,6 +33,7 @@ const Card = styled(View)`
   background-color: ${styles.white};
   box-shadow: ${styles.boxShadow(1)};
   padding-top: ${styles.space(-1)};
+  overflow: auto;
 `;
 
 export interface SemesterProps {
