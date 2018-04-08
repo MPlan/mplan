@@ -7,7 +7,8 @@ import * as uuid from 'uuid/v4';
 import { oneLine } from 'common-tags';
 import { Subject } from 'rxjs/Subject';
 import { throttleTime } from 'rxjs/operators';
-import { interval } from 'rxjs/Observable/interval';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/interval';
 import { Subscription } from 'rxjs/Subscription';
 const { abs } = Math;
 
@@ -48,7 +49,7 @@ export class Dropzone extends Model.store.connect({
   lastDragOverTime = 0;
   containerRef: HTMLDivElement | null | undefined;
   dragOver$ = new Subject<{ clientY: number; clientX: number }>();
-  dropzoneActivePoll$ = interval(100);
+  dropzoneActivePoll$ = Observable.interval(100);
   dropzoneActivePollSubscription: Subscription | undefined;
   dragOverSubscription: Subscription | undefined;
 
