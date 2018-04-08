@@ -71,7 +71,7 @@ export class Semester extends Model.store.connect({
             id={semester.id}
             elements={courses}
             getKey={course => course.id}
-            onChangeSort={() => {}}
+            onChangeSort={(e) => {console.log(e)}}
             render={this.renderCourse}
           />
         </Card>

@@ -56,7 +56,7 @@ export class Draggable extends Model.store.connect({
   get topSpacer() {
     return (
       this.store.dragging &&
-      this.store.closestDraggableId === this.draggableId &&
+      this.store.closestElementId === this.props.id &&
       this.store.direction === 'top'
     );
   }
@@ -64,7 +64,7 @@ export class Draggable extends Model.store.connect({
   get bottomSpacer() {
     return (
       this.store.dragging &&
-      this.store.closestDraggableId === this.draggableId &&
+      this.store.closestElementId === this.props.id &&
       this.store.direction === 'bottom'
     );
   }
@@ -79,6 +79,7 @@ export class Draggable extends Model.store.connect({
       store
         .set('dragging', true)
         .set('selectedDraggableId', this.draggableId)
+        .set('selectedElementId', this.props.id)
         .set('height', childHeight || 0),
     );
   };
@@ -115,7 +116,7 @@ export class Draggable extends Model.store.connect({
         <Spacer style={{ height: this.topSpacer ? this.store.height : 0 }} />
         <ChildWrapper
           draggable
-          className={[`drag-id-${this.props.id}`, this.dragging ? 'dragging' : ''].join(' ')}
+          className={['drag', `drag-id-${this.props.id}`, this.dragging ? 'dragging' : ''].join(' ')}
           innerRef={this.handleChildWrapperRef}
           onDragStart={this.handleDragStart}
           onDragEnd={this.handleDragEnd}

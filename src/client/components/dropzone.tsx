@@ -56,10 +56,11 @@ export class Dropzone extends Model.store.connect({
       document.querySelectorAll(oneLine`
           .dropzone-${this.props.id}
           .draggable:not(.draggable-${this.store.selectedDraggableId})
+          .drag
         `),
     )
       .map(draggable => {
-        const match = /draggable-([\w-]*)/.exec(draggable.className);
+        const match = /drag-id-(\S*)/.exec(draggable.className);
         if (!match) return undefined;
         const rect = draggable.getBoundingClientRect();
         return {
@@ -67,37 +68,37 @@ export class Dropzone extends Model.store.connect({
           left: rect.left,
           width: rect.width,
           height: rect.height,
-          draggableId: match[1],
+          dragId: match[1],
         };
       })
       .filter(x => !!x)
       .map(x => x!)
-      .map(({ top, left, width, height, draggableId }) => ({
+      .map(({ top, left, width, height, dragId }) => ({
         y: top + height / 2,
         x: left + width / 2,
-        draggableId,
+        dragId,
       }));
 
-    let closestDraggableId = '';
+    let closestElementId = '';
     let closestDistance = Number.POSITIVE_INFINITY;
     let closestY = 0;
 
-    for (const { y, x, draggableId } of draggables) {
+    for (const { y, x, dragId } of draggables) {
       const distance = sqrt(pow(clientY - y, 2) - pow(clientX - x, 2));
       if (distance < closestDistance) {
         closestDistance = distance;
-        closestDraggableId = draggableId;
+        closestElementId = dragId;
         closestY = y;
       }
     }
 
-    if (!closestDraggableId) return;
+    if (!closestElementId) return;
 
     const direction = /*if*/ clientY < closestY ? 'top' : 'bottom';
 
     this.setStore(store =>
       store
-        .set('closestDraggableId', closestDraggableId)
+        .set('closestElementId', closestElementId)
         .set('direction', direction)
         .set('selectedDropzoneId', this.props.id),
     );
@@ -124,9 +125,26 @@ export class Dropzone extends Model.store.connect({
   };
 
   handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    console.log('drop');
     e.preventDefault();
     const fromDropzoneId = this.store.startingDropzoneId;
     const toDropzoneId = this.store.selectedDropzoneId;
+    const oldIndex = this.store.startingIndex;
+    const closestElementId = this.store.closestElementId;
+    const closestElementIdIndex = this.props.elements.findIndex(
+      element => this.props.getKey(element) === closestElementId,
+    );
+
+    if (closestElementIdIndex <= -1) return;
+    const newIndex =
+      this.store.direction === 'top' ? closestElementIdIndex : closestElementIdIndex;
+
+    this.props.onChangeSort({
+      fromDropzoneId,
+      toDropzoneId,
+      oldIndex,
+      newIndex,
+    });
   };
 
   render() {
