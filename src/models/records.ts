@@ -533,6 +533,12 @@ export class Semester extends Record.define({
     return this.update('_courses', courses => courses.push(course));
   }
 
+  deleteCourse(courseToDelete: Course) {
+    return this.update('_courses', courses => {
+      return courses.filter(course => courseToDelete !== course);
+    });
+  }
+
   private _previousSemesterSeason() {
     if (this.season === 'Winter') {
       return 'Fall';

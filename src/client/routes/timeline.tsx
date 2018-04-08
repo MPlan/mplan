@@ -50,7 +50,6 @@ export class Timeline extends Model.store.connect() {
             </Text>
             <Text color={styles.textLight}>Create your MPlan here.</Text>
           </HeaderMain>
-
           <HeaderRight>
             <Text strong color={styles.textLight}>
               Expected Graduation:
@@ -60,12 +59,10 @@ export class Timeline extends Model.store.connect() {
             </Text>
           </HeaderRight>
         </Header>
-
         <SemestersContainer>
           {this.store.user.plan.semesterMap
             .valueSeq()
             .sortBy(s => s.position)
-            // .reverse()
             .map(semester => (
               <Semester
                 key={semester.id}
@@ -75,7 +72,6 @@ export class Timeline extends Model.store.connect() {
               />
             ))}
         </SemestersContainer>
-
         <FloatingActionButton actions={actions} message="Add..." onAction={this.handleActions} />
       </Container>
     );

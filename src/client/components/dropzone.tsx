@@ -48,15 +48,18 @@ export class Dropzone extends Model.store.connect({
 }) {
   lastDragOverTime = 0;
   containerRef: HTMLDivElement | null | undefined;
+  mounted = false;
   dragOver$ = new Subject<{ clientY: number; clientX: number }>();
   dropzoneActivePoll$ = Observable.interval(100);
   dropzoneActivePollSubscription: Subscription | undefined;
   dragOverSubscription: Subscription | undefined;
 
   componentDidMount() {
+    this.mounted = true;
     this.dragOver$.pipe(throttleTime(100)).subscribe(this.handleDragOverThrottled);
     // TODO: use rxjs to replace this polling
     this.dropzoneActivePoll$.subscribe(() => {
+      if (!this.mounted) return;
       this.setState(previousState => ({
         ...previousState,
         dropzoneActive: abs(this.lastDragOverTime - new Date().getTime()) < 200,
@@ -65,6 +68,7 @@ export class Dropzone extends Model.store.connect({
   }
 
   componentWillUnmount() {
+    this.mounted = false;
     super.componentWillUnmount();
     if (this.dragOverSubscription) {
       this.dragOverSubscription.unsubscribe();
