@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as Model from '../models';
 import styled from 'styled-components';
 import { View } from './view';
+import { Draggable } from './draggable';
 import * as uuid from 'uuid/v4';
 import { oneLine } from 'common-tags';
 import { Subject } from 'rxjs/Subject';
@@ -14,21 +15,31 @@ export interface ContainerProps
 }
 const Container = styled<ContainerProps>(View)`
   flex: 1;
-  /* ${props => (props.dragging ? 'z-index: 1000' : '')}; */
-  /* position: relative; */
 `;
 
-export interface DropzoneProps {
-  children: JSX.Element;
+export interface SortChange {
+  fromDropzoneId: string;
+  toDropzoneId: string;
+  /** element's old index within old parent */
+  oldIndex: number;
+  /** element's new index within new parent */
+  newIndex: number;
+}
+
+export interface DropzoneProps<T> {
+  id: string;
+  elements: T[];
+  getKey: (t: T) => string;
+  render: (t: T) => JSX.Element;
+  onChangeSort: (sortChange: SortChange) => void;
 }
 
 export class Dropzone extends Model.store.connect({
   scope: store => store.ui.draggables,
   descope: (store, draggables: Model.Draggables) =>
     store.updateUi(ui => ui.set('draggables', draggables)),
-  propsExample: (undefined as any) as DropzoneProps,
+  propsExample: (undefined as any) as DropzoneProps<Model.Course>,
 }) {
-  dropzoneId = uuid();
   containerRef: HTMLDivElement | null | undefined;
   dragOver$ = new Subject<{ clientY: number; clientX: number }>();
 
@@ -43,9 +54,9 @@ export class Dropzone extends Model.store.connect({
   handleDragOverThrottled = ({ clientY, clientX }: { clientY: number; clientX: number }) => {
     const draggables = Array.from(
       document.querySelectorAll(oneLine`
-        .dropzone-${this.dropzoneId}
-        .draggable:not(.draggable-${this.store.selectedDraggableId})
-      `),
+          .dropzone-${this.props.id}
+          .draggable:not(.draggable-${this.store.selectedDraggableId})
+        `),
     )
       .map(draggable => {
         const match = /draggable-([\w-]*)/.exec(draggable.className);
@@ -85,7 +96,23 @@ export class Dropzone extends Model.store.connect({
     const direction = /*if*/ clientY < closestY ? 'top' : 'bottom';
 
     this.setStore(store =>
-      store.set('closestDraggableId', closestDraggableId).set('direction', direction),
+      store
+        .set('closestDraggableId', closestDraggableId)
+        .set('direction', direction)
+        .set('selectedDropzoneId', this.props.id),
+    );
+  };
+
+  handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLElement;
+    const match = /drag-id-(\S*)/.exec(target.className);
+    if (!match) return;
+    const id = match[1];
+    const startingIndex = this.props.elements.findIndex(
+      element => this.props.getKey(element) === id,
+    );
+    this.setStore(store =>
+      store.set('startingDropzoneId', this.props.id).set('startingIndex', startingIndex),
     );
   };
 
@@ -96,18 +123,29 @@ export class Dropzone extends Model.store.connect({
     this.dragOver$.next({ clientY, clientX });
   };
 
+  handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const fromDropzoneId = this.store.startingDropzoneId;
+    const toDropzoneId = this.store.selectedDropzoneId;
+  };
+
   render() {
     return (
       <Container
         innerRef={this.handleContainerRef}
-        className={`dropzone dropzone-${this.dropzoneId}`}
-        onDrop={e => {
-          e.preventDefault();
-          console.log('drop');
-        }}
+        className={`dropzone dropzone-${this.props.id}`}
+        onDragStart={this.handleDragStart}
+        onDrop={this.handleDrop}
         onDragOver={this.handleDragOver}
       >
-        {this.props.children}
+        {this.props.elements.map(element => {
+          const draggableKey = this.props.getKey(element);
+          return (
+            <Draggable id={draggableKey} key={draggableKey}>
+              {this.props.render(element)}
+            </Draggable>
+          );
+        })}
       </Container>
     );
   }

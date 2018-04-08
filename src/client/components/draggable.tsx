@@ -16,19 +16,20 @@ const FloatingChild = styled.div`
 `;
 const ChildWrapper = styled.div`
   transition: all 5ms;
-  max-height: 20rem;
+  max-height: 30rem;
   &.dragging {
     max-height: 0;
     opacity: 0;
   }
 `;
 const Spacer = styled.div`
-  transition: all 0.2s;
+  transition: all 0.12s;
   max-height: 20rem;
   background-color: ${styles.whiteBis};
 `;
 
 export interface DraggableProps {
+  id: string;
   children: JSX.Element;
 }
 
@@ -114,7 +115,7 @@ export class Draggable extends Model.store.connect({
         <Spacer style={{ height: this.topSpacer ? this.store.height : 0 }} />
         <ChildWrapper
           draggable
-          className={this.dragging ? 'dragging' : ''}
+          className={[`drag-id-${this.props.id}`, this.dragging ? 'dragging' : ''].join(' ')}
           innerRef={this.handleChildWrapperRef}
           onDragStart={this.handleDragStart}
           onDragEnd={this.handleDragEnd}

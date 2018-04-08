@@ -44,8 +44,20 @@ export interface SemesterProps {
 export class Semester extends Model.store.connect({
   propsExample: (undefined as any) as SemesterProps,
 }) {
+  renderCourse = (course: Model.Course) => {
+    return (
+      <SemesterCourse
+        key={course.id}
+        course={course}
+        degree={this.props.degree}
+        catalog={this.props.catalog}
+      />
+    );
+  };
+
   render() {
     const { semester, degree, catalog } = this.props;
+    const courses = semester.courses;
     return (
       <Container>
         <Header>
@@ -54,19 +66,15 @@ export class Semester extends Model.store.connect({
             {semester.courseCount} {semester.courseCount === 1 ? 'course' : 'courses'}
           </CourseCount>
         </Header>
-        <Dropzone>
-          <Card>
-            {semester.courses.map(course => (
-              <SemesterCourse
-                key={course.id}
-                course={course}
-                degree={degree}
-                catalog={catalog}
-                onMouseDown={() => {}}
-              />
-            ))}
-          </Card>
-        </Dropzone>
+        <Card>
+          <Dropzone
+            id={semester.id}
+            elements={courses}
+            getKey={course => course.id}
+            onChangeSort={() => {}}
+            render={this.renderCourse}
+          />
+        </Card>
       </Container>
     );
   }

@@ -843,6 +843,9 @@ export class User extends Record.define({
 
 export class Draggables extends Record.define({
   selectedDraggableId: '',
+  selectedDropzoneId: '',
+  startingDropzoneId: '',
+  startingIndex: 0,
   dragging: false,
   height: 0,
   closestDraggableId: '',
