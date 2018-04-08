@@ -37,10 +37,10 @@ async function fetchCatalog() {
 async function updateStoreWithCatalog() {
   const catalog = await fetchCatalog();
 
-  const fall2018 = new Record.Semester({
+  const fall2017 = new Record.Semester({
     _id: Record.ObjectId(),
     season: 'Fall',
-    year: 2018,
+    year: 2017,
   })
     .addCourse(catalog.getCourse('ENGR', '100')!)
     .addCourse(catalog.getCourse('CIS', '150')!)
@@ -54,6 +54,12 @@ async function updateStoreWithCatalog() {
   })
     .addCourse(catalog.getCourse('ECE', '270')!)
     .addCourse(catalog.getCourse('COMP', '270')!);
+
+  const summer2018 = new Record.Semester({
+    _id: Record.ObjectId(),
+    season: 'Summer',
+    year: 2018,
+  });
 
   store.sendUpdate(store =>
     store
@@ -254,7 +260,10 @@ async function updateStoreWithCatalog() {
       )
       .updatePlan(plan =>
         plan.update('semesterMap', semesterMap =>
-          semesterMap.set(fall2018.id, fall2018).set(winter2018.id, winter2018),
+          semesterMap
+            .set(fall2017.id, fall2017)
+            .set(winter2018.id, winter2018)
+            .set(summer2018.id, summer2018),
         ),
       ),
   );

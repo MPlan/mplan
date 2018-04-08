@@ -4,6 +4,7 @@ import * as styles from '../styles';
 import * as Model from '../models';
 import * as Immutable from 'immutable';
 import styled from 'styled-components';
+import { allCombinations } from '../models';
 
 const Container = styled(View)`
   flex: 1;
@@ -24,7 +25,21 @@ const SemestersContainer = styled(View)`
   overflow: auto;
 `;
 
+const actions = {
+  newSemester: {
+    text: 'New semester',
+    icon: 'plus',
+    color: styles.blue,
+  },
+};
+
 export class Timeline extends Model.store.connect() {
+  handleActions = (action: keyof typeof actions) => {
+    if (action === 'newSemester') {
+      this.setStore(store => store.updatePlan(plan => plan.createNewSemester()));
+    }
+  };
+
   render() {
     return (
       <Container>
@@ -50,7 +65,7 @@ export class Timeline extends Model.store.connect() {
           {this.store.user.plan.semesterMap
             .valueSeq()
             .sortBy(s => s.position)
-            .reverse()
+            // .reverse()
             .map(semester => (
               <Semester
                 key={semester.id}
@@ -61,16 +76,7 @@ export class Timeline extends Model.store.connect() {
             ))}
         </SemestersContainer>
 
-        <FloatingActionButton
-          actions={{
-            newSemester: {
-              text: 'New semester',
-              icon: 'plus',
-              color: styles.blue,
-            },
-          }}
-          message="Add..."
-        />
+        <FloatingActionButton actions={actions} message="Add..." onAction={this.handleActions} />
       </Container>
     );
   }

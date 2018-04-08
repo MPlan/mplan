@@ -824,6 +824,28 @@ export class Plan extends Record.define({
   updateSemester(id: string, updater: (semester: Semester) => Semester) {
     return this.update('semesterMap', map => map.update(id, updater));
   }
+
+  lastSemester() {
+    return this.semesterMap
+      .valueSeq()
+      .sortBy(semester => semester.position)
+      .reverse()
+      .first();
+  }
+
+  createNewSemester() {
+    const lastSemester = this.lastSemester();
+    if (!lastSemester) {
+      return this;
+    }
+    const nextSemester = lastSemester.nextSemester();
+    const newSemester = new Semester({
+      _id: ObjectId(),
+      year: nextSemester.year,
+      season: nextSemester.season,
+    });
+    return this.update('semesterMap', map => map.set(newSemester.id, newSemester));
+  }
 }
 
 export class User extends Record.define({
