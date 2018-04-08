@@ -28,36 +28,6 @@ const Container = styled(View)`
   justify-content: center;
   align-items: center;
 `;
-const Fab = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: ${styles.blue};
-  height: ${styles.space(3)};
-  min-height: ${styles.space(3)};
-  width: ${styles.space(3)};
-  min-width: ${styles.space(3)};
-  border-style: none;
-  border-radius: 999999px;
-  box-shadow: ${styles.boxShadow(1)};
-  outline: none;
-
-  &:hover .message {
-    opacity: 1;
-    animation: ${fadeIn} 0.1s ease-out;
-  }
-
-  &:focus,
-  &:hover {
-    background-color: ${styles.hover(styles.blue)};
-  }
-  &:active {
-    background-color: ${styles.linkHover};
-  }
-  &:active .message {
-    color: ${styles.linkHover};
-  }
-`;
 const VerticalLine = styled.div`
   width: 0.2rem;
   min-width: 0.2rem;
@@ -117,6 +87,37 @@ const Item = styled.li`
   }
   outline: none;
 `;
+const Fab = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: ${styles.blue};
+  height: ${styles.space(3)};
+  min-height: ${styles.space(3)};
+  width: ${styles.space(3)};
+  min-width: ${styles.space(3)};
+  border-style: none;
+  border-radius: 999999px;
+  box-shadow: ${styles.boxShadow(1)};
+  outline: none;
+
+  &:hover .message {
+    opacity: 1;
+    animation: ${fadeIn} 0.1s ease-out;
+  }
+
+  &:focus,
+  &:hover {
+    background-color: ${styles.hover(styles.blue)};
+  }
+  &:active,
+  &.item-mouse-down {
+    background-color: ${styles.linkHover};
+  }
+  &:active .message {
+    color: ${styles.linkHover};
+  }
+`;
 const Header = styled(Text)`
   font-size: ${styles.space(1)};
   font-weight: ${styles.bold};
@@ -142,6 +143,7 @@ export interface FloatingActionButtonProps<T>
 interface FloatingActionButtonState {
   hovering: boolean;
   open: boolean;
+  itemMouseDown: boolean;
 }
 
 export class FloatingActionButton<T extends { [P in keyof T]: MenuItem }> extends React.Component<
@@ -151,7 +153,11 @@ export class FloatingActionButton<T extends { [P in keyof T]: MenuItem }> extend
   containerRef: HTMLDivElement | null | undefined;
   constructor(props: FloatingActionButtonProps<T>) {
     super(props);
-    this.state = { hovering: false, open: false };
+    this.state = {
+      hovering: false,
+      open: false,
+      itemMouseDown: false,
+    };
   }
 
   handleMouseEnter = () => {
@@ -195,6 +201,20 @@ export class FloatingActionButton<T extends { [P in keyof T]: MenuItem }> extend
     }));
   };
 
+  handleItemMouseDown = () => {
+    this.setState(previousState => ({
+      ...previousState,
+      itemMouseDown: true,
+    }));
+  };
+
+  handleItemMouseUp = () => {
+    this.setState(previousState => ({
+      ...previousState,
+      itemMouseDown: false,
+    }));
+  };
+
   handleContainerRef = (e: HTMLDivElement | null | undefined) => {
     this.containerRef = e;
   };
@@ -205,6 +225,7 @@ export class FloatingActionButton<T extends { [P in keyof T]: MenuItem }> extend
     return (
       <Container innerRef={this.handleContainerRef}>
         <Fab
+          className={this.state.itemMouseDown ? 'item-mouse-down' : ''}
           onClick={this.handleClick}
           onBlur={this.handleBlur}
           onMouseEnter={this.handleMouseEnter}
@@ -242,6 +263,8 @@ export class FloatingActionButton<T extends { [P in keyof T]: MenuItem }> extend
                   this.handleMenuClick(action);
                 }}
                 onBlur={this.handleBlur}
+                onMouseDown={this.handleItemMouseDown}
+                onMouseUp={this.handleItemMouseUp}
               >
                 <Icon icon={icon} color={color} />
                 <Text style={{ color: styles.text }}>{text}</Text>
