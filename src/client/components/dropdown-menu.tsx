@@ -5,7 +5,8 @@ import styled from 'styled-components';
 import { Fa } from './fa';
 import * as styles from '../styles';
 import { wait } from '../../utilities/utilities';
-import { Dropdown, DropdownItem, DropdownProps } from './dropdown';
+import { Dropdown, DropdownProps } from './dropdown';
+import { MenuItem } from './menu-item';
 
 const Container = styled(View)`
   position: relative;
@@ -40,17 +41,17 @@ const Icon = styled(Fa)`
   margin-right: ${styles.space(0)};
 `;
 
-export interface DropdownMenuProps<T extends { [P in keyof T]: DropdownItem }> {
+export interface DropdownMenuProps<T extends { [P in keyof T]: MenuItem }> {
   actions: T;
   onAction: (action: keyof T) => void;
   header: string;
 }
 
-interface DropdownMenuState<T extends { [P in keyof T]: DropdownItem }> {
+interface DropdownMenuState<T extends { [P in keyof T]: MenuItem }> {
   open: boolean;
 }
 
-export class DropdownMenu<T extends { [P in keyof T]: DropdownItem }> extends React.Component<
+export class DropdownMenu<T extends { [P in keyof T]: MenuItem }> extends React.Component<
   DropdownMenuProps<T>,
   DropdownMenuState<T>
 > {

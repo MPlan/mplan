@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { View } from './view';
 import { Text } from './text';
+import { MenuItem } from './menu-item';
+import { Fa } from './fa';
 import styled, { keyframes } from 'styled-components';
 import * as styles from '../styles';
 
@@ -18,9 +20,18 @@ const fadeIn = keyframes`
     opacity: 1;
   }
 `;
-
-const Container = styled.button`
+const Container = styled(View)`
+  position: absolute;
+  bottom: ${styles.space(3)};
+  right: ${styles.space(3)};
+  transition: all 0.08s;
+  justify-content: center;
+  align-items: center;
+`;
+const Fab = styled.button`
   display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: ${styles.blue};
   height: ${styles.space(3)};
   min-height: ${styles.space(3)};
@@ -30,12 +41,6 @@ const Container = styled.button`
   border-radius: 999999px;
   box-shadow: ${styles.boxShadow(1)};
   outline: none;
-  transition: all 0.08s;
-  position: absolute;
-  bottom: ${styles.space(3)};
-  right: ${styles.space(3)};
-  justify-content: center;
-  align-items: center;
 
   &:hover .message {
     opacity: 1;
@@ -53,7 +58,6 @@ const Container = styled.button`
     color: ${styles.linkHover};
   }
 `;
-
 const VerticalLine = styled.div`
   width: 0.2rem;
   min-width: 0.2rem;
@@ -62,7 +66,6 @@ const VerticalLine = styled.div`
   position: absolute;
   background-color: ${styles.white};
 `;
-
 const HorizontalLine = styled.div`
   height: 0.2rem;
   min-height: 0.2rem;
@@ -71,13 +74,11 @@ const HorizontalLine = styled.div`
   position: absolute;
   background-color: ${styles.white};
 `;
-
 const Plus = styled(View)`
   position: relative;
   justify-content: center;
   align-items: center;
 `;
-
 const Message = styled(Text)`
   background-color: initial;
   position: absolute;
@@ -90,36 +91,42 @@ const Message = styled(Text)`
   font-size: ${styles.space(1)};
   display: none;
 `;
-
-const Menu = styled(View)`
-  background-color: white;
-  box-shadow: ${styles.boxShadow(1)};
+const Menu = styled.ul`
+  list-style-type: none;
+  display: none;
+  flex-direction: column;
   position: absolute;
+  background-color: white;
   width: 20rem;
   bottom: calc(100% + 1rem);
   right: 0;
-  display: none;
   margin: 0;
-  padding: ${styles.space(0)};
+  padding: ${styles.space(-1)} 0;
   text-align: left;
+  box-shadow: ${styles.boxShadow(1)};
 `;
-
-const MenuItem = styled(Text)`
+const Item = styled.li`
   padding: 1rem;
-  &:hover {
+  margin: 0;
+  &:hover,
+  &:focus {
     background-color: ${styles.whiteTer};
   }
   &:active {
     background-color: ${styles.grayLighter};
   }
+  outline: none;
 `;
-
-const MenuHeader = styled(Text)`
+const Header = styled(Text)`
   font-size: ${styles.space(1)};
   font-weight: ${styles.bold};
   color: ${styles.textLight};
   position: absolute;
   bottom: calc(100% + ${styles.space(0)});
+`;
+const Icon = styled(Fa)`
+  margin-right: ${styles.space(0)};
+  min-width: ${styles.space(0)};
 `;
 
 export interface FloatingActionButtonProps<T>
@@ -137,10 +144,11 @@ interface FloatingActionButtonState {
   open: boolean;
 }
 
-export class FloatingActionButton<T> extends React.Component<
+export class FloatingActionButton<T extends { [P in keyof T]: MenuItem }> extends React.Component<
   FloatingActionButtonProps<T>,
   FloatingActionButtonState
 > {
+  containerRef: HTMLDivElement | null | undefined;
   constructor(props: FloatingActionButtonProps<T>) {
     super(props);
     this.state = { hovering: false, open: false };
@@ -169,44 +177,76 @@ export class FloatingActionButton<T> extends React.Component<
 
   handleMenuClick(action: keyof T) {
     this.props.onAction && this.props.onAction(action);
+    this.setState(previousState => ({
+      ...previousState,
+      open: false,
+    }));
   }
 
-  handleBlur = () => {
+  handleBlur = (e: React.FocusEvent<HTMLElement>) => {
+    if (!this.containerRef) return;
+    const relatedTarget = e.relatedTarget as HTMLElement | null;
+    if (relatedTarget) {
+      if (this.containerRef.contains(relatedTarget)) return;
+    }
     this.setState(previousState => ({
       ...previousState,
       open: false,
     }));
   };
 
+  handleContainerRef = (e: HTMLDivElement | null | undefined) => {
+    this.containerRef = e;
+  };
+
   render() {
     const { message, onClick, ref, ...restOfProps } = this.props;
 
     return (
-      <Container
-        onClick={this.handleClick}
-        onBlur={this.handleBlur}
-        onMouseEnter={this.handleMouseEnter}
-        onMouseLeave={this.handleMouseLeave}
-        {...restOfProps}
-      >
+      <Container innerRef={this.handleContainerRef}>
+        <Fab
+          onClick={this.handleClick}
+          onBlur={this.handleBlur}
+          onMouseEnter={this.handleMouseEnter}
+          onMouseLeave={this.handleMouseLeave}
+          {...restOfProps}
+        >
+          <Plus>
+            <VerticalLine />
+            <HorizontalLine />
+          </Plus>
+        </Fab>
         <Menu style={{ display: this.state.open ? 'flex' : 'none' }}>
-          <MenuHeader
+          <Header
             style={{
               display: this.state.open ? 'block' : 'none',
             }}
           >
             {this.props.message}
-          </MenuHeader>
-          {Object.entries(this.props.actions).map(([action, text]) => (
-            <MenuItem
-              key={action}
-              onClick={() => {
-                this.handleMenuClick(action as keyof T);
-              }}
-            >
-              {text}
-            </MenuItem>
-          ))}
+          </Header>
+          {Object.entries(this.props.actions)
+            .map(([action, _value]) => {
+              const value = _value as MenuItem;
+              return {
+                action: action as keyof T,
+                text: value.text,
+                icon: value.icon,
+                color: value.color,
+              };
+            })
+            .map(({ action, text, icon, color }) => (
+              <Item
+                key={action}
+                tabIndex={0}
+                onClick={() => {
+                  this.handleMenuClick(action);
+                }}
+                onBlur={this.handleBlur}
+              >
+                <Icon icon={icon} color={color} />
+                <Text style={{ color: styles.text }}>{text}</Text>
+              </Item>
+            ))}
         </Menu>
         <Message
           className="message"
@@ -216,10 +256,6 @@ export class FloatingActionButton<T> extends React.Component<
         >
           {this.props.message}
         </Message>
-        <Plus>
-          <VerticalLine />
-          <HorizontalLine />
-        </Plus>
       </Container>
     );
   }

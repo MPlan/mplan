@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Dropdown, DropdownProps, DropdownItem } from './dropdown';
+import { Dropdown, DropdownProps } from './dropdown';
+import { MenuItem } from './menu-item';
 import styled from 'styled-components';
 import { View } from './view';
 import { wait } from '../../utilities/utilities';
@@ -13,7 +14,7 @@ const DropdownContainer = styled(View)`
   width: 12rem;
 `;
 
-export interface RightClickMenuProps<T extends { [P in keyof T]: DropdownItem }> {
+export interface RightClickMenuProps<T extends { [P in keyof T]: MenuItem }> {
   actions: T;
   onAction: (action: keyof T) => void;
   header: string;
@@ -45,7 +46,7 @@ function findClosestRightClickParent(
 type InitialState = typeof initialState;
 export interface RightClickMenuState extends InitialState {}
 
-export class RightClickMenu<T extends { [P in keyof T]: DropdownItem }> extends React.Component<
+export class RightClickMenu<T extends { [P in keyof T]: MenuItem }> extends React.Component<
   RightClickMenuProps<T>,
   RightClickMenuState
 > {

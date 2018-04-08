@@ -498,7 +498,16 @@ export class Sequence extends Model.store.connect({
             </SvgArrowContainer>
           </GraphWrapper>
         </GraphContainer>
-        <FloatingActionButton message="add course to degree" actions={{ one: 'one', two: 'two' }} />
+        <FloatingActionButton
+          message="Add..."
+          actions={{
+            course: {
+              text: 'Course to degree',
+              icon: 'plus',
+              color: styles.blue,
+            },
+          }}
+        />
       </SequenceContainer>
     );
   }

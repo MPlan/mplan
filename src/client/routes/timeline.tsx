@@ -10,18 +10,14 @@ const Container = styled(View)`
   position: relative;
   padding: ${styles.space(1)};
 `;
-
 const Header = styled(View)`
   flex-direction: row;
   margin-bottom: ${styles.space(1)};
 `;
-
 const HeaderMain = styled(View)`
   flex: 1;
 `;
-
 const HeaderRight = styled(View)``;
-
 const SemestersContainer = styled(View)`
   flex: 1;
   flex-direction: row;
@@ -65,7 +61,16 @@ export class Timeline extends Model.store.connect() {
             ))}
         </SemestersContainer>
 
-        <FloatingActionButton actions={{ one: 'test' }} message="Add..." />
+        <FloatingActionButton
+          actions={{
+            newSemester: {
+              text: 'New semester',
+              icon: 'plus',
+              color: styles.blue,
+            },
+          }}
+          message="Add..."
+        />
       </Container>
     );
   }

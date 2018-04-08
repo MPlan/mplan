@@ -77,8 +77,16 @@ const SearchForACourse = styled(Text)`
 const SearchResults = styled(View)``;
 
 const fabActions = {
-  group: 'New course group',
-  course: 'Course to existing group',
+  group: {
+    text: 'New course group',
+    icon: 'plus',
+    color: styles.blue,
+  },
+  course: {
+    text: 'Course to existing group',
+    icon: 'plus',
+    color: styles.blue,
+  },
 };
 
 export class Degree extends Model.store.connect({

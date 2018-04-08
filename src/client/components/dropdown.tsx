@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { View } from './view';
 import { Text } from './text';
 import { Fa } from './fa';
+import { MenuItem } from './menu-item';
 import * as styles from '../styles';
 
 const Container = styled(View)`
@@ -51,13 +52,7 @@ const Icon = styled(Fa)`
   min-width: ${styles.space(0)};
 `;
 
-export interface DropdownItem {
-  text: string;
-  icon: string;
-  color?: string;
-}
-
-export interface DropdownProps<T extends { [P in keyof T]: DropdownItem }> {
+export interface DropdownProps<T extends { [P in keyof T]: MenuItem }> {
   open: boolean;
   onBlur: () => void;
   header: string;
@@ -65,12 +60,12 @@ export interface DropdownProps<T extends { [P in keyof T]: DropdownItem }> {
   onAction?: (action: keyof T) => void;
 }
 
-export interface DropdownState<T extends { [P in keyof T]: DropdownItem }> {
+export interface DropdownState<T extends { [P in keyof T]: MenuItem }> {
   currentAction: keyof T | undefined;
   spaceDown: boolean;
 }
 
-export class Dropdown<T extends { [P in keyof T]: DropdownItem }> extends React.Component<
+export class Dropdown<T extends { [P in keyof T]: MenuItem }> extends React.Component<
   DropdownProps<T>,
   DropdownState<T>
 > {
