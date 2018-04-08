@@ -21,6 +21,9 @@ const Container = styled(View)`
   &:active {
     box-shadow: 0 0.2rem 1.3rem 0 rgba(12, 0, 51, 0.2);
   }
+  .drag-mode & {
+    box-shadow: none !important;
+  }
 `;
 const SimpleName = styled(Text)`
   font-weight: bold;

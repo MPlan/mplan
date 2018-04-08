@@ -119,6 +119,7 @@ export class Draggable extends Model.store.connect({
             'drag',
             `drag-id-${this.props.id}`,
             this.draggingCurrent ? 'dragging' : '',
+            this.store.dragging ? 'drag-mode' : '',
           ].join(' ')}
           innerRef={this.handleChildWrapperRef}
           onDragStart={this.handleDragStart}
