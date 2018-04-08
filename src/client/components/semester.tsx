@@ -5,7 +5,7 @@ import { Text } from './text';
 import { SemesterCourse } from './semester-course';
 import styled from 'styled-components';
 import * as styles from '../styles';
-import { Dropzone } from './dropzone';
+import { Dropzone, SortChange } from './dropzone';
 
 const Container = styled(View)`
   width: 20rem;
@@ -44,6 +44,34 @@ export interface SemesterProps {
 export class Semester extends Model.store.connect({
   propsExample: (undefined as any) as SemesterProps,
 }) {
+  handleOnChangeSort = (e: SortChange) => {
+    const { fromDropzoneId, toDropzoneId, newIndex, oldIndex } = e;
+    console.log(e);
+    this.setStore(store =>
+      store.updatePlan(plan => {
+        const semester = plan.semesterMap.get(fromDropzoneId);
+        if (!semester) {
+          console.warn('semester was not found when sorting');
+          return plan;
+        }
+        const course = semester._courses.get(oldIndex);
+        if (!course) {
+          console.warn('course was not found when sorting');
+          return plan;
+        }
+        return plan
+          .updateSemester(fromDropzoneId, semester => {
+            const newCourses = semester._courses.filter((_, index) => index !== oldIndex);
+            return semester.set('_courses', newCourses);
+          })
+          .updateSemester(toDropzoneId, semester => {
+            const newCourses = semester._courses.insert(newIndex, course);
+            return semester.set('_courses', newCourses);
+          });
+      }),
+    );
+  };
+
   renderCourse = (course: Model.Course) => {
     return (
       <SemesterCourse
@@ -71,7 +99,7 @@ export class Semester extends Model.store.connect({
             id={semester.id}
             elements={courses}
             getKey={course => course.id}
-            onChangeSort={(e) => {console.log(e)}}
+            onChangeSort={this.handleOnChangeSort}
             render={this.renderCourse}
           />
         </Card>

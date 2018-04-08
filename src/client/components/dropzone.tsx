@@ -152,7 +152,6 @@ export class Dropzone extends Model.store.connect({
   }
 
   handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    console.log('drop');
     e.preventDefault();
     const fromDropzoneId = this.store.startingDropzoneId;
     const toDropzoneId = this.store.selectedDropzoneId;
@@ -164,6 +163,8 @@ export class Dropzone extends Model.store.connect({
 
     const newIndex = this.calculateNewIndex(closestElementIdIndex);
     if (newIndex === undefined) return;
+
+    if (fromDropzoneId === toDropzoneId && oldIndex === newIndex) return;
 
     this.props.onChangeSort({
       fromDropzoneId,

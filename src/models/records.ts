@@ -819,8 +819,12 @@ export class Degree extends Record.define({
 }
 
 export class Plan extends Record.define({
-  semesters: Immutable.Set<Semester>(),
-}) {}
+  semesterMap: Immutable.Map<string, Semester>(),
+}) {
+  updateSemester(id: string, updater: (semester: Semester) => Semester) {
+    return this.update('semesterMap', map => map.update(id, updater));
+  }
+}
 
 export class User extends Record.define({
   _id: ObjectId(),

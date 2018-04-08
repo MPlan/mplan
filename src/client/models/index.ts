@@ -37,6 +37,24 @@ async function fetchCatalog() {
 async function updateStoreWithCatalog() {
   const catalog = await fetchCatalog();
 
+  const fall2018 = new Record.Semester({
+    _id: Record.ObjectId(),
+    season: 'Fall',
+    year: 2018,
+  })
+    .addCourse(catalog.getCourse('ENGR', '100')!)
+    .addCourse(catalog.getCourse('CIS', '150')!)
+    .addCourse(catalog.getCourse('CIS', '450')!)
+    .addCourse(catalog.getCourse('COMP', '105')!);
+
+  const winter2018 = new Record.Semester({
+    _id: Record.ObjectId(),
+    season: 'Winter',
+    year: 2018,
+  })
+    .addCourse(catalog.getCourse('ECE', '270')!)
+    .addCourse(catalog.getCourse('COMP', '270')!);
+
   store.sendUpdate(store =>
     store
       .set('catalog', catalog)
@@ -235,26 +253,8 @@ async function updateStoreWithCatalog() {
           ),
       )
       .updatePlan(plan =>
-        plan.update('semesters', semesters =>
-          semesters.add(
-            new Record.Semester({
-              _id: Record.ObjectId(),
-              season: 'Fall',
-              year: 2018,
-            })
-              .addCourse(catalog.getCourse('ENGR', '100')!)
-              .addCourse(catalog.getCourse('CIS', '150')!)
-              .addCourse(catalog.getCourse('CIS', '450')!)
-              .addCourse(catalog.getCourse('COMP', '105')!),
-          ).add(
-            new Record.Semester({
-              _id: Record.ObjectId(),
-              season: 'Winter',
-              year: 2018,
-            })
-              .addCourse(catalog.getCourse('ECE', '270')!)
-              .addCourse(catalog.getCourse('COMP', '270')!),
-          ),
+        plan.update('semesterMap', semesterMap =>
+          semesterMap.set(fall2018.id, fall2018).set(winter2018.id, winter2018),
         ),
       ),
   );

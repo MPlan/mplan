@@ -51,14 +51,18 @@ export class Timeline extends Model.store.connect() {
         </Header>
 
         <SemestersContainer>
-          {this.store.user.plan.semesters.map(semester => (
-            <Semester
-              key={semester.id}
-              semester={semester}
-              degree={this.store.user.degree}
-              catalog={this.store.catalog}
-            />
-          ))}
+          {this.store.user.plan.semesterMap
+            .valueSeq()
+            .sortBy(s => s.position)
+            .reverse()
+            .map(semester => (
+              <Semester
+                key={semester.id}
+                semester={semester}
+                degree={this.store.user.degree}
+                catalog={this.store.catalog}
+              />
+            ))}
         </SemestersContainer>
 
         <FloatingActionButton actions={{ one: 'test' }} message="Add..." />
