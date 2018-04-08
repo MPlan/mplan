@@ -9,11 +9,11 @@ import { allCombinations } from '../models';
 const Container = styled(View)`
   flex: 1;
   position: relative;
-  padding: ${styles.space(1)};
 `;
 const Header = styled(View)`
   flex-direction: row;
   margin-bottom: ${styles.space(1)};
+  margin: ${styles.space(1)};
 `;
 const HeaderMain = styled(View)`
   flex: 1;
@@ -23,6 +23,11 @@ const SemestersContainer = styled(View)`
   flex: 1;
   flex-direction: row;
   overflow: auto;
+  padding-bottom: ${styles.space(1)};
+
+  & > *:first-child {
+    margin-left: ${styles.space(1)};
+  }
 `;
 
 const actions = {

@@ -523,6 +523,10 @@ export class Semester extends Record.define({
     });
   }
 
+  get totalCredits() {
+    return this._courses.map(course => course.credits || 0).reduce((sum, next) => sum + next, 0);
+  }
+
   get courses() {
     return this.getOrCalculate('courses', () => {
       return this._courses.toArray();

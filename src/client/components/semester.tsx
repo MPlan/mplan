@@ -10,9 +10,9 @@ import { DropdownMenu } from './dropdown-menu';
 import { RightClickMenu } from './right-click-menu';
 
 const Container = styled(View)`
-  width: 20rem;
-  max-width: 20rem;
-  min-width: 20rem;
+  width: 16rem;
+  max-width: 16rem;
+  min-width: 16rem;
   margin-right: ${styles.space(2)};
   flex: 1;
 `;
@@ -23,13 +23,13 @@ const Header = styled(View)`
   justify-content: space-between;
 `;
 const SemesterName = styled(Text)`
-  font-size: ${styles.space(1)};
   color: ${styles.textLight};
-  font-weight: ${styles.bold};
+  font-weight: bold;
   margin-right: ${styles.space(0)};
 `;
-const CourseCount = styled(Text)`
+const Count = styled(Text)`
   color: ${styles.textLight};
+  /* font-size: ${styles.space(-1)}; */
 `;
 const Card = styled(View)`
   flex: 1;
@@ -37,6 +37,9 @@ const Card = styled(View)`
   box-shadow: ${styles.boxShadow(1)};
   padding-top: ${styles.space(-1)};
   overflow: auto;
+`;
+const Row = styled(View)`
+  flex-direction: row;
 `;
 
 export interface SemesterProps {
@@ -50,6 +53,10 @@ const actions = {
     text: 'Add course',
     icon: 'plus',
     color: styles.blue,
+  },
+  clear: {
+    text: 'Clear courses',
+    icon: 'times',
   },
   delete: {
     text: 'Delete semester',
@@ -117,10 +124,18 @@ export class Semester extends Model.store.connect({
       <RightClickMenu header={semester.name} actions={actions} onAction={this.handleAction}>
         <Container>
           <Header>
-            <SemesterName>{semester.name}</SemesterName>
-            <CourseCount>
-              {semester.courseCount} {semester.courseCount === 1 ? 'course' : 'courses'}
-            </CourseCount>
+            <View>
+              <SemesterName>{semester.name}</SemesterName>
+              <Row>
+                <Count>
+                  {semester.courseCount} {semester.courseCount === 1 ? 'course' : 'courses'}
+                </Count>
+                <Count>&nbsp;|&nbsp;</Count>
+                <Count>
+                  {semester.totalCredits} {semester.totalCredits === 1 ? 'credit' : 'credits'}
+                </Count>
+              </Row>
+            </View>
             <DropdownMenu header={semester.name} actions={actions} onAction={this.handleAction} />
           </Header>
           <Card>

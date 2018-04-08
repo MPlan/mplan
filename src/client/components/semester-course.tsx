@@ -12,6 +12,7 @@ import { RightClickMenu } from './right-click-menu';
 const Container = styled(View)`
   padding: ${styles.space(-1)} ${styles.space(0)};
   flex-direction: row;
+  align-items: flex-start;
   position: relative;
   &:hover {
     box-shadow: 0 0.1rem 1rem 0 rgba(12, 0, 51, 0.15);
@@ -26,14 +27,22 @@ const Container = styled(View)`
     box-shadow: none !important;
   }
 `;
+const Row = styled(View)`
+  flex-direction: row;
+  align-items: baseline;
+`;
 const SimpleName = styled(Text)`
   font-weight: bold;
   margin-bottom: ${styles.space(-1)};
+  margin-right: auto;
+`;
+const Credits = styled(Text)`
+  margin-right: ${styles.space(-1)};
 `;
 const FullName = styled(Text)`
   margin-bottom: ${styles.space(-1)};
 `;
-const CriticalLevel = styled(View)`
+const CriticalLevel = styled(Text)`
   margin-bottom: ${styles.space(-1)};
 `;
 const Body = styled(View)`
@@ -67,8 +76,14 @@ export function SemesterCourse(props: SemesterCourseProps) {
     <RightClickMenu header={course.simpleName} actions={actions} onAction={handleAction}>
       <Container {...restOfProps}>
         <Body>
-          <SimpleName>{course.simpleName}</SimpleName>
+          <Row>
+            <SimpleName>{course.simpleName}</SimpleName>
+            <Credits small>
+              {course.credits} {course.credits === 1 ? 'credit' : 'credits'}
+            </Credits>
+          </Row>
           <FullName>{course.name}</FullName>
+          <CriticalLevel small>Critical level: {criticalLevel}</CriticalLevel>
         </Body>
         <DropdownMenu header={course.simpleName} actions={actions} onAction={handleAction} />
       </Container>
