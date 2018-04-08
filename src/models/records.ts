@@ -851,7 +851,6 @@ export class Draggables extends Record.define({
   dragging: false,
   height: 0,
   closestElementId: '',
-  direction: 'top' as 'top' | 'bottom',
 }) {}
 
 export class Ui extends Record.define({

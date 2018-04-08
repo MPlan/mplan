@@ -125,6 +125,32 @@ export class Dropzone extends Model.store.connect({
     this.dragOver$.next({ clientY, clientX });
   };
 
+  calculateNewIndex(closestElementIndex: number) {
+    if (closestElementIndex <= -1) return undefined;
+
+    if (
+      this.store.aboveMidpoint &&
+      (closestElementIndex === 0 || closestElementIndex === 1)
+    ) {
+      return 0;
+    }
+
+    if (this.store.selectedDropzoneId === this.store.startingDropzoneId) {
+      if (this.store.startingIndex < closestElementIndex) {
+        return closestElementIndex;
+      } else {
+        return closestElementIndex + 1;
+      }
+    }
+
+    if (this.store.selectedDropzoneId !== this.store.startingDropzoneId) {
+      return closestElementIndex + 1;
+    }
+
+    console.warn('un-hit case drop case');
+    return undefined;
+  }
+
   handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     console.log('drop');
     e.preventDefault();
@@ -136,8 +162,8 @@ export class Dropzone extends Model.store.connect({
       element => this.props.getKey(element) === closestElementId,
     );
 
-    if (closestElementIdIndex <= -1) return;
-    const newIndex = this.store.direction === 'top' ? closestElementIdIndex : closestElementIdIndex;
+    const newIndex = this.calculateNewIndex(closestElementIdIndex);
+    if (newIndex === undefined) return;
 
     this.props.onChangeSort({
       fromDropzoneId,
