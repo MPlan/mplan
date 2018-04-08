@@ -13,13 +13,13 @@ const Container = styled(View)`
   flex-direction: row;
   position: relative;
   &:hover {
-    box-shadow: 0 0.2rem 1rem 0 rgba(12, 0, 51, 0.15);
+    box-shadow: 0 0.1rem 1rem 0 rgba(12, 0, 51, 0.15);
     z-index: 15;
   }
   transition: all 0.2s;
   background-color: ${styles.white};
   &:active {
-    box-shadow: 0 0.4rem 1.3rem 0 rgba(12, 0, 51, 0.2);
+    box-shadow: 0 0.2rem 1.3rem 0 rgba(12, 0, 51, 0.2);
   }
 `;
 const SimpleName = styled(Text)`

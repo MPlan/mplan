@@ -39,7 +39,7 @@ const Spacer = styled(Text)`
 
 export interface DraggableProps {
   id: string;
-  firstElement: boolean;
+  elementIndex: number;
   children: JSX.Element;
 }
 
@@ -64,20 +64,25 @@ export class Draggable extends Model.store.connect({
   }
 
   get topSpacer() {
-    return (
-      this.props.firstElement &&
-      this.store.dragging &&
-      this.store.closestElementId === this.props.id &&
-      this.store.aboveMidpoint
-    );
+    if (
+      this.store.startingIndex === 0 &&
+      this.store.startingDropzoneId === this.store.selectedDropzoneId
+    ) {
+      if (this.props.elementIndex !== 1) return false;
+    } else {
+      if (this.props.elementIndex !== 0) return false;
+    }
+    if (!this.store.dragging) return false;
+    if (this.store.closestElementId !== this.props.id) return false;
+    if (!this.store.aboveMidpoint) return false;
+    return true;
   }
 
   get bottomSpacer() {
-    return (
-      !this.topSpacer &&
-      this.store.dragging &&
-      this.store.closestElementId === this.props.id
-    );
+    if (this.topSpacer) return false;
+    if (!this.store.dragging) return false;
+    if (this.store.closestElementId !== this.props.id) return false;
+    return true;
   }
 
   handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {

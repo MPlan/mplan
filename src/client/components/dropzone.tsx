@@ -159,7 +159,7 @@ export class Dropzone extends Model.store.connect({
         {this.props.elements.map((element, index) => {
           const draggableKey = this.props.getKey(element);
           return (
-            <Draggable id={draggableKey} key={draggableKey} firstElement={index === 0}>
+            <Draggable id={draggableKey} key={draggableKey} elementIndex={index}>
               {this.props.render(element)}
             </Draggable>
           );
