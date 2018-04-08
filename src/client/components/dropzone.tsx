@@ -7,7 +7,7 @@ import * as uuid from 'uuid/v4';
 import { oneLine } from 'common-tags';
 import { Subject } from 'rxjs/Subject';
 import { throttleTime } from 'rxjs/operators';
-const { sqrt, pow } = Math;
+const { abs } = Math;
 
 export interface ContainerProps
   extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
@@ -74,7 +74,7 @@ export class Dropzone extends Model.store.connect({
       .filter(x => !!x)
       .map(x => x!)
       .map(({ top, left, width, height, dragId }) => ({
-        y: top + height / 2,
+        y: top + height,
         x: left + width / 2,
         dragId,
       }));
@@ -84,7 +84,7 @@ export class Dropzone extends Model.store.connect({
     let closestY = 0;
 
     for (const { y, x, dragId } of draggables) {
-      const distance = sqrt(pow(clientY - y, 2) - pow(clientX - x, 2));
+      const distance = abs(clientY - y);
       if (distance < closestDistance) {
         closestDistance = distance;
         closestElementId = dragId;

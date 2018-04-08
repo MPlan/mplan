@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as Model from '../models';
 import styled from 'styled-components';
 import { View } from './view';
+import { Text } from './text';
 import * as uuid from 'uuid/v4';
 import * as styles from '../styles';
 
@@ -22,10 +23,18 @@ const ChildWrapper = styled.div`
     opacity: 0;
   }
 `;
-const Spacer = styled.div`
-  transition: all 0.12s;
+const Spacer = styled(Text)`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  font-size: ${styles.space(1)};
+  font-weight: ${styles.bold};
+  color: ${styles.grayLighter};
   max-height: 20rem;
-  background-color: ${styles.whiteBis};
+  box-shadow: inset 0 0 1.3rem 0 rgba(12, 0, 51, 0.1);
+  transition: all 0.12s;
 `;
 
 export interface DraggableProps {
@@ -62,11 +71,7 @@ export class Draggable extends Model.store.connect({
   }
 
   get bottomSpacer() {
-    return (
-      this.store.dragging &&
-      this.store.closestElementId === this.props.id &&
-      this.store.direction === 'bottom'
-    );
+    return this.store.dragging && this.store.closestElementId === this.props.id;
   }
 
   handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
@@ -113,17 +118,19 @@ export class Draggable extends Model.store.connect({
         className={['draggable', `draggable-${this.draggableId}`].join(' ')}
         innerRef={this.handleContainerRef}
       >
-        <Spacer style={{ height: this.topSpacer ? this.store.height : 0 }} />
+        {/* <Spacer style={{ height: this.topSpacer ? this.store.height : 0 }} /> */}
         <ChildWrapper
           draggable
-          className={['drag', `drag-id-${this.props.id}`, this.dragging ? 'dragging' : ''].join(' ')}
+          className={['drag', `drag-id-${this.props.id}`, this.dragging ? 'dragging' : ''].join(
+            ' ',
+          )}
           innerRef={this.handleChildWrapperRef}
           onDragStart={this.handleDragStart}
           onDragEnd={this.handleDragEnd}
         >
           {this.props.children}
         </ChildWrapper>
-        <Spacer style={{ height: this.bottomSpacer ? this.store.height : 0 }} />
+        <Spacer style={{ height: this.bottomSpacer ? this.store.height : 0 }}>Drop!</Spacer>
       </Container>
     );
   }
