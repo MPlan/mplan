@@ -10,7 +10,6 @@ const Container = styled(View)`
   position: relative;
   flex-shrink: 0;
 `;
-
 const FloatingChild = styled.div`
   position: absolute;
   z-index: 200;
@@ -41,7 +40,8 @@ const Spacer = styled(Text)`
 export interface DraggableProps {
   id: string;
   elementIndex: number;
-  children: JSX.Element;
+  dropzoneActive: boolean;
+  children?: JSX.Element;
 }
 
 export class Draggable extends Model.store.connect({
@@ -60,27 +60,12 @@ export class Draggable extends Model.store.connect({
     super.componentWillUnmount();
   }
 
-  get dragging() {
+  get draggingCurrent() {
     return this.store.dragging && this.store.selectedDraggableId === this.draggableId;
   }
 
-  get topSpacer() {
-    if (
-      this.store.startingIndex === 0 &&
-      this.store.startingDropzoneId === this.store.selectedDropzoneId
-    ) {
-      if (this.props.elementIndex !== 1) return false;
-    } else {
-      if (this.props.elementIndex !== 0) return false;
-    }
-    if (!this.store.dragging) return false;
-    if (this.store.closestElementId !== this.props.id) return false;
-    if (!this.store.aboveMidpoint) return false;
-    return true;
-  }
-
-  get bottomSpacer() {
-    if (this.topSpacer) return false;
+  get spacer() {
+    if (!this.props.dropzoneActive) return false;
     if (!this.store.dragging) return false;
     if (this.store.closestElementId !== this.props.id) return false;
     return true;
@@ -130,19 +115,20 @@ export class Draggable extends Model.store.connect({
         className={['draggable', `draggable-${this.draggableId}`].join(' ')}
         innerRef={this.handleContainerRef}
       >
-        <Spacer style={{ height: this.topSpacer ? this.store.height : 0 }}>Incoming!</Spacer>
         <ChildWrapper
           draggable
-          className={['drag', `drag-id-${this.props.id}`, this.dragging ? 'dragging' : ''].join(
-            ' ',
-          )}
+          className={[
+            'drag',
+            `drag-id-${this.props.id}`,
+            this.draggingCurrent ? 'dragging' : '',
+          ].join(' ')}
           innerRef={this.handleChildWrapperRef}
           onDragStart={this.handleDragStart}
           onDragEnd={this.handleDragEnd}
         >
           {this.props.children}
         </ChildWrapper>
-        <Spacer style={{ height: this.bottomSpacer ? this.store.height : 0 }}>Incoming!</Spacer>
+        <Spacer style={{ height: this.spacer ? this.store.height : 0 }}>Incoming!</Spacer>
       </Container>
     );
   }

@@ -7,6 +7,8 @@ import * as uuid from 'uuid/v4';
 import { oneLine } from 'common-tags';
 import { Subject } from 'rxjs/Subject';
 import { throttleTime } from 'rxjs/operators';
+import { interval } from 'rxjs/Observable/interval';
+import { Subscription } from 'rxjs/Subscription';
 const { abs } = Math;
 
 export interface ContainerProps
@@ -39,12 +41,36 @@ export class Dropzone extends Model.store.connect({
   descope: (store, draggables: Model.Draggables) =>
     store.updateUi(ui => ui.set('draggables', draggables)),
   propsExample: (undefined as any) as DropzoneProps<Model.Course>,
+  initialState: {
+    dropzoneActive: false,
+  },
 }) {
+  lastDragOverTime = 0;
   containerRef: HTMLDivElement | null | undefined;
   dragOver$ = new Subject<{ clientY: number; clientX: number }>();
+  dropzoneActivePoll$ = interval(100);
+  dropzoneActivePollSubscription: Subscription | undefined;
+  dragOverSubscription: Subscription | undefined;
 
   componentDidMount() {
-    this.dragOver$.pipe(throttleTime(300)).subscribe(this.handleDragOverThrottled);
+    this.dragOver$.pipe(throttleTime(100)).subscribe(this.handleDragOverThrottled);
+    // TODO: use rxjs to replace this polling
+    this.dropzoneActivePoll$.subscribe(() => {
+      this.setState(previousState => ({
+        ...previousState,
+        dropzoneActive: abs(this.lastDragOverTime - new Date().getTime()) < 200,
+      }));
+    });
+  }
+
+  componentWillUnmount() {
+    super.componentWillUnmount();
+    if (this.dragOverSubscription) {
+      this.dragOverSubscription.unsubscribe();
+    }
+    if (this.dropzoneActivePollSubscription) {
+      this.dropzoneActivePollSubscription.unsubscribe();
+    }
   }
 
   handleContainerRef = (e: HTMLDivElement | null | undefined) => {
@@ -52,6 +78,8 @@ export class Dropzone extends Model.store.connect({
   };
 
   handleDragOverThrottled = ({ clientY, clientX }: { clientY: number; clientX: number }) => {
+    this.lastDragOverTime = new Date().getTime();
+
     const draggables = Array.from(
       document.querySelectorAll(oneLine`
           .dropzone-${this.props.id}
@@ -126,15 +154,6 @@ export class Dropzone extends Model.store.connect({
   };
 
   calculateNewIndex(closestElementIndex: number) {
-    if (closestElementIndex <= -1) return undefined;
-
-    if (
-      this.store.aboveMidpoint &&
-      (closestElementIndex === 0 || closestElementIndex === 1)
-    ) {
-      return 0;
-    }
-
     if (this.store.selectedDropzoneId === this.store.startingDropzoneId) {
       if (this.store.startingIndex < closestElementIndex) {
         return closestElementIndex;
@@ -183,10 +202,21 @@ export class Dropzone extends Model.store.connect({
         onDrop={this.handleDrop}
         onDragOver={this.handleDragOver}
       >
+        <Draggable
+          id={this.props.id}
+          key={this.props.id}
+          dropzoneActive={this.state.dropzoneActive}
+          elementIndex={-1}
+        />
         {this.props.elements.map((element, index) => {
           const draggableKey = this.props.getKey(element);
           return (
-            <Draggable id={draggableKey} key={draggableKey} elementIndex={index}>
+            <Draggable
+              id={draggableKey}
+              key={draggableKey}
+              elementIndex={index}
+              dropzoneActive={this.state.dropzoneActive}
+            >
               {this.props.render(element)}
             </Draggable>
           );
