@@ -73,7 +73,6 @@ export class Draggable extends Model.store.connect({
 
   handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
     e.dataTransfer.setData('text', this.draggableId);
-    console.log('drag start');
     const childWrapperRef = this.childWrapperRef;
     const childHeight = childWrapperRef && childWrapperRef.getBoundingClientRect().height;
 
@@ -87,7 +86,6 @@ export class Draggable extends Model.store.connect({
   };
 
   handleDragEnd = () => {
-    console.log('drag end');
     this.setStore(store => store.set('dragging', false));
   };
 

@@ -47,7 +47,6 @@ export class Semester extends Model.store.connect({
 }) {
   handleOnChangeSort = (e: SortChange) => {
     const { fromDropzoneId, toDropzoneId, newIndex, oldIndex } = e;
-    console.log(e);
     this.setStore(store =>
       store.updatePlan(plan => {
         const semester = plan.semesterMap.get(fromDropzoneId);
