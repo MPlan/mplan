@@ -517,6 +517,10 @@ export class Semester extends Record.define({
     return `${this.season} ${this.year}`;
   }
 
+  get shortName() {
+    return `${this.season.substring(0, 1)}${this.year}`;
+  }
+
   get courseCount() {
     return this.getOrCalculate('courseCount', () => {
       return this._courses.count();
