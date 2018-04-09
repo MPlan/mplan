@@ -29,6 +29,16 @@ const SemestersContainer = styled(View)`
     margin-left: ${styles.space(1)};
   }
 `;
+const HorizontalLine = styled.div`
+  position: absolute;
+  background-color: ${styles.blue};
+  height: 0.5rem;
+  margin-bottom: ${styles.space(1)};
+  box-shadow: ${styles.boxShadow(1)};
+  width: 100%;
+  left: 0;
+  bottom: 0;
+`;
 
 const actions = {
   newSemester: {
@@ -76,6 +86,7 @@ export class Timeline extends Model.store.connect() {
                 catalog={this.store.catalog}
               />
             ))}
+          <HorizontalLine className="horizontal-line" />
         </SemestersContainer>
         <FloatingActionButton actions={actions} message="Add..." onAction={this.handleActions} />
       </Container>

@@ -8,6 +8,7 @@ import * as styles from '../styles';
 import { Dropzone, SortChange } from './dropzone';
 import { DropdownMenu } from './dropdown-menu';
 import { RightClickMenu } from './right-click-menu';
+import { ActionableText } from './actionable-text';
 
 const Container = styled(View)`
   width: 16rem;
@@ -37,9 +38,36 @@ const Card = styled(View)`
   box-shadow: ${styles.boxShadow(1)};
   padding-top: ${styles.space(-1)};
   overflow: auto;
+  padding-bottom: 1.2rem;
 `;
 const Row = styled(View)`
   flex-direction: row;
+`;
+const AddCourse = styled(ActionableText)`
+  margin: ${styles.space(0)};
+`;
+const Marker = styled.div`
+  height: 3rem;
+  position: relative;
+`;
+const VerticalLine = styled.div`
+  position: absolute;
+  background-color: ${styles.blue};
+  width: 0.5rem;
+  height: 3rem;
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: ${styles.boxShadow(1)};
+`;
+const Circle = styled.div`
+  position: absolute;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 999999px;
+  background-color: ${styles.blue};
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: ${styles.boxShadow(1)};
 `;
 
 export interface SemesterProps {
@@ -146,7 +174,14 @@ export class Semester extends Model.store.connect({
               onChangeSort={this.handleOnChangeSort}
               render={this.renderCourse}
             />
+            <AddCourse small onClick={() => {}}>
+              Add course to this semester...
+            </AddCourse>
           </Card>
+          <Marker>
+            <Circle />
+            <VerticalLine />
+          </Marker>
         </Container>
       </RightClickMenu>
     );
