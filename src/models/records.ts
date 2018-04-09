@@ -486,9 +486,7 @@ export class Course
     const options = this.options(catalog);
     for (const option of options) {
       if (
-        option
-          .filter(course => course instanceof Course)
-          .every(course => previousCourses.has(course))
+        option.every(course => previousCourses.has(course))
       ) {
         return true;
       }
@@ -811,10 +809,49 @@ export class Degree extends Record.define({
       .reduce((set, nonCourse) => set.add(nonCourse), Immutable.Set<string | Course>());
   }
 
-  private _generatePlan(
-    coursesSorted: Course[],
-    processedCourses: Immutable.Set<string | Course>,
-  ) {}
+  currentSemesters = [] as Course[][];
+  currentSemester = [] as Course[];
+  processedCourses = new Set<Course>();
+  unplacedCourses = [] as Course[]; // sorted by priority
+
+  private _generatePlan(): boolean {
+
+    if (this.unplacedCourses.length <= 0) {
+      return true;
+    }
+
+    function canPlace(c: Course, semester: Course[]) {
+      // if current semester is over cap: return false;
+      // if prereqs aren't satisifed return false;
+
+      return true;
+    }
+
+    for (const course of this.unplacedCourses) {
+      if (canPlace(course, this.currentSemester)) {
+        // then do it
+        this.currentSemester.push(course);
+
+        if (this._generatePlan()) return true;
+      }
+    }
+
+    const semesterCap = 15;
+    if (this.currentSemesters.length < semesterCap) {
+      const newSemester = [] as Course[];
+      this.currentSemester = newSemester;
+      this.currentSemesters.push(this.currentSemester);
+      if (this._generatePlan()) return true;
+    }
+
+    // create new semester
+    // then call _generatePlan()
+    
+
+    // if can place course into current semester
+    // then do it
+    return false;
+  }
 
   addDegreeGroup(group: DegreeGroup) {
     return this.update('degreeGroups', groups => groups.push(group));
