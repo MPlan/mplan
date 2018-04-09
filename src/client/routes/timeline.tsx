@@ -5,8 +5,9 @@ import * as Model from '../models';
 import * as Immutable from 'immutable';
 import styled from 'styled-components';
 import { allCombinations } from '../models';
-import { Subject } from 'rxjs/Subject';
-import { map, takeUntil, take, startWith } from 'rxjs/operators';
+import { parseToRgb } from 'polished';
+
+const rgbaBlue = parseToRgb(styles.blue);
 
 const Container = styled(View)`
   flex: 1;
@@ -24,11 +25,24 @@ const HeaderRight = styled(View)``;
 const SemestersContainer = styled(View)`
   flex: 1;
   flex-direction: row;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: scroll;
   padding-bottom: ${styles.space(1)};
 
   & > *:first-child {
     margin-left: ${styles.space(1)};
+  }
+  &::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: ${styles.space(0)};
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    background-color: rgb(${rgbaBlue.red}, ${rgbaBlue.green}, ${rgbaBlue.blue}, 0.25);
+    opacity: 0.25;
+    -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+    top: 100%;
   }
 `;
 const HorizontalLine = styled.div`
@@ -39,7 +53,7 @@ const HorizontalLine = styled.div`
   box-shadow: ${styles.boxShadow(1)};
   width: 100%;
   left: 0;
-  bottom: 3rem;
+  bottom: 4rem;
 `;
 const Navigator = styled.div`
   height: 3rem;
@@ -67,9 +81,20 @@ const NavigatorHorizontalLine = styled.div`
   width: 100%;
   top: 40%;
 `;
-const NavigationLabel = styled(View)`
+const NavigationLabel = styled(Text)`
   margin-bottom: ${styles.space(-1)};
   position: relative;
+  color: ${styles.gray};
+  font-size: ${styles.space(-1)};
+  cursor: pointer;
+  position: relative;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &::after {
+  }
 `;
 const Tick = styled.div`
   height: 0.7rem;
@@ -96,69 +121,18 @@ export class Timeline extends Model.store.connect({
 }) {
   semesterContainerRef: HTMLElement | null | undefined;
 
-  sliderMouseDown$ = new Subject<{ y: number; x: number }>();
-  mouseUp$ = new Subject<MouseEvent>();
-  mouseUpHandler = this.mouseUp$.next.bind(this.mouseUp$);
-  mouseMove$ = new Subject<MouseEvent>();
-  mouseMoveHandler = this.mouseMove$.next.bind(this.mouseMove$);
-
-  componentDidMount() {
-    document.addEventListener('mouseup', this.mouseUpHandler);
-    document.addEventListener('mousemove', this.mouseMoveHandler);
-
-    const drags = this.sliderMouseDown$.pipe(
-      map(mousedown =>
-        this.mouseMove$.pipe(
-          startWith(mousedown),
-          map((e: any) => ({ y: e.y || (e.clientY as number), x: e.x || (e.clientX as number) })),
-          takeUntil(this.mouseUp$.pipe(take(1))),
-        ),
-      ),
-    );
-
-    drags.subscribe(drag$ => drag$.subscribe(this.handleDrag));
-  }
-
-  handleDrag = (e: { y: number; x: number }) => {
-    if (!this.semesterContainerRef) return;
-    const scrollWidth = this.semesterContainerRef.scrollWidth;
-    const clientWidth = this.semesterContainerRef.clientWidth;
-    const clientLeft = this.semesterContainerRef.getBoundingClientRect().left;
-    this.semesterContainerRef.scrollLeft =
-      ((e.x - clientLeft) / (clientWidth - clientLeft)) * scrollWidth - scrollWidth / 2;
-  };
-
-  componentWillUnmount() {
-    super.componentWillUnmount();
-    document.removeEventListener('mouseup', this.mouseUpHandler);
-    document.removeEventListener('mousemove', this.mouseMoveHandler);
-  }
-
   handleActions = (action: keyof typeof actions) => {
     if (action === 'newSemester') {
       this.setStore(store => store.updatePlan(plan => plan.createNewSemester()));
     }
   };
 
-  handleSemesterContainerRef = (e: HTMLElement | null | undefined) => {
-    this.semesterContainerRef = e;
-  };
-
-  handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    const scrollWidth = (this.semesterContainerRef && this.semesterContainerRef.scrollWidth) || 1;
-    const clientWidth = (this.semesterContainerRef && this.semesterContainerRef.clientWidth) || 1;
-    const scrollOffset = (this.semesterContainerRef && this.semesterContainerRef.scrollLeft) || 1;
-
-    this.setState(previousState => ({
-      ...previousState,
-      sliderWidth: clientWidth / scrollWidth * clientWidth,
-      sliderLeft: scrollOffset / scrollWidth * clientWidth,
-    }));
-  };
-
-  handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    this.sliderMouseDown$.next({ y: e.clientY, x: e.clientX });
-  };
+  handleNavigationClick(semester: Model.Semester) {
+    const semesterElement = document.querySelector(`.semester-${semester.id}`);
+    if (!semesterElement) return;
+    console.log('got here')
+    semesterElement.scrollIntoView({ behavior: 'smooth' });
+  }
 
   render() {
     const semestersSorted = this.store.user.plan.semesterMap.valueSeq().sortBy(s => s.position);
@@ -181,7 +155,7 @@ export class Timeline extends Model.store.connect({
             </Text>
           </HeaderRight>
         </Header>
-        <SemestersContainer innerRef={this.handleSemesterContainerRef} onScroll={this.handleScroll}>
+        <SemestersContainer>
           {semestersSorted.map(semester => (
             <Semester
               key={semester.id}
@@ -193,16 +167,9 @@ export class Timeline extends Model.store.connect({
           <HorizontalLine className="horizontal-line" />
         </SemestersContainer>
         <Navigator>
-          <Slider
-            style={{ width: this.state.sliderWidth, left: this.state.sliderLeft }}
-            onMouseDown={this.handleMouseDown}
-          />
           {semestersSorted.map(semester => (
-            <NavigationLabel key={semester.id}>
-              <Tick />
-              <Text small color={styles.gray}>
-                {semester.shortName}
-              </Text>
+            <NavigationLabel key={semester.id} onClick={() => this.handleNavigationClick(semester)}>
+              {semester.shortName}
             </NavigationLabel>
           ))}
           <NavigatorHorizontalLine />

@@ -150,7 +150,7 @@ export class Semester extends Model.store.connect({
     const courses = semester.courses;
     return (
       <RightClickMenu header={semester.name} actions={actions} onAction={this.handleAction}>
-        <Container>
+        <Container className={`semester-${semester.id}`}>
           <Header>
             <View>
               <SemesterName>{semester.name}</SemesterName>
