@@ -79,21 +79,26 @@ const NavigatorHorizontalLine = styled.div`
   background-color: ${styles.grayLight};
   position: absolute;
   width: 100%;
-  top: 40%;
+  top: 50%;
 `;
 const NavigationLabel = styled(Text)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin-bottom: ${styles.space(-1)};
   position: relative;
   color: ${styles.gray};
   font-size: ${styles.space(-1)};
   cursor: pointer;
   position: relative;
-
+  flex: 1;
   &:hover {
     text-decoration: underline;
   }
+  height: 3rem;
 
   &::after {
+    /* TODO: add tick mark */
   }
 `;
 const Tick = styled.div`
