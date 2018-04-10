@@ -734,6 +734,9 @@ function generatePlans(degree: Degree, catalog: Catalog) {
   // === INITIALIZE WITH INITIAL STATE ===
   const closure = degree.closure(catalog);
   processedCourses = closure.filter(prerequisite => typeof prerequisite === 'string');
+  unplacedCourses = closure
+    .filter(prerequisite => prerequisite instanceof Course)
+    .map(c => c as Course);
   currentSchedule.push(currentSemester);
 
   /**
@@ -755,15 +758,14 @@ function generatePlans(degree: Degree, catalog: Catalog) {
    * the recursive backtracking function
    */
   function _generatePlan() {
-    if (unplacedCourses.count() <= 0) {
+    const unplacedCount = unplacedCourses.count();
+    if (unplacedCount <= 0) {
       scheduleCount += 1;
-      printSchedule(currentSchedule, scheduleCount);
+      printSchedule(currentSchedule.slice(), scheduleCount);
       if (scheduleCount >= 100) process.exit();
     }
 
     const unplacedCoursesSorted = unplacedCourses.toList().sortBy(c => c.priority(degree, catalog));
-    const unplacedCount = unplacedCoursesSorted.count();
-
     for (let i = 0; i < unplacedCount; i += 1) {
       const course = unplacedCoursesSorted.get(i)!;
       if (canPlace(course, currentSemester)) {
@@ -794,6 +796,7 @@ function generatePlans(degree: Degree, catalog: Catalog) {
       // 2) undo push new semester
       currentSchedule = currentSchedule.filter(semester => !semester.equals(newSemester));
       // 3) undo union of processed courses
+      // processedCourses = oldSemester.reduce((set, course) => set.remove(course), processedCourses);
       processedCourses = processedCourses.subtract(oldSemester);
     }
   }
