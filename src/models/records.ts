@@ -816,6 +816,7 @@ export class Degree extends Record.define({
     this.bestSchedule = [] as Course[][];
     this.currentSchedule = [] as Course[][];
     this.currentSemester = [] as Course[];
+    this.currentSchedule.push(this.currentSemester);
     // this.processedCourses = Immutable.Set<string | Course>();
     this.creditHourCap = 14;
     this.scheduleCount = 0;
@@ -843,29 +844,40 @@ export class Degree extends Record.define({
 
   private _generatePlan(catalog: Catalog) {
     if (this.unplacedCourses.length <= 0) {
-      this.currentSchedule.push(this.currentSemester);
       // console.log(this.currentSchedule);
       this.scheduleCount += 1;
-      console.log(this.scheduleCount, this.currentSchedule.length);
+      const totalCourses = this.currentSchedule.reduce(
+        (total, semester) => total + semester.length,
+        0,
+      );
+      console.log(
+        'I:',
+        this.scheduleCount,
+        'semesters:',
+        this.currentSchedule.length,
+        'course count:',
+        totalCourses,
+      );
 
-      this.currentSchedule.pop();
+      const prettySchedule = this.currentSchedule
+        .map(semester =>
+          semester
+            .map(
+              course =>
+                /*if*/ course instanceof Course
+                  ? `${course.simpleName} (${course.credits || course.creditHours || 0})`
+                  : course,
+            )
+            .join(', '),
+        )
+        .join('\n');
 
-      // if (this.scheduleCount === 44) {
-      //   const prettySchedule = this.currentSchedule
-      //     .map(semester =>
-      //       semester
-      //         .map(
-      //           course =>
-      //             /*if*/ course instanceof Course
-      //               ? `${course.simpleName} (${course.credits || course.creditHours || 0})`
-      //               : course,
-      //         )
-      //         .join(', '),
-      //     )
-      //     .join('-------\n');
-  
-      //   console.log(prettySchedule);
-      // }
+      console.log(prettySchedule);
+      console.log('-------');
+
+      if (this.scheduleCount >= 100) {
+        process.exit();
+      }
     }
 
     const unplacedCoursesClone = this.unplacedCourses.slice();
@@ -873,11 +885,13 @@ export class Degree extends Record.define({
       const course = unplacedCoursesClone[i];
       if (this._canPlace(catalog, course, this.currentSemester)) {
         this.currentSemester.push(course);
-        this.unplacedCourses.splice(i, 1); // removing the course from the unplaced
+        const unplacedClone = this.unplacedCourses.slice();
+        unplacedClone.splice(i, 1);
+        this.unplacedCourses = unplacedClone;
 
         this._generatePlan(catalog);
 
-        this.currentSemester = this.currentSemester.slice(0, this.currentSemester.length - 1);
+        this.currentSemester.pop();
         this.unplacedCourses = [
           ...this.unplacedCourses.slice(0, i),
           course,
@@ -886,17 +900,17 @@ export class Degree extends Record.define({
       }
     }
 
-    const semesterCap = 12;
-    if (this.currentSchedule.length < semesterCap - 1) {
-      this.currentSchedule.push(this.currentSemester);
+    const semesterCap = 8;
+    if (this.currentSchedule.length < semesterCap) {
       this.processedCourses = this.currentSemester.reduce(
         (set, next) => set.add(next),
         this.processedCourses,
       );
       const newSemester = [] as Course[];
       this.currentSemester = newSemester;
+      this.currentSchedule.push(newSemester);
       this._generatePlan(catalog);
-      const poppedSemester = this.currentSchedule.pop() || [];
+      const poppedSemester = this.currentSchedule.pop()!;
       this.processedCourses = poppedSemester.reduce(
         (set, next) => set.remove(next),
         this.processedCourses,
