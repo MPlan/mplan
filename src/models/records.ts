@@ -484,6 +484,7 @@ export class Course
     previousCourses: Immutable.Set<string | Course>,
   ): boolean {
     const options = this.options(catalog);
+    if (options.isEmpty()) return true;
     for (const option of options) {
       if (option.every(course => previousCourses.has(course))) {
         return true;
@@ -796,8 +797,9 @@ export class Degree extends Record.define({
   bestSchedule = [] as Course[][];
   currentSchedule = [] as Course[][];
   currentSemester = [] as Course[];
-  processedCourses = new Set<Course>();
+  processedCourses = Immutable.Set<string | Course>();
   unplacedCourses = [] as Course[]; // sorted by priority
+
   creditHourCap = 14;
 
   generatePlan(catalog: Catalog) {
@@ -813,39 +815,54 @@ export class Degree extends Record.define({
     this.bestSchedule = [] as Course[][];
     this.currentSchedule = [] as Course[][];
     this.currentSemester = [] as Course[];
-    this.processedCourses = new Set<Course>();
+    // this.processedCourses = Immutable.Set<string | Course>();
     this.creditHourCap = 14;
 
-    // const processedCourses = closure
-    //   .filter(course => typeof course === 'string')
-    //   .reduce((set, nonCourse) => set.add(nonCourse), Immutable.Set<string | Course>());
+    this.processedCourses = closure
+      .filter(course => typeof course === 'string')
+      .reduce((set, nonCourse) => set.add(nonCourse), Immutable.Set<string | Course>());
 
-    this._generatePlan();
+    this._generatePlan(catalog);
   }
 
-  private _canPlace(course: Course, currentSemester: Course[]) {
+  private _canPlace(catalog: Catalog, course: Course, currentSemester: Course[]) {
     const totalCredits = currentSemester.reduce((sum, course) => sum + (course.credits || 0), 0);
     const newCourseCredits = course.credits || 0;
     if (totalCredits + newCourseCredits > this.creditHourCap) return false;
+
+    const processedCoursesArray = this.processedCourses.toArray();
+    if (!course.prerequisitesSatisfied(catalog, this.processedCourses)) return false;
+
     return true;
   }
 
-  private _generatePlan() {
+  private _generatePlan(catalog: Catalog) {
     if (this.unplacedCourses.length <= 0) {
       this.currentSchedule.push(this.currentSemester);
       console.log('GOT HERE');
       console.log(this.currentSchedule);
+
+      const prettySchedule = this.currentSchedule
+        .map(semester =>
+          semester
+            .map(course => (/*if*/ course instanceof Course ? course.simpleName : course))
+            .join(', '),
+        )
+        .join('-------\n');
+
+      console.log(prettySchedule);
+
       process.exit(0);
     }
 
     const unplacedCoursesClone = this.unplacedCourses.slice();
     for (let i = 0; i < unplacedCoursesClone.length; i += 1) {
       const course = unplacedCoursesClone[i];
-      if (this._canPlace(course, this.currentSemester)) {
+      if (this._canPlace(catalog, course, this.currentSemester)) {
         this.currentSemester.push(course);
         this.unplacedCourses.splice(i, 1); // removing the course from the unplaced
 
-        this._generatePlan();
+        this._generatePlan(catalog);
 
         this.currentSemester = this.currentSemester.slice(0, this.currentSemester.length - 1);
         this.unplacedCourses = [
@@ -859,10 +876,18 @@ export class Degree extends Record.define({
     const semesterCap = 30;
     if (this.currentSchedule.length < semesterCap) {
       this.currentSchedule.push(this.currentSemester);
+      this.processedCourses = this.currentSemester.reduce(
+        (set, next) => set.add(next),
+        this.processedCourses,
+      );
       const newSemester = [] as Course[];
       this.currentSemester = newSemester;
-      this._generatePlan();
-      this.currentSchedule.pop();
+      this._generatePlan(catalog);
+      const poppedSemester = this.currentSchedule.pop() || [];
+      this.processedCourses = poppedSemester.reduce(
+        (set, next) => set.remove(next),
+        this.processedCourses,
+      );
     }
   }
 
