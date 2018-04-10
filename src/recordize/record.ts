@@ -1,8 +1,8 @@
 import * as Immutable from 'immutable';
 
 export interface Equatable {
-  hashCode(): number,
-  equals(other: any): boolean,
+  hashCode(): number;
+  equals(other: any): boolean;
 }
 
 export function MapOf<T>(constructor: new (...params: any[]) => T) {
@@ -55,6 +55,8 @@ export type RecordNoPlaceholders<T> = {
     T[P]
 };
 
+export type Infer<T> = T extends Immutable.Record<infer U> ? U : any;
+
 export function define<T>(rawRecordDefault: T) {
   const recordDefault = Object.entries(rawRecordDefault).reduce(
     (recordDefault, [key, value]) => {
@@ -70,16 +72,13 @@ export function define<T>(rawRecordDefault: T) {
   type Record = RecordNoPlaceholders<T>;
 
   const RecordBaseClass = Immutable.Record(recordDefault) as new (
-    defaultValues: Partial<Record>,
+    defaultValues?: Partial<Record>,
   ) => Immutable.Record<Record>;
 
   class RecordClass extends RecordBaseClass {
-    
-    getOrCalculate<V>(name: string, calculate: () => V): V
-    getOrCalculate<V>(name: string, dependencies: Equatable[], calculate: () => V): V
-    getOrCalculate<V>(name: string, a: Equatable[] | (() => V), b?: () => V) {
-
-    }
+    getOrCalculate<V>(name: string, calculate: () => V): V;
+    getOrCalculate<V>(name: string, dependencies: Equatable[], calculate: () => V): V;
+    getOrCalculate<V>(name: string, a: Equatable[] | (() => V), b?: () => V) {}
   }
 
   return Object.assign(RecordClass, { recordDefault });
