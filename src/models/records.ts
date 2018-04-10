@@ -697,6 +697,110 @@ export class DegreeGroup extends Record.define({
   }
 }
 
+function printSchedule(schedule: Immutable.Set<Course>[], scheduleCount: number) {
+  const totalCourses = schedule.reduce((total, semester) => total + semester.count(), 0);
+  console.log('I:', scheduleCount, 'semesters:', schedule.length, 'course count:', totalCourses);
+
+  const prettySchedule = schedule
+    .map(semester =>
+      semester
+        .map(
+          course =>
+            /*if*/ course instanceof Course
+              ? `${course.simpleName} (${course.credits || course.creditHours || 0})`
+              : course,
+        )
+        .join(', '),
+    )
+    .join('\n');
+
+  console.log(prettySchedule);
+  console.log('-------');
+}
+
+function generatePlans(degree: Degree, catalog: Catalog) {
+  // === DEFINE CONSTANTS ===
+  const creditHourCap = 14;
+  const semesterCap = 8;
+
+  // === DEFINE STATE VARIABLES ===
+  let bestSchedule = Immutable.List<Immutable.Set<Course>>();
+  let currentSchedule = [] as Array<Immutable.Set<Course>>;
+  let currentSemester = Immutable.Set<Course>();
+  let processedCourses = Immutable.Set<string | Course>();
+  let unplacedCourses = Immutable.Set<Course>();
+  let scheduleCount = 0;
+
+  // === INITIALIZE WITH INITIAL STATE ===
+  const closure = degree.closure(catalog);
+  processedCourses = closure.filter(prerequisite => typeof prerequisite === 'string');
+  currentSchedule.push(currentSemester);
+
+  /**
+   * returns whether a course can be placed in a semester
+   */
+  function canPlace(course: Course, semester: Immutable.Set<Course>) {
+    const totalCredits = semester.reduce(
+      (sum, course) => sum + (course.credits || course.creditHours || 0),
+      0,
+    );
+    const newCourseCredits = course.credits || course.creditHours || 0;
+
+    if (totalCredits + newCourseCredits > creditHourCap) return false;
+    if (!course.prerequisitesSatisfied(catalog, processedCourses)) return false;
+    return true;
+  }
+
+  /**
+   * the recursive backtracking function
+   */
+  function _generatePlan() {
+    if (unplacedCourses.count() <= 0) {
+      scheduleCount += 1;
+      printSchedule(currentSchedule, scheduleCount);
+      if (scheduleCount >= 100) process.exit();
+    }
+
+    const unplacedCoursesSorted = unplacedCourses.toList().sortBy(c => c.priority(degree, catalog));
+    const unplacedCount = unplacedCoursesSorted.count();
+
+    for (let i = 0; i < unplacedCount; i += 1) {
+      const course = unplacedCoursesSorted.get(i)!;
+      if (canPlace(course, currentSemester)) {
+        currentSemester = currentSemester.add(course);
+        unplacedCourses = unplacedCourses.remove(course);
+
+        _generatePlan();
+
+        currentSemester = currentSemester.remove(course);
+        unplacedCourses = unplacedCourses.add(course);
+      }
+    }
+
+    if (currentSchedule.length < semesterCap) {
+      const oldSemester = currentSemester;
+      // 1) update processed courses
+      processedCourses = processedCourses.union(oldSemester);
+      const newSemester = Immutable.Set<Course>();
+      // 2) push new semester
+      currentSchedule.push(newSemester);
+      // 3) reassign current semester
+      currentSemester = newSemester;
+
+      _generatePlan();
+
+      // 1) undo reassignment
+      currentSemester = oldSemester;
+      // 2) undo push new semester
+      currentSchedule = currentSchedule.filter(semester => !semester.equals(newSemester));
+      // 3) undo union of processed courses
+      processedCourses = processedCourses.subtract(oldSemester);
+    }
+  }
+
+  _generatePlan();
+}
+
 export class Degree extends Record.define({
   degreeGroups: Immutable.List<DegreeGroup>(),
 }) {
@@ -794,128 +898,8 @@ export class Degree extends Record.define({
     return this.completedCredits() / this.totalCredits();
   }
 
-  bestSchedule = [] as Course[][];
-  currentSchedule = [] as Course[][];
-  currentSemester = [] as Course[];
-  processedCourses = Immutable.Set<string | Course>();
-  unplacedCourses = [] as Course[]; // sorted by priority
-
-  creditHourCap = 14;
-  scheduleCount = 0;
-
   generatePlan(catalog: Catalog) {
-    const closure = this.closure(catalog);
-    this.unplacedCourses = closure
-      .toList()
-      .filter(course => course instanceof Course)
-      .map(course => course as Course)
-      .sortBy(course => course.priority(this, catalog))
-      .toArray();
-    console.log('unplaced count', this.unplacedCourses.length);
-
-    this.bestSchedule = [] as Course[][];
-    this.currentSchedule = [] as Course[][];
-    this.currentSemester = [] as Course[];
-    this.currentSchedule.push(this.currentSemester);
-    // this.processedCourses = Immutable.Set<string | Course>();
-    this.creditHourCap = 14;
-    this.scheduleCount = 0;
-
-    this.processedCourses = closure
-      .filter(course => typeof course === 'string')
-      .reduce((set, nonCourse) => set.add(nonCourse), Immutable.Set<string | Course>());
-
-    this._generatePlan(catalog);
-  }
-
-  private _canPlace(catalog: Catalog, course: Course, currentSemester: Course[]) {
-    const totalCredits = currentSemester.reduce(
-      (sum, course) => sum + (course.credits || course.creditHours || 0),
-      0,
-    );
-    const newCourseCredits = course.credits || course.creditHours || 0;
-    if (totalCredits + newCourseCredits > this.creditHourCap) return false;
-
-    const processedCoursesArray = this.processedCourses.toArray();
-    if (!course.prerequisitesSatisfied(catalog, this.processedCourses)) return false;
-
-    return true;
-  }
-
-  private _generatePlan(catalog: Catalog) {
-    if (this.unplacedCourses.length <= 0) {
-      // console.log(this.currentSchedule);
-      this.scheduleCount += 1;
-      const totalCourses = this.currentSchedule.reduce(
-        (total, semester) => total + semester.length,
-        0,
-      );
-      console.log(
-        'I:',
-        this.scheduleCount,
-        'semesters:',
-        this.currentSchedule.length,
-        'course count:',
-        totalCourses,
-      );
-
-      const prettySchedule = this.currentSchedule
-        .map(semester =>
-          semester
-            .map(
-              course =>
-                /*if*/ course instanceof Course
-                  ? `${course.simpleName} (${course.credits || course.creditHours || 0})`
-                  : course,
-            )
-            .join(', '),
-        )
-        .join('\n');
-
-      console.log(prettySchedule);
-      console.log('-------');
-
-      if (this.scheduleCount >= 100) {
-        process.exit();
-      }
-    }
-
-    const unplacedCoursesClone = this.unplacedCourses.slice();
-    for (let i = 0; i < unplacedCoursesClone.length; i += 1) {
-      const course = unplacedCoursesClone[i];
-      if (this._canPlace(catalog, course, this.currentSemester)) {
-        this.currentSemester.push(course);
-        const unplacedClone = this.unplacedCourses.slice();
-        unplacedClone.splice(i, 1);
-        this.unplacedCourses = unplacedClone;
-
-        this._generatePlan(catalog);
-
-        this.currentSemester.pop();
-        this.unplacedCourses = [
-          ...this.unplacedCourses.slice(0, i),
-          course,
-          ...this.unplacedCourses.slice(i, this.unplacedCourses.length),
-        ];
-      }
-    }
-
-    const semesterCap = 8;
-    if (this.currentSchedule.length < semesterCap) {
-      this.processedCourses = this.currentSemester.reduce(
-        (set, next) => set.add(next),
-        this.processedCourses,
-      );
-      const newSemester = [] as Course[];
-      this.currentSemester = newSemester;
-      this.currentSchedule.push(newSemester);
-      this._generatePlan(catalog);
-      const poppedSemester = this.currentSchedule.pop()!;
-      this.processedCourses = poppedSemester.reduce(
-        (set, next) => set.remove(next),
-        this.processedCourses,
-      );
-    }
+    generatePlans(this, catalog);
   }
 
   addDegreeGroup(group: DegreeGroup) {
