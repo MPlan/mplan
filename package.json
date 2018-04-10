@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jasmine-ts \"src/**/*.spec.ts\"",
+    "test": "jasmine-ts",
     "start": "npm run server & npm run start:client",
     "start:server": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server/index.ts",
     "start:client": "webpack-dev-server",
