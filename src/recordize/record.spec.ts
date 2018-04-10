@@ -69,5 +69,38 @@ describe('record', () => {
       expect(result.someSet.first() instanceof Bar).toBe(true);
       expect(result.someSet.first()!.nestedSet.first() instanceof Baz).toBe(true);
     });
+
+    it('recursively converts lists to immutable types', () => {
+      class Baz extends Recordize.define({
+        baz: 'whoa',
+      }) {}
+
+      class Bar extends Recordize.define({
+        bar: 'something',
+        nestedList: Recordize.ListOf(Baz),
+      }) {}
+
+      class Foo extends Recordize.define({
+        foo: 'something',
+        someList: Recordize.ListOf(Bar),
+      }) {}
+
+      const js = new Foo()
+        .set('foo', 'something else')
+        .update('someList', list =>
+          list.push(
+            new Bar().update('nestedList', nestedList =>
+              nestedList.push(new Baz().set('baz', 'new new baz')),
+            ),
+          ),
+        )
+        .toJS();
+      const result = Foo.fromJS(js);
+
+      expect(result instanceof Foo).toBe(true);
+      expect(Immutable.List.isList(result.someList)).toBe(true);
+      // expect(result.someList.first() instanceof Bar).toBe(true);
+      expect(result.someList.first()!.nestedList.first() instanceof Baz).toBe(true);
+    });
   });
 });

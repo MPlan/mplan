@@ -120,20 +120,26 @@ export function define<T>(rawRecordDefault: T) {
   function fromJS<U extends RecordClass>(this: new (...params: any[]) => U, js: any): U {
     return Object.entries(js).reduce((record, [key, value]) => {
       if (mapConstructors[key]) {
-        const transformedValue = Object.entries(value).reduce((map, [nestedKey, value]) => {
-          const immutableValue = mapConstructors[key].fromJS(value);
+        const transformedValue = Object.entries(value).reduce((map, [nestedKey, subValue]) => {
+          const immutableValue = mapConstructors[key].fromJS(subValue);
           return map.set(nestedKey, immutableValue);
         }, Immutable.Map<any, any>());
 
         return record.set(key as any, transformedValue as any);
       } else if (setConstructors[key]) {
-        const transformedValue = (value as any[]).reduce((set, value) => {
-          const immutableValue = setConstructors[key].fromJS(value);
+        const transformedValue = (value as any[]).reduce((set, item) => {
+          const immutableValue = setConstructors[key].fromJS(item);
           return set.add(immutableValue);
         }, Immutable.Set<any>());
 
         return record.set(key as any, transformedValue as any);
       } else if (listConstructors[key]) {
+        const transformedValue = (value as any[]).reduce((list, item) => {
+          const immutableValue = listConstructors[key].fromJS(item);
+          return list.push(item);
+        }, Immutable.List<any>());
+
+        return record.set(key as any, transformedValue as any);
       }
       return record.set(key as any, value as any);
     }, new this());
@@ -146,8 +152,7 @@ export function define<T>(rawRecordDefault: T) {
 
   const _recordClass = Object.assign(RecordClass, staticAdditions);
 
-  Object.assign(_recordClass, {
-  });
+  Object.assign(_recordClass, {});
 
   return (_recordClass as any) as typeof staticAdditions &
     (new (defaultValues?: Partial<Record>) => Immutable.Record<Record> &
