@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Text, Semester, FloatingActionButton } from '../components';
+import { View, Text, Semester, FloatingActionButton, Button } from '../components';
 import * as styles from '../styles';
 import * as Model from '../models';
 import * as Immutable from 'immutable';
@@ -139,6 +139,13 @@ export class Timeline extends Model.store.connect({
     semesterElement.scrollIntoView({ behavior: 'smooth' });
   }
 
+  handleGenerateButton = () => {
+    this.setStore(store => {
+      const newPlan = store.user.degree.generatePlan(store.catalog);
+      return store.updatePlan(() => newPlan);
+    });
+  }
+
   render() {
     const semestersSorted = this.store.user.plan.semesterMap.valueSeq().sortBy(s => s.position);
 
@@ -158,6 +165,7 @@ export class Timeline extends Model.store.connect({
             <Text strong large color={styles.textLight}>
               April 2018
             </Text>
+            <Button onClick={this.handleGenerateButton}>Generate schedule</Button>
           </HeaderRight>
         </Header>
         <SemestersContainer>

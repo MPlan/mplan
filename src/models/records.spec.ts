@@ -273,6 +273,7 @@ ALL
           catalog.getCourse('ECON', '201')!,
           catalog.getCourse('SOC', '200')!,
           catalog.getCourse('PSYC', '101')!,
+          catalog.getCourse('ENGR', '400')!,
           catalog.getCourse('ENGR', '100')!,
           catalog.getCourse('MATH', '115')!,
           catalog.getCourse('MATH', '116')!,
@@ -313,7 +314,7 @@ ALL
     console.log('All Courses in Closure', allCourses);
 
     console.time('plan generation');
-    const plan = degree.generatePlan(catalog);
+    const plan = Record.generatePlans(degree, catalog);
     console.timeEnd('plan generation');
 
     Record.printSchedule(plan);
