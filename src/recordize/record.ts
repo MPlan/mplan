@@ -9,9 +9,9 @@ export function MapOf<T>(constructor: new (...params: any[]) => T) {
   return new MapPlaceholder(constructor);
 }
 class MapPlaceholder<T> {
-  __constructor: new (...params: any[]) => T;
+  __mapConstructor: new (...params: any[]) => T;
   constructor(otherConstructor: new (...params: any[]) => T) {
-    this.__constructor = otherConstructor;
+    this.__mapConstructor = otherConstructor;
   }
 }
 
@@ -19,9 +19,9 @@ export function SetOf<T>(constructor: new (...params: any[]) => T) {
   return new SetPlaceholder(constructor);
 }
 class SetPlaceholder<T> {
-  __constructor: new (...params: any[]) => T;
+  __setConstructor: new (...params: any[]) => T;
   constructor(otherConstructor: new (...params: any[]) => T) {
-    this.__constructor = otherConstructor;
+    this.__setConstructor = otherConstructor;
   }
 }
 
@@ -29,9 +29,9 @@ export function SetOfStringOr<T>(constructor: new (...params: any[]) => T) {
   return new SetOfStringOrTPlaceholder(constructor);
 }
 class SetOfStringOrTPlaceholder<T> {
-  __constructor: new (...params: any[]) => T | string;
+  __setOfStringOrTConstructor: new (...params: any[]) => T | string;
   constructor(otherConstructor: new (...params: any[]) => T | string) {
-    this.__constructor = otherConstructor;
+    this.__setOfStringOrTConstructor = otherConstructor;
   }
 }
 
@@ -39,9 +39,9 @@ export function ListOf<T>(constructor: new (...params: any[]) => T) {
   return new ListPlaceholder(constructor);
 }
 class ListPlaceholder<T> {
-  __constructor: new (...params: any[]) => T;
+  __listConstructor: new (...params: any[]) => T;
   constructor(otherConstructor: new (...params: any[]) => T) {
-    this.__constructor = otherConstructor;
+    this.__listConstructor = otherConstructor;
   }
 }
 
@@ -79,7 +79,7 @@ export function define<T>(rawRecordDefault: T) {
   const mapConstructors = Object.entries(rawRecordDefault).reduce(
     (mapConstructors, [key, value]) => {
       if (value instanceof MapPlaceholder) {
-        mapConstructors[key] = value.__constructor;
+        mapConstructors[key] = value.__mapConstructor;
       }
       return mapConstructors;
     },
@@ -89,7 +89,8 @@ export function define<T>(rawRecordDefault: T) {
   const setConstructors = Object.entries(rawRecordDefault).reduce(
     (setConstructors, [key, value]) => {
       if (value instanceof SetPlaceholder || value instanceof SetOfStringOrTPlaceholder) {
-        setConstructors[key] = value.__constructor;
+        setConstructors[key] =
+          (value as any).__setConstructor || (value as any).__setOfStringOrTConstructor;
       }
       return setConstructors;
     },
@@ -99,7 +100,7 @@ export function define<T>(rawRecordDefault: T) {
   const listConstructors = Object.entries(rawRecordDefault).reduce(
     (listConstructors, [key, value]) => {
       if (value instanceof ListPlaceholder) {
-        listConstructors[key] = value.__constructor;
+        listConstructors[key] = value.__listConstructor;
       }
       return listConstructors;
     },
@@ -123,17 +124,16 @@ export function define<T>(rawRecordDefault: T) {
           const immutableValue = mapConstructors[key].fromJS(value);
           return map.set(nestedKey, immutableValue);
         }, Immutable.Map<any, any>());
-        
+
         return record.set(key as any, transformedValue as any);
       } else if (setConstructors[key]) {
-        const transformedValue = Object.entries(value).reduce((map, [nestedKey, value]) => {
-          const immutableValue = mapConstructors[key].fromJS(value);
-          return map.set(nestedKey, immutableValue);
-        }, Immutable.Map<any, any>());
-        
+        const transformedValue = (value as any[]).reduce((set, value) => {
+          const immutableValue = setConstructors[key].fromJS(value);
+          return set.add(immutableValue);
+        }, Immutable.Set<any>());
+
         return record.set(key as any, transformedValue as any);
       } else if (listConstructors[key]) {
-
       }
       return record.set(key as any, value as any);
     }, new this());
@@ -147,9 +147,6 @@ export function define<T>(rawRecordDefault: T) {
   const _recordClass = Object.assign(RecordClass, staticAdditions);
 
   Object.assign(_recordClass, {
-    __mapConstructors: mapConstructors,
-    __setConstructors: setConstructors,
-    __listConstructors: listConstructors,
   });
 
   return (_recordClass as any) as typeof staticAdditions &
