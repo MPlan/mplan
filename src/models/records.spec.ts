@@ -265,7 +265,18 @@ ALL
         _id: Record.ObjectId(),
         name: 'Test',
         description: '',
-        courses: Immutable.List<string | Record.Course>([catalog.getCourse('CIS', '4962')!]),
+        courses: Immutable.List<string | Record.Course>([
+          catalog.getCourse('CIS', '4962')!,
+          catalog.getCourse('CIS', '450')!,
+          catalog.getCourse('CIS', '200')!,
+          catalog.getCourse('MATH', '115')!,
+          catalog.getCourse('MHIS', '100')!,
+          catalog.getCourse('ARTH', '105')!,
+          catalog.getCourse('HUM', '100')!,
+          catalog.getCourse('ECON', '100')!,
+          catalog.getCourse('BA', '100')!,
+          catalog.getCourse('ECE', '4984')!,
+        ]),
       }),
     );
 

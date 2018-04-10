@@ -826,8 +826,11 @@ export class Degree extends Record.define({
   }
 
   private _canPlace(catalog: Catalog, course: Course, currentSemester: Course[]) {
-    const totalCredits = currentSemester.reduce((sum, course) => sum + (course.credits || 0), 0);
-    const newCourseCredits = course.credits || 0;
+    const totalCredits = currentSemester.reduce(
+      (sum, course) => sum + (course.credits || course.creditHours || 0),
+      0,
+    );
+    const newCourseCredits = course.credits || course.creditHours || 0;
     if (totalCredits + newCourseCredits > this.creditHourCap) return false;
 
     const processedCoursesArray = this.processedCourses.toArray();
@@ -845,7 +848,12 @@ export class Degree extends Record.define({
       const prettySchedule = this.currentSchedule
         .map(semester =>
           semester
-            .map(course => (/*if*/ course instanceof Course ? course.simpleName : course))
+            .map(
+              course =>
+                /*if*/ course instanceof Course
+                  ? `${course.simpleName} (${course.credits || course.creditHours || 0})`
+                  : course,
+            )
             .join(', '),
         )
         .join('-------\n');
