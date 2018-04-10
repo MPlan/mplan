@@ -258,7 +258,7 @@ ALL
   //   }
   // });
 
-  it('generate plan', () => {
+  fit('generate plan', () => {
     console.log('gen plan');
     const degree = new Record.Degree().addDegreeGroup(
       new Record.DegreeGroup({
@@ -269,17 +269,13 @@ ALL
       }),
     );
 
-    // const plan = degre e.generatePlan(catalog);
-    const levels = degree.levels(catalog);
+    const allCourses = degree
+      .closure(catalog)
+      .map(course => (/*if*/ course instanceof Record.Course ? course.simpleName : course))
+      .join(', ');
 
-    console.log('plan');
-    for (const level of levels) {
-      console.log(
-        level
-          .map(course => (course instanceof Record.Course ? course.simpleName : course))
-          .join(', '),
-      );
-    }
-    console.log('end plan');
+    console.log('All Courses in Closure', allCourses);
+
+    degree.generatePlan(catalog);
   });
 });

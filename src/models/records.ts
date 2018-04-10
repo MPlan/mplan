@@ -485,9 +485,7 @@ export class Course
   ): boolean {
     const options = this.options(catalog);
     for (const option of options) {
-      if (
-        option.every(course => previousCourses.has(course))
-      ) {
+      if (option.every(course => previousCourses.has(course))) {
         return true;
       }
     }
@@ -795,62 +793,76 @@ export class Degree extends Record.define({
     return this.completedCredits() / this.totalCredits();
   }
 
+  bestSchedule = [] as Course[][];
+  currentSchedule = [] as Course[][];
+  currentSemester = [] as Course[];
+  processedCourses = new Set<Course>();
+  unplacedCourses = [] as Course[]; // sorted by priority
+  creditHourCap = 14;
+
   generatePlan(catalog: Catalog) {
     const closure = this.closure(catalog);
-    const coursesSorted = closure
+    this.unplacedCourses = closure
       .toList()
       .filter(course => course instanceof Course)
       .map(course => course as Course)
       .sortBy(course => course.priority(this, catalog))
       .toArray();
 
-    const processedCourses = closure
-      .filter(course => typeof course === 'string')
-      .reduce((set, nonCourse) => set.add(nonCourse), Immutable.Set<string | Course>());
+    this.bestSchedule = [] as Course[][];
+    this.currentSchedule = [] as Course[][];
+    this.currentSemester = [] as Course[];
+    this.processedCourses = new Set<Course>();
+    this.unplacedCourses = [] as Course[]; // sorted by priority
+    this.creditHourCap = 14;
+
+    // const processedCourses = closure
+    //   .filter(course => typeof course === 'string')
+    //   .reduce((set, nonCourse) => set.add(nonCourse), Immutable.Set<string | Course>());
+
+    this._generatePlan();
   }
 
-  currentSemesters = [] as Course[][];
-  currentSemester = [] as Course[];
-  processedCourses = new Set<Course>();
-  unplacedCourses = [] as Course[]; // sorted by priority
+  private _canPlace(course: Course, currentSemester: Course[]) {
+    const totalCredits = currentSemester.reduce((sum, course) => sum + (course.credits || 0), 0);
+    const newCourseCredits = course.credits || 0;
+    if (totalCredits + newCourseCredits > this.creditHourCap) return false;
+    return true;
+  }
 
-  private _generatePlan(): boolean {
-
+  private _generatePlan() {
     if (this.unplacedCourses.length <= 0) {
-      return true;
+      console.log('GOT HERE');
+      console.log(this.currentSchedule);
+      process.exit(0);
     }
 
-    function canPlace(c: Course, semester: Course[]) {
-      // if current semester is over cap: return false;
-      // if prereqs aren't satisifed return false;
-
-      return true;
-    }
-
-    for (const course of this.unplacedCourses) {
-      if (canPlace(course, this.currentSemester)) {
-        // then do it
+    const unplacedCoursesClone = this.unplacedCourses.slice();
+    for (let i = 0; i < unplacedCoursesClone.length; i += 1) {
+      const course = unplacedCoursesClone[i];
+      if (this._canPlace(course, this.currentSemester)) {
         this.currentSemester.push(course);
+        this.unplacedCourses.splice(i, 1); // removing the course from the unplaced
 
-        if (this._generatePlan()) return true;
+        this._generatePlan();
+
+        this.currentSemester = this.currentSemester.slice(0, this.currentSemester.length - 1);
+        this.unplacedCourses = [
+          ...this.unplacedCourses.slice(0, i),
+          course,
+          ...this.unplacedCourses.slice(i, this.unplacedCourses.length),
+        ];
       }
     }
 
-    const semesterCap = 15;
-    if (this.currentSemesters.length < semesterCap) {
+    const semesterCap = 30;
+    if (this.currentSchedule.length < semesterCap) {
       const newSemester = [] as Course[];
       this.currentSemester = newSemester;
-      this.currentSemesters.push(this.currentSemester);
-      if (this._generatePlan()) return true;
+      this.currentSchedule.push(this.currentSemester);
+      this._generatePlan();
+      this.currentSchedule.pop();
     }
-
-    // create new semester
-    // then call _generatePlan()
-    
-
-    // if can place course into current semester
-    // then do it
-    return false;
   }
 
   addDegreeGroup(group: DegreeGroup) {
