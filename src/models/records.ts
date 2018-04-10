@@ -808,12 +808,12 @@ export class Degree extends Record.define({
       .map(course => course as Course)
       .sortBy(course => course.priority(this, catalog))
       .toArray();
+    console.log('unplaced count', this.unplacedCourses.length);
 
     this.bestSchedule = [] as Course[][];
     this.currentSchedule = [] as Course[][];
     this.currentSemester = [] as Course[];
     this.processedCourses = new Set<Course>();
-    this.unplacedCourses = [] as Course[]; // sorted by priority
     this.creditHourCap = 14;
 
     // const processedCourses = closure
@@ -832,6 +832,7 @@ export class Degree extends Record.define({
 
   private _generatePlan() {
     if (this.unplacedCourses.length <= 0) {
+      this.currentSchedule.push(this.currentSemester);
       console.log('GOT HERE');
       console.log(this.currentSchedule);
       process.exit(0);
@@ -857,9 +858,9 @@ export class Degree extends Record.define({
 
     const semesterCap = 30;
     if (this.currentSchedule.length < semesterCap) {
+      this.currentSchedule.push(this.currentSemester);
       const newSemester = [] as Course[];
       this.currentSemester = newSemester;
-      this.currentSchedule.push(this.currentSemester);
       this._generatePlan();
       this.currentSchedule.pop();
     }
