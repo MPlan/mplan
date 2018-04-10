@@ -1,6 +1,7 @@
 import * as Recordize from './record';
+import * as Immutable from 'immutable';
 
-fdescribe('record', () => {
+describe('record', () => {
   describe('RecordNoPlaceholders', () => {
     it('unboxes T when a Placeholder<T> is used', () => {
       const someSymbol = Symbol();
@@ -61,5 +62,24 @@ fdescribe('record', () => {
 
       type ShouldBeSomeClass = AssertSomeClass<GetValue<Pick<typeof Foo.recordDefault, 'map'>>>;
     });
+  });
+
+  describe('nested constructors', () => {});
+
+  fdescribe('fromJS', () => {
+    class Bar extends Recordize.define({
+      bar: 'something',
+    }) {}
+
+    class Foo extends Recordize.define({
+      foo: 'something',
+      someMap: Recordize.MapOf(Bar),
+    }) {}
+
+    const a = new Foo();
+    const b = Foo.fromJS({})
+    b.someMap
+
+    console.log(Foo.fromJS({}) instanceof Foo);
   });
 });
