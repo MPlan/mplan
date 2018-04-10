@@ -801,6 +801,7 @@ export class Degree extends Record.define({
   unplacedCourses = [] as Course[]; // sorted by priority
 
   creditHourCap = 14;
+  scheduleCount = 0;
 
   generatePlan(catalog: Catalog) {
     const closure = this.closure(catalog);
@@ -817,6 +818,7 @@ export class Degree extends Record.define({
     this.currentSemester = [] as Course[];
     // this.processedCourses = Immutable.Set<string | Course>();
     this.creditHourCap = 14;
+    this.scheduleCount = 0;
 
     this.processedCourses = closure
       .filter(course => typeof course === 'string')
@@ -842,25 +844,28 @@ export class Degree extends Record.define({
   private _generatePlan(catalog: Catalog) {
     if (this.unplacedCourses.length <= 0) {
       this.currentSchedule.push(this.currentSemester);
-      console.log('GOT HERE');
-      console.log(this.currentSchedule);
+      // console.log(this.currentSchedule);
+      this.scheduleCount += 1;
+      console.log(this.scheduleCount, this.currentSchedule.length);
 
-      const prettySchedule = this.currentSchedule
-        .map(semester =>
-          semester
-            .map(
-              course =>
-                /*if*/ course instanceof Course
-                  ? `${course.simpleName} (${course.credits || course.creditHours || 0})`
-                  : course,
-            )
-            .join(', '),
-        )
-        .join('-------\n');
+      this.currentSchedule.pop();
 
-      console.log(prettySchedule);
-
-      process.exit(0);
+      // if (this.scheduleCount === 44) {
+      //   const prettySchedule = this.currentSchedule
+      //     .map(semester =>
+      //       semester
+      //         .map(
+      //           course =>
+      //             /*if*/ course instanceof Course
+      //               ? `${course.simpleName} (${course.credits || course.creditHours || 0})`
+      //               : course,
+      //         )
+      //         .join(', '),
+      //     )
+      //     .join('-------\n');
+  
+      //   console.log(prettySchedule);
+      // }
     }
 
     const unplacedCoursesClone = this.unplacedCourses.slice();
@@ -881,8 +886,8 @@ export class Degree extends Record.define({
       }
     }
 
-    const semesterCap = 30;
-    if (this.currentSchedule.length < semesterCap) {
+    const semesterCap = 12;
+    if (this.currentSchedule.length < semesterCap - 1) {
       this.currentSchedule.push(this.currentSemester);
       this.processedCourses = this.currentSemester.reduce(
         (set, next) => set.add(next),
