@@ -313,8 +313,9 @@ ALL
     console.log('All Courses in Closure', allCourses);
 
     console.time('plan generation');
-    degree.generatePlan(catalog);
+    const plan = degree.generatePlan(catalog);
     console.timeEnd('plan generation');
-    console.log('schedule count', degree.scheduleCount);
+
+    Record.printSchedule(plan);
   });
 });

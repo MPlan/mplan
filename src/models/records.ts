@@ -697,9 +697,9 @@ export class DegreeGroup extends Record.define({
   }
 }
 
-function printSchedule(schedule: Immutable.List<Immutable.Set<Course>>, scheduleCount: number) {
+export function printSchedule(schedule: Immutable.List<Immutable.Set<Course>>) {
   const totalCourses = schedule.reduce((total, semester) => total + semester.count(), 0);
-  console.log('I:', scheduleCount, 'semesters:', schedule.count(), 'course count:', totalCourses);
+  console.log('semesters:', schedule.count(), 'course count:', totalCourses);
 
   const prettySchedule = schedule
     .map(semester =>
@@ -721,10 +721,9 @@ function printSchedule(schedule: Immutable.List<Immutable.Set<Course>>, schedule
 function generatePlans(degree: Degree, catalog: Catalog) {
   // === DEFINE CONSTANTS ===
   const creditHourCap = 14;
-  const semesterCap = 8;
+  const semesterCap = 15;
 
   // === DEFINE STATE VARIABLES ===
-  let bestSchedule = Immutable.List<Immutable.Set<Course>>();
   let currentSchedule = Immutable.List<Immutable.Set<Course>>();
   let currentSemester = Immutable.Set<Course>();
   let processedCourses = Immutable.Set<string | Course>();
@@ -756,12 +755,12 @@ function generatePlans(degree: Degree, catalog: Catalog) {
   /**
    * the recursive backtracking function
    */
-  function _generatePlan() {
+  function _generatePlan(): boolean {
     const unplacedCount = unplacedCourses.count();
     if (unplacedCount <= 0) {
       scheduleCount += 1;
-      printSchedule(currentSchedule, scheduleCount);
-      if (scheduleCount >= 100) process.exit();
+      currentSchedule = currentSchedule.push(currentSemester);
+      return true;
     }
 
     const unplacedCoursesSorted = unplacedCourses.toList().sortBy(c => c.priority(degree, catalog));
@@ -771,35 +770,25 @@ function generatePlans(degree: Degree, catalog: Catalog) {
         currentSemester = currentSemester.add(course);
         unplacedCourses = unplacedCourses.remove(course);
 
-        _generatePlan();
-
-        currentSemester = currentSemester.remove(course);
-        unplacedCourses = unplacedCourses.add(course);
+        if (_generatePlan()) return true;
       }
     }
 
     if (currentSchedule.count() < semesterCap) {
       const oldSemester = currentSemester;
-      // 1) update processed courses
       processedCourses = processedCourses.union(oldSemester);
-      // 2) push semester
       currentSchedule = currentSchedule.push(oldSemester);
-      // 3) reassign current semester
       currentSemester = Immutable.Set<Course>();
 
-      _generatePlan();
-
-      // 1) undo reassignment
-      currentSemester = oldSemester;
-      // 2) undo push semester
-      currentSchedule = currentSchedule.filter(semester => !semester.equals(oldSemester));
-      // 3) undo union of processed courses
-      // processedCourses = oldSemester.reduce((set, course) => set.remove(course), processedCourses);
-      processedCourses = processedCourses.subtract(oldSemester);
+      if (_generatePlan()) return true;
     }
+
+    return false;
   }
 
   _generatePlan();
+
+  return currentSchedule;
 }
 
 export class Degree extends Record.define({
@@ -900,7 +889,7 @@ export class Degree extends Record.define({
   }
 
   generatePlan(catalog: Catalog) {
-    generatePlans(this, catalog);
+    return generatePlans(this, catalog);
   }
 
   addDegreeGroup(group: DegreeGroup) {
