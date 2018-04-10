@@ -697,9 +697,9 @@ export class DegreeGroup extends Record.define({
   }
 }
 
-function printSchedule(schedule: Immutable.Set<Course>[], scheduleCount: number) {
+function printSchedule(schedule: Immutable.List<Immutable.Set<Course>>, scheduleCount: number) {
   const totalCourses = schedule.reduce((total, semester) => total + semester.count(), 0);
-  console.log('I:', scheduleCount, 'semesters:', schedule.length, 'course count:', totalCourses);
+  console.log('I:', scheduleCount, 'semesters:', schedule.count(), 'course count:', totalCourses);
 
   const prettySchedule = schedule
     .map(semester =>
@@ -725,7 +725,7 @@ function generatePlans(degree: Degree, catalog: Catalog) {
 
   // === DEFINE STATE VARIABLES ===
   let bestSchedule = Immutable.List<Immutable.Set<Course>>();
-  let currentSchedule = [] as Array<Immutable.Set<Course>>;
+  let currentSchedule = Immutable.List<Immutable.Set<Course>>();
   let currentSemester = Immutable.Set<Course>();
   let processedCourses = Immutable.Set<string | Course>();
   let unplacedCourses = Immutable.Set<Course>();
@@ -737,7 +737,6 @@ function generatePlans(degree: Degree, catalog: Catalog) {
   unplacedCourses = closure
     .filter(prerequisite => prerequisite instanceof Course)
     .map(c => c as Course);
-  currentSchedule.push(currentSemester);
 
   /**
    * returns whether a course can be placed in a semester
@@ -761,7 +760,7 @@ function generatePlans(degree: Degree, catalog: Catalog) {
     const unplacedCount = unplacedCourses.count();
     if (unplacedCount <= 0) {
       scheduleCount += 1;
-      printSchedule(currentSchedule.slice(), scheduleCount);
+      printSchedule(currentSchedule, scheduleCount);
       if (scheduleCount >= 100) process.exit();
     }
 
@@ -779,22 +778,21 @@ function generatePlans(degree: Degree, catalog: Catalog) {
       }
     }
 
-    if (currentSchedule.length < semesterCap) {
+    if (currentSchedule.count() < semesterCap) {
       const oldSemester = currentSemester;
       // 1) update processed courses
       processedCourses = processedCourses.union(oldSemester);
-      const newSemester = Immutable.Set<Course>();
-      // 2) push new semester
-      currentSchedule.push(newSemester);
+      // 2) push semester
+      currentSchedule = currentSchedule.push(oldSemester);
       // 3) reassign current semester
-      currentSemester = newSemester;
+      currentSemester = Immutable.Set<Course>();
 
       _generatePlan();
 
       // 1) undo reassignment
       currentSemester = oldSemester;
-      // 2) undo push new semester
-      currentSchedule = currentSchedule.filter(semester => !semester.equals(newSemester));
+      // 2) undo push semester
+      currentSchedule = currentSchedule.filter(semester => !semester.equals(oldSemester));
       // 3) undo union of processed courses
       // processedCourses = oldSemester.reduce((set, course) => set.remove(course), processedCourses);
       processedCourses = processedCourses.subtract(oldSemester);
