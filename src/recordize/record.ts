@@ -117,12 +117,26 @@ export function define<T>(rawRecordDefault: T) {
   }
 
   function fromJS<U extends RecordClass>(this: new (...params: any[]) => U, js: any): U {
-    Object.entries(js).reduce((record, [key, value]) => {
+    return Object.entries(js).reduce((record, [key, value]) => {
       if (mapConstructors[key]) {
+        const transformedValue = Object.entries(value).reduce((map, [nestedKey, value]) => {
+          const immutableValue = mapConstructors[key].fromJS(value);
+          return map.set(nestedKey, immutableValue);
+        }, Immutable.Map<any, any>());
+        
+        return record.set(key as any, transformedValue as any);
+      } else if (setConstructors[key]) {
+        const transformedValue = Object.entries(value).reduce((map, [nestedKey, value]) => {
+          const immutableValue = mapConstructors[key].fromJS(value);
+          return map.set(nestedKey, immutableValue);
+        }, Immutable.Map<any, any>());
+        
+        return record.set(key as any, transformedValue as any);
+      } else if (listConstructors[key]) {
+
       }
-      return record;
+      return record.set(key as any, value as any);
     }, new this());
-    return new this();
   }
 
   const staticAdditions = {
