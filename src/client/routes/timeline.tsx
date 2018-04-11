@@ -39,32 +39,22 @@ const SemestersContainer = styled(View)`
   }
   &::-webkit-scrollbar {
     -webkit-appearance: none;
-    width: ${styles.space(0)};
+    height: ${styles.space(1)};
   }
 
   &::-webkit-scrollbar-thumb {
     border-radius: 3px;
-    background-color: rgb(${rgbaBlue.red}, ${rgbaBlue.green}, ${rgbaBlue.blue}, 0.25);
+    background-color: ${styles.blue};
     -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
     top: 100%;
   }
 `;
 const Navigator = styled.div`
-  height: 3rem;
-  max-height: 3rem;
-  min-height: 3rem;
   background-color: ${styles.grayLighter};
   display: flex;
   justify-content: space-around;
   align-items: flex-end;
   position: relative;
-`;
-const NavigatorHorizontalLine = styled.div`
-  height: 0.1rem;
-  background-color: ${styles.grayLight};
-  position: absolute;
-  width: 100%;
-  top: 50%;
 `;
 const NavigationLabel = styled(Text)`
   display: flex;
@@ -85,7 +75,7 @@ const NavigationLabel = styled(Text)`
     color: ${styles.active(styles.gray)};
     background-color: ${styles.active(styles.grayLight)};
   }
-  height: 3rem;
+  padding: ${styles.space(-1)};
 `;
 
 const actions = {
