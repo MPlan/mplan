@@ -9,12 +9,7 @@ import { Fa } from './fa';
 import { PreferredPrerequisite } from './preferred-prerequisite';
 import { RightClickMenu } from './right-click-menu';
 
-export interface ContainerProps
-  extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
-  dragging?: boolean;
-}
-
-const Container = styled<ContainerProps>(View)`
+const Container = styled(View)`
   padding: ${styles.space(-1)} ${styles.space(0)};
   flex-direction: row;
   align-items: flex-start;
@@ -25,7 +20,6 @@ const Container = styled<ContainerProps>(View)`
   }
   transition: all 0.2s;
   background-color: ${styles.white};
-  cursor ${props => (props.dragging ? 'grabbing' : 'grab')};
   &:active {
     box-shadow: 0 0.2rem 1.3rem 0 rgba(12, 0, 51, 0.2);
   }
@@ -67,68 +61,31 @@ export interface SemesterCourseProps {
   onDeleteCourse: () => void;
 }
 
-export interface SemesterCourseState {
-  dragging: boolean;
-}
+export function SemesterCourse(props: SemesterCourseProps) {
+  const { course, degree, catalog, onDeleteCourse } = props;
+  const criticalLevel = course.criticalLevel(degree, catalog);
 
-export class SemesterCourse extends React.Component<SemesterCourseProps, SemesterCourseState> {
-  constructor(props: SemesterCourseProps) {
-    super(props);
-    this.state = {
-      dragging: false,
-    };
-  }
-
-  componentDidMount() {
-    document.addEventListener('mouseup', this.handleMouseUp);
-    document.addEventListener('drop', this.handleMouseUp);
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('mouseup', this.handleMouseUp);
-    document.removeEventListener('drop', this.handleMouseUp);
-  }
-
-  handleMouseUp = () => {
-    this.setState(previousState => ({
-      ...previousState,
-      dragging: false,
-    }));
-  };
-
-  handleMouseDown = () => {
-    this.setState(previousState => ({
-      ...previousState,
-      dragging: true,
-    }));
-  };
-
-  render() {
-    const { course, degree, catalog, onDeleteCourse } = this.props;
-    const criticalLevel = course.criticalLevel(degree, catalog);
-
-    function handleAction(action: keyof typeof actions) {
-      if (action === 'delete') {
-        onDeleteCourse();
-      }
+  function handleAction(action: keyof typeof actions) {
+    if (action === 'delete') {
+      onDeleteCourse();
     }
-
-    return (
-      <RightClickMenu header={course.simpleName} actions={actions} onAction={handleAction}>
-        <Container onMouseDown={this.handleMouseDown} dragging={this.state.dragging}>
-          <Body>
-            <Row>
-              <SimpleName>{course.simpleName}</SimpleName>
-              <Credits small>
-                {course.credits} {course.credits === 1 ? 'credit' : 'credits'}
-              </Credits>
-            </Row>
-            <FullName>{course.name}</FullName>
-            <CriticalLevel small>Critical level: {criticalLevel}</CriticalLevel>
-          </Body>
-          <DropdownMenu header={course.simpleName} actions={actions} onAction={handleAction} />
-        </Container>
-      </RightClickMenu>
-    );
   }
+
+  return (
+    <RightClickMenu header={course.simpleName} actions={actions} onAction={handleAction}>
+      <Container>
+        <Body>
+          <Row>
+            <SimpleName>{course.simpleName}</SimpleName>
+            <Credits small>
+              {course.credits} {course.credits === 1 ? 'credit' : 'credits'}
+            </Credits>
+          </Row>
+          <FullName>{course.name}</FullName>
+          <CriticalLevel small>Critical level: {criticalLevel}</CriticalLevel>
+        </Body>
+        <DropdownMenu header={course.simpleName} actions={actions} onAction={handleAction} />
+      </Container>
+    </RightClickMenu>
+  );
 }

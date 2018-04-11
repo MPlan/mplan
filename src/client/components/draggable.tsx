@@ -10,6 +10,10 @@ import { wait } from '../../utilities/utilities';
 const Container = styled(View)`
   position: relative;
   flex-shrink: 0;
+  cursor: grab;
+  &:active {
+    cursor: grabbing;
+  }
 `;
 const FloatingChild = styled.div`
   position: absolute;
@@ -107,6 +111,7 @@ export class Draggable extends Model.store.connect({
 
   handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
     e.dataTransfer.setData('text', this.draggableId);
+    e.dataTransfer.effectAllowed = 'copyMove';
     const childWrapperRef = this.childWrapperRef;
     const childHeight = childWrapperRef && childWrapperRef.getBoundingClientRect().height;
 

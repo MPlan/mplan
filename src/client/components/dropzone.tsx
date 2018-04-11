@@ -198,6 +198,10 @@ export class Dropzone extends Model.store.connect({
     });
   };
 
+  handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
+    e.dataTransfer.dropEffect = 'move';
+  }
+
   render() {
     return (
       <Container
@@ -206,6 +210,7 @@ export class Dropzone extends Model.store.connect({
         onDragStart={this.handleDragStart}
         onDrop={this.handleDrop}
         onDragOver={this.handleDragOver}
+        onDragEnter={this.handleDragEnter}
       >
         <Draggable
           id={this.props.id}
