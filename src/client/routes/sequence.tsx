@@ -127,6 +127,7 @@ export class Sequence extends Model.store.connect({
       this.reflowArrows();
     });
 
+    await wait(100);
     this.reflowTrigger();
   }
 
@@ -477,7 +478,7 @@ export class Sequence extends Model.store.connect({
                   const bezierPoint2Y = edge.y2;
                   return (
                     <path
-                      // key={index}
+                      key={edge.key}
                       d={oneLine`
                       M ${startingPointX * graphWidth},${startingPointY * graphHeight}
                       C ${bezierPoint1X * graphWidth},${bezierPoint1Y * graphHeight}
