@@ -60,15 +60,6 @@ const Navigator = styled.div`
   align-items: flex-end;
   position: relative;
 `;
-const Slider = styled.div`
-  position: absolute;
-  height: 3rem;
-  max-height: 3rem;
-  min-height: 3rem;
-  background-color: ${styles.blue};
-  opacity: 0.25;
-  transition: all 0.1s;
-`;
 const NavigatorHorizontalLine = styled.div`
   height: 0.1rem;
   background-color: ${styles.grayLight};
@@ -80,7 +71,6 @@ const NavigationLabel = styled(Text)`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: ${styles.space(-1)};
   position: relative;
   color: ${styles.gray};
   font-size: ${styles.space(-1)};
@@ -89,20 +79,14 @@ const NavigationLabel = styled(Text)`
   flex: 1;
   &:hover {
     text-decoration: underline;
+    color: ${styles.hover(styles.gray)};
+    background-color: ${styles.hover(styles.grayLight)};
+  }
+  &:active {
+    color: ${styles.active(styles.gray)};
+    background-color: ${styles.active(styles.grayLight)};
   }
   height: 3rem;
-
-  &::after {
-    /* TODO: add tick mark */
-  }
-`;
-const Tick = styled.div`
-  height: 0.7rem;
-  width: 2px;
-  background-color: ${styles.grayLight};
-  position: absolute;
-  left: 50%;
-  top: -170%;
 `;
 
 const actions = {
@@ -183,7 +167,6 @@ export class Timeline extends Model.store.connect({
                 {semester.shortName}
               </NavigationLabel>
             ))}
-            <NavigatorHorizontalLine />
           </Navigator>
           <FloatingActionButton actions={actions} message="Add..." onAction={this.handleActions} />
         </Content>
