@@ -50,16 +50,6 @@ const SemestersContainer = styled(View)`
     top: 100%;
   }
 `;
-const HorizontalLine = styled.div`
-  position: absolute;
-  background-color: ${styles.blue};
-  height: 0.5rem;
-  margin-bottom: ${styles.space(1)};
-  box-shadow: ${styles.boxShadow(1)};
-  width: 100%;
-  left: 0;
-  bottom: 4rem;
-`;
 const Navigator = styled.div`
   height: 3rem;
   max-height: 3rem;
@@ -174,7 +164,7 @@ export class Timeline extends Model.store.connect({
               <Button onClick={this.handleGenerateButton}>Generate schedule</Button>
             </HeaderRight>
           </Header>
-          <SemestersContainer>
+          <SemestersContainer className="semesters-container">
             {semestersSorted.map(semester => (
               <Semester
                 key={semester.id}
@@ -183,7 +173,6 @@ export class Timeline extends Model.store.connect({
                 catalog={this.store.catalog}
               />
             ))}
-            <HorizontalLine className="horizontal-line" />
           </SemestersContainer>
           <Navigator>
             {semestersSorted.map(semester => (

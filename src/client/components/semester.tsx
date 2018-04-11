@@ -16,6 +16,16 @@ const Container = styled(View)`
   min-width: 16rem;
   margin-right: ${styles.space(2)};
   flex: 1;
+  position: relative;
+  .semesters-container > :not(:last-child) &::after {
+    content: ' ';
+    width: calc(100% + ${styles.space(2)});
+    height: ${styles.space(-1)};
+    background-color: ${styles.blue};
+    left: 50%;
+    bottom: 0;
+    position: absolute;
+  }
 `;
 const Header = styled(View)`
   flex-direction: row;
@@ -53,7 +63,7 @@ const Marker = styled.div`
 const VerticalLine = styled.div`
   position: absolute;
   background-color: ${styles.blue};
-  width: 0.5rem;
+  width: ${styles.space(-1)};
   height: 3rem;
   left: 50%;
   transform: translateX(-50%);
@@ -61,8 +71,8 @@ const VerticalLine = styled.div`
 `;
 const Circle = styled.div`
   position: absolute;
-  width: 3rem;
-  height: 3rem;
+  width: ${styles.space(2)};
+  height: ${styles.space(2)};
   border-radius: 999999px;
   background-color: ${styles.blue};
   left: 50%;
