@@ -5,12 +5,14 @@ import styled from 'styled-components';
 import { View } from './view';
 import { Text } from './text';
 import { Accordion } from './accordion';
+import { SemesterCourse } from './semester-course';
+import { Dropzone } from './dropzone';
 
 const Container = styled(View)`
   box-shadow: ${styles.boxShadow(0)};
   width: 16rem;
   background-color: ${styles.white};
-  transition: all 400ms;
+  transition: all 200ms;
   max-width: 16rem;
   z-index: 2;
 `;
@@ -26,56 +28,64 @@ const Body = styled(View)`
 
 export class Toolbox extends Model.store.connect({
   initialState: {
-    accordionOpenA: false,
-    accordionOpenB: false,
+    unplacedCoursesOpen: true,
+    warningsOpen: false,
   },
 }) {
-  handleAccordionToggleA = () => {
+  handleUnplacedCoursesToggle = () => {
     this.setState(previousState => ({
       ...previousState,
-      accordionOpenA: !previousState.accordionOpenA,
+      unplacedCoursesOpen: !previousState.unplacedCoursesOpen,
     }));
   };
 
-  handleAccordionToggleB = () => {
+  handleWarningsToggle = () => {
     this.setState(previousState => ({
       ...previousState,
-      accordionOpenB: !previousState.accordionOpenB,
+      warningsOpen: !previousState.warningsOpen,
     }));
+  };
+
+  handleDeleteCourse(course: Model.Course) {}
+
+  renderCourse = (course: Model.Course) => {
+    return (
+      <SemesterCourse
+        key={course.id}
+        course={course}
+        degree={this.store.user.degree}
+        catalog={this.store.catalog}
+        onDeleteCourse={() => this.handleDeleteCourse(course)}
+      />
+    );
   };
 
   render() {
+    const degree = this.store.user.degree;
+    const plan = this.store.user.plan;
+    const catalog = this.store.catalog;
     return (
       <Container style={{ maxWidth: this.store.ui.showToolbox ? '16rem' : 0 }}>
         <Header>Toolbox</Header>
         <Body>
           <Accordion
             header="Unplaced courses"
-            onToggle={this.handleAccordionToggleA}
-            open={this.state.accordionOpenA}
+            onToggle={this.handleUnplacedCoursesToggle}
+            open={this.state.unplacedCoursesOpen}
           >
-            <Text large>whoa</Text>
-            <Text large>whoa</Text>
-            <Text large>whoa</Text>
-            <Text large>whoa</Text>
-            <Text large>whoa</Text>
-            <Text large>whoa</Text>
-            <Text large>whoa</Text>
-            <Text large>whoa</Text>
-            <Text large>whoa</Text>
-            <Text large>whoa</Text>
-            <Text large>whoa</Text>
-            <Text large>whoa</Text>
-            <Text large>whoa</Text>
-            <Text large>whoa</Text>
-            <Text large>whoa</Text>
-            <Text large>whoa</Text>
-            <Text large>whoa</Text>
+            <Dropzone
+              id={'unplaced-courses'}
+              elements={plan
+                .unplacedCourses(degree, catalog)}
+              getKey={course => course.id}
+              onChangeSort={() => {}}
+              render={this.renderCourse}
+            />
           </Accordion>
           <Accordion
-            header="Unplaced courses"
-            onToggle={this.handleAccordionToggleB}
-            open={this.state.accordionOpenB}
+            header="Warnings"
+            onToggle={this.handleWarningsToggle}
+            open={this.state.warningsOpen}
           >
             <Text large>whoa</Text>
             <Text large>whoa</Text>

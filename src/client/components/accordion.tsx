@@ -16,6 +16,7 @@ const Header = styled(View)`
   padding: ${styles.space(-1)};
   z-index: 3;
   flex-direction: row;
+  flex-shrink: 0;
 `;
 const HeaderText = styled(Text)`
   font-size: ${styles.space(0)};
@@ -27,7 +28,7 @@ const Icon = styled.div`
 const Body = styled<ContainerProps>(View)`
   max-height: ${props => (props.open ? '100rem' : '0')};
   overflow: ${props => (props.open ? 'auto' : 'hidden')};
-  transition: all 200ms;
+  transition: all 400ms;
 `;
 
 interface AccordionProps {

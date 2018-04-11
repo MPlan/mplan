@@ -890,14 +890,19 @@ export class Degree extends Record.define({
 
   generatePlan(catalog: Catalog) {
     const plan = generatePlans(this, catalog);
-    const semesterMap = plan.map((set, i) => new Semester({
-      _id: ObjectId(),
-      season: ['Winter', 'Summer', 'Fall'][i % 3] as any,
-      year: Math.floor(i / 3) + 2018,
-      _courses: set.toList(),
-    })).reduce((semesterMap, semester) => {
-      return semesterMap.set(semester.id, semester);
-    }, Immutable.Map<string, Semester>());
+    const semesterMap = plan
+      .map(
+        (set, i) =>
+          new Semester({
+            _id: ObjectId(),
+            season: ['Winter', 'Summer', 'Fall'][i % 3] as any,
+            year: Math.floor(i / 3) + 2018,
+            _courses: set.toList(),
+          }),
+      )
+      .reduce((semesterMap, semester) => {
+        return semesterMap.set(semester.id, semester);
+      }, Immutable.Map<string, Semester>());
 
     return new Plan({
       semesterMap,
@@ -923,6 +928,7 @@ export class Degree extends Record.define({
 export class Plan extends Record.define({
   semesterMap: Immutable.Map<string, Semester>(),
 }) {
+  static unplacedCoursesMemo = new Map<any, any>();
   updateSemester(id: string, updater: (semester: Semester) => Semester) {
     return this.update('semesterMap', map => map.update(id, updater));
   }
@@ -947,6 +953,24 @@ export class Plan extends Record.define({
       season: nextSemester.season,
     });
     return this.update('semesterMap', map => map.set(newSemester.id, newSemester));
+  }
+
+  unplacedCourses(degree: Degree, catalog: Catalog): Course[] {
+    const hash = hashObjects({ plan: this, degree, catalog });
+    if (Plan.unplacedCoursesMemo.has(hash)) {
+      return Plan.unplacedCoursesMemo.get(hash);
+    }
+
+    const closure = degree
+      .closure(catalog)
+      .filter(course => course instanceof Course) as Immutable.Set<Course>;
+    const coursesInPlan = this.semesterMap
+      .map(semester => semester._courses)
+      .reduce((coursesInPlan, courses) => coursesInPlan.union(courses), Immutable.Set<Course>());
+
+    const unplacedCourses = closure.subtract(coursesInPlan).sortBy(c => c.priority(degree, catalog)).toArray();
+    Plan.unplacedCoursesMemo.set(hash, unplacedCourses);
+    return unplacedCourses;
   }
 }
 
