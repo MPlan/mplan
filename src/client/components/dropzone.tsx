@@ -18,6 +18,7 @@ export interface ContainerProps
 }
 const Container = styled<ContainerProps>(View)`
   flex: 1;
+  overflow: auto;
 `;
 
 export interface SortChange {

@@ -15,6 +15,7 @@ const Container = styled(View)`
   transition: all 200ms;
   max-width: 16rem;
   z-index: 2;
+  overflow: hidden;
 `;
 const Header = styled(Text)`
   font-size: ${styles.space(1)};
