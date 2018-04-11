@@ -45,7 +45,6 @@ const SemestersContainer = styled(View)`
   &::-webkit-scrollbar-thumb {
     border-radius: 3px;
     background-color: rgb(${rgbaBlue.red}, ${rgbaBlue.green}, ${rgbaBlue.blue}, 0.25);
-    opacity: 0.25;
     -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
     top: 100%;
   }
