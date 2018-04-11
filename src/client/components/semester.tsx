@@ -25,6 +25,7 @@ const Container = styled(View)`
     left: 50%;
     bottom: 0;
     position: absolute;
+    box-shadow: ${styles.boxShadow(1)};
   }
 `;
 const Header = styled(View)`
