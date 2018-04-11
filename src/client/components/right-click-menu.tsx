@@ -18,7 +18,7 @@ export interface RightClickMenuProps<T extends { [P in keyof T]: MenuItem }> {
   actions: T;
   onAction: (action: keyof T) => void;
   header: string;
-  children: JSX.Element;
+  children: any;
 }
 
 const initialState = {

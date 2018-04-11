@@ -10,7 +10,9 @@ import { wait } from '../../utilities/utilities';
 import { DropdownMenu } from './dropdown-menu';
 import { RightClickMenu } from './right-click-menu';
 
-const Container = styled(View)`
+const Container = styled.div`
+  display: inline-block;
+  break-inside: avoid-column;
   max-width: 25rem;
   width: 25rem;
   margin-right: ${styles.space(2)};
@@ -170,8 +172,12 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
     const menuHeader = this.props.degreeGroup.name;
 
     return (
-      <RightClickMenu header={menuHeader} actions={groupActions} onAction={this.handleGroupAction}>
-        <Container>
+      <Container>
+        <RightClickMenu
+          header={menuHeader}
+          actions={groupActions}
+          onAction={this.handleGroupAction}
+        >
           <Header>
             <NameAndCredits>
               {this.state.editingName ? (
@@ -223,8 +229,8 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
               </ActionableText>
             </AddCourseContainer>
           </Card>
-        </Container>
-      </RightClickMenu>
+        </RightClickMenu>
+      </Container>
     );
   }
 }
