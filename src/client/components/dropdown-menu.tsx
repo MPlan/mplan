@@ -27,6 +27,7 @@ const EllipsisButton = styled.button`
   border: none;
   margin-top: 0.2rem;
   background-color: transparent;
+  cursor: pointer;
   &:hover,
   &:focus {
     color: ${styles.blue};
