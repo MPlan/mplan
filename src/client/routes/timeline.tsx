@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Text, Semester, FloatingActionButton, Button } from '../components';
+import { View, Text, Semester, FloatingActionButton, Button, Toolbox } from '../components';
 import * as styles from '../styles';
 import * as Model from '../models';
 import * as Immutable from 'immutable';
@@ -10,8 +10,13 @@ import { parseToRgb } from 'polished';
 const rgbaBlue = parseToRgb(styles.blue);
 
 const Container = styled(View)`
+  flex-direction: row;
+  flex: 1;
+`;
+const Content = styled(View)`
   flex: 1;
   position: relative;
+  overflow: auto;
 `;
 const Header = styled(View)`
   flex-direction: row;
@@ -135,7 +140,7 @@ export class Timeline extends Model.store.connect({
   handleNavigationClick(semester: Model.Semester) {
     const semesterElement = document.querySelector(`.semester-${semester.id}`);
     if (!semesterElement) return;
-    console.log('got here')
+    console.log('got here');
     semesterElement.scrollIntoView({ behavior: 'smooth' });
   }
 
@@ -144,50 +149,56 @@ export class Timeline extends Model.store.connect({
       const newPlan = store.user.degree.generatePlan(store.catalog);
       return store.updatePlan(() => newPlan);
     });
-  }
+  };
 
   render() {
     const semestersSorted = this.store.user.plan.semesterMap.valueSeq().sortBy(s => s.position);
 
     return (
       <Container>
-        <Header>
-          <HeaderMain>
-            <Text strong extraLarge color={styles.textLight}>
-              Timeline
-            </Text>
-            <Text color={styles.textLight}>Create your MPlan here.</Text>
-          </HeaderMain>
-          <HeaderRight>
-            <Text strong color={styles.textLight}>
-              Expected Graduation:
-            </Text>
-            <Text strong large color={styles.textLight}>
-              April 2018
-            </Text>
-            <Button onClick={this.handleGenerateButton}>Generate schedule</Button>
-          </HeaderRight>
-        </Header>
-        <SemestersContainer>
-          {semestersSorted.map(semester => (
-            <Semester
-              key={semester.id}
-              semester={semester}
-              degree={this.store.user.degree}
-              catalog={this.store.catalog}
-            />
-          ))}
-          <HorizontalLine className="horizontal-line" />
-        </SemestersContainer>
-        <Navigator>
-          {semestersSorted.map(semester => (
-            <NavigationLabel key={semester.id} onClick={() => this.handleNavigationClick(semester)}>
-              {semester.shortName}
-            </NavigationLabel>
-          ))}
-          <NavigatorHorizontalLine />
-        </Navigator>
-        <FloatingActionButton actions={actions} message="Add..." onAction={this.handleActions} />
+        <Content>
+          <Header>
+            <HeaderMain>
+              <Text strong extraLarge color={styles.textLight}>
+                Timeline
+              </Text>
+              <Text color={styles.textLight}>Create your MPlan here.</Text>
+            </HeaderMain>
+            <HeaderRight>
+              <Text strong color={styles.textLight}>
+                Expected Graduation:
+              </Text>
+              <Text strong large color={styles.textLight}>
+                April 2018
+              </Text>
+              <Button onClick={this.handleGenerateButton}>Generate schedule</Button>
+            </HeaderRight>
+          </Header>
+          <SemestersContainer>
+            {semestersSorted.map(semester => (
+              <Semester
+                key={semester.id}
+                semester={semester}
+                degree={this.store.user.degree}
+                catalog={this.store.catalog}
+              />
+            ))}
+            <HorizontalLine className="horizontal-line" />
+          </SemestersContainer>
+          <Navigator>
+            {semestersSorted.map(semester => (
+              <NavigationLabel
+                key={semester.id}
+                onClick={() => this.handleNavigationClick(semester)}
+              >
+                {semester.shortName}
+              </NavigationLabel>
+            ))}
+            <NavigatorHorizontalLine />
+          </Navigator>
+          <FloatingActionButton actions={actions} message="Add..." onAction={this.handleActions} />
+        </Content>
+        <Toolbox />
       </Container>
     );
   }

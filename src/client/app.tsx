@@ -34,10 +34,6 @@ function renderApp() {
   return <Redirect to="/login" />;
 }
 
-function onSignOutClick() {
-  return Auth.logout();
-}
-
 const AuthenticatedRouteContainer = styled(View)`
   flex: 1;
 `;
@@ -50,43 +46,49 @@ const Header = styled(View)`
   box-shadow: ${styles.boxShadow(-2)};
   z-index: 10;
 `;
-
 const HeaderContent = styled(View)`
   flex-direction: row;
   justify-content: flex-end;
   flex: 1;
 `;
-
 const User = styled(View)`
   flex-direction: row;
   align-items: center;
   margin-left: ${styles.space(0)};
 `;
-
 const UserName = styled(Text)`
   margin-left: ${styles.space(0)};
 `;
-const Settings = styled(View)`
-  margin-left: ${styles.space(0)};
-`;
-const SignOut = styled(View)`
-  margin-left: ${styles.space(0)};
-`;
-
 const Body = styled(View)`
   flex-direction: row;
   flex: 1;
   overflow: auto;
 `;
-
 const Content = styled(View)`
   flex: 1;
   overflow: auto;
 `;
-
 const Brand = styled(Text)`
   color: ${styles.signatureBlue};
 `;
+const ShowHideToolbox = styled.button`
+  flex-direction: row;
+  align-items: center;
+  margin-left: ${styles.space(0)};
+  border: none;
+  background-color: transparent;
+  outline: none;
+  &:hover {
+    color: ${styles.blue};
+  }
+  &:active {
+    color: ${styles.linkHover};
+  }
+`;
+
+function handleShowHideToolbox() {
+  Model.store.sendUpdate(store => store.updateUi(ui => ui.update('showToolbox', show => !show)));
+}
 
 export function AuthenticatedRoute() {
   return (
@@ -103,12 +105,9 @@ export function AuthenticatedRoute() {
             <Fa icon="user" size="2x" />
             <UserName>{Auth.userDisplayName() || ''}</UserName>
           </User>
-          <Settings>
-            <Fa icon="cog" size="2x" />
-          </Settings>
-          <SignOut onClick={onSignOutClick}>
-            <Fa icon="signOut" size="2x" />
-          </SignOut>
+          <ShowHideToolbox onClick={handleShowHideToolbox}>
+            <Fa icon="columns" size="2x" />
+          </ShowHideToolbox>
         </HeaderContent>
       </Header>
 

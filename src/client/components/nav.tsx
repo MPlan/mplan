@@ -65,12 +65,7 @@ export function Nav() {
   return (
     <NavContainer>
       {Routes.map(route => (
-        <NavButton
-          key={route.path}
-          to={route.path}
-          name={route.name}
-          icon={route.icon}
-        />
+        <NavButton key={route.path} to={route.path} name={route.name} icon={route.icon} />
       ))}
     </NavContainer>
   );

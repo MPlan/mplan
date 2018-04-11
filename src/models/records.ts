@@ -983,6 +983,7 @@ export class Draggables extends Record.define({
 
 export class Ui extends Record.define({
   draggables: new Draggables(),
+  showToolbox: true,
 }) {}
 
 export class App extends Record.define({

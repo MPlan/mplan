@@ -146,7 +146,7 @@ export class Semester extends Model.store.connect({
   handleAction = (action: keyof typeof actions) => {};
 
   render() {
-    const { semester, degree, catalog } = this.props;
+    const { semester } = this.props;
     const courses = semester.courses;
     return (
       <RightClickMenu header={semester.name} actions={actions} onAction={this.handleAction}>
