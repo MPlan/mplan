@@ -19,10 +19,10 @@ const Container = styled(View)`
   position: relative;
   .semesters-container > :not(:last-child) &::after {
     content: ' ';
-    width: calc(100% + ${styles.space(2)});
+    width: calc(100% + ${styles.space(2)} + ${styles.space(-1)});
     height: ${styles.space(-1)};
     background-color: ${styles.blue};
-    left: 50%;
+    left: calc(50% - ${styles.space(-1)} / 2);
     bottom: 0;
     position: absolute;
     box-shadow: ${styles.boxShadow(1)};
@@ -65,7 +65,7 @@ const VerticalLine = styled.div`
   position: absolute;
   background-color: ${styles.blue};
   width: ${styles.space(-1)};
-  height: 3rem;
+  height: ${styles.space(2)};
   left: 50%;
   transform: translateX(-50%);
   box-shadow: ${styles.boxShadow(1)};
