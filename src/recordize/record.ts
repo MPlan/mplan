@@ -107,6 +107,13 @@ export function define<T>(rawRecordDefault: T) {
     {} as any,
   );
 
+  const recordConstructors = Object.entries(rawRecordDefault).reduce((recordConstructors, [key, value]) => {
+    if (Immutable.Record.isRecord(value)) {
+      recordConstructors[key] = value.constructor;
+    }
+    return recordConstructors;
+  }, {} as any);
+
   const RecordBaseClass = Immutable.Record(recordDefault) as new (
     defaultValues?: Partial<Record>,
   ) => Immutable.Record<Record>;
@@ -136,10 +143,13 @@ export function define<T>(rawRecordDefault: T) {
       } else if (listConstructors[key]) {
         const transformedValue = (value as any[]).reduce((list, item) => {
           const immutableValue = listConstructors[key].fromJS(item);
-          return list.push(item);
+          return list.push(immutableValue);
         }, Immutable.List<any>());
 
         return record.set(key as any, transformedValue as any);
+      } else if (recordConstructors[key]) {
+        const transformedValue = recordConstructors[key].fromJS(value);
+        return record.set(key as any, transformedValue);
       }
       return record.set(key as any, value as any);
     }, new this());
