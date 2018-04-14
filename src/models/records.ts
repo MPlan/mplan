@@ -39,28 +39,6 @@ export function convertCatalogJsonToRecord(courses: Model.Catalog) {
   return catalog;
 }
 
-export class Section
-  extends Record.define({
-    _id: ObjectId(),
-    lastUpdateDate: 0,
-    lastTermCode: '',
-    courseId: ObjectId(),
-    termCode: '',
-    courseRegistrationNumber: '',
-    instructors: [] as string[],
-    scheduleTypes: [] as string[],
-    times: [] as string[],
-    days: [] as string[],
-    locations: [] as string[],
-    capacity: 0,
-    remaining: 0,
-  })
-  implements Model.Section {
-  get id() {
-    return this._id.toHexString();
-  }
-}
-
 export function allCombinations(
   listsOfLists: Array<Immutable.Set<Immutable.Set<string | Course>>>,
 ) {
@@ -134,6 +112,28 @@ export function hashObjects(objects: { [key: string]: any }) {
   return Immutable.Map(objects).hashCode();
 }
 
+export class Section
+  extends Record.define({
+    _id: ObjectId(),
+    lastUpdateDate: 0,
+    lastTermCode: '',
+    courseId: ObjectId(),
+    termCode: '',
+    courseRegistrationNumber: '',
+    instructors: [] as string[],
+    scheduleTypes: [] as string[],
+    times: [] as string[],
+    days: [] as string[],
+    locations: [] as string[],
+    capacity: 0,
+    remaining: 0,
+  })
+  implements Model.Section {
+  get id() {
+    return this._id.toHexString();
+  }
+}
+
 export class Course
   extends Record.define({
     _id: ObjectId(),
@@ -159,6 +159,9 @@ export class Course
   implements Model.Course {
   get id() {
     return this._id.toHexString();
+  }
+  get catalogId() {
+    return `__${this.subjectCode}|${this.courseNumber}__`;
   }
   get simpleName() {
     return `${this.subjectCode} ${this.courseNumber}`;
@@ -193,7 +196,7 @@ export class Course
     }
 
     const priority =
-      this.depth(catalog, degree.preferredCourses()) + this.criticalLevel(degree, catalog);
+      this.depth(catalog, degree.preferredCourses(catalog)) + this.criticalLevel(degree, catalog);
 
     Course.priorityMemo.set(hash, priority);
     return priority;
@@ -224,7 +227,7 @@ export class Course
       const levelHasCourse = nextLevel
         .filter(course => course instanceof Course)
         .map(x => x as Course)
-        .some(course => course.bestOption(catalog, degree.preferredCourses()).has(this));
+        .some(course => course.bestOption(catalog, degree.preferredCourses(catalog)).has(this));
 
       if (levelHasCourse) {
         Course.criticalMemo.set(hash, criticalLevel);
@@ -501,7 +504,8 @@ export class Course
 
 export class Semester extends Record.define({
   _id: ObjectId(),
-  _courses: Record.ListOf(Course),
+  /** these are in the form `__subjectCode|courseNumber__` */
+  _courseIds: Immutable.List<string>(),
   season: 'Fall' as 'Fall' | 'Winter' | 'Summer',
   year: 0,
 }) {
@@ -525,27 +529,29 @@ export class Semester extends Record.define({
 
   get courseCount() {
     return this.getOrCalculate('courseCount', () => {
-      return this._courses.count();
+      return this._courseIds.count();
     });
   }
 
-  get totalCredits() {
-    return this._courses.map(course => course.credits || 0).reduce((sum, next) => sum + next, 0);
+  totalCredits(catalog: Catalog) {
+    return this.courses(catalog)
+      .map(course => course.credits || 0)
+      .reduce((sum, next) => sum + next, 0);
   }
 
-  get courses() {
-    return this.getOrCalculate('courses', () => {
-      return this._courses.toArray();
+  courses(catalog: Catalog) {
+    return this.getOrCalculate('courses', [catalog, this], () => {
+      return this._courseIds.map(courseId => catalog.courseMap.get(courseId)!);
     });
   }
 
   addCourse(course: Course) {
-    return this.update('_courses', courses => courses.push(course));
+    return this.update('_courseIds', courseIds => courseIds.push(course.catalogId));
   }
 
   deleteCourse(courseToDelete: Course) {
-    return this.update('_courses', courses => {
-      return courses.filter(course => courseToDelete !== course);
+    return this.update('_courseIds', courseIds => {
+      return courseIds.filter(courseId => courseToDelete.catalogId !== courseId);
     });
   }
 
@@ -649,18 +655,30 @@ export class DegreeGroup extends Record.define({
   _id: ObjectId(),
   name: '',
   description: '',
-  courses: (Record.ListOf(Course) as any) as Immutable.List<string | Course>,
+  /** this can be either `__subjectCode|courseNumber__` or a string for placement exams */
+  _courseIds: Immutable.List<string>(),
 }) {
   get id() {
     return this._id.toHexString();
   }
   addCourse(course: string | Course) {
-    if (this.courses.contains(course)) return this;
-    return this.update('courses', courses => courses.push(course));
+    if (this._courseIds.contains(course instanceof Course ? course.catalogId : course)) return this;
+    return this.update('_courseIds', courseIds =>
+      courseIds.push(course instanceof Course ? course.catalogId : course),
+    );
   }
 
   deleteCourse(course: string | Course) {
-    return this.update('courses', courses => courses.filter(c => c !== course));
+    const idToDelete = course instanceof Course ? course.catalogId : course;
+    return this.update('_courseIds', courseIds =>
+      courseIds.filter(courseId => courseId !== idToDelete),
+    );
+  }
+
+  courses(catalog: Catalog) {
+    return this.getOrCalculate('courses', [catalog, this], () => {
+      return this._courseIds.map(id => catalog.courseMap.get(id) || id);
+    });
   }
 }
 
@@ -765,16 +783,17 @@ export class Degree extends Record.define({
   static closureMemo = new Map<any, any>();
   static levelsMemo = new Map<any, any>();
 
-  preferredCourses() {
+  preferredCourses(catalog: Catalog) {
     const hash = hashObjects({
       degree: this,
+      catalog,
     });
     if (Degree.preferredCoursesMemo.has(hash)) {
       return Degree.preferredCoursesMemo.get(hash) as Immutable.Set<string | Course>;
     }
 
     const combined = this.degreeGroups.reduce(
-      (combined, group) => combined.union(group.courses),
+      (combined, group) => combined.union(group.courses(catalog)),
       Immutable.Set<string | Course>(),
     );
     Degree.preferredCoursesMemo.set(hash, combined);
@@ -787,11 +806,13 @@ export class Degree extends Record.define({
       return Degree.closureMemo.get(hash);
     }
 
-    const closure = this.preferredCourses()
+    const preferredCourses = this.preferredCourses(catalog);
+
+    const closure = preferredCourses
       .map(
         course =>
           /*if*/ course instanceof Course
-            ? course.closure(catalog, this.preferredCourses())
+            ? course.closure(catalog, preferredCourses)
             : Immutable.Set<string | Course>().add(course),
       )
       .reduce(
@@ -811,10 +832,11 @@ export class Degree extends Record.define({
 
     const closure = this.closure(catalog);
     const levelsMutable = [] as Array<Set<string | Course>>;
+    const preferredCourses = this.preferredCourses(catalog);
 
     for (const course of closure) {
       if (course instanceof Course) {
-        const depth = course.depth(catalog, this.preferredCourses());
+        const depth = course.depth(catalog, preferredCourses);
         const set = levelsMutable[depth] || new Set<string | Course>();
         set.add(course);
         levelsMutable[depth] = set;
@@ -831,12 +853,12 @@ export class Degree extends Record.define({
     return levels;
   }
 
-  totalCredits(): number {
-    return this.getOrCalculate('totalCredits', () => {
+  totalCredits(catalog: Catalog): number {
+    return this.getOrCalculate('totalCredits', [catalog, this], () => {
       return this.degreeGroups.reduce(
         (totalCredits, group) =>
           totalCredits +
-          group.courses.reduce(
+          group.courses(catalog).reduce(
             (totalCredits, course) =>
               totalCredits +
               (course instanceof Course ? course.credits || course.creditHours || 0 : 0),
@@ -847,12 +869,12 @@ export class Degree extends Record.define({
     });
   }
 
-  completedCredits(): number {
+  completedCredits(catalog: Catalog): number {
     return 0;
   }
 
-  percentComplete() {
-    return this.completedCredits() / this.totalCredits();
+  percentComplete(catalog: Catalog) {
+    return this.completedCredits(catalog) / this.totalCredits(catalog);
   }
 
   generatePlan(catalog: Catalog) {
@@ -864,7 +886,7 @@ export class Degree extends Record.define({
             _id: ObjectId(),
             season: ['Winter', 'Summer', 'Fall'][i % 3] as any,
             year: Math.floor(i / 3) + 2018,
-            _courses: set.toList(),
+            _courseIds: set.map(course => course.catalogId).toList(),
           }),
       )
       .reduce((semesterMap, semester) => {
@@ -922,7 +944,7 @@ export class Plan extends Record.define({
     return this.update('semesterMap', map => map.set(newSemester.id, newSemester));
   }
 
-  unplacedCourses(degree: Degree, catalog: Catalog): Course[] {
+  unplacedCourses(degree: Degree, catalog: Catalog): Course[] {``
     const hash = hashObjects({ plan: this, degree, catalog });
     if (Plan.unplacedCoursesMemo.has(hash)) {
       return Plan.unplacedCoursesMemo.get(hash);
@@ -932,7 +954,7 @@ export class Plan extends Record.define({
       .closure(catalog)
       .filter(course => course instanceof Course) as Immutable.Set<Course>;
     const coursesInPlan = this.semesterMap
-      .map(semester => semester._courses)
+      .map(semester => semester.courses(catalog))
       .reduce((coursesInPlan, courses) => coursesInPlan.union(courses), Immutable.Set<Course>());
 
     const unplacedCourses = closure
