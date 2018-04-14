@@ -5,7 +5,6 @@ import * as uuid from 'uuid/v4';
 import { ObjectID as _ObjectId } from 'bson';
 import { oneLine } from 'common-tags';
 import { flatten } from '../utilities/utilities';
-import { RecordWithTtl } from 'dns';
 
 export function ObjectId(id?: string | number | _ObjectId) {
   return (_ObjectId as any)(id) as _ObjectId;
