@@ -975,6 +975,11 @@ export class Plan extends Record.define({
     Plan.unplacedCoursesMemo.set(hash, unplacedCourses);
     return unplacedCourses;
   }
+
+  // TODO:
+  // validate() {
+    
+  // }
 }
 
 export class User extends Record.define({
@@ -993,6 +998,16 @@ export class User extends Record.define({
 
   updatePlan(updater: (plan: Plan) => Plan) {
     return this.update('plan', updater);
+  }
+
+  // TODO
+  validate() {
+    const validationErrors = [] as string[];
+    // if (!this.username) validationErrors.push('User name was falsy');
+    // if (!this.name) validationErrors.push('Name was falsy');
+    // if (!this.registerDate) validationErrors.push('Register date was falsy');
+    // if (!this.lastLoginDate) validationErrors.push('lastLoginDate was falsy');
+    
   }
 }
 

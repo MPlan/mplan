@@ -7,20 +7,28 @@ export const store = Recordize.createStore(new Record.App());
 import { oneLine } from 'common-tags';
 import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs/Observer';
-import { map, distinct, debounceTime } from 'rxjs/operators';
+import { map, distinct, debounceTime, share } from 'rxjs/operators';
 
 const store$ = Observable.create((observer: Observer<Record.App>) => {
   store.subscribe(store => {
     observer.next(store);
   });
-}) as Observable<Record.App>;
+}).pipe(share(), map((store: Record.App) => store.user), distinct()) as Observable<Record.User>;
 
-store$.pipe(map(store => store.user), distinct(), debounceTime(3000)).subscribe(user => {
+store$.pipe(debounceTime(300)).subscribe(user => {
   localStorage.setItem('user_data', JSON.stringify(user.toJS()));
 });
 
+store$.pipe(debounceTime(3000)).subscribe(user => {
+  console.log('sending to server...');
+});
+
 async function fetchCatalog() {
-  const response = await fetch('/api/catalog');
+  const response = await fetch('/api/catalog', {
+    headers: new Headers({
+      Authorization: `Bearer ${localStorage.getItem('idToken')}`,
+    }),
+  });
   const courses = (await response.json()) as Model.Catalog;
   const courseMap = Object.entries(courses).reduce((catalogRecord, [courseId, course]) => {
     const { _id, sections: rawSections, ...restOfCourse } = course;

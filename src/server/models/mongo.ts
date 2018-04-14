@@ -55,6 +55,7 @@ async function createMongoDbConnection() {
     get subjects() { return db.collection<Model.Subject>('Subjects'); },
     get courses() { return db.collection<Model.Course>('Courses'); },
     get sections() { return db.collection<Model.Section>('Sections'); },
+    get users() { return db.collection<any>('Users'); },
     close: client.close.bind(client) as (force?: boolean) => Promise<void>,
   };
 
