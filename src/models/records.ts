@@ -5,6 +5,7 @@ import * as uuid from 'uuid/v4';
 import { ObjectID as _ObjectId } from 'bson';
 import { oneLine } from 'common-tags';
 import { flatten } from '../utilities/utilities';
+import { RecordWithTtl } from 'dns';
 
 export function ObjectId(id?: string | number | _ObjectId) {
   return (_ObjectId as any)(id) as _ObjectId;
@@ -27,7 +28,9 @@ export function convertCatalogJsonToRecord(courses: Model.Catalog) {
     const courseRecord = new Course({
       ...restOfCourse,
       _id: ObjectId(course._id),
-      sections,
+      fallSections: sections.get('Fall') || Immutable.Set<Section>(),
+      winterSections: sections.get('Winter') || Immutable.Set<Section>(),
+      summerSections: sections.get('Summer') || Immutable.Set<Section>(),
     });
     return catalogRecord.set(courseCode, courseRecord);
   }, Immutable.Map<string, Course>());
@@ -149,7 +152,9 @@ export class Course
     scheduleTypes: [] as string[],
     lastUpdateDate: 0,
     lastTermCode: '',
-    sections: Immutable.Map<string, Immutable.Set<Section>>(),
+    fallSections: Record.SetOf(Section),
+    winterSections: Record.SetOf(Section),
+    summerSections: Record.SetOf(Section),
   })
   implements Model.Course {
   get id() {
@@ -496,7 +501,7 @@ export class Course
 
 export class Semester extends Record.define({
   _id: ObjectId(),
-  _courses: Immutable.List<Course>(),
+  _courses: Record.ListOf(Course),
   season: 'Fall' as 'Fall' | 'Winter' | 'Summer',
   year: 0,
 }) {
@@ -595,48 +600,10 @@ export class Semester extends Record.define({
     const year = this._nextSemesterYear();
     return { season, year };
   }
-
-  warningsNeverRanDuringCurrentSeason(catalog: Catalog) {
-    return this.getOrCalculate('warningsNeverRanDuringCurrentSeason', [catalog, this], () => {
-      const warnings = this._courses
-        .valueSeq()
-        .map(course => {
-          const sectionSet = course.sections.get(this.season);
-          const hasNeverRan = oneLine`
-          ${course.subjectCode} ${course.courseNumber} has never ran in the ${this.season} past
-          three years. Check with your advisor to see if this course will run in the future.
-        `;
-          if (!sectionSet) {
-            return hasNeverRan;
-          }
-
-          const sortedSections = sectionSet.sortBy(section => parseInt(section.termCode)).toArray();
-
-          for (let i = 0; i < sortedSections.length - 1; i += 1) {
-            const currentSection = sortedSections[i];
-            const nextSection = sortedSections[i + 1];
-
-            const currentSectionYearCode = parseInt(currentSection.termCode.substring(0, 4));
-            const nextSectionYearCode = parseInt(nextSection.termCode.substring(0, 4));
-
-            if (Math.abs(currentSectionYearCode - nextSectionYearCode) > 1) {
-              return oneLine`
-              ${course.subjectCode} ${course.courseNumber} has previously ran in the ${this.season}
-              but there was a gap of offerings between ${currentSectionYearCode} and
-              ${nextSectionYearCode}.
-            `;
-            }
-          }
-        })
-        .filter(x => !!x)
-        .toArray() as string[];
-      return warnings;
-    });
-  }
 }
 
 export class Catalog extends Record.define({
-  courseMap: Immutable.Map<string, Course>(),
+  courseMap: Record.MapOf(Course),
 }) {
   getCourse(subjectCode: string, courseNumber: string) {
     return this.courseMap.get(`${subjectCode}__|__${courseNumber}`.toUpperCase());
@@ -682,7 +649,7 @@ export class DegreeGroup extends Record.define({
   _id: ObjectId(),
   name: '',
   description: '',
-  courses: Immutable.List<string | Course>(),
+  courses: (Record.ListOf(Course) as any) as Immutable.List<string | Course>,
 }) {
   get id() {
     return this._id.toHexString();
@@ -792,7 +759,7 @@ export function generatePlans(degree: Degree, catalog: Catalog) {
 }
 
 export class Degree extends Record.define({
-  degreeGroups: Immutable.List<DegreeGroup>(),
+  degreeGroups: Record.ListOf(DegreeGroup),
 }) {
   static preferredCoursesMemo = new Map<any, any>();
   static closureMemo = new Map<any, any>();
@@ -926,7 +893,7 @@ export class Degree extends Record.define({
 }
 
 export class Plan extends Record.define({
-  semesterMap: Immutable.Map<string, Semester>(),
+  semesterMap: Record.MapOf(Semester),
 }) {
   static unplacedCoursesMemo = new Map<any, any>();
   updateSemester(id: string, updater: (semester: Semester) => Semester) {
@@ -968,7 +935,10 @@ export class Plan extends Record.define({
       .map(semester => semester._courses)
       .reduce((coursesInPlan, courses) => coursesInPlan.union(courses), Immutable.Set<Course>());
 
-    const unplacedCourses = closure.subtract(coursesInPlan).sortBy(c => c.priority(degree, catalog)).toArray();
+    const unplacedCourses = closure
+      .subtract(coursesInPlan)
+      .sortBy(c => c.priority(degree, catalog))
+      .toArray();
     Plan.unplacedCoursesMemo.set(hash, unplacedCourses);
     return unplacedCourses;
   }

@@ -5,6 +5,19 @@ import * as Immutable from 'immutable';
 import * as Model from '../../models/models';
 export const store = Recordize.createStore(new Record.App());
 import { oneLine } from 'common-tags';
+import { Observable } from 'rxjs/Observable';
+import { Observer } from 'rxjs/Observer';
+import { map, distinct, debounceTime } from 'rxjs/operators';
+
+const store$ = Observable.create((observer: Observer<Record.App>) => {
+  store.subscribe(store => {
+    observer.next(store);
+  });
+}) as Observable<Record.App>;
+
+store$.pipe(map(store => store.user), distinct(), debounceTime(300)).subscribe(user => {
+  localStorage.setItem('user_data', JSON.stringify(user.toJS()));
+});
 
 async function fetchCatalog() {
   const response = await fetch('/api/catalog');
@@ -25,7 +38,9 @@ async function fetchCatalog() {
     const courseRecord = new Record.Course({
       ...restOfCourse,
       _id: Record.ObjectId(course._id),
-      sections,
+      fallSections: sections.get('Fall') || Immutable.Set<Record.Section>(),
+      winterSections: sections.get('Winter') || Immutable.Set<Record.Section>(),
+      summerSections: sections.get('Summer') || Immutable.Set<Record.Section>(),
     });
     return catalogRecord.set(courseId, courseRecord);
   }, Immutable.Map<string, Record.Course>());
@@ -267,6 +282,12 @@ async function updateStoreWithCatalog() {
         ),
       ),
   );
+}
+
+if (localStorage.getItem('user_data')) {
+  const userDataJson = localStorage.getItem('user_data')!;
+  const userFromStorage = Record.User.fromJS(JSON.parse(userDataJson));
+  store.sendUpdate(store => store.updateUser(user => user.mergeDeep(userFromStorage)));
 }
 
 updateStoreWithCatalog();
