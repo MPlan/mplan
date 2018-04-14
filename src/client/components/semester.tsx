@@ -116,19 +116,19 @@ export class Semester extends Model.store.connect({
           console.warn('semester was not found when sorting');
           return plan;
         }
-        const course = semester._courses.get(oldIndex);
+        const course = semester._courseIds.get(oldIndex);
         if (!course) {
           console.warn('course was not found when sorting');
           return plan;
         }
         return plan
           .updateSemester(fromDropzoneId, semester => {
-            const newCourses = semester._courses.filter((_, index) => index !== oldIndex);
-            return semester.set('_courses', newCourses);
+            const newCourses = semester._courseIds.filter((_, index) => index !== oldIndex);
+            return semester.set('_courseIds', newCourses);
           })
           .updateSemester(toDropzoneId, semester => {
-            const newCourses = semester._courses.insert(newIndex, course);
-            return semester.set('_courses', newCourses);
+            const newCourses = semester._courseIds.insert(newIndex, course);
+            return semester.set('_courseIds', newCourses);
           });
       }),
     );
@@ -157,8 +157,9 @@ export class Semester extends Model.store.connect({
   handleAction = (action: keyof typeof actions) => {};
 
   render() {
-    const { semester } = this.props;
-    const courses = semester.courses;
+    const { semester, catalog } = this.props;
+    const courses = semester.courseArray(catalog);
+    const totalCredits = semester.totalCredits(catalog);
     return (
       <RightClickMenu header={semester.name} actions={actions} onAction={this.handleAction}>
         <Container className={`semester-${semester.id}`}>
@@ -171,7 +172,7 @@ export class Semester extends Model.store.connect({
                 </Count>
                 <Count>&nbsp;|&nbsp;</Count>
                 <Count>
-                  {semester.totalCredits} {semester.totalCredits === 1 ? 'credit' : 'credits'}
+                  {totalCredits} {totalCredits === 1 ? 'credit' : 'credits'}
                 </Count>
               </Row>
             </View>

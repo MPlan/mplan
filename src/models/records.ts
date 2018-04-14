@@ -545,6 +545,12 @@ export class Semester extends Record.define({
     });
   }
 
+  courseArray(catalog: Catalog) {
+    return this.getOrCalculate('courseArray', [catalog, this], () => {
+      return this._courseIds.map(courseId => catalog.courseMap.get(courseId)!).toArray();
+    });
+  }
+
   addCourse(course: Course) {
     return this.update('_courseIds', courseIds => courseIds.push(course.catalogId));
   }
@@ -858,12 +864,14 @@ export class Degree extends Record.define({
       return this.degreeGroups.reduce(
         (totalCredits, group) =>
           totalCredits +
-          group.courses(catalog).reduce(
-            (totalCredits, course) =>
-              totalCredits +
-              (course instanceof Course ? course.credits || course.creditHours || 0 : 0),
-            0,
-          ),
+          group
+            .courses(catalog)
+            .reduce(
+              (totalCredits, course) =>
+                totalCredits +
+                (course instanceof Course ? course.credits || course.creditHours || 0 : 0),
+              0,
+            ),
         0,
       );
     });
@@ -944,7 +952,8 @@ export class Plan extends Record.define({
     return this.update('semesterMap', map => map.set(newSemester.id, newSemester));
   }
 
-  unplacedCourses(degree: Degree, catalog: Catalog): Course[] {``
+  unplacedCourses(degree: Degree, catalog: Catalog): Course[] {
+    ``;
     const hash = hashObjects({ plan: this, degree, catalog });
     if (Plan.unplacedCoursesMemo.has(hash)) {
       return Plan.unplacedCoursesMemo.get(hash);
