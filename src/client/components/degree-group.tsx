@@ -30,7 +30,7 @@ const NameAndCredits = styled(View)`
 interface NameProps extends ViewProps {
   editable?: boolean;
 }
-const Name = styled<NameProps>(Text)`
+const Name = styled<NameProps>(Text as any)`
   flex: 1;
   font-size: ${styles.space(1)};
   font-weight: ${styles.bold};

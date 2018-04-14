@@ -1,4 +1,4 @@
-import * as Recordize from 'recordize';
+import * as Recordize from '../../recordize';
 import * as Record from '../../models/records';
 export * from '../../models/records';
 import * as Immutable from 'immutable';

@@ -1,9 +1,5 @@
 import * as Immutable from 'immutable';
-
-export interface Equatable {
-  hashCode(): number;
-  equals(other: any): boolean;
-}
+import { Equatable } from './store';
 
 export function MapOf<T>(constructor: new (...params: any[]) => T) {
   return new MapPlaceholder(constructor);
@@ -107,12 +103,15 @@ export function define<T>(rawRecordDefault: T) {
     {} as any,
   );
 
-  const recordConstructors = Object.entries(rawRecordDefault).reduce((recordConstructors, [key, value]) => {
-    if (Immutable.Record.isRecord(value)) {
-      recordConstructors[key] = value.constructor;
-    }
-    return recordConstructors;
-  }, {} as any);
+  const recordConstructors = Object.entries(rawRecordDefault).reduce(
+    (recordConstructors, [key, value]) => {
+      if (Immutable.Record.isRecord(value)) {
+        recordConstructors[key] = value.constructor;
+      }
+      return recordConstructors;
+    },
+    {} as any,
+  );
 
   const RecordBaseClass = Immutable.Record(recordDefault) as new (
     defaultValues?: Partial<Record>,
@@ -121,7 +120,11 @@ export function define<T>(rawRecordDefault: T) {
   class RecordClass extends RecordBaseClass {
     getOrCalculate<V>(name: string, calculate: () => V): V;
     getOrCalculate<V>(name: string, dependencies: Equatable[], calculate: () => V): V;
-    getOrCalculate<V>(name: string, a: Equatable[] | (() => V), b?: () => V) {}
+    getOrCalculate<V>(name: string, a: Equatable[] | (() => V), b?: () => V) {
+      const calculate = typeof a === 'function' ? a : b;
+      if (!calculate) throw new Error('Calculate was not function');
+      return calculate();
+    }
   }
 
   function fromJS<U extends RecordClass>(this: new (...params: any[]) => U, js: any): U {
@@ -149,6 +152,7 @@ export function define<T>(rawRecordDefault: T) {
         return record.set(key as any, transformedValue as any);
       } else if (recordConstructors[key]) {
         const transformedValue = recordConstructors[key].fromJS(value);
+
         return record.set(key as any, transformedValue);
       }
       return record.set(key as any, value as any);
@@ -161,8 +165,6 @@ export function define<T>(rawRecordDefault: T) {
   };
 
   const _recordClass = Object.assign(RecordClass, staticAdditions);
-
-  Object.assign(_recordClass, {});
 
   return (_recordClass as any) as typeof staticAdditions &
     (new (defaultValues?: Partial<Record>) => Immutable.Record<Record> &
