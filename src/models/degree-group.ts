@@ -1,8 +1,6 @@
 import * as Immutable from 'immutable';
 import * as Record from '../recordize';
-import * as Model from './models';
-import { ObjectId, hashObjects } from './';
-import { Section } from './section';
+import { ObjectId } from './';
 import { Catalog } from './catalog';
 import { Course } from './course';
 

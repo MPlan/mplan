@@ -1,12 +1,6 @@
-import * as Immutable from 'immutable';
 import * as Record from '../recordize';
 import * as Model from './models';
-import { ObjectId, hashObjects } from './';
-import { Section } from './section';
-import { Catalog } from './catalog';
-import { Course } from './course';
-import { Semester } from './semester';
-import { DegreeGroup } from './degree-group';
+import { ObjectId } from './';
 import { Degree } from './degree';
 import { Plan } from './plan';
 
@@ -34,7 +28,7 @@ export class User
 
   // TODO
   validate() {
-    const validationErrors = [] as string[];
+    // const validationErrors = [] as string[];
     // if (!this.username) validationErrors.push('User name was falsy');
     // if (!this.name) validationErrors.push('Name was falsy');
     // if (!this.registerDate) validationErrors.push('Register date was falsy');

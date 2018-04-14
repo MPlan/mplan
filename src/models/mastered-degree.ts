@@ -1,11 +1,5 @@
-import * as Immutable from 'immutable';
 import * as Record from '../recordize';
-import * as Model from './models';
-import { ObjectId, hashObjects } from './';
-import { Section } from './section';
-import { Catalog } from './catalog';
-import { Degree } from './degree';
-import { Course } from './course';
+import { ObjectId } from './';
 import { MasteredDegreeGroup } from './mastered-degree-group';
 
 export class MasteredDegree extends Record.define({

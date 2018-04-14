@@ -1,12 +1,9 @@
 import * as Immutable from 'immutable';
 import * as Record from '../recordize';
-import * as Model from './models';
 import { ObjectId, hashObjects } from './';
-import { Section } from './section';
 import { Catalog } from './catalog';
 import { Course } from './course';
 import { Semester } from './semester';
-import { DegreeGroup } from './degree-group';
 import { Degree } from './degree';
 
 export class Plan extends Record.define({

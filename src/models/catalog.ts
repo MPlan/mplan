@@ -1,7 +1,5 @@
 import * as Immutable from 'immutable';
 import * as Record from '../recordize';
-import * as Model from './models';
-import { ObjectId, hashObjects } from './';
 import { Course } from './course';
 
 export class Catalog extends Record.define({

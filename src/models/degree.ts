@@ -1,8 +1,6 @@
 import * as Immutable from 'immutable';
 import * as Record from '../recordize';
-import * as Model from './models';
 import { ObjectId, hashObjects } from './';
-import { Section } from './section';
 import { Catalog } from './catalog';
 import { Course } from './course';
 import { Semester } from './semester';
@@ -40,7 +38,6 @@ export function generatePlans(degree: Degree, catalog: Catalog) {
   let currentSemester = Immutable.Set<Course>();
   let processedCourses = Immutable.Set<string | Course>();
   let unplacedCourses = Immutable.Set<Course>();
-  let scheduleCount = 0;
 
   // === INITIALIZE WITH INITIAL STATE ===
   const closure = degree.closure(catalog);
@@ -70,7 +67,6 @@ export function generatePlans(degree: Degree, catalog: Catalog) {
   function _generatePlan(): boolean {
     const unplacedCount = unplacedCourses.count();
     if (unplacedCount <= 0) {
-      scheduleCount += 1;
       currentSchedule = currentSchedule.push(currentSemester);
       return true;
     }
