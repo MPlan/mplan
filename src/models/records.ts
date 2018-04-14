@@ -1,4 +1,4 @@
-import * as Record from 'recordize';
+import * as Record from '../recordize';
 import * as Model from './models';
 import * as Immutable from 'immutable';
 import * as uuid from 'uuid/v4';
