@@ -26,16 +26,6 @@ class SetPlaceholder<T> {
   }
 }
 
-export function SetOfStringOr<T>(constructor: new (...params: any[]) => T) {
-  return new SetOfStringOrTPlaceholder(constructor);
-}
-class SetOfStringOrTPlaceholder<T> {
-  __setOfStringOrTConstructor: new (...params: any[]) => T | string;
-  constructor(otherConstructor: new (...params: any[]) => T | string) {
-    this.__setOfStringOrTConstructor = otherConstructor;
-  }
-}
-
 export function ListOf<T>(constructor: new (...params: any[]) => T) {
   return new ListPlaceholder(constructor);
 }
@@ -52,18 +42,22 @@ export type RecordNoPlaceholders<T> = {
     T[P] extends MapPlaceholder<infer U> ? Immutable.Map<string, U> :
     T[P] extends ListPlaceholder<infer U> ? Immutable.List<U> :
     T[P] extends SetPlaceholder<infer U> ? Immutable.Set<U> :
-    T[P] extends SetOfStringOrTPlaceholder<infer U> ? Immutable.Set<U | string> :
     T[P]
 };
 
-export function define<T>(rawRecordDefault: T) {
+/**
+ * if `dontConvertKeys` is present, those keys will not be converted to immutable types during
+ * serialization
+ */
+export function define<T>(rawRecordDefault: T, _dontConvertKeys?: string[]) {
+  const dontConvertKeys = _dontConvertKeys || [];
   type Record = RecordNoPlaceholders<T>;
 
   const recordDefault = Object.entries(rawRecordDefault).reduce(
     (recordDefault, [key, value]) => {
       if (value instanceof MapPlaceholder) {
         recordDefault[key] = Immutable.Map<string, any>();
-      } else if (value instanceof SetPlaceholder || value instanceof SetOfStringOrTPlaceholder) {
+      } else if (value instanceof SetPlaceholder) {
         recordDefault[key] = Immutable.Set<any>();
       } else if (value instanceof ListPlaceholder) {
         recordDefault[key] = Immutable.List<any>();
@@ -87,7 +81,7 @@ export function define<T>(rawRecordDefault: T) {
 
   const setConstructors = Object.entries(rawRecordDefault).reduce(
     (setConstructors, [key, value]) => {
-      if (value instanceof SetPlaceholder || value instanceof SetOfStringOrTPlaceholder) {
+      if (value instanceof SetPlaceholder) {
         setConstructors[key] =
           (value as any).__setConstructor || (value as any).__setOfStringOrTConstructor;
       }
@@ -169,7 +163,10 @@ export function define<T>(rawRecordDefault: T) {
 
         return record.set(key as any, transformedValue);
       }
-      return record.set(key as any, value as any);
+      if (dontConvertKeys.includes(key)) {
+        return record.set(key as any, value as any);
+      }
+      return record.set(key as any, Immutable.fromJS(value as any));
     }, new this());
   }
 

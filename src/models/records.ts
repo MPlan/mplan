@@ -135,33 +135,36 @@ export class Section
 }
 
 export class Course
-  extends Record.define({
-    _id: ObjectId(),
-    name: '',
-    subjectCode: '',
-    courseNumber: '',
-    description: undefined as string | undefined | null,
-    credits: undefined as number | undefined | null,
-    creditsMin: undefined as number | undefined | null,
-    creditHours: undefined as number | undefined | null,
-    creditHoursMin: undefined as number | undefined | null,
-    restrictions: undefined as string | undefined | null,
-    prerequisites: undefined as Model.Prerequisite,
-    corequisites: undefined as Model.Prerequisite,
-    crossList: undefined as Array<[string, string]> | undefined | null,
-    scheduleTypes: [] as string[],
-    lastUpdateDate: 0,
-    lastTermCode: '',
-    fallSections: Record.SetOf(Section),
-    winterSections: Record.SetOf(Section),
-    summerSections: Record.SetOf(Section),
-  })
+  extends Record.define(
+    {
+      _id: ObjectId(),
+      name: '',
+      subjectCode: '',
+      courseNumber: '',
+      description: undefined as string | undefined | null,
+      credits: undefined as number | undefined | null,
+      creditsMin: undefined as number | undefined | null,
+      creditHours: undefined as number | undefined | null,
+      creditHoursMin: undefined as number | undefined | null,
+      restrictions: undefined as string | undefined | null,
+      prerequisites: undefined as Model.Prerequisite,
+      corequisites: undefined as Model.Prerequisite,
+      crossList: undefined as Array<[string, string]> | undefined | null,
+      scheduleTypes: [] as string[],
+      lastUpdateDate: 0,
+      lastTermCode: '',
+      fallSections: Record.SetOf(Section),
+      winterSections: Record.SetOf(Section),
+      summerSections: Record.SetOf(Section),
+    },
+    ['prerequisites', 'corequisites', 'crossList', 'scheduleTypes'],
+  )
   implements Model.Course {
   get id() {
     return this._id.toHexString();
   }
   get catalogId() {
-    return `__${this.subjectCode}|${this.courseNumber}__`;
+    return `${this.subjectCode}__|__${this.courseNumber}`;
   }
   get simpleName() {
     return `${this.subjectCode} ${this.courseNumber}`;
