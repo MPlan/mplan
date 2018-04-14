@@ -1,6 +1,6 @@
 import * as Recordize from '../../recordize';
-import * as Record from '../../models/records';
-export * from '../../models/records';
+import * as Record from '../../models';
+export * from '../../models';
 import * as Immutable from 'immutable';
 import * as Model from '../../models/models';
 export const store = Recordize.createStore(new Record.App());
