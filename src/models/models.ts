@@ -98,3 +98,13 @@ export interface CourseWithSections extends Course {
 export interface Catalog {
   [courseId: string]: CourseWithSections;
 }
+
+export interface User extends DbSynced {
+  username: string;
+  name: string;
+  picture: string;
+  registerDate: number;
+  lastLoginDate: number;
+  plan: any;
+  degree: any;
+}

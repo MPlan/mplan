@@ -989,9 +989,11 @@ export class User extends Record.define({
   picture: '',
   registerDate: 0,
   lastLoginDate: 0,
+  lastUpdateDate: 0,
+  lastTermCode: '',
   plan: new Plan(),
   degree: new Degree(),
-}) {
+}) implements Model.User {
   updateDegree(updater: (degree: Degree) => Degree) {
     return this.update('degree', updater);
   }

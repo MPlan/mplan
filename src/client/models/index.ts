@@ -19,8 +19,17 @@ store$.pipe(debounceTime(300)).subscribe(user => {
   localStorage.setItem('user_data', JSON.stringify(user.toJS()));
 });
 
-store$.pipe(debounceTime(3000)).subscribe(user => {
+store$.pipe(debounceTime(3000)).subscribe(async user => {
   console.log('sending to server...');
+  await fetch(`/api/users/${user.username}`, {
+    method: 'PUT',
+    headers: new Headers({
+      Authorization: `Bearer ${localStorage.getItem('idToken')}`,
+      'Content-Type': 'application/json',
+    }),
+    body: JSON.stringify(user.toJS()),
+  });
+  console.log('finished sending');
 });
 
 async function fetchCatalog() {
@@ -57,13 +66,38 @@ async function fetchCatalog() {
   return catalog;
 }
 
+async function fetchUser() {
+  const token = localStorage.getItem('idToken');
+  if (!token) throw new Error('not logged in');
+  const payloadMatch = /[^.]*\.([^.]*)\.[^.]*/.exec(token);
+  if (!payloadMatch) throw new Error('could not find payload in JWT');
+  const payloadEncoded = payloadMatch[1];
+  const decoded = atob(payloadEncoded);
+  const payload = JSON.parse(decoded);
+  const uniqueName = payload.nickname;
+  if (!uniqueName) throw new Error('could not find unique name in JWT');
+  const response = await fetch(`/api/users/${uniqueName}`, {
+    headers: new Headers({
+      Authorization: `Bearer ${token}`,
+    }),
+  });
+  if (response.status !== 200) {
+    console.log('returning empty user');
+    return new Record.User().set('username', uniqueName);
+  }
+  const user = Record.User.fromJS(await response.json());
+  return user;
+}
+
 async function load() {
   const catalog = await fetchCatalog();
-  if (localStorage.getItem('user_data')) {
-    const userDataJson = localStorage.getItem('user_data')!;
-    const userFromStorage = Record.User.fromJS(JSON.parse(userDataJson));
-    store.sendUpdate(store => store.set('catalog', catalog).set('user', userFromStorage));
-  }
+  // if (localStorage.getItem('user_data')) {
+  //   const userDataJson = localStorage.getItem('user_data')!;
+  //   const userFromStorage = Record.User.fromJS(JSON.parse(userDataJson));
+  //   store.sendUpdate(store => store.set('catalog', catalog).set('user', userFromStorage));
+  // }
+  const userFromServer = await fetchUser();
+  store.sendUpdate(store => store.set('catalog', catalog).set('user', userFromServer));
 }
 
 load();
