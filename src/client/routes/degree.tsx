@@ -55,12 +55,10 @@ const Credits = styled(Text)`
 const Percentage = styled(Text)`
   color: ${styles.textLight};
 `;
-const DegreeGroupContainer = styled.div`
+const DegreeGroupContainer = styled(View)`
   flex: 1;
-  display: block;
-  column-count: auto;
-  column-width: 25rem;
-  column-gap: ${styles.space(2)};
+  flex-wrap: wrap;
+  flex-direction: row;
   margin-right: -${styles.space(2)};
 `;
 const CourseSearchForm = styled.form`

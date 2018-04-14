@@ -10,9 +10,7 @@ import { wait } from '../../utilities/utilities';
 import { DropdownMenu } from './dropdown-menu';
 import { RightClickMenu } from './right-click-menu';
 
-const Container = styled.div`
-  display: inline-block;
-  break-inside: avoid-column;
+const Container = styled(View)`
   max-width: 25rem;
   width: 25rem;
   margin-right: ${styles.space(2)};
@@ -60,6 +58,7 @@ const Card = styled(View)`
   background-color: ${styles.white};
   padding: ${styles.space(0)};
   box-shadow: ${styles.boxShadow(0)};
+  flex: 1;
 `;
 const NameHeader = styled(Text)`
   font-size: ${styles.space(-1)};
@@ -75,11 +74,13 @@ const CardHeaders = styled(View)`
   flex-direction: row;
   margin-bottom: ${styles.space(-1)};
 `;
-const Courses = styled(View)``;
+const Courses = styled(View)`
+  flex: 1;
+`;
 const AddCourseContainer = styled(View)``;
 
 export interface DegreeGroupProps {
-  catalog: Model.Catalog,
+  catalog: Model.Catalog;
   degreeGroup: Model.DegreeGroup;
   onNameChange: (newName: string) => void;
   onAddCourse: () => void;

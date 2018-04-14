@@ -7,6 +7,7 @@ import { wait } from '../../utilities/utilities';
 
 const Container = styled(View)`
   position: relative;
+  flex: 1;
 `;
 
 const DropdownContainer = styled(View)`

@@ -8,7 +8,7 @@ export class DegreeGroup extends Record.define({
   _id: ObjectId(),
   name: '',
   description: '',
-  /** this can be either `__subjectCode|courseNumber__` or a string for placement exams */
+  /** this can be either `subjectCode__|__courseNumber` or a string for placement exams */
   _courseIds: Immutable.List<string>(),
 }) {
   get id() {
