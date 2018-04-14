@@ -198,6 +198,7 @@ export class Degree extends Model.store.connect({
   render() {
     const currentDegreeGroup = this.state.currentDegreeGroup;
     const degree = this.store.user.degree;
+    const catalog = this.store.catalog;
     return (
       <Container>
         <Header>
@@ -211,9 +212,9 @@ export class Degree extends Model.store.connect({
           </HeaderMain>
           <HeaderRight>
             <Credits>
-              {degree.completedCredits()}/{degree.totalCredits()} credits
+              {degree.completedCredits(catalog)}/{degree.totalCredits(catalog)} credits
             </Credits>
-            <Percentage>{degree.percentComplete().toFixed(2)}% complete</Percentage>
+            <Percentage>{degree.percentComplete(catalog).toFixed(2)}% complete</Percentage>
           </HeaderRight>
         </Header>
         <DegreeGroupContainer>
@@ -221,6 +222,7 @@ export class Degree extends Model.store.connect({
             <DegreeGroup
               key={group.id}
               degreeGroup={group}
+              catalog={catalog}
               onNameChange={newName => this.handleDegreeGroupNameChange(group, newName)}
               onAddCourse={() => this.handleAddCourseClick(group)}
               onDeleteCourse={course => this.handleDeleteCourse(group, course)}

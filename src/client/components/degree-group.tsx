@@ -79,6 +79,7 @@ const Courses = styled(View)``;
 const AddCourseContainer = styled(View)``;
 
 export interface DegreeGroupProps {
+  catalog: Model.Catalog,
   degreeGroup: Model.DegreeGroup;
   onNameChange: (newName: string) => void;
   onAddCourse: () => void;
@@ -157,13 +158,14 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
   };
 
   render() {
-    const { degreeGroup } = this.props;
-    const creditHoursMin = this.props.degreeGroup.courses.reduce(
+    const { degreeGroup, catalog } = this.props;
+    const courses = degreeGroup.courses(catalog);
+    const creditHoursMin = courses.reduce(
       (creditHoursMin, next) =>
         next instanceof Model.Course ? next.creditsMin || next.creditHoursMin || 0 : creditHoursMin,
       0,
     );
-    const creditHoursMax = this.props.degreeGroup.courses.reduce(
+    const creditHoursMax = courses.reduce(
       (creditHoursMax, next) =>
         next instanceof Model.Course ? next.credits || next.creditHours || 0 : 0,
       0,
@@ -213,7 +215,7 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
               <CompletedHeader>Completed ?</CompletedHeader>
             </CardHeaders>
             <Courses>
-              {degreeGroup.courses.map(course => (
+              {courses.map(course => (
                 <DegreeGroupCourse
                   key={course instanceof Model.Course ? course.id : course}
                   course={course}
