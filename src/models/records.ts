@@ -924,6 +924,76 @@ export class Degree extends Record.define({
   }
 }
 
+export class MasteredDegreeGroup extends Record.define({
+  _id: ObjectId(),
+  name: '',
+  descriptionHtml: '',
+  whitelistedIds: Immutable.List<string>(),
+  blacklistedIds: Immutable.List<string>(),
+  creditMinimum: 0,
+  creditMaximum: 0,
+}) {
+  get id() {
+    return this._id.toHexString();
+  }
+
+  addToWhitelist(course: string | Course) {
+    const id = course instanceof Course ? course.catalogId : course;
+    if (this.whitelistedIds.includes(id)) {
+      return this;
+    }
+    return this.update('whitelistedIds', whitelist => whitelist.push(id));
+  }
+
+  deleteFromWhitelist(course: string | Course) {
+    const idToDelete = course instanceof Course ? course.catalogId : course;
+    return this.update('whitelistedIds', whitelist => whitelist.filter(id => id !== idToDelete));
+  }
+
+  addToBlacklist(course: string | Course) {
+    const idToAdd = course instanceof Course ? course.catalogId : course;
+    if (this.blacklistedIds.includes(idToAdd)) {
+      return this;
+    }
+    return this.update('blacklistedIds', blacklist => blacklist.push(idToAdd));
+  }
+
+  deleteFromBlacklist(course: string | Course) {
+    const idToDelete = course instanceof Course ? course.catalogId : course;
+    return this.update('blacklistedIds', blacklist => blacklist.filter(id => id !== idToDelete));
+  }
+}
+
+export class MasteredDegree extends Record.define({
+  _id: ObjectId(),
+  name: '',
+  descriptionHtml: '',
+  minimumCredits: 0,
+  masteredDegreeGroups: Record.ListOf(MasteredDegreeGroup),
+}) {
+  get id() {
+    return this._id.toHexString();
+  }
+
+  addGroup(group: MasteredDegreeGroup) {
+    if (this.masteredDegreeGroups.includes(group)) {
+      return this;
+    }
+    return this.update('masteredDegreeGroups', groups => groups.push(group));
+  }
+
+  deleteGroup(groupToDelete: MasteredDegreeGroup) {
+    return this.update('masteredDegreeGroups', groups =>
+      groups.filter(group => group !== groupToDelete),
+    );
+  }
+
+  // TODO:
+  warnings() {
+
+  }
+}
+
 export class Plan extends Record.define({
   semesterMap: Record.MapOf(Semester),
 }) {
@@ -978,22 +1048,24 @@ export class Plan extends Record.define({
 
   // TODO:
   // validate() {
-    
+
   // }
 }
 
-export class User extends Record.define({
-  _id: ObjectId(),
-  username: '',
-  name: '',
-  picture: '',
-  registerDate: 0,
-  lastLoginDate: 0,
-  lastUpdateDate: 0,
-  lastTermCode: '',
-  plan: new Plan(),
-  degree: new Degree(),
-}) implements Model.User {
+export class User
+  extends Record.define({
+    _id: ObjectId(),
+    username: '',
+    name: '',
+    picture: '',
+    registerDate: 0,
+    lastLoginDate: 0,
+    lastUpdateDate: 0,
+    lastTermCode: '',
+    plan: new Plan(),
+    degree: new Degree(),
+  })
+  implements Model.User {
   updateDegree(updater: (degree: Degree) => Degree) {
     return this.update('degree', updater);
   }
@@ -1009,7 +1081,6 @@ export class User extends Record.define({
     // if (!this.name) validationErrors.push('Name was falsy');
     // if (!this.registerDate) validationErrors.push('Register date was falsy');
     // if (!this.lastLoginDate) validationErrors.push('lastLoginDate was falsy');
-    
   }
 }
 
