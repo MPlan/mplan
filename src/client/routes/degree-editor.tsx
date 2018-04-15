@@ -8,6 +8,7 @@ import {
   Toolbox,
   Fa,
   DegreeItemSidebar,
+  MasteredDegreeDetail,
 } from '../components';
 import styled from 'styled-components';
 import * as styles from '../styles';
@@ -15,6 +16,7 @@ import * as styles from '../styles';
 const Container = styled(View)`
   flex: 1;
   position: relative;
+  overflow: hidden;
 `;
 const Head = styled(View)`
   margin: ${styles.space(1)};
@@ -132,7 +134,7 @@ const fabActions = {
 export class DegreeEditor extends Model.store.connect({
   initialState: {
     detailOpen: true,
-    selectedMasterId: '',
+    selectedMasteredDegree: undefined as Model.MasteredDegree | undefined,
   },
 }) {
   searchRefMain: HTMLInputElement | null | undefined;
@@ -161,7 +163,7 @@ export class DegreeEditor extends Model.store.connect({
     this.setState(previousState => ({
       ...previousState,
       detailOpen: true,
-      selectedMasterId: degree.id,
+      selectedMasteredDegree: degree,
     }));
   }
 
@@ -230,15 +232,17 @@ export class DegreeEditor extends Model.store.connect({
                 <DegreeItemSidebar
                   key={masteredDegree.id}
                   masteredDegree={masteredDegree}
-                  selected={masteredDegree.id === this.state.selectedMasterId}
+                  selected={masteredDegree === this.state.selectedMasteredDegree}
                   onClick={() => this.handleDegreeClick(masteredDegree)}
                 />
               ))}
             </SidebarContent>
           </Sidebar>
-          <DegreeDetailContent>
-            <Text>Degree content goes here</Text>
-          </DegreeDetailContent>
+          {/*if*/ this.state.selectedMasteredDegree ? (
+            <DegreeDetailContent>
+              <MasteredDegreeDetail masteredDegree={this.state.selectedMasteredDegree} />
+            </DegreeDetailContent>
+          ) : null}
         </DegreeDetailContainer>
         <FloatingActionButton message="Create..." actions={fabActions} onAction={() => {}} />
       </Container>

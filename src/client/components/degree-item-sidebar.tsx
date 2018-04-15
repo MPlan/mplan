@@ -40,7 +40,7 @@ export function DegreeItemSidebar(props: DegreeItemSidebarProps) {
       onClick={props.onClick}
       style={{ backgroundColor: props.selected ? styles.whiteTer : 'transparent' }}
     >
-      <Text>{masteredDegree.name}</Text>
+      <Text strong>{masteredDegree.name}</Text>
       <Icon>
         <Fa icon="chevronRight" />
       </Icon>

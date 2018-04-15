@@ -105,7 +105,7 @@ async function load() {
         'masteredDegrees',
         Immutable.Set([
           new Record.MasteredDegree({
-            _id: Record.ObjectId(),
+            _id: Record.ObjectId('5ad32f71fac3180000933081'),
             name: 'Software Engineering F08',
             descriptionHtml: 'test',
           })
