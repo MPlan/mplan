@@ -8,6 +8,7 @@ import { oneLine } from 'common-tags';
 import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs/Observer';
 import { map, distinct, debounceTime, share } from 'rxjs/operators';
+import { decode } from 'base-64';
 
 const store$ = Observable.create((observer: Observer<Record.App>) => {
   store.subscribe(store => {
@@ -72,7 +73,7 @@ async function fetchUser() {
   const payloadMatch = /[^.]*\.([^.]*)\.[^.]*/.exec(token);
   if (!payloadMatch) throw new Error('could not find payload in JWT');
   const payloadEncoded = payloadMatch[1];
-  const decoded = atob(payloadEncoded);
+  const decoded = decode(payloadEncoded);
   const payload = JSON.parse(decoded);
   const uniqueName = payload.nickname;
   if (!uniqueName) throw new Error('could not find unique name in JWT');
