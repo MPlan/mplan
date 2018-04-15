@@ -185,9 +185,13 @@ export class DegreeEditor extends Model.store.connect({
 
   handleDescriptionHtmlChange = (html: string) => {
     this.setStore(store =>
-      store.updateMasteredDegree(this.state.selectedMasteredDegree, degree =>
-        degree.set('descriptionHtml', html),
-      ),
+      store.update('masteredDegrees', degrees => {
+        const selectedMasteredDegree = this.state.selectedMasteredDegree;
+        if (!selectedMasteredDegree) return degrees;
+        return degrees
+          .remove(selectedMasteredDegree.id)
+          .set(selectedMasteredDegree.id, selectedMasteredDegree.set('descriptionHtml', html));
+      }),
     );
   };
 
@@ -231,6 +235,7 @@ export class DegreeEditor extends Model.store.connect({
                 </DegreeSearch>
                 <DegreeList>
                   {this.store.masteredDegrees
+                    .valueSeq()
                     .sortBy(degree => degree.name)
                     .map(masteredDegree => (
                       <DegreeItem key={masteredDegree.id} masteredDegree={masteredDegree} />
@@ -260,6 +265,7 @@ export class DegreeEditor extends Model.store.connect({
             </DegreeSearch>
             <SidebarContent>
               {this.store.masteredDegrees
+                .valueSeq()
                 .sortBy(degree => degree.name)
                 .map(masteredDegree => (
                   <DegreeItemSidebar key={masteredDegree.id} masteredDegree={masteredDegree} />

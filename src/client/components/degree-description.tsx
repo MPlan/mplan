@@ -33,9 +33,10 @@ const DescriptionNonEdit = styled(View)`
     font-family: ${styles.fontFamily};
   }
 `;
-const Icon = styled.button`
+const EditButton = styled.button`
   background-color: transparent;
   border: none;
+  display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
@@ -50,6 +51,11 @@ const Icon = styled.button`
     color: ${styles.black};
   }
 `;
+const Row = styled(View)`
+  flex-direction: row;
+  justify-content: flex-end;
+`;
+
 const initialState = {
   value: RichTextEditor.createEmptyValue(),
   editing: false,
@@ -93,6 +99,17 @@ export class DegreeDescription extends React.Component<
     }));
   };
 
+  handleCancelClick = () => {
+    this.setState(previousState => ({
+      ...previousState,
+      editing: false,
+      value: RichTextEditor.createValueFromString(
+        this.props.masteredDegree.descriptionHtml,
+        'html',
+      ),
+    }));
+  };
+
   handleSaveClick = () => {
     this.setState(previousState => ({
       ...previousState,
@@ -118,22 +135,26 @@ export class DegreeDescription extends React.Component<
         <Header>Description</Header>
         <SubHeader>
           This description is displayed in the student's degree page under the degree name. It may
-          be helpful to includes links to official curriculum requirement sheets in this
-          description.
+          be helpful to include links to official documentation for the degree such as curriculum
+          requirement sheets in this description.
         </SubHeader>
         <Card>
           {/*if*/ this.state.editing ? (
             <View>
               <RichTextEditor value={this.state.value} onChange={this.handleOnChange} />
               <ButtonContainer>
+                <Button onClick={this.handleCancelClick}>Cancel</Button>
                 <Button onClick={this.handleSaveClick}>Save</Button>
               </ButtonContainer>
             </View>
           ) : (
             <View>
-              <Icon onClick={this.handleEditClick}>
-                <Fa icon="pencil" />
-              </Icon>
+              <Row>
+                <Button onClick={this.handleEditClick}>
+                  <Fa icon="pencil" />
+                  <Text style={{ marginLeft: styles.space(-1) }}>Edit</Text>
+                </Button>
+              </Row>
               <DescriptionNonEdit
                 dangerouslySetInnerHTML={{ __html: this.props.masteredDegree.descriptionHtml }}
               />
