@@ -114,6 +114,7 @@ async function load() {
               _id: id0,
               name: 'Software Engineering F08',
               descriptionHtml: 'test',
+              minimumCredits: 120,
             })
               .addGroup(
                 new Record.MasteredDegreeGroup({

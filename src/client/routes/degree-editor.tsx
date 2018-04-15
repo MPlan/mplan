@@ -195,6 +195,21 @@ export class DegreeEditor extends Model.store.connect({
     );
   };
 
+  handleCreditsChange = (newMinimumCredits: number) => {
+    this.setStore(store =>
+      store.update('masteredDegrees', degrees => {
+        const selectedMasteredDegree = this.state.selectedMasteredDegree;
+        if (!selectedMasteredDegree) return degrees;
+        return degrees
+          .remove(selectedMasteredDegree.id)
+          .set(
+            selectedMasteredDegree.id,
+            selectedMasteredDegree.set('minimumCredits', newMinimumCredits),
+          );
+      }),
+    );
+  };
+
   renderRoute = (e: RouteComponentProps<any>) => {
     const degreeId = e.match.params['degreeId'] as string;
     const selectedDegree = this.store.masteredDegrees.find(degree => degree.id === degreeId);
@@ -206,6 +221,7 @@ export class DegreeEditor extends Model.store.connect({
         <MasteredDegreeDetail
           masteredDegree={selectedDegree}
           onDescriptionHtmlChange={this.handleDescriptionHtmlChange}
+          onCreditsChange={this.handleCreditsChange}
         />
       </DegreeDetailContent>
     );

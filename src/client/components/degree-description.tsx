@@ -21,7 +21,8 @@ const SubHeader = styled(Text)`
 const Card = styled(View)`
   background-color: ${styles.white};
   padding: ${styles.space(0)};
-  box-shadow: ${styles.boxShadow(1)};
+  box-shadow: ${styles.boxShadow(0)};
+  margin-bottom: ${styles.space(1)};
 `;
 const ButtonContainer = styled(View)`
   flex-direction: row;
@@ -31,24 +32,6 @@ const DescriptionNonEdit = styled(View)`
   &,
   & * {
     font-family: ${styles.fontFamily};
-  }
-`;
-const EditButton = styled.button`
-  background-color: transparent;
-  border: none;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  width: ${styles.space(1)};
-  outline: none;
-  color: ${styles.gray};
-  &:hover,
-  &:focus {
-    color: ${styles.grayDark};
-  }
-  &:active {
-    color: ${styles.black};
   }
 `;
 const Row = styled(View)`
@@ -125,10 +108,6 @@ export class DegreeDescription extends React.Component<
     }));
   };
 
-  get valueHtml() {
-    return this.state.value.toString('html');
-  }
-
   render() {
     return (
       <Container>
@@ -143,8 +122,14 @@ export class DegreeDescription extends React.Component<
             <View>
               <RichTextEditor value={this.state.value} onChange={this.handleOnChange} />
               <ButtonContainer>
-                <Button onClick={this.handleCancelClick}>Cancel</Button>
-                <Button onClick={this.handleSaveClick}>Save</Button>
+                <Button onClick={this.handleCancelClick}>
+                  <Fa icon="times" />
+                  <Text style={{ marginLeft: styles.space(-1) }}>Cancel</Text>
+                </Button>
+                <Button onClick={this.handleSaveClick}>
+                  <Fa icon="check" color={styles.blue} />
+                  <Text style={{ marginLeft: styles.space(-1) }}>Save</Text>
+                </Button>
               </ButtonContainer>
             </View>
           ) : (

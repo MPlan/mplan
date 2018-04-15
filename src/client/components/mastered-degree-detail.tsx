@@ -6,6 +6,7 @@ import { View } from './view';
 import { Text } from './text';
 import { DropdownMenu } from './dropdown-menu';
 import { DegreeDescription } from './degree-description';
+import { DegreeCreditHours } from './degree-credit-hours';
 
 const Container = styled(View)``;
 
@@ -60,6 +61,7 @@ interface MasteredDegreeDetailState extends InitialState {}
 export interface MasteredDegreeDetailProps {
   masteredDegree: Model.MasteredDegree;
   onDescriptionHtmlChange: (html: string) => void;
+  onCreditsChange: (credits: number) => void;
 }
 
 export class MasteredDegreeDetail extends React.Component<
@@ -98,6 +100,10 @@ export class MasteredDegreeDetail extends React.Component<
           <DegreeDescription
             masteredDegree={masteredDegree}
             onDescriptionChange={this.props.onDescriptionHtmlChange}
+          />
+          <DegreeCreditHours
+            minimumCredits={masteredDegree.minimumCredits}
+            onChange={this.props.onCreditsChange}
           />
         </Body>
       </Container>
