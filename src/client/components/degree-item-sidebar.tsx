@@ -1,10 +1,12 @@
 import * as React from 'react';
 import * as Model from '../models';
 import * as styles from '../styles';
+import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 import { View } from './view';
 import { Text } from './text';
 import { Fa } from './fa';
+
 const Container = styled(View)`
   flex-direction: row;
   padding: ${styles.space(0)};
@@ -27,23 +29,33 @@ const Icon = styled(View)`
   align-items: center;
   margin-left: ${styles.space(-1)};
 `;
+const StyledLink = styled(NavLink)`
+  &,
+  & * {
+    color: ${styles.text};
+    text-decoration: none;
+  }
+  &.active {
+    background-color: ${styles.whiteTer};
+  }
+  &:hover {
+    text-decoration: underline;
+  }
+`;
 export interface DegreeItemSidebarProps {
   masteredDegree: Model.MasteredDegree;
-  selected: boolean;
-  onClick: () => void;
 }
 
 export function DegreeItemSidebar(props: DegreeItemSidebarProps) {
   const { masteredDegree } = props;
   return (
-    <Container
-      onClick={props.onClick}
-      style={{ backgroundColor: props.selected ? styles.whiteTer : 'transparent' }}
-    >
-      <Text strong>{masteredDegree.name}</Text>
-      <Icon>
-        <Fa icon="chevronRight" />
-      </Icon>
-    </Container>
+    <StyledLink to={`/degree-editor/${masteredDegree.id}`} activeClassName="active">
+      <Container>
+        <Text strong>{masteredDegree.name}</Text>
+        <Icon>
+          <Fa icon="chevronRight" />
+        </Icon>
+      </Container>
+    </StyledLink>
   );
 }

@@ -10,6 +10,7 @@ import {
   DegreeItemSidebar,
   MasteredDegreeDetail,
 } from '../components';
+import { Route, RouteComponentProps, NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 import * as styles from '../styles';
 
@@ -90,7 +91,7 @@ const Sidebar = styled(View)`
   background-color: ${styles.white};
   box-shadow: ${styles.boxShadow(0)};
 `;
-const SidebarBack = styled.button`
+const SidebarBack = styled(NavLink)`
   display: flex;
   outline: none;
   border: none;
@@ -105,6 +106,14 @@ const SidebarBack = styled.button`
   transition: all 0.2s;
   &:active {
     box-shadow: 0 0.2rem 1.3rem 0 rgba(12, 0, 51, 0.2);
+  }
+  &,
+  & * {
+    color: ${styles.text};
+    text-decoration: none;
+  }
+  &:hover {
+    text-decoration: underline;
   }
 `;
 const SidebarHeaderText = styled(Text)`
@@ -122,7 +131,6 @@ const SidebarContent = styled(View)`
   overflow: auto;
   flex: 1;
 `;
-
 const fabActions = {
   degree: {
     text: 'New degree',
@@ -131,11 +139,17 @@ const fabActions = {
   },
 };
 
+const initialState = {
+  selectedMasteredDegree: undefined as Model.MasteredDegree | undefined,
+};
+type InitialState = typeof initialState;
+
+export interface DegreeEditorProps extends RouteComponentProps<{}> {}
+export interface DegreeEditorState extends InitialState {}
+
 export class DegreeEditor extends Model.store.connect({
-  initialState: {
-    detailOpen: true,
-    selectedMasteredDegree: undefined as Model.MasteredDegree | undefined,
-  },
+  initialState,
+  propsExample: (undefined as any) as DegreeEditorProps,
 }) {
   searchRefMain: HTMLInputElement | null | undefined;
   searchRefSidebar: HTMLInputElement | null | undefined;
@@ -145,6 +159,16 @@ export class DegreeEditor extends Model.store.connect({
     if (!searchRef) return;
     searchRef.focus();
     searchRef.select();
+  }
+
+  componentWillReceiveProps(nextProps: DegreeEditorProps, state: DegreeEditorState) {
+    const degreeIdMatch = /\/degree-editor\/([^&/?#]*)/.exec(nextProps.location.pathname);
+    // the OR makes the `selectedMasteredDegree` undefined
+    const degreeId = (degreeIdMatch && degreeIdMatch[1]) || 'NO_MATCH';
+    this.setState(previousState => ({
+      ...previousState,
+      selectedMasteredDegree: this.store.masteredDegrees.find(degree => degree.id === degreeId),
+    }));
   }
 
   handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -159,25 +183,23 @@ export class DegreeEditor extends Model.store.connect({
     this.searchRefSidebar = e;
   };
 
-  handleDegreeClick(degree: Model.MasteredDegree) {
-    this.setState(previousState => ({
-      ...previousState,
-      detailOpen: true,
-      selectedMasteredDegree: degree,
-    }));
-  }
-
-  handleSidebarHeaderClick = () => {
-    this.setState(previousState => ({
-      ...previousState,
-      detailOpen: false,
-    }));
+  renderRoute = (e: RouteComponentProps<any>) => {
+    const degreeId = e.match.params['degreeId'] as string;
+    const selectedDegree = this.store.masteredDegrees.find(degree => degree.id === degreeId);
+    if (!selectedDegree) {
+      return <Text>Not found</Text>;
+    }
+    return (
+      <DegreeDetailContent>
+        <MasteredDegreeDetail masteredDegree={selectedDegree} />
+      </DegreeDetailContent>
+    );
   };
 
   render() {
     return (
       <Container>
-        <DegreeMaster style={{ left: this.state.detailOpen ? '-100%' : 0 }}>
+        <DegreeMaster style={{ left: !!this.state.selectedMasteredDegree ? '-100%' : 0 }}>
           <Head>
             <Header>Degree Editor</Header>
             <SubHeader>Edit degrees here.</SubHeader>
@@ -198,20 +220,16 @@ export class DegreeEditor extends Model.store.connect({
                 </DegreeSearch>
                 <DegreeList>
                   {this.store.masteredDegrees.map(masteredDegree => (
-                    <DegreeItem
-                      key={masteredDegree.id}
-                      masteredDegree={masteredDegree}
-                      onClick={() => this.handleDegreeClick(masteredDegree)}
-                    />
+                    <DegreeItem key={masteredDegree.id} masteredDegree={masteredDegree} />
                   ))}
                 </DegreeList>
               </DegreeListCard>
             </DegreeListContainer>
           </Body>
         </DegreeMaster>
-        <DegreeDetailContainer style={{ left: this.state.detailOpen ? 0 : '100%' }}>
+        <DegreeDetailContainer style={{ left: !!this.state.selectedMasteredDegree ? 0 : '100%' }}>
           <Sidebar>
-            <SidebarBack onClick={this.handleSidebarHeaderClick}>
+            <SidebarBack to="/degree-editor">
               <SidebarHeaderIcon>
                 <Fa icon="chevronLeft" color={styles.textLight} />
               </SidebarHeaderIcon>
@@ -229,20 +247,11 @@ export class DegreeEditor extends Model.store.connect({
             </DegreeSearch>
             <SidebarContent>
               {this.store.masteredDegrees.map(masteredDegree => (
-                <DegreeItemSidebar
-                  key={masteredDegree.id}
-                  masteredDegree={masteredDegree}
-                  selected={masteredDegree === this.state.selectedMasteredDegree}
-                  onClick={() => this.handleDegreeClick(masteredDegree)}
-                />
+                <DegreeItemSidebar key={masteredDegree.id} masteredDegree={masteredDegree} />
               ))}
             </SidebarContent>
           </Sidebar>
-          {/*if*/ this.state.selectedMasteredDegree ? (
-            <DegreeDetailContent>
-              <MasteredDegreeDetail masteredDegree={this.state.selectedMasteredDegree} />
-            </DegreeDetailContent>
-          ) : null}
+          <Route path="/degree-editor/:degreeId" render={this.renderRoute} />
         </DegreeDetailContainer>
         <FloatingActionButton message="Create..." actions={fabActions} onAction={() => {}} />
       </Container>

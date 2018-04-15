@@ -2,6 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import * as styles from '../styles';
 import * as Model from '../models';
+import { NavLink } from 'react-router-dom';
 import { View } from './view';
 import { Text } from './text';
 import { Fa } from './fa';
@@ -20,6 +21,19 @@ const Container = styled(View)`
   flex-direction: row;
   align-items: center;
   flex-shrink: 0;
+`;
+const StyledLink = styled(NavLink)`
+  &,
+  & * {
+    color: ${styles.text};
+    text-decoration: none;
+  }
+  &.active {
+    background-color: ${styles.whiteTer};
+  }
+  &:hover {
+    text-decoration: underline;
+  }
 `;
 const Name = styled(Text)`
   font-weight: ${styles.bold};
@@ -47,13 +61,13 @@ const Icon = styled(View)`
 
 export interface DegreeItemProps {
   masteredDegree: Model.MasteredDegree;
-  onClick?: () => void;
 }
 
 export function DegreeItem(props: DegreeItemProps) {
   const { masteredDegree } = props;
   return (
-    <Container onClick={props.onClick}>
+    <StyledLink to={`/degree-editor/${masteredDegree.id}`} activeClassName="active">
+    <Container>
       <NameAndDetails>
         <Name>{masteredDegree.name}</Name>
         <Details>
@@ -65,5 +79,6 @@ export function DegreeItem(props: DegreeItemProps) {
         <Fa icon="chevronRight" />
       </Icon>
     </Container>
+    </StyledLink>
   );
 }
