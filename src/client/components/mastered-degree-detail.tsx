@@ -5,6 +5,7 @@ import * as styles from '../styles';
 import { View } from './view';
 import { Text } from './text';
 import { DropdownMenu } from './dropdown-menu';
+import { DegreeDescription } from './degree-description';
 
 const Container = styled(View)``;
 
@@ -17,6 +18,8 @@ const Title = styled(Text)`
 const TitleRow = styled(View)`
   flex-direction: row;
   align-items: flex-end;
+  max-width: 50rem;
+  margin-bottom: ${styles.space(0)};
 `;
 const Separator = styled.div`
   width: 0.1rem;
@@ -34,6 +37,8 @@ const Card = styled(View)`
 `;
 const Body = styled(View)`
   flex: 1;
+  margin: 0 ${styles.space(1)};
+  margin-bottom: ${styles.space(1)};
 `;
 
 const titleDropdownActions = {
@@ -54,12 +59,18 @@ interface MasteredDegreeDetailState extends InitialState {}
 
 export interface MasteredDegreeDetailProps {
   masteredDegree: Model.MasteredDegree;
+  onDescriptionHtmlChange: (html: string) => void;
 }
 
 export class MasteredDegreeDetail extends React.Component<
   MasteredDegreeDetailProps,
   MasteredDegreeDetailState
 > {
+  constructor(props: MasteredDegreeDetailProps) {
+    super(props);
+    this.state = initialState;
+  }
+
   handleTitleActions = (action: keyof typeof titleDropdownActions) => {};
 
   render() {
@@ -76,22 +87,18 @@ export class MasteredDegreeDetail extends React.Component<
               onAction={this.handleTitleActions}
             />
           </TitleRow>
+          <TitleRow>
+            <Text color={styles.textLight}>
+              This is the mastered degree template for {masteredDegree.name}. Any changes you make
+              to this mastered degree will affect students who have chosen this degree in MPlan.
+            </Text>
+          </TitleRow>
         </Header>
         <Body>
-          <Text>Description</Text>
-          <Card>
-            <Text>
-              The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy
-              dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the
-              lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over
-              the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps
-              over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox
-              jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown
-              fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick
-              brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The
-              quick brown fox jumps over the lazy dog.
-            </Text>
-          </Card>
+          <DegreeDescription
+            masteredDegree={masteredDegree}
+            onDescriptionChange={this.props.onDescriptionHtmlChange}
+          />
         </Body>
       </Container>
     );

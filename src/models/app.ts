@@ -27,4 +27,16 @@ export class App extends Record.define({
   updatePlan(updater: (plan: Plan) => Plan) {
     return this.updateUser(user => user.updatePlan(updater));
   }
+
+  updateMasteredDegree(
+    degree: MasteredDegree | undefined,
+    update: (degree: MasteredDegree) => MasteredDegree,
+  ) {
+    if (!degree) return this;
+    return this.update('masteredDegrees', degrees => {
+      const masteredDegree = degrees.get(degree);
+      if (!masteredDegree) return degrees;
+      return degrees.remove(masteredDegree).add(update(masteredDegree));
+    });
+  }
 }

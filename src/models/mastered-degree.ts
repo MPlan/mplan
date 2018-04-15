@@ -8,6 +8,7 @@ export class MasteredDegree extends Record.define({
   descriptionHtml: '',
   minimumCredits: 0,
   masteredDegreeGroups: Record.ListOf(MasteredDegreeGroup),
+  published: false,
 }) {
   get id() {
     return this._id.toHexString();

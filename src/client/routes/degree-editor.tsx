@@ -183,6 +183,14 @@ export class DegreeEditor extends Model.store.connect({
     this.searchRefSidebar = e;
   };
 
+  handleDescriptionHtmlChange = (html: string) => {
+    this.setStore(store =>
+      store.updateMasteredDegree(this.state.selectedMasteredDegree, degree =>
+        degree.set('descriptionHtml', html),
+      ),
+    );
+  };
+
   renderRoute = (e: RouteComponentProps<any>) => {
     const degreeId = e.match.params['degreeId'] as string;
     const selectedDegree = this.store.masteredDegrees.find(degree => degree.id === degreeId);
@@ -191,7 +199,10 @@ export class DegreeEditor extends Model.store.connect({
     }
     return (
       <DegreeDetailContent>
-        <MasteredDegreeDetail masteredDegree={selectedDegree} />
+        <MasteredDegreeDetail
+          masteredDegree={selectedDegree}
+          onDescriptionHtmlChange={this.handleDescriptionHtmlChange}
+        />
       </DegreeDetailContent>
     );
   };
@@ -219,9 +230,11 @@ export class DegreeEditor extends Model.store.connect({
                   </DegreeSearchButton>
                 </DegreeSearch>
                 <DegreeList>
-                  {this.store.masteredDegrees.map(masteredDegree => (
-                    <DegreeItem key={masteredDegree.id} masteredDegree={masteredDegree} />
-                  ))}
+                  {this.store.masteredDegrees
+                    .sortBy(degree => degree.name)
+                    .map(masteredDegree => (
+                      <DegreeItem key={masteredDegree.id} masteredDegree={masteredDegree} />
+                    ))}
                 </DegreeList>
               </DegreeListCard>
             </DegreeListContainer>
@@ -246,9 +259,11 @@ export class DegreeEditor extends Model.store.connect({
               </DegreeSearchButton>
             </DegreeSearch>
             <SidebarContent>
-              {this.store.masteredDegrees.map(masteredDegree => (
-                <DegreeItemSidebar key={masteredDegree.id} masteredDegree={masteredDegree} />
-              ))}
+              {this.store.masteredDegrees
+                .sortBy(degree => degree.name)
+                .map(masteredDegree => (
+                  <DegreeItemSidebar key={masteredDegree.id} masteredDegree={masteredDegree} />
+                ))}
             </SidebarContent>
           </Sidebar>
           <Route path="/degree-editor/:degreeId" render={this.renderRoute} />
