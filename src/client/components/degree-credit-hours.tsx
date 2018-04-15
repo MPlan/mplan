@@ -158,7 +158,9 @@ export class DegreeCreditHours extends React.Component<
           <Row>
             <CreditHourBlock>
               {!this.state.editing ? (
-                <CreditHourNumber>{this.props.minimumCredits}</CreditHourNumber>
+                <CreditHourNumber onClick={this.handleEditClick}>
+                  {this.props.minimumCredits}
+                </CreditHourNumber>
               ) : (
                 <Form onSubmit={this.handleSubmit}>
                   <Input
