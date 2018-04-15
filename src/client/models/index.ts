@@ -97,7 +97,49 @@ async function load() {
   //   store.sendUpdate(store => store.set('catalog', catalog).set('user', userFromStorage));
   // }
   const userFromServer = await fetchUser();
-  store.sendUpdate(store => store.set('catalog', catalog).set('user', userFromServer));
+  store.sendUpdate(store =>
+    store
+      .set('catalog', catalog)
+      .set('user', userFromServer)
+      .set(
+        'masteredDegrees',
+        Immutable.Set([
+          new Record.MasteredDegree({
+            _id: Record.ObjectId(),
+            name: 'Software Engineering F08',
+            descriptionHtml: 'test',
+          })
+            .addGroup(
+              new Record.MasteredDegreeGroup({
+                _id: Record.ObjectId(),
+                name: 'Written and oral comm',
+                creditMinimum: 6,
+                creditMaximum: 6,
+                blacklistedIds: Immutable.List<string>(),
+              })
+                .addToWhitelist(catalog.getCourse('COMP', '105')!)
+                .addToWhitelist(catalog.getCourse('COMP', '106')!)
+                .addToWhitelist(catalog.getCourse('COMP', '270')!)
+                .addToDefaults(catalog.getCourse('COMP', '105')!)
+                .addToDefaults(catalog.getCourse('COMP', '270')!),
+            )
+            .addGroup(
+              new Record.MasteredDegreeGroup({
+                _id: Record.ObjectId(),
+                name: 'Written and oral comm',
+                creditMinimum: 6,
+                creditMaximum: 6,
+                blacklistedIds: Immutable.List<string>(),
+              })
+                .addToWhitelist(catalog.getCourse('COMP', '105')!)
+                .addToWhitelist(catalog.getCourse('COMP', '106')!)
+                .addToWhitelist(catalog.getCourse('COMP', '270')!)
+                .addToDefaults(catalog.getCourse('COMP', '105')!)
+                .addToDefaults(catalog.getCourse('COMP', '270')!),
+            ),
+        ]),
+      ),
+  );
 }
 
 load();

@@ -7,6 +7,7 @@ export class MasteredDegreeGroup extends Record.define({
   _id: ObjectId(),
   name: '',
   descriptionHtml: '',
+  defaultIds: Immutable.List<string>(),
   whitelistedIds: Immutable.List<string>(),
   blacklistedIds: Immutable.List<string>(),
   creditMinimum: 0,
@@ -14,6 +15,19 @@ export class MasteredDegreeGroup extends Record.define({
 }) {
   get id() {
     return this._id.toHexString();
+  }
+
+  addToDefaults(course: string | Course) {
+    const id = course instanceof Course ? course.catalogId : course;
+    if (this.defaultIds.includes(id)) {
+      return this;
+    }
+    return this.update('defaultIds', defaults => defaults.push(id));
+  }
+
+  deleteFromDefaults(course: string | Course) {
+    const idToDelete = course instanceof Course ? course.catalogId : course;
+    return this.update('defaultIds', defaults => defaults.filter(id => id !== idToDelete));
   }
 
   addToWhitelist(course: string | Course) {

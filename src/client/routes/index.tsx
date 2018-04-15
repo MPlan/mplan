@@ -32,5 +32,6 @@ export const Routes = [
   { path: '/sequence', name: 'Sequence', icon: 'exchange', component: Sequence },
   { path: '/timeline', name: 'Timeline', icon: 'codeCommit', component: Timeline },
   { path: '/catalog', name: 'Catalog', icon: 'book', component: Wip },
-  { path: '/degree-editor', name: 'Degree Editor', icon: 'edit', component: DegreeEditor },
+  { path: '/degree-editor', name: 'Degree editor', icon: 'edit', component: DegreeEditor },
+  { path: '/students', name: 'Act as student', icon: 'user', component: Wip },
 ];

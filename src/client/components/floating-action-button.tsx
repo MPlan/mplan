@@ -103,7 +103,7 @@ const Fab = styled.button`
 
   &:hover .message {
     opacity: 1;
-    animation: ${fadeIn} 0.1s ease-out;
+    animation: ${fadeIn} 0.2s ease-out;
   }
 
   &:focus,
