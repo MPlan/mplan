@@ -7,6 +7,7 @@ import { Text } from './text';
 import { DropdownMenu } from './dropdown-menu';
 import { DegreeDescription } from './degree-description';
 import { DegreeCreditHours } from './degree-credit-hours';
+import { MasteredDegreeGroup } from './mastered-degree-group';
 
 const Container = styled(View)`
   margin: 0 auto;
@@ -49,8 +50,12 @@ const GroupHeader = styled(Text)`
   color: ${styles.textLight};
 `;
 const GroupSubHeader = styled(Text)`
-  margin-bottom: ${styles.space(-1)};
+  margin-bottom: ${styles.space(0)};
   color: ${styles.textLight};
+`;
+const Hr = styled.hr`
+  width: 100%;
+  margin-bottom: ${styles.space(0)};
 `;
 const DegreeGroups = styled(View)``;
 
@@ -124,6 +129,10 @@ export class MasteredDegreeDetail extends React.Component<
               such as "CIS Core" or "Technical Electives". Each group can set a whitelist,
               blacklist, credit minimum, credit maximum, and/or default courses.
             </GroupSubHeader>
+            <Hr />
+            {masteredDegree.masteredDegreeGroups.map(group => (
+              <MasteredDegreeGroup masteredDegreeGroup={group} onDegreeGroupChange={() => {}} />
+            ))}
           </DegreeGroups>
         </Body>
       </Container>

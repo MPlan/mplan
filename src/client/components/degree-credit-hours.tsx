@@ -73,7 +73,6 @@ const Input = styled.input`
   width: 10rem;
   text-align: center;
 `;
-const Label = styled(Text)``;
 
 interface DegreeCreditHoursProps {
   minimumCredits: number;
@@ -174,7 +173,7 @@ export class DegreeCreditHours extends React.Component<
                   />
                 </Form>
               )}
-              <Label>credits required</Label>
+              <Text>credits required</Text>
             </CreditHourBlock>
             {!this.state.editing ? (
               <ButtonRow>
