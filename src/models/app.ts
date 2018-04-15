@@ -4,11 +4,13 @@ import { User } from './user';
 import { Ui } from './ui';
 import { Degree } from './degree';
 import { Plan } from './plan';
+import { MasteredDegree } from './mastered-degree';
 
 export class App extends Record.define({
   catalog: new Catalog(),
   user: new User(),
   ui: new Ui(),
+  masteredDegrees: Record.SetOf(MasteredDegree),
 }) {
   updateUi(updater: (ui: Ui) => Ui) {
     return this.update('ui', updater);

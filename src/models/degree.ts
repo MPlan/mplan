@@ -100,6 +100,7 @@ export function generatePlans(degree: Degree, catalog: Catalog) {
 }
 
 export class Degree extends Record.define({
+  masteredDegreeGroupId: '',
   degreeGroups: Record.ListOf(DegreeGroup),
 }) {
   static preferredCoursesMemo = new Map<any, any>();
