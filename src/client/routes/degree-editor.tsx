@@ -50,7 +50,13 @@ const DegreeDetailContainer = styled(View)`
   height: 100%;
   flex-direction: row;
 `;
-const DegreeDetailContent = styled(View)``;
+const DegreeDetailContent = styled(View)`
+  margin: 0 auto;
+  overflow: auto;
+  & > * {
+    flex-shrink: 0;
+  }
+`;
 const DegreeListContainer = styled(View)`
   width: 30rem;
   margin: ${styles.space(0)} auto;

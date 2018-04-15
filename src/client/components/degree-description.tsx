@@ -8,7 +8,9 @@ import { Button } from './button';
 import { Fa } from './fa';
 const RichTextEditor = require('react-rte').default;
 
-const Container = styled(View)``;
+const Container = styled(View)`
+  flex-shrink: 0;
+`;
 const Header = styled(Text)`
   margin-bottom: ${styles.space(-1)};
   font-size: ${styles.space(1)};

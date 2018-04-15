@@ -7,7 +7,9 @@ import { Text } from './text';
 import { Button } from './button';
 import { Fa } from './fa';
 
-const Container = styled(View)``;
+const Container = styled(View)`
+  flex-shrink: 0;
+`;
 const Header = styled(Text)`
   margin-bottom: ${styles.space(-1)};
   font-size: ${styles.space(1)};
@@ -47,6 +49,7 @@ const Card = styled(View)`
   background-color: ${styles.white};
   padding: ${styles.space(0)};
   box-shadow: ${styles.boxShadow(0)};
+  margin-bottom: ${styles.space(1)};
 `;
 const CreditHourBlock = styled(View)`
   justify-content: center;

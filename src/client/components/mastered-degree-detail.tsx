@@ -8,8 +8,9 @@ import { DropdownMenu } from './dropdown-menu';
 import { DegreeDescription } from './degree-description';
 import { DegreeCreditHours } from './degree-credit-hours';
 
-const Container = styled(View)``;
-
+const Container = styled(View)`
+  margin: 0 auto;
+`;
 const Title = styled(Text)`
   font-size: ${styles.space(2)};
   font-weight: ${styles.bold};
@@ -40,7 +41,18 @@ const Body = styled(View)`
   flex: 1;
   margin: 0 ${styles.space(1)};
   margin-bottom: ${styles.space(1)};
+  max-width: 50rem;
 `;
+const GroupHeader = styled(Text)`
+  margin-bottom: ${styles.space(-1)};
+  font-size: ${styles.space(1)};
+  color: ${styles.textLight};
+`;
+const GroupSubHeader = styled(Text)`
+  margin-bottom: ${styles.space(-1)};
+  color: ${styles.textLight};
+`;
+const DegreeGroups = styled(View)``;
 
 const titleDropdownActions = {
   rename: {
@@ -105,6 +117,14 @@ export class MasteredDegreeDetail extends React.Component<
             minimumCredits={masteredDegree.minimumCredits}
             onChange={this.props.onCreditsChange}
           />
+          <DegreeGroups>
+            <GroupHeader>Degree groups</GroupHeader>
+            <GroupSubHeader>
+              A degree group is a set of courses that a student must satisfy as part of their degree
+              such as "CIS Core" or "Technical Electives". Each group can set a whitelist,
+              blacklist, credit minimum, credit maximum, and/or default courses.
+            </GroupSubHeader>
+          </DegreeGroups>
         </Body>
       </Container>
     );
