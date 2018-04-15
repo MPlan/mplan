@@ -137,6 +137,39 @@ async function load() {
                 .addToDefaults(catalog.getCourse('COMP', '105')!)
                 .addToDefaults(catalog.getCourse('COMP', '270')!),
             ),
+          new Record.MasteredDegree({
+            _id: Record.ObjectId(),
+            name: 'Software Engineering F15',
+            descriptionHtml: 'test',
+          })
+            .addGroup(
+              new Record.MasteredDegreeGroup({
+                _id: Record.ObjectId(),
+                name: 'Written and oral comm',
+                creditMinimum: 6,
+                creditMaximum: 6,
+                blacklistedIds: Immutable.List<string>(),
+              })
+                .addToWhitelist(catalog.getCourse('COMP', '105')!)
+                .addToWhitelist(catalog.getCourse('COMP', '106')!)
+                .addToWhitelist(catalog.getCourse('COMP', '270')!)
+                .addToDefaults(catalog.getCourse('COMP', '105')!)
+                .addToDefaults(catalog.getCourse('COMP', '270')!),
+            )
+            .addGroup(
+              new Record.MasteredDegreeGroup({
+                _id: Record.ObjectId(),
+                name: 'Written and oral comm',
+                creditMinimum: 6,
+                creditMaximum: 6,
+                blacklistedIds: Immutable.List<string>(),
+              })
+                .addToWhitelist(catalog.getCourse('COMP', '105')!)
+                .addToWhitelist(catalog.getCourse('COMP', '106')!)
+                .addToWhitelist(catalog.getCourse('COMP', '270')!)
+                .addToDefaults(catalog.getCourse('COMP', '105')!)
+                .addToDefaults(catalog.getCourse('COMP', '270')!),
+            ),
         ]),
       ),
   );

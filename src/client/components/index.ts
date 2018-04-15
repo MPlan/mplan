@@ -17,3 +17,4 @@ export * from './dropdown-menu';
 export * from './semester';
 export * from './toolbox';
 export * from './degree-item';
+export * from './degree-item-sidebar';

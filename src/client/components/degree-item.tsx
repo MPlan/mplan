@@ -47,12 +47,13 @@ const Icon = styled(View)`
 
 export interface DegreeItemProps {
   masteredDegree: Model.MasteredDegree;
+  onClick?: () => void;
 }
 
 export function DegreeItem(props: DegreeItemProps) {
   const { masteredDegree } = props;
   return (
-    <Container>
+    <Container onClick={props.onClick}>
       <NameAndDetails>
         <Name>{masteredDegree.name}</Name>
         <Details>
