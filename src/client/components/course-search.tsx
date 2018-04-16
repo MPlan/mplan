@@ -13,7 +13,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { debounceTime } from 'rxjs/operators';
 import * as uuid from 'uuid/v4';
 
-const INPUT_DEBOUNCE_TIME = 500;
+const INPUT_DEBOUNCE_TIME = 250;
 
 const Container = styled(View)`
   width: 50rem;
