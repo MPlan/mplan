@@ -89,6 +89,16 @@ const DescriptionNonEdit = styled(View)`
     font-family: ${styles.fontFamily};
   }
 `;
+const NameForm = styled.form`
+  flex: 1;
+`;
+const NameInput = styled.input`
+  background-color: transparent;
+  border: none;
+  outline: none;
+  font-size: ${styles.space(1)};
+  color: ${styles.textLight};
+`;
 
 const headingActions = {
   rename: {
@@ -111,6 +121,7 @@ interface MasteredDegreeGroupState {
   creditMinimumValue: string;
   creditMaximumValue: string;
   editingDescription: boolean;
+  editingName: boolean;
   descriptionValue: any;
 }
 
@@ -131,6 +142,7 @@ export class MasteredDegreeGroup extends React.Component<
         props.masteredDegreeGroup.descriptionHtml,
         'html',
       ),
+      editingName: false,
     };
   }
 
@@ -230,7 +242,11 @@ export class MasteredDegreeGroup extends React.Component<
     e.select();
   };
 
-  handleHeadingActions = (action: keyof typeof headingActions) => {};
+  handleHeadingActions = (action: keyof typeof headingActions) => {
+    if (action === 'rename') {
+      this.handleNameClick();
+    }
+  };
 
   handleChangeDefaultCourses = (courses: Model.Course[]) => {
     this.props.onDegreeGroupUpdate(group => {
@@ -279,6 +295,38 @@ export class MasteredDegreeGroup extends React.Component<
     }));
   };
 
+  handleNameInputRef = (e: HTMLInputElement | null | undefined) => {
+    if (!e) return;
+    e.focus();
+    e.select();
+  };
+
+  handleNameSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    this.setState(previousState => ({
+      ...previousState,
+      editingName: false,
+    }));
+    const value = (e.currentTarget.querySelector('.name-input') as HTMLInputElement).value;
+    this.props.onDegreeGroupUpdate(group => group.set('name', value));
+  };
+
+  handleNameClick = () => {
+    this.setState(previousState => ({
+      ...previousState,
+      editingName: true,
+    }));
+  };
+
+  handleNameBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    this.setState(previousState => ({
+      ...previousState,
+      editingName: false,
+    }))
+    const value = e.currentTarget.value;
+    this.props.onDegreeGroupUpdate(group => group.set('name', value));
+  }
+
   render() {
     const { masteredDegreeGroup, catalog } = this.props;
     return (
@@ -289,7 +337,20 @@ export class MasteredDegreeGroup extends React.Component<
           onAction={this.handleHeadingActions}
         >
           <HeaderRow>
-            <Header>{masteredDegreeGroup.name}</Header>
+            {/*if*/ this.state.editingName ? (
+              <NameForm onSubmit={this.handleNameSubmit}>
+                <NameInput
+                  className="name-input"
+                  type="text"
+                  innerRef={this.handleNameInputRef}
+                  onBlur={this.handleNameBlur}
+                  defaultValue={masteredDegreeGroup.name}
+                />
+              </NameForm>
+            ) : (
+              <Header onClick={this.handleNameClick}>{masteredDegreeGroup.name}</Header>
+            )}
+
             <DropdownMenu
               header={masteredDegreeGroup.name}
               actions={headingActions}
