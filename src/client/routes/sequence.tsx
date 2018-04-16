@@ -377,12 +377,14 @@ export class Sequence extends Model.store.connect({
   render() {
     const graphWidth = this.state.graphWrapperWidth;
     const graphHeight = this.state.graphWrapperHeight;
+    const masteredDegree = this.store.masteredDegrees.get(this.store.user.degree.masteredDegreeId);
+    const masteredDegreeName = (masteredDegree && masteredDegree.name) || '';
     return (
       <SequenceContainer onMouseMove={this.reflowTrigger}>
         <Header>
           <HeaderMain>
             <Text strong extraLarge color={styles.textLight}>
-              Computer Engineering Sequence
+              {masteredDegreeName} Sequence
             </Text>
             <Text color={styles.textLight}>
               This page includes every course and their prerequisites from the degree page. Use this
