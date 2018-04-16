@@ -47,6 +47,18 @@ function userDisplayName() {
   return decoded.name || decoded.nickname || undefined;
 }
 
+function username() {
+  const idToken = localStorage.getItem('idToken');
+  if (!idToken) {
+    return undefined;
+  }
+  const decoded = jwtDecode(idToken) as any;
+  if (!decoded) {
+    return undefined;
+  }
+  return decoded.nickname || undefined;
+}
+
 function handleCallback() {
   return new Promise<void>((resolve, reject) => {
     webAuth.parseHash((error, decoded) => {
@@ -68,5 +80,6 @@ export const Auth = {
   logout,
   loggedIn,
   userDisplayName,
-  handleCallback
+  handleCallback,
+  username,
 };

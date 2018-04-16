@@ -8,7 +8,7 @@ import { oneLine } from 'common-tags';
 import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs/Observer';
 import { map, distinct, debounceTime, share } from 'rxjs/operators';
-import { decode } from 'base-64';
+import { Auth } from '../auth';
 
 const user$ = Observable.create((observer: Observer<Record.App>) => {
   store.subscribe(store => {
@@ -90,14 +90,12 @@ async function fetchCatalog() {
 
 async function fetchUser() {
   const token = localStorage.getItem('idToken');
-  if (!token) throw new Error('not logged in');
-  const payloadMatch = /[^.]*\.([^.]*)\.[^.]*/.exec(token);
-  if (!payloadMatch) throw new Error('could not find payload in JWT');
-  const payloadEncoded = payloadMatch[1];
-  const decoded = decode(payloadEncoded);
-  const payload = JSON.parse(decoded);
-  const uniqueName = payload.nickname;
-  if (!uniqueName) throw new Error('could not find unique name in JWT');
+  const uniqueName = Auth.username();
+  if (!uniqueName) {
+    Auth.logout();
+    Auth.login();
+    return;
+  }
   const response = await fetch(`/api/users/${uniqueName}`, {
     headers: new Headers({
       Authorization: `Bearer ${token}`,
@@ -129,15 +127,15 @@ const id0 = Record.ObjectId();
 const id1 = Record.ObjectId();
 
 async function load() {
-  const [catalog, userFromServer, degrees] = (await Promise.all([
+  const [catalog, userFromServer, degrees] = await Promise.all([
     fetchCatalog(),
     fetchUser(),
     fetchMasteredDegrees(),
-  ]));
+  ]);
   store.sendUpdate(store =>
     store
       .set('catalog', catalog)
-      .set('user', userFromServer)
+      .set('user', userFromServer!)
       .set('masteredDegrees', degrees),
   );
 }
