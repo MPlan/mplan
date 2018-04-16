@@ -107,6 +107,7 @@ export class Degree extends Model.store.connect({
   handleSearchInput = (searchInput: string) => {
     const searchResults = this.store.catalog
       .search(searchInput)
+      .results
       .take(10)
       .toArray();
 
