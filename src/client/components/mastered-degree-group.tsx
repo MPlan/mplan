@@ -74,7 +74,7 @@ const headingActions = {
 
 export interface MasteredDegreeGroupProps {
   masteredDegreeGroup: Model.MasteredDegreeGroup;
-  onDegreeGroupChange: (
+  onDegreeGroupUpdate: (
     update: (group: Model.MasteredDegreeGroup) => Model.MasteredDegreeGroup,
   ) => void;
 }
@@ -133,7 +133,7 @@ export class MasteredDegreeGroup extends React.Component<
       ...previousState,
       editingCreditMinimum: false,
     }));
-    this.props.onDegreeGroupChange(group => group.set('creditMinimum', newCreditMinimum));
+    this.props.onDegreeGroupUpdate(group => group.set('creditMinimum', newCreditMinimum));
   };
   handleMaximumCreditsSaveClick = () => {
     const newCreditMaximum = parseInt(this.state.creditMaximumValue, 10);
@@ -145,7 +145,7 @@ export class MasteredDegreeGroup extends React.Component<
       ...previousState,
       editingCreditMaximum: false,
     }));
-    this.props.onDegreeGroupChange(group => group.set('creditMaximum', newCreditMaximum));
+    this.props.onDegreeGroupUpdate(group => group.set('creditMaximum', newCreditMaximum));
   };
 
   handleMinimumCreditsCancelClick = () => {
@@ -164,15 +164,17 @@ export class MasteredDegreeGroup extends React.Component<
   };
 
   handleCreditsMinimumChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.currentTarget.value;
     this.setState(previousState => ({
       ...previousState,
-      creditMinimumValue: e.currentTarget.value,
+      creditMinimumValue: newValue,
     }));
   };
   handleCreditsMaximumChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.currentTarget.value;
     this.setState(previousState => ({
       ...previousState,
-      creditMaximumValue: e.currentTarget.value,
+      creditMaximumValue: newValue,
     }));
   };
 

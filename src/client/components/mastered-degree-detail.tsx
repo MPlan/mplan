@@ -90,13 +90,25 @@ export class MasteredDegreeDetail extends React.Component<
   }
 
   handleTitleActions = (action: keyof typeof titleDropdownActions) => {};
-  
+
   handleDescriptionChange = (html: string) => {
     this.props.onDegreeUpdate(degree => degree.set('descriptionHtml', html));
   };
   handleCreditsChange = (minimumCredits: number) => {
     this.props.onDegreeUpdate(degree => degree.set('minimumCredits', minimumCredits));
   };
+  handleDegreeGroupUpdate(
+    groupToUpdate: Model.MasteredDegreeGroup,
+    groupUpdate: (group: Model.MasteredDegreeGroup) => Model.MasteredDegreeGroup,
+  ) {
+    this.props.onDegreeUpdate(degree =>
+      degree.update('masteredDegreeGroups', groups => {
+        const indexToUpdate = groups.findIndex(group => group.id === groupToUpdate.id);
+        if (indexToUpdate < 0) return groups;
+        return groups.update(indexToUpdate, groupUpdate);
+      }),
+    );
+  }
 
   render() {
     const { masteredDegree } = this.props;
@@ -140,7 +152,7 @@ export class MasteredDegreeDetail extends React.Component<
               <MasteredDegreeGroup
                 key={group.id}
                 masteredDegreeGroup={group}
-                onDegreeGroupChange={() => {}}
+                onDegreeGroupUpdate={update => this.handleDegreeGroupUpdate(group, update)}
               />
             ))}
           </DegreeGroups>
