@@ -8,6 +8,7 @@ import { DropdownMenu } from './dropdown-menu';
 import { Fa } from './fa';
 import { PreferredPrerequisite } from './preferred-prerequisite';
 import { RightClickMenu } from './right-click-menu';
+import { StringIterator } from 'lodash';
 
 const Container = styled(View)`
   padding: ${styles.space(-1)} ${styles.space(0)};
@@ -49,27 +50,31 @@ const Body = styled(View)`
   flex: 1;
 `;
 
-const actions = {
-  view: { text: 'View in catalog', icon: 'chevronRight', color: styles.blue },
-  delete: { text: 'Delete course', icon: 'trash', color: styles.red },
-};
-
 export interface SemesterCourseProps {
   course: Model.Course;
   degree: Model.Degree;
   catalog: Model.Catalog;
-  onDeleteCourse: () => void;
+  onDeleteCourse?: () => void;
 }
 
 export function SemesterCourse(props: SemesterCourseProps) {
   const { course, degree, catalog, onDeleteCourse } = props;
   const criticalLevel = course.criticalLevel(degree, catalog);
 
-  function handleAction(action: keyof typeof actions) {
+  function handleAction(action: string) {
     if (action === 'delete') {
-      onDeleteCourse();
+      onDeleteCourse && onDeleteCourse();
     }
   }
+
+  const actions = onDeleteCourse
+    ? {
+        view: { text: 'View in catalog', icon: 'chevronRight', color: styles.blue },
+        delete: { text: 'Delete course', icon: 'trash', color: styles.red },
+      }
+    : {
+        view: { text: 'View in catalog', icon: 'chevronRight', color: styles.blue },
+      };
 
   return (
     <RightClickMenu header={course.simpleName} actions={actions} onAction={handleAction}>

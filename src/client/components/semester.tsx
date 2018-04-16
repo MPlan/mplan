@@ -112,8 +112,14 @@ export class Semester extends Model.store.connect({
     this.setStore(store =>
       store.updatePlan(plan => {
         const semester = plan.semesterMap.get(fromDropzoneId);
+        if (fromDropzoneId === 'unplaced-courses') {
+          const course = plan.unplacedCourses(this.store.user.degree, this.store.catalog)[oldIndex];
+          return plan.updateSemester(toDropzoneId, semester => {
+            const newCourses = semester._courseIds.insert(newIndex, course.catalogId);
+            return semester.set('_courseIds', newCourses);
+          });
+        }
         if (!semester) {
-          console.warn('semester was not found when sorting');
           return plan;
         }
         const course = semester._courseIds.get(oldIndex);

@@ -29,6 +29,7 @@ const Body = styled<ContainerProps>(View)`
   max-height: ${props => (props.open ? '100rem' : '0')};
   overflow: ${props => (props.open ? 'auto' : 'hidden')};
   transition: all 400ms;
+  flex: 1;
 `;
 
 interface AccordionProps {

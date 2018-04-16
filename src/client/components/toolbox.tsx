@@ -6,7 +6,7 @@ import { View } from './view';
 import { Text } from './text';
 import { Accordion } from './accordion';
 import { SemesterCourse } from './semester-course';
-import { Dropzone } from './dropzone';
+import { Dropzone, SortChange } from './dropzone';
 
 const Container = styled(View)`
   box-shadow: ${styles.boxShadow(0)};
@@ -49,6 +49,25 @@ export class Toolbox extends Model.store.connect({
 
   handleDeleteCourse(course: Model.Course) {}
 
+  handleChangeSort = (e: SortChange) => {
+    const { fromDropzoneId, toDropzoneId, newIndex, oldIndex } = e;
+    this.setStore(store =>
+      store.updatePlan(plan => {
+        const semester = plan.semesterMap.get(fromDropzoneId);
+        if (fromDropzoneId === 'unplaced-courses') {
+          return plan;
+        }
+        if (!semester) {
+          return plan;
+        }
+        return plan.updateSemester(fromDropzoneId, semester => {
+          const newCourses = semester._courseIds.filter((_, index) => index !== oldIndex);
+          return semester.set('_courseIds', newCourses);
+        });
+      }),
+    );
+  };
+
   renderCourse = (course: Model.Course) => {
     return (
       <SemesterCourse
@@ -56,7 +75,6 @@ export class Toolbox extends Model.store.connect({
         course={course}
         degree={this.store.user.degree}
         catalog={this.store.catalog}
-        onDeleteCourse={() => this.handleDeleteCourse(course)}
       />
     );
   };
@@ -76,10 +94,9 @@ export class Toolbox extends Model.store.connect({
           >
             <Dropzone
               id={'unplaced-courses'}
-              elements={plan
-                .unplacedCourses(degree, catalog)}
+              elements={plan.unplacedCourses(degree, catalog)}
               getKey={course => course.id}
-              onChangeSort={() => {}}
+              onChangeSort={this.handleChangeSort}
               render={this.renderCourse}
             />
           </Accordion>
