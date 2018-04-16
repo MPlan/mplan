@@ -74,6 +74,10 @@ const SearchForACourse = styled(Text)`
   margin-bottom: ${styles.space(-1)};
 `;
 const SearchResults = styled(View)``;
+const FormMajor = styled.form`
+  display: flex;
+  flex-direction: column;
+`;
 
 const fabActions = {
   group: {
@@ -91,6 +95,7 @@ const fabActions = {
 export class Degree extends Model.store.connect({
   initialState: {
     modalOpen: false,
+    pickingMajor: false,
     currentDegreeGroup: undefined as Model.DegreeGroup | undefined,
     searchResults: [] as Model.Course[],
   },
@@ -107,8 +112,7 @@ export class Degree extends Model.store.connect({
   handleSearchInput = (searchInput: string) => {
     const searchResults = this.store.catalog
       .search(searchInput)
-      .results
-      .take(10)
+      .results.take(10)
       .toArray();
 
     this.setState(previousState => ({
@@ -194,15 +198,60 @@ export class Degree extends Model.store.connect({
     this.setStore(store => store.updateDegree(degree => degree.deleteDegreeGroup(group)));
   }
 
+  handleChangeDegree = () => {
+    this.setState(previousState => ({
+      ...previousState,
+      pickingMajor: true,
+    }));
+  };
+
+  handleMajorBlur = () => {
+    this.setState(previousState => ({
+      ...previousState,
+      pickingMajor: false,
+    }));
+  };
+
+  handleMajorSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const selectElement = e.currentTarget.querySelector('.select-major') as HTMLSelectElement;
+    const majorId = selectElement.value;
+    if (!majorId) return;
+    this.setStore(store => {
+      const major = store.masteredDegrees.get(majorId);
+      if (!major) {
+        console.warn('could not find major');
+        return store;
+      }
+      const newStore = store.updateDegree(degree => {
+        const clearedDegree = degree.update('degreeGroups', groups => groups.clear());
+        const newDegree = major.masteredDegreeGroups.reduce((degree, masteredDegreeGroup) => {
+          return degree.set('masteredDegreeId', majorId).addDegreeGroup(
+            new Model.DegreeGroup({
+              _id: Model.ObjectId(),
+              name: masteredDegreeGroup.name,
+              _courseIds: masteredDegreeGroup.defaultIds,
+            }),
+          );
+        }, clearedDegree);
+        return newDegree;
+      });
+      return newStore;
+    });
+  };
+
+  handleSelectMajor(majorId: string) {}
+
   render() {
     const currentDegreeGroup = this.state.currentDegreeGroup;
     const degree = this.store.user.degree;
     const catalog = this.store.catalog;
+    const masteredDegree = this.store.masteredDegrees.get(degree.masteredDegreeId);
     return (
       <Container>
         <Header>
           <HeaderMain>
-            <Major>Computer Engineering</Major>
+            <Major>{masteredDegree && masteredDegree.name}</Major>
             <Disclaimer>
               <Underline>Disclaimer:</Underline> This page is <Underline>not</Underline> a degree
               audit and should not be treated like one.{' '}
@@ -214,6 +263,9 @@ export class Degree extends Model.store.connect({
               {degree.completedCredits(catalog)}/{degree.totalCredits(catalog)} credits
             </Credits>
             <Percentage>{degree.percentComplete(catalog).toFixed(2)}% complete</Percentage>
+            <ActionableText onClick={this.handleChangeDegree}>
+              Click here to change degree!
+            </ActionableText>
           </HeaderRight>
         </Header>
         <DegreeGroupContainer>
@@ -253,6 +305,30 @@ export class Degree extends Model.store.connect({
               />
             ))}
           </SearchResults>
+        </Modal>
+        <Modal
+          title="Pick a major!"
+          open={this.state.pickingMajor}
+          onBlurCancel={this.handleMajorBlur}
+        >
+          <FormMajor onSubmit={this.handleMajorSubmit}>
+            <select className="select-major">
+              {this.store.masteredDegrees
+                .valueSeq()
+                .sortBy(degree => degree.name)
+                .map(degree => (
+                  <option key={degree.id} value={degree.id}>
+                    {degree.name}
+                  </option>
+                ))}
+            </select>
+            <div>
+              <button type="button" onClick={this.handleMajorBlur}>
+                cancel
+              </button>
+              <button type="submit">select major</button>
+            </div>
+          </FormMajor>
         </Modal>
       </Container>
     );
