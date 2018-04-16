@@ -10,6 +10,7 @@ import { RightClickMenu } from './right-click-menu';
 import { Button } from './button';
 import { Fa } from './fa';
 import { EditableCourseList } from './editable-course-list';
+const RichTextEditor = require('react-rte').default;
 
 const Container = styled(View)`
   flex-shrink: 0;
@@ -78,6 +79,16 @@ const Hr = styled.hr`
   width: 100%;
   margin-bottom: ${styles.space(0)};
 `;
+const ButtonContainer = styled(View)`
+  flex-direction: row;
+  justify-content: flex-end;
+`;
+const DescriptionNonEdit = styled(View)`
+  &,
+  & * {
+    font-family: ${styles.fontFamily};
+  }
+`;
 
 const headingActions = {
   rename: {
@@ -99,6 +110,8 @@ interface MasteredDegreeGroupState {
   editingCreditMaximum: boolean;
   creditMinimumValue: string;
   creditMaximumValue: string;
+  editingDescription: boolean;
+  descriptionValue: any;
 }
 
 export class MasteredDegreeGroup extends React.Component<
@@ -113,7 +126,25 @@ export class MasteredDegreeGroup extends React.Component<
       editingCreditMaximum: false,
       creditMinimumValue: masteredDegreeGroup.creditMinimum.toString(),
       creditMaximumValue: masteredDegreeGroup.creditMaximum.toString(),
+      editingDescription: false,
+      descriptionValue: RichTextEditor.createValueFromString(
+        props.masteredDegreeGroup.descriptionHtml,
+        'html',
+      ),
     };
+  }
+
+  componentWillReceiveProps(nextProps: MasteredDegreeGroupProps) {
+    if (nextProps.masteredDegreeGroup !== this.props.masteredDegreeGroup) {
+      this.setState(previousState => ({
+        ...previousState,
+        editingDescription: false,
+        descriptionValue: RichTextEditor.createValueFromString(
+          nextProps.masteredDegreeGroup.descriptionHtml,
+          'html',
+        ),
+      }));
+    }
   }
 
   handleCreditMinimumClick = () => {
@@ -213,6 +244,41 @@ export class MasteredDegreeGroup extends React.Component<
     });
   };
 
+  handleDescriptionChange = (descriptionValue: any) => {
+    this.setState(previousState => ({
+      ...previousState,
+      descriptionValue,
+    }));
+  };
+
+  handleDescriptionCancel = () => {
+    this.setState(previousState => ({
+      ...previousState,
+      editingDescription: false,
+      descriptionValue: RichTextEditor.createValueFromString(
+        this.props.masteredDegreeGroup.descriptionHtml,
+        'html',
+      ),
+    }));
+  };
+
+  handleDescriptionSave = () => {
+    this.setState(previousState => ({
+      ...previousState,
+      editingDescription: false,
+    }));
+    this.props.onDegreeGroupUpdate(group =>
+      group.set('descriptionHtml', this.state.descriptionValue.toString('html')),
+    );
+  };
+
+  handleDescriptionEdit = () => {
+    this.setState(previousState => ({
+      ...previousState,
+      editingDescription: true,
+    }));
+  };
+
   render() {
     const { masteredDegreeGroup, catalog } = this.props;
     return (
@@ -232,6 +298,47 @@ export class MasteredDegreeGroup extends React.Component<
           </HeaderRow>
         </RightClickMenu>
         <Card>
+          <Row>
+            <Text style={{ fontWeight: 'bold' }}>Description</Text>
+          </Row>
+          <Row>
+            <Text color={styles.textLight}>
+              This description is displayed above the degree groups in the student's degree view. It
+              may be helpful to add links to degree group requirements such as the DDC allowed
+              courses for "Written and oral communication".
+            </Text>
+          </Row>
+          {/*if*/ this.state.editingDescription ? (
+            <View>
+              <RichTextEditor
+                value={this.state.descriptionValue}
+                onChange={this.handleDescriptionChange}
+              />
+              <ButtonContainer>
+                <Button onClick={this.handleDescriptionCancel}>
+                  <Fa icon="times" />
+                  <Text style={{ marginLeft: styles.space(-1) }}>Cancel</Text>
+                </Button>
+                <Button onClick={this.handleDescriptionSave}>
+                  <Fa icon="check" color={styles.blue} />
+                  <Text style={{ marginLeft: styles.space(-1) }}>Save</Text>
+                </Button>
+              </ButtonContainer>
+            </View>
+          ) : (
+            <View>
+              <Row>
+                <Button onClick={this.handleDescriptionEdit}>
+                  <Fa icon="pencil" />
+                  <Text style={{ marginLeft: styles.space(-1) }}>Edit</Text>
+                </Button>
+              </Row>
+              <DescriptionNonEdit
+                dangerouslySetInnerHTML={{ __html: this.props.masteredDegreeGroup.descriptionHtml }}
+              />
+            </View>
+          )}
+          <Hr />
           <Row>
             <Text style={{ fontWeight: 'bold' }}>Credit caps</Text>
           </Row>
