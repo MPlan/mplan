@@ -311,6 +311,19 @@ export class DegreeEditor extends Model.store.connect({
                   }),
                 ),
               );
+            } else if (action === 'degree') {
+              this.setStore(store =>
+                store.update('masteredDegrees', degrees => {
+                  const id = Model.ObjectId();
+                  return degrees.set(id.toHexString(), new Model.MasteredDegree({
+                    _id: id,
+                    name: 'New degree',
+                    descriptionHtml: 'Default description. Please change!',
+                    minimumCredits: 120,
+                    published: false
+                  }));
+                }),
+              );
             }
           }}
         />
