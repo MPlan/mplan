@@ -26,6 +26,9 @@ const Header = styled(Text)`
 const Body = styled(View)`
   flex: 1;
 `;
+const Warning = styled(View)`
+  padding: ${styles.space(-1)};
+`;
 
 export class Toolbox extends Model.store.connect({
   initialState: {
@@ -105,23 +108,11 @@ export class Toolbox extends Model.store.connect({
             onToggle={this.handleWarningsToggle}
             open={this.state.warningsOpen}
           >
-            <Text large>whoa</Text>
-            <Text large>whoa</Text>
-            <Text large>whoa</Text>
-            <Text large>whoa</Text>
-            <Text large>whoa</Text>
-            <Text large>whoa</Text>
-            <Text large>whoa</Text>
-            <Text large>whoa</Text>
-            <Text large>whoa</Text>
-            <Text large>whoa</Text>
-            <Text large>whoa</Text>
-            <Text large>whoa</Text>
-            <Text large>whoa</Text>
-            <Text large>whoa</Text>
-            <Text large>whoa</Text>
-            <Text large>whoa</Text>
-            <Text large>whoa</Text>
+            {plan.warningsNotOfferedDuringSeason(catalog).map(warning => (
+              <Warning key={warning}>
+                <Text>{warning}</Text>
+              </Warning>
+            ))}
           </Accordion>
         </Body>
       </Container>

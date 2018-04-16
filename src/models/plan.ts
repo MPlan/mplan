@@ -5,11 +5,13 @@ import { Catalog } from './catalog';
 import { Course } from './course';
 import { Semester } from './semester';
 import { Degree } from './degree';
+import { flatten } from 'lodash';
 
 export class Plan extends Record.define({
   semesterMap: Record.MapOf(Semester),
 }) {
   static unplacedCoursesMemo = new Map<any, any>();
+  static warningsNotOfferedDuringSeason = new Map<any, any>();
   updateSemester(id: string, updater: (semester: Semester) => Semester) {
     return this.update('semesterMap', map => map.update(id, updater));
   }
@@ -56,6 +58,46 @@ export class Plan extends Record.define({
       .toArray();
     Plan.unplacedCoursesMemo.set(hash, unplacedCourses);
     return unplacedCourses;
+  }
+
+  warningsNotOfferedDuringSeason(catalog: Catalog): string[] {
+    const hash = hashObjects({ plan: this, catalog });
+    if (Plan.warningsNotOfferedDuringSeason.has(hash)) {
+      return Plan.warningsNotOfferedDuringSeason.get(hash);
+    }
+    const allCourses = this.semesterMap
+      .valueSeq()
+      .map(semester =>
+        semester._courseIds
+          .map(courseId => ({
+            course: catalog.courseMap.get(courseId)!,
+            semester,
+          }))
+          .filter(({ course }) => !!course)
+          .map(({ course, semester }) => ({
+            course,
+            semester,
+            hasRanDuringSeason:
+              semester.season === 'Winter'
+                ? course.winterSections.count() > 0
+                : semester.season === 'Summer'
+                  ? course.summerSections.count() > 0
+                  : semester.season === 'Fall'
+                    ? course.winterSections.count() > 0
+                    : false,
+          }))
+          .filter(({ hasRanDuringSeason }) => !hasRanDuringSeason)
+          .map(
+            ({ course, semester }) =>
+              `Course ${course.simpleName} has never ran during the ${semester.season}`,
+          )
+          .toArray(),
+      )
+      .toArray();
+    const allWarningsFlattened = flatten(allCourses);
+
+    Plan.warningsNotOfferedDuringSeason.set(hash, allWarningsFlattened);
+    return allWarningsFlattened;
   }
 
   // TODO:
