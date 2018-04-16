@@ -42,6 +42,7 @@ const Card = styled<CardProps>(View)`
   background-color: ${styles.white};
   padding: ${styles.space(1)};
   box-shadow: ${styles.boxShadow(1)};
+  max-width: 100vw;
   ${props => {
     if (props.size === 'small') return 'min-width: 20rem;';
     if (props.size === 'medium') return 'min-width: 30rem;';
