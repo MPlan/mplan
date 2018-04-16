@@ -112,21 +112,34 @@ async function fetchUser() {
 }
 
 async function fetchMasteredDegrees() {
-
+  const token = localStorage.getItem('idToken');
+  const response = await fetch('/api/degrees/', {
+    headers: new Headers({
+      Authorization: `Bearer ${token}`,
+    }),
+  });
+  const degreesJs = await response.json();
+  const map = Object.entries(degreesJs).reduce((map, [key, value]) => {
+    return map.set(key, Record.MasteredDegree.fromJS(value));
+  }, Immutable.Map<string, Record.MasteredDegree>());
+  return map;
 }
 
 const id0 = Record.ObjectId();
 const id1 = Record.ObjectId();
 
 async function load() {
-  const catalog = await fetchCatalog();
-  // if (localStorage.getItem('user_data')) {
-  //   const userDataJson = localStorage.getItem('user_data')!;
-  //   const userFromStorage = Record.User.fromJS(JSON.parse(userDataJson));
-  //   store.sendUpdate(store => store.set('catalog', catalog).set('user', userFromStorage));
-  // }
-  const userFromServer = await fetchUser();
-  store.sendUpdate(store => store.set('catalog', catalog).set('user', userFromServer));
+  const [catalog, userFromServer, degrees] = (await Promise.all([
+    fetchCatalog(),
+    fetchUser(),
+    fetchMasteredDegrees(),
+  ]));
+  store.sendUpdate(store =>
+    store
+      .set('catalog', catalog)
+      .set('user', userFromServer)
+      .set('masteredDegrees', degrees),
+  );
 }
 
 load();
