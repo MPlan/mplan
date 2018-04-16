@@ -68,6 +68,7 @@ const Row = styled(View)`
 `;
 const Split = styled(View)`
   flex-direction: row;
+  margin-bottom: ${styles.space(-1)};
   & > * {
     flex: 1;
   }
@@ -224,7 +225,7 @@ export class MasteredDegreeGroup extends React.Component<
               </Text>
             </Row>
 
-            <Row>
+            <Split>
               <CreditHourBlock>
                 {!this.state.editingCreditMinimum ? (
                   <CreditHourNumber onClick={this.handleCreditMinimumClick}>
@@ -298,16 +299,24 @@ export class MasteredDegreeGroup extends React.Component<
                   </ButtonRow>
                 )}
               </CreditHourBlock>
-            </Row>
+            </Split>
             {/*if*/ masteredDegreeGroup.creditMinimum > masteredDegreeGroup.creditMaximum ? (
               <Text color={styles.red}>
                 WARNING: The credit minimum is greater than the credit maximum.
               </Text>
             ) : null}
             <Split>
-              <View>
+              <View style={{ marginRight: styles.space(0) }}>
                 <Row>
                   <Text style={{ fontWeight: 'bold' }}>Defaults</Text>
+                </Row>
+                <Row>
+                  <Text>
+                    These courses will be the default courses shown to the student in this degree
+                    group. It is recommended to populate this when the student has little to no
+                    choice in what has to be taken. If there is a choice, it may be better to leave
+                    the defaults blank and just populate the Allow List.
+                  </Text>
                 </Row>
                 <EditableCourseList
                   currentCourses={masteredDegreeGroup.defaultIds
@@ -321,6 +330,12 @@ export class MasteredDegreeGroup extends React.Component<
               <View>
                 <Row>
                   <Text style={{ fontWeight: 'bold' }}>Allow list</Text>
+                </Row>
+                <Row>
+                  <Text>
+                    If a student tries to add a course that is not in the Allow List below, they
+                    will see a warning. To disable the Allow List, remove all courses from it.
+                  </Text>
                 </Row>
                 <EditableCourseList
                   currentCourses={masteredDegreeGroup.allowListIds
