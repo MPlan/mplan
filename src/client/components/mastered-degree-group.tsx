@@ -73,6 +73,10 @@ const Split = styled(View)`
     flex: 1;
   }
 `;
+const Hr = styled.hr`
+  width: 100%;
+  margin-bottom: ${styles.space(0)};
+`;
 
 const headingActions = {
   rename: {
@@ -213,142 +217,144 @@ export class MasteredDegreeGroup extends React.Component<
               onAction={this.handleHeadingActions}
             />
           </HeaderRow>
-          <Card>
-            <Row>
-              <Text style={{ fontWeight: 'bold' }}>Credit caps</Text>
-            </Row>
-            <Row>
-              <Text>
-                Credit minimum and maximums can be set for degree groups. Students will see a
-                warning if the courses they put into this degree group is lower or higher than the
-                credit minimum and maximums respectively.
-              </Text>
-            </Row>
-
-            <Split>
-              <CreditHourBlock>
-                {!this.state.editingCreditMinimum ? (
-                  <CreditHourNumber onClick={this.handleCreditMinimumClick}>
-                    {masteredDegreeGroup.creditMinimum}
-                  </CreditHourNumber>
-                ) : (
-                  <Form onSubmit={this.handleCreditsMinimumSubmit}>
-                    <Input
-                      type="number"
-                      value={this.state.creditMinimumValue}
-                      onChange={this.handleCreditsMinimumChange}
-                      innerRef={this.handleAndSelectRef}
-                    />
-                  </Form>
-                )}
-                <CreditsLabel>credit minimum</CreditsLabel>
-                {!this.state.editingCreditMinimum ? (
-                  <ButtonRow>
-                    <Button onClick={this.handleCreditMinimumClick}>
-                      <Fa icon="pencil" />
-                      <Text style={{ marginLeft: styles.space(-1) }}>Edit</Text>
-                    </Button>
-                  </ButtonRow>
-                ) : (
-                  <ButtonRow>
-                    <Button onClick={this.handleMinimumCreditsCancelClick}>
-                      <Fa icon="times" />
-                      <Text style={{ marginLeft: styles.space(-1) }}>Cancel</Text>
-                    </Button>
-                    <Button onClick={this.handleMinimumCreditsSaveClick}>
-                      <Fa icon="check" color={styles.blue} />
-                      <Text style={{ marginLeft: styles.space(-1) }}>Save</Text>
-                    </Button>
-                  </ButtonRow>
-                )}
-              </CreditHourBlock>
-
-              <CreditHourBlock>
-                {!this.state.editingCreditMaximum ? (
-                  <CreditHourNumber onClick={this.handleCreditMaximumClick}>
-                    {masteredDegreeGroup.creditMaximum}
-                  </CreditHourNumber>
-                ) : (
-                  <Form onSubmit={this.handleCreditsMaximumSubmit}>
-                    <Input
-                      type="number"
-                      value={this.state.creditMaximumValue}
-                      onChange={this.handleCreditsMaximumChange}
-                      innerRef={this.handleAndSelectRef}
-                    />
-                  </Form>
-                )}
-                <CreditsLabel>credit maximum</CreditsLabel>
-                {!this.state.editingCreditMaximum ? (
-                  <ButtonRow>
-                    <Button onClick={this.handleCreditMaximumClick}>
-                      <Fa icon="pencil" />
-                      <Text style={{ marginLeft: styles.space(-1) }}>Edit</Text>
-                    </Button>
-                  </ButtonRow>
-                ) : (
-                  <ButtonRow>
-                    <Button onClick={this.handleMaximumCreditsCancelClick}>
-                      <Fa icon="times" />
-                      <Text style={{ marginLeft: styles.space(-1) }}>Cancel</Text>
-                    </Button>
-                    <Button onClick={this.handleMaximumCreditsSaveClick}>
-                      <Fa icon="check" color={styles.blue} />
-                      <Text style={{ marginLeft: styles.space(-1) }}>Save</Text>
-                    </Button>
-                  </ButtonRow>
-                )}
-              </CreditHourBlock>
-            </Split>
-            {/*if*/ masteredDegreeGroup.creditMinimum > masteredDegreeGroup.creditMaximum ? (
-              <Text color={styles.red}>
-                WARNING: The credit minimum is greater than the credit maximum.
-              </Text>
-            ) : null}
-            <Split>
-              <View style={{ marginRight: styles.space(0) }}>
-                <Row>
-                  <Text style={{ fontWeight: 'bold' }}>Defaults</Text>
-                </Row>
-                <Row>
-                  <Text>
-                    These courses will be the default courses shown to the student in this degree
-                    group. It is recommended to populate this when the student has little to no
-                    choice in what has to be taken. If there is a choice, it may be better to leave
-                    the defaults blank and just populate the Allow List.
-                  </Text>
-                </Row>
-                <EditableCourseList
-                  currentCourses={masteredDegreeGroup.defaultIds
-                    .map(id => catalog.courseMap.get(id)!)
-                    .filter(x => !!x)
-                    .toArray()}
-                  onAddCourse={() => {}}
-                  onDeleteCourse={() => {}}
-                />
-              </View>
-              <View>
-                <Row>
-                  <Text style={{ fontWeight: 'bold' }}>Allow list</Text>
-                </Row>
-                <Row>
-                  <Text>
-                    If a student tries to add a course that is not in the Allow List below, they
-                    will see a warning. To disable the Allow List, remove all courses from it.
-                  </Text>
-                </Row>
-                <EditableCourseList
-                  currentCourses={masteredDegreeGroup.allowListIds
-                    .map(id => catalog.courseMap.get(id)!)
-                    .filter(x => !!x)
-                    .toArray()}
-                  onAddCourse={() => {}}
-                  onDeleteCourse={() => {}}
-                />
-              </View>
-            </Split>
-          </Card>
         </RightClickMenu>
+        <Card>
+          <Row>
+            <Text style={{ fontWeight: 'bold' }}>Credit caps</Text>
+          </Row>
+          <Row>
+            <Text color={styles.textLight}>
+              Credit minimum and maximums can be set for degree groups. Students will see a warning
+              if the courses they put into this degree group is lower or higher than the credit
+              minimum and maximums respectively.
+            </Text>
+          </Row>
+
+          <Split>
+            <CreditHourBlock>
+              {!this.state.editingCreditMinimum ? (
+                <CreditHourNumber onClick={this.handleCreditMinimumClick}>
+                  {masteredDegreeGroup.creditMinimum}
+                </CreditHourNumber>
+              ) : (
+                <Form onSubmit={this.handleCreditsMinimumSubmit}>
+                  <Input
+                    type="number"
+                    value={this.state.creditMinimumValue}
+                    onChange={this.handleCreditsMinimumChange}
+                    innerRef={this.handleAndSelectRef}
+                  />
+                </Form>
+              )}
+              <CreditsLabel>credit minimum</CreditsLabel>
+              {!this.state.editingCreditMinimum ? (
+                <ButtonRow>
+                  <Button onClick={this.handleCreditMinimumClick}>
+                    <Fa icon="pencil" />
+                    <Text style={{ marginLeft: styles.space(-1) }}>Edit</Text>
+                  </Button>
+                </ButtonRow>
+              ) : (
+                <ButtonRow>
+                  <Button onClick={this.handleMinimumCreditsCancelClick}>
+                    <Fa icon="times" />
+                    <Text style={{ marginLeft: styles.space(-1) }}>Cancel</Text>
+                  </Button>
+                  <Button onClick={this.handleMinimumCreditsSaveClick}>
+                    <Fa icon="check" color={styles.blue} />
+                    <Text style={{ marginLeft: styles.space(-1) }}>Save</Text>
+                  </Button>
+                </ButtonRow>
+              )}
+            </CreditHourBlock>
+
+            <CreditHourBlock>
+              {!this.state.editingCreditMaximum ? (
+                <CreditHourNumber onClick={this.handleCreditMaximumClick}>
+                  {masteredDegreeGroup.creditMaximum}
+                </CreditHourNumber>
+              ) : (
+                <Form onSubmit={this.handleCreditsMaximumSubmit}>
+                  <Input
+                    type="number"
+                    value={this.state.creditMaximumValue}
+                    onChange={this.handleCreditsMaximumChange}
+                    innerRef={this.handleAndSelectRef}
+                  />
+                </Form>
+              )}
+              <CreditsLabel>credit maximum</CreditsLabel>
+              {!this.state.editingCreditMaximum ? (
+                <ButtonRow>
+                  <Button onClick={this.handleCreditMaximumClick}>
+                    <Fa icon="pencil" />
+                    <Text style={{ marginLeft: styles.space(-1) }}>Edit</Text>
+                  </Button>
+                </ButtonRow>
+              ) : (
+                <ButtonRow>
+                  <Button onClick={this.handleMaximumCreditsCancelClick}>
+                    <Fa icon="times" />
+                    <Text style={{ marginLeft: styles.space(-1) }}>Cancel</Text>
+                  </Button>
+                  <Button onClick={this.handleMaximumCreditsSaveClick}>
+                    <Fa icon="check" color={styles.blue} />
+                    <Text style={{ marginLeft: styles.space(-1) }}>Save</Text>
+                  </Button>
+                </ButtonRow>
+              )}
+            </CreditHourBlock>
+          </Split>
+          {/*if*/ masteredDegreeGroup.creditMinimum > masteredDegreeGroup.creditMaximum ? (
+            <Text color={styles.red}>
+              WARNING: The credit minimum is greater than the credit maximum.
+            </Text>
+          ) : null}
+          <Split>
+            <View style={{ marginRight: styles.space(0) }}>
+              <Row>
+                <Text style={{ fontWeight: 'bold' }}>Defaults</Text>
+              </Row>
+              <Row>
+                <Text color={styles.textLight}>
+                  These courses will be the default courses shown to the student in this degree
+                  group. It is recommended to populate this when the student has little to no choice
+                  in what has to be taken. If there is a choice, it may be better to leave the
+                  defaults blank and just populate the Allow List.
+                </Text>
+              </Row>
+              <Hr />
+              <EditableCourseList
+                currentCourses={masteredDegreeGroup.defaultIds
+                  .map(id => catalog.courseMap.get(id)!)
+                  .filter(x => !!x)
+                  .toArray()}
+                onAddCourse={() => {}}
+                onDeleteCourse={() => {}}
+              />
+            </View>
+            <View>
+              <Row>
+                <Text style={{ fontWeight: 'bold' }}>Allow list</Text>
+              </Row>
+              <Row>
+                <Text color={styles.textLight}>
+                  If a student tries to add a course that is not in the Allow List below, they will
+                  see a warning. To disable the Allow List, remove all courses from it.
+                </Text>
+              </Row>
+              <Hr />
+              <EditableCourseList
+                currentCourses={masteredDegreeGroup.allowListIds
+                  .map(id => catalog.courseMap.get(id)!)
+                  .filter(x => !!x)
+                  .toArray()}
+                onAddCourse={() => {}}
+                onDeleteCourse={() => {}}
+              />
+            </View>
+          </Split>
+        </Card>
       </Container>
     );
   }
