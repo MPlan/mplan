@@ -77,8 +77,7 @@ interface MasteredDegreeDetailState extends InitialState {}
 
 export interface MasteredDegreeDetailProps {
   masteredDegree: Model.MasteredDegree;
-  onDescriptionHtmlChange: (html: string) => void;
-  onCreditsChange: (credits: number) => void;
+  onDegreeUpdate: (update: (degree: Model.MasteredDegree) => Model.MasteredDegree) => void;
 }
 
 export class MasteredDegreeDetail extends React.Component<
@@ -91,6 +90,13 @@ export class MasteredDegreeDetail extends React.Component<
   }
 
   handleTitleActions = (action: keyof typeof titleDropdownActions) => {};
+  
+  handleDescriptionChange = (html: string) => {
+    this.props.onDegreeUpdate(degree => degree.set('descriptionHtml', html));
+  };
+  handleCreditsChange = (minimumCredits: number) => {
+    this.props.onDegreeUpdate(degree => degree.set('minimumCredits', minimumCredits));
+  };
 
   render() {
     const { masteredDegree } = this.props;
@@ -116,11 +122,11 @@ export class MasteredDegreeDetail extends React.Component<
         <Body>
           <DegreeDescription
             masteredDegree={masteredDegree}
-            onDescriptionChange={this.props.onDescriptionHtmlChange}
+            onDescriptionChange={this.handleDescriptionChange}
           />
           <DegreeCreditHours
             minimumCredits={masteredDegree.minimumCredits}
-            onChange={this.props.onCreditsChange}
+            onChange={this.handleCreditsChange}
           />
           <DegreeGroups>
             <GroupHeader>Degree groups</GroupHeader>
@@ -131,7 +137,11 @@ export class MasteredDegreeDetail extends React.Component<
             </GroupSubHeader>
             <Hr />
             {masteredDegree.masteredDegreeGroups.map(group => (
-              <MasteredDegreeGroup masteredDegreeGroup={group} onDegreeGroupChange={() => {}} />
+              <MasteredDegreeGroup
+                key={group.id}
+                masteredDegreeGroup={group}
+                onDegreeGroupChange={() => {}}
+              />
             ))}
           </DegreeGroups>
         </Body>
