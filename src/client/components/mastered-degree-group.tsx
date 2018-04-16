@@ -8,6 +8,7 @@ import { DropdownMenu } from './dropdown-menu';
 import { RightClickMenu } from './right-click-menu';
 import { Button } from './button';
 import { Fa } from './fa';
+import { EditableCourseList } from './simple-course-list';
 
 const Container = styled(View)`
   flex-shrink: 0;
@@ -63,6 +64,7 @@ const CreditsLabel = styled(Text)`
 `;
 const Row = styled(View)`
   flex-direction: row;
+  margin-bottom: ${styles.space(-1)};
 `;
 
 const headingActions = {
@@ -205,6 +207,17 @@ export class MasteredDegreeGroup extends React.Component<
           </HeaderRow>
           <Card>
             <Row>
+              <Text style={{ fontWeight: 'bold' }}>Credit caps</Text>
+            </Row>
+            <Row>
+              <Text>
+                Credit minimum and maximums can be set for degree groups. Students will see a
+                warning if the courses they put into this degree group is lower or higher than the
+                credit minimum and maximums respectively.
+              </Text>
+            </Row>
+
+            <Row>
               <CreditHourBlock>
                 {!this.state.editingCreditMinimum ? (
                   <CreditHourNumber onClick={this.handleCreditMinimumClick}>
@@ -279,6 +292,12 @@ export class MasteredDegreeGroup extends React.Component<
                 )}
               </CreditHourBlock>
             </Row>
+            {/*if*/ masteredDegreeGroup.creditMinimum > masteredDegreeGroup.creditMaximum ? (
+              <Text color={styles.red}>
+                WARNING: The credit minimum is greater than the credit maximum.
+              </Text>
+            ) : null}
+            <EditableCourseList />
           </Card>
         </RightClickMenu>
       </Container>
