@@ -124,14 +124,6 @@ export class Timeline extends Model.store.connect({
       scheduleModelOpen: true,
     }));
   };
-
-  generatePlan() {
-    this.setStore(store => {
-      const newPlan = store.user.degree.generatePlan(store.catalog);
-      return store.updatePlan(() => newPlan);
-    });
-  }
-
   handleScheduleModalBlur = () => {
     this.setState(previousState => ({
       ...previousState,
@@ -152,11 +144,20 @@ export class Timeline extends Model.store.connect({
     ) as HTMLInputElement;
 
     const scheduleStart = scheduleStartElement.value;
-    const creditHourCap = creditHourCapElement.value;
+    const creditHourCap = parseInt(creditHourCapElement.value, 10);
     const considerSummerClasses = considerSummerClassesElement.checked;
     const considerHistoricalData = considerHistoricalDataElement.checked;
 
-    console.log({ scheduleStart, creditHourCap, considerSummerClasses, considerHistoricalData });
+    this.setStore(store => {
+      const newPlan = store.user.degree.generatePlan(store.catalog, {
+        considerHistoricalData,
+        creditHourCap,
+        includeSummerCourses: considerSummerClasses,
+        startFromSeason: 'Winter',
+        startFromYear: 2018,
+      });
+      return store.updatePlan(() => newPlan);
+    });
   };
 
   render() {

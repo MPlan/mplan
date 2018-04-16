@@ -340,7 +340,13 @@ ALL
     console.log('All Courses in Closure', allCourses);
 
     console.time('plan generation');
-    const plan = Record.generatePlans(degree, catalog);
+    const plan = Record.generatePlans(degree, catalog, {
+      considerHistoricalData: false,
+      creditHourCap: 15,
+      includeSummerCourses: false,
+      startFromSeason: 'Winter',
+      startFromYear: 2018,
+    });
     console.timeEnd('plan generation');
 
     Record.printSchedule(plan);

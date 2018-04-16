@@ -28,9 +28,17 @@ export function printSchedule(schedule: Immutable.List<Immutable.Set<Course>>) {
   console.log('-------');
 }
 
-export function generatePlans(degree: Degree, catalog: Catalog) {
+export interface PlanOptions {
+  creditHourCap: number;
+  startFromSeason: 'Winter' | 'Summer' | 'Fall';
+  startFromYear: number;
+  includeSummerCourses: boolean;
+  considerHistoricalData: boolean;
+}
+
+export function generatePlans(degree: Degree, catalog: Catalog, options: PlanOptions) {
   // === DEFINE CONSTANTS ===
-  const creditHourCap = 14;
+  const creditHourCap = options.creditHourCap;
   const semesterCap = 15;
 
   // === DEFINE STATE VARIABLES ===
@@ -203,8 +211,8 @@ export class Degree extends Record.define({
     return this.completedCredits(catalog) / this.totalCredits(catalog);
   }
 
-  generatePlan(catalog: Catalog) {
-    const plan = generatePlans(this, catalog);
+  generatePlan(catalog: Catalog, planOptions: PlanOptions) {
+    const plan = generatePlans(this, catalog, planOptions);
     const semesterMap = plan
       .map(
         (set, i) =>
