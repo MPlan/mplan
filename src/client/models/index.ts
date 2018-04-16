@@ -10,17 +10,17 @@ import { Observer } from 'rxjs/Observer';
 import { map, distinct, debounceTime, share } from 'rxjs/operators';
 import { decode } from 'base-64';
 
-const store$ = Observable.create((observer: Observer<Record.App>) => {
+const user$ = Observable.create((observer: Observer<Record.App>) => {
   store.subscribe(store => {
     observer.next(store);
   });
 }).pipe(share(), map((store: Record.App) => store.user), distinct()) as Observable<Record.User>;
 
-store$.pipe(debounceTime(300)).subscribe(user => {
+user$.pipe(debounceTime(300)).subscribe(user => {
   localStorage.setItem('user_data', JSON.stringify(user.toJS()));
 });
 
-store$.pipe(debounceTime(3000)).subscribe(async user => {
+user$.pipe(debounceTime(3000)).subscribe(async user => {
   console.log('sending to server...');
   await fetch(`/api/users/${user.username}`, {
     method: 'PUT',
@@ -31,6 +31,27 @@ store$.pipe(debounceTime(3000)).subscribe(async user => {
     body: JSON.stringify(user.toJS()),
   });
   console.log('finished sending');
+});
+
+const masteredDegrees$ = Observable.create((observer: Observer<Record.App>) => {
+  store.subscribe(store => {
+    observer.next(store);
+  });
+}).pipe(share(), map((store: Record.App) => store.masteredDegrees), distinct()) as Observable<
+  Immutable.Map<string, Record.MasteredDegree>
+>;
+
+masteredDegrees$.pipe(debounceTime(3000)).subscribe(async user => {
+  console.log('sending degrees to server...');
+  await fetch(`/api/degrees`, {
+    method: 'PUT',
+    headers: new Headers({
+      Authorization: `Bearer ${localStorage.getItem('idToken')}`,
+      'Content-Type': 'application/json',
+    }),
+    body: JSON.stringify(user.toJS()),
+  });
+  console.log('finished sending degrees');
 });
 
 async function fetchCatalog() {
@@ -90,6 +111,10 @@ async function fetchUser() {
   return user;
 }
 
+async function fetchMasteredDegrees() {
+
+}
+
 const id0 = Record.ObjectId();
 const id1 = Record.ObjectId();
 
@@ -101,84 +126,7 @@ async function load() {
   //   store.sendUpdate(store => store.set('catalog', catalog).set('user', userFromStorage));
   // }
   const userFromServer = await fetchUser();
-  store.sendUpdate(store =>
-    store
-      .set('catalog', catalog)
-      .set('user', userFromServer)
-      .set(
-        'masteredDegrees',
-        Immutable.Map<string, Record.MasteredDegree>()
-          .set(
-            id0.toHexString(),
-            new Record.MasteredDegree({
-              _id: id0,
-              name: 'Software Engineering F08',
-              descriptionHtml: 'test',
-              minimumCredits: 120,
-            })
-              .addGroup(
-                new Record.MasteredDegreeGroup({
-                  _id: Record.ObjectId(),
-                  name: 'Written and oral comm',
-                  creditMinimum: 6,
-                  creditMaximum: 6,
-                })
-                  .addToAllowList(catalog.getCourse('COMP', '105')!)
-                  .addToAllowList(catalog.getCourse('COMP', '106')!)
-                  .addToAllowList(catalog.getCourse('COMP', '270')!)
-                  .addToDefaults(catalog.getCourse('COMP', '105')!)
-                  .addToDefaults(catalog.getCourse('COMP', '270')!),
-              )
-              .addGroup(
-                new Record.MasteredDegreeGroup({
-                  _id: Record.ObjectId(),
-                  name: 'Written and oral comm',
-                  creditMinimum: 6,
-                  creditMaximum: 6,
-                })
-                  .addToAllowList(catalog.getCourse('COMP', '105')!)
-                  .addToAllowList(catalog.getCourse('COMP', '106')!)
-                  .addToAllowList(catalog.getCourse('COMP', '270')!)
-                  .addToDefaults(catalog.getCourse('COMP', '105')!)
-                  .addToDefaults(catalog.getCourse('COMP', '270')!),
-              ),
-          )
-          .set(
-            id1.toHexString(),
-            new Record.MasteredDegree({
-              _id: id1,
-              name: 'Software Engineering F15',
-              descriptionHtml: 'test',
-            })
-              .addGroup(
-                new Record.MasteredDegreeGroup({
-                  _id: Record.ObjectId(),
-                  name: 'Written and oral comm',
-                  creditMinimum: 6,
-                  creditMaximum: 6,
-                })
-                  .addToAllowList(catalog.getCourse('COMP', '105')!)
-                  .addToAllowList(catalog.getCourse('COMP', '106')!)
-                  .addToAllowList(catalog.getCourse('COMP', '270')!)
-                  .addToDefaults(catalog.getCourse('COMP', '105')!)
-                  .addToDefaults(catalog.getCourse('COMP', '270')!),
-              )
-              .addGroup(
-                new Record.MasteredDegreeGroup({
-                  _id: Record.ObjectId(),
-                  name: 'Written and oral comm',
-                  creditMinimum: 6,
-                  creditMaximum: 6,
-                })
-                  .addToAllowList(catalog.getCourse('COMP', '105')!)
-                  .addToAllowList(catalog.getCourse('COMP', '106')!)
-                  .addToAllowList(catalog.getCourse('COMP', '270')!)
-                  .addToDefaults(catalog.getCourse('COMP', '105')!)
-                  .addToDefaults(catalog.getCourse('COMP', '270')!),
-              ),
-          ),
-      ),
-  );
+  store.sendUpdate(store => store.set('catalog', catalog).set('user', userFromServer));
 }
 
 load();

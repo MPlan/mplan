@@ -7,6 +7,7 @@ import * as Model from '../models/models';
 import * as HttpStatus from 'http-status';
 import { users } from './users';
 import { checkJwts } from './check-jwts';
+import { degrees } from './degrees';
 
 let catalog: Model.Catalog;
 
@@ -69,3 +70,5 @@ api.get('/catalog', compression(), async (req, res) => {
 });
 
 api.use('/users', users);
+
+api.use('/degrees', degrees);
