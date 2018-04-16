@@ -1,5 +1,15 @@
 import * as React from 'react';
-import { View, Text, Semester, FloatingActionButton, Button, Toolbox } from '../components';
+import {
+  View,
+  Text,
+  Semester,
+  FloatingActionButton,
+  Button,
+  Toolbox,
+  ActionableText,
+  Modal,
+  Checkbox,
+} from '../components';
 import * as styles from '../styles';
 import * as Model from '../models';
 import * as Immutable from 'immutable';
@@ -77,6 +87,7 @@ const NavigationLabel = styled(Text)`
   }
   padding: ${styles.space(-1)};
 `;
+const ScheduleForm = styled.form``;
 
 const actions = {
   newSemester: {
@@ -90,6 +101,7 @@ export class Timeline extends Model.store.connect({
   initialState: {
     sliderWidth: 0,
     sliderLeft: 0,
+    scheduleModelOpen: false,
   },
 }) {
   semesterContainerRef: HTMLElement | null | undefined;
@@ -103,15 +115,48 @@ export class Timeline extends Model.store.connect({
   handleNavigationClick(semester: Model.Semester) {
     const semesterElement = document.querySelector(`.semester-${semester.id}`);
     if (!semesterElement) return;
-    console.log('got here');
     semesterElement.scrollIntoView({ behavior: 'smooth' });
   }
 
-  handleGenerateButton = () => {
+  handleGenerateClick = () => {
+    this.setState(previousState => ({
+      ...previousState,
+      scheduleModelOpen: true,
+    }));
+  };
+
+  generatePlan() {
     this.setStore(store => {
       const newPlan = store.user.degree.generatePlan(store.catalog);
       return store.updatePlan(() => newPlan);
     });
+  }
+
+  handleScheduleModalBlur = () => {
+    this.setState(previousState => ({
+      ...previousState,
+      scheduleModelOpen: false,
+    }));
+  };
+
+  handleScheduleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formElement = e.currentTarget;
+    const scheduleStartElement = formElement.querySelector('.schedule-start') as HTMLInputElement;
+    const creditHourCapElement = formElement.querySelector('.credit-hour-cap') as HTMLInputElement;
+    const considerSummerClassesElement = formElement.querySelector(
+      '.consider-summer-classes',
+    ) as HTMLInputElement;
+    const considerHistoricalDataElement = formElement.querySelector(
+      '.consider-historical-data',
+    ) as HTMLInputElement;
+
+    const scheduleStart = scheduleStartElement.value;
+    const creditHourCap = creditHourCapElement.value;
+    const considerSummerClasses = considerSummerClassesElement.checked;
+    const considerHistoricalData = considerHistoricalDataElement.checked;
+
+    console.log({ scheduleStart, creditHourCap, considerSummerClasses, considerHistoricalData });
   };
 
   render() {
@@ -134,7 +179,9 @@ export class Timeline extends Model.store.connect({
               <Text strong large color={styles.textLight}>
                 April 2018
               </Text>
-              <Button onClick={this.handleGenerateButton}>Generate schedule</Button>
+              <ActionableText onClick={this.handleGenerateClick}>
+                Generate schedule...
+              </ActionableText>
             </HeaderRight>
           </Header>
           <SemestersContainer className="semesters-container">
@@ -160,6 +207,25 @@ export class Timeline extends Model.store.connect({
           <FloatingActionButton actions={actions} message="Add..." onAction={this.handleActions} />
         </Content>
         <Toolbox />
+        <Modal
+          title="Generate schedule... "
+          open={this.state.scheduleModelOpen}
+          onBlurCancel={this.handleScheduleModalBlur}
+        >
+          <ScheduleForm onSubmit={this.handleScheduleFormSubmit}>
+            <label>
+              Start from semester:
+              <input className="schedule-start" type="text" />
+            </label>
+            <label>
+              Credit hour cap:
+              <input className="credit-hour-cap" type="number" defaultValue="15" />
+            </label>
+            <Checkbox className="consider-summer-classes" label="consider summer classes" />
+            <Checkbox className="consider-historical-data" label="consider historical data" />
+            <Button type="submit">Generate schedule...</Button>
+          </ScheduleForm>
+        </Modal>
       </Container>
     );
   }
