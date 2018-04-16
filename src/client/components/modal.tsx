@@ -12,7 +12,7 @@ const Container = styled<ContainerProps>(View)`
   width: 100vw;
   min-height: 100vh;
   height: 100vh;
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   ${props => (!props.open ? 'visibility: none;' : '')};
