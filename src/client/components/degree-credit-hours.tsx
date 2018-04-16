@@ -134,7 +134,7 @@ export class DegreeCreditHours extends React.Component<
     this.handleSaveClick();
   };
 
-  handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+  handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.currentTarget.value.toString();
     this.setState(previousState => ({
       ...previousState,
@@ -168,7 +168,7 @@ export class DegreeCreditHours extends React.Component<
                   <Input
                     type="number"
                     value={this.state.value}
-                    onChange={this.handleInput}
+                    onChange={this.handleChange}
                     innerRef={this.handleInputRef}
                   />
                 </Form>
