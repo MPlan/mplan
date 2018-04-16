@@ -59,6 +59,11 @@ export class EditableCourseList extends React.Component<
     }));
   };
 
+  handleChangeCourses = (courses: Model.Course[]) => {
+    this.props.onChangeCourses(courses);
+    this.handleModalBlur();
+  }
+
   render() {
     return (
       <Container>
@@ -81,7 +86,7 @@ export class EditableCourseList extends React.Component<
         >
           <CourseSearch
             currentCourses={this.props.currentCourses}
-            onChangeCourses={this.props.onChangeCourses}
+            onChangeCourses={this.handleChangeCourses}
             onCancel={this.handleModalBlur}
           />
         </Modal>

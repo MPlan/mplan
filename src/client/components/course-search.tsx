@@ -164,7 +164,7 @@ export class CourseSearch extends Model.store.connect({
           <CurrentList>
             <CurrentListLabel>Current courses:</CurrentListLabel>
             <SearchResults>
-              {this.props.currentCourses.map(course => (
+              {this.state.currentCourses.map(course => (
                 <CourseSearchItem
                   key={course.id}
                   course={course}

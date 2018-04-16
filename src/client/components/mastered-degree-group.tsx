@@ -203,13 +203,13 @@ export class MasteredDegreeGroup extends React.Component<
 
   handleChangeDefaultCourses = (courses: Model.Course[]) => {
     this.props.onDegreeGroupUpdate(group => {
-      return group.set('defaultIds', Immutable.List(courses).map(course => course.id));
+      return group.set('defaultIds', Immutable.List(courses).map(course => course.catalogId));
     });
   };
 
   handleChangeAllowListCourses = (courses: Model.Course[]) => {
     this.props.onDegreeGroupUpdate(group => {
-      return group.set('allowListIds', Immutable.List(courses).map(course => course.id));
+      return group.set('allowListIds', Immutable.List(courses).map(course => course.catalogId));
     });
   };
 
