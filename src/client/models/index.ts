@@ -122,11 +122,10 @@ async function load() {
                   name: 'Written and oral comm',
                   creditMinimum: 6,
                   creditMaximum: 6,
-                  blacklistedIds: Immutable.List<string>(),
                 })
-                  .addToWhitelist(catalog.getCourse('COMP', '105')!)
-                  .addToWhitelist(catalog.getCourse('COMP', '106')!)
-                  .addToWhitelist(catalog.getCourse('COMP', '270')!)
+                  .addToAllowList(catalog.getCourse('COMP', '105')!)
+                  .addToAllowList(catalog.getCourse('COMP', '106')!)
+                  .addToAllowList(catalog.getCourse('COMP', '270')!)
                   .addToDefaults(catalog.getCourse('COMP', '105')!)
                   .addToDefaults(catalog.getCourse('COMP', '270')!),
               )
@@ -136,11 +135,10 @@ async function load() {
                   name: 'Written and oral comm',
                   creditMinimum: 6,
                   creditMaximum: 6,
-                  blacklistedIds: Immutable.List<string>(),
                 })
-                  .addToWhitelist(catalog.getCourse('COMP', '105')!)
-                  .addToWhitelist(catalog.getCourse('COMP', '106')!)
-                  .addToWhitelist(catalog.getCourse('COMP', '270')!)
+                  .addToAllowList(catalog.getCourse('COMP', '105')!)
+                  .addToAllowList(catalog.getCourse('COMP', '106')!)
+                  .addToAllowList(catalog.getCourse('COMP', '270')!)
                   .addToDefaults(catalog.getCourse('COMP', '105')!)
                   .addToDefaults(catalog.getCourse('COMP', '270')!),
               ),
@@ -158,11 +156,10 @@ async function load() {
                   name: 'Written and oral comm',
                   creditMinimum: 6,
                   creditMaximum: 6,
-                  blacklistedIds: Immutable.List<string>(),
                 })
-                  .addToWhitelist(catalog.getCourse('COMP', '105')!)
-                  .addToWhitelist(catalog.getCourse('COMP', '106')!)
-                  .addToWhitelist(catalog.getCourse('COMP', '270')!)
+                  .addToAllowList(catalog.getCourse('COMP', '105')!)
+                  .addToAllowList(catalog.getCourse('COMP', '106')!)
+                  .addToAllowList(catalog.getCourse('COMP', '270')!)
                   .addToDefaults(catalog.getCourse('COMP', '105')!)
                   .addToDefaults(catalog.getCourse('COMP', '270')!),
               )
@@ -172,11 +169,10 @@ async function load() {
                   name: 'Written and oral comm',
                   creditMinimum: 6,
                   creditMaximum: 6,
-                  blacklistedIds: Immutable.List<string>(),
                 })
-                  .addToWhitelist(catalog.getCourse('COMP', '105')!)
-                  .addToWhitelist(catalog.getCourse('COMP', '106')!)
-                  .addToWhitelist(catalog.getCourse('COMP', '270')!)
+                  .addToAllowList(catalog.getCourse('COMP', '105')!)
+                  .addToAllowList(catalog.getCourse('COMP', '106')!)
+                  .addToAllowList(catalog.getCourse('COMP', '270')!)
                   .addToDefaults(catalog.getCourse('COMP', '105')!)
                   .addToDefaults(catalog.getCourse('COMP', '270')!),
               ),

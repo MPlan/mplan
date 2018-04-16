@@ -8,7 +8,7 @@ import { DropdownMenu } from './dropdown-menu';
 import { RightClickMenu } from './right-click-menu';
 import { Button } from './button';
 import { Fa } from './fa';
-import { EditableCourseList } from './simple-course-list';
+import { EditableCourseList } from './editable-course-list';
 
 const Container = styled(View)`
   flex-shrink: 0;
@@ -66,6 +66,12 @@ const Row = styled(View)`
   flex-direction: row;
   margin-bottom: ${styles.space(-1)};
 `;
+const Split = styled(View)`
+  flex-direction: row;
+  & > * {
+    flex: 1;
+  }
+`;
 
 const headingActions = {
   rename: {
@@ -75,6 +81,7 @@ const headingActions = {
 };
 
 export interface MasteredDegreeGroupProps {
+  catalog: Model.Catalog;
   masteredDegreeGroup: Model.MasteredDegreeGroup;
   onDegreeGroupUpdate: (
     update: (group: Model.MasteredDegreeGroup) => Model.MasteredDegreeGroup,
@@ -189,7 +196,7 @@ export class MasteredDegreeGroup extends React.Component<
   handleHeadingActions = (action: keyof typeof headingActions) => {};
 
   render() {
-    const { masteredDegreeGroup } = this.props;
+    const { masteredDegreeGroup, catalog } = this.props;
     return (
       <Container>
         <RightClickMenu
@@ -297,7 +304,34 @@ export class MasteredDegreeGroup extends React.Component<
                 WARNING: The credit minimum is greater than the credit maximum.
               </Text>
             ) : null}
-            <EditableCourseList />
+            <Split>
+              <View>
+                <Row>
+                  <Text style={{ fontWeight: 'bold' }}>Defaults</Text>
+                </Row>
+                <EditableCourseList
+                  currentCourses={masteredDegreeGroup.defaultIds
+                    .map(id => catalog.courseMap.get(id)!)
+                    .filter(x => !!x)
+                    .toArray()}
+                  onAddCourse={() => {}}
+                  onDeleteCourse={() => {}}
+                />
+              </View>
+              <View>
+                <Row>
+                  <Text style={{ fontWeight: 'bold' }}>Allow list</Text>
+                </Row>
+                <EditableCourseList
+                  currentCourses={masteredDegreeGroup.allowListIds
+                    .map(id => catalog.courseMap.get(id)!)
+                    .filter(x => !!x)
+                    .toArray()}
+                  onAddCourse={() => {}}
+                  onDeleteCourse={() => {}}
+                />
+              </View>
+            </Split>
           </Card>
         </RightClickMenu>
       </Container>

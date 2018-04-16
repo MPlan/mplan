@@ -208,6 +208,7 @@ export class DegreeEditor extends Model.store.connect({
     return (
       <DegreeDetailContent>
         <MasteredDegreeDetail
+          catalog={this.store.catalog}
           masteredDegree={selectedDegree}
           onDegreeUpdate={this.handleDegreeUpdate}
         />

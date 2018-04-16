@@ -76,6 +76,7 @@ type InitialState = typeof initialState;
 interface MasteredDegreeDetailState extends InitialState {}
 
 export interface MasteredDegreeDetailProps {
+  catalog: Model.Catalog;
   masteredDegree: Model.MasteredDegree;
   onDegreeUpdate: (update: (degree: Model.MasteredDegree) => Model.MasteredDegree) => void;
 }
@@ -153,6 +154,7 @@ export class MasteredDegreeDetail extends React.Component<
                 key={group.id}
                 masteredDegreeGroup={group}
                 onDegreeGroupUpdate={update => this.handleDegreeGroupUpdate(group, update)}
+                catalog={this.props.catalog}
               />
             ))}
           </DegreeGroups>

@@ -6,7 +6,8 @@ import styled from 'styled-components';
 import { View } from './view';
 import { Text } from './text';
 import { CourseSearchItem } from './course-search-item';
-
+import { Button } from './button';
+import { Fa } from './fa';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
 import { debounceTime } from 'rxjs/operators';
@@ -16,7 +17,6 @@ const INPUT_DEBOUNCE_TIME = 500;
 
 const Container = styled(View)`
   width: 50rem;
-  flex-direction: row;
   max-height: 80vh;
 `;
 const SearchHalf = styled(View)`
@@ -51,8 +51,21 @@ const CurrentList = styled(View)`
 const CurrentListLabel = styled(Text)`
   margin-bottom: ${styles.space(-1)};
 `;
+const Split = styled(View)`
+  flex: 1;
+  flex-direction: row;
+`;
+const ButtonRow = styled(View)`
+  flex-direction: row;
+  justify-content: flex-end;
+  flex-shrink: 0;
+`;
 
-export interface CourseSearchProps {}
+export interface CourseSearchProps {
+  currentCourses: Model.Course[];
+  onAddCourse: (course: Model.Course) => void;
+  onDeleteCourse: (course: Model.Course) => void;
+}
 
 export class CourseSearch extends Model.store.connect({
   scope: store => store.catalog,
@@ -63,6 +76,7 @@ export class CourseSearch extends Model.store.connect({
       results: Immutable.Seq.Indexed(),
     } as Model.SearchResults,
   },
+  propsExample: (undefined as any) as CourseSearchProps,
 }) {
   input$ = new Subject<string>();
   subscription: Subscription | undefined;
@@ -87,11 +101,13 @@ export class CourseSearch extends Model.store.connect({
     const value = e.currentTarget.value;
     this.input$.next(value);
   };
-  // handleSearchRef = (e: HTMLInputElement | null | undefined) => {
-  //   if (!e) return;
-  //   e.focus();
-  //   e.select();
-  // };
+
+  handleAddClick(course: Model.Course) {
+    this.props.onAddCourse(course);
+  }
+  handleDeleteClick(course: Model.Course) {
+    this.props.onDeleteCourse(course);
+  }
 
   render() {
     const takeAway = 20;
@@ -100,28 +116,56 @@ export class CourseSearch extends Model.store.connect({
     const count = this.state.searchResults.count - top.count();
     return (
       <Container>
-        <SearchHalf>
-          <Form>
-            <SearchLabel htmlFor={this.htmlForId}>Search for a course...</SearchLabel>
-            <Search
-              id={this.htmlForId}
-              onChange={this.handleChange}
-              placeholder="e.g. MATH 115 or Operating systems"
-            />
-          </Form>
-          <SearchResults>
-            {top.map(course => <CourseSearchItem key={course.id} course={course} />)}
-          </SearchResults>
-          <Count>
-            {count > 0
-              ? `Showing first ${takeAway} results of ${totalCount}. Refine your search to see more.`
-              : `${totalCount} results.`}
-          </Count>
-        </SearchHalf>
+        <Split>
+          <SearchHalf>
+            <Form>
+              <SearchLabel htmlFor={this.htmlForId}>Search for a course...</SearchLabel>
+              <Search
+                id={this.htmlForId}
+                onChange={this.handleChange}
+                placeholder="e.g. MATH 115 or Operating systems"
+              />
+            </Form>
+            <SearchResults>
+              {top.map(course => (
+                <CourseSearchItem
+                  key={course.id}
+                  course={course}
+                  onClick={() => this.handleAddClick(course)}
+                />
+              ))}
+            </SearchResults>
+            <Count>
+              {count > 0
+                ? `Showing first ${takeAway} results of ${totalCount}. Refine your search to see more.`
+                : `${totalCount} results.`}
+            </Count>
+          </SearchHalf>
 
-        <CurrentList>
-          <CurrentListLabel>Current courses:</CurrentListLabel>
-        </CurrentList>
+          <CurrentList>
+            <CurrentListLabel>Current courses:</CurrentListLabel>
+            <SearchResults>
+              {this.props.currentCourses.map(course => (
+                <CourseSearchItem
+                  key={course.id}
+                  course={course}
+                  delete
+                  onClick={() => this.handleDeleteClick(course)}
+                />
+              ))}
+            </SearchResults>
+          </CurrentList>
+        </Split>
+        <ButtonRow>
+          <Button>
+            <Fa icon="times" />
+            <Text style={{ marginLeft: styles.space(-1) }}>Cancel</Text>
+          </Button>
+          <Button>
+            <Fa icon="check" />
+            <Text style={{ marginLeft: styles.space(-1) }}>Save</Text>
+          </Button>
+        </ButtonRow>
       </Container>
     );
   }

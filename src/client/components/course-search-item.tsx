@@ -44,18 +44,24 @@ const Icon = styled(View)`
 
 export interface CourseSearchItemProps {
   course: Model.Course;
+  add?: boolean;
+  delete?: boolean;
+  onClick: () => void;
 }
 
 export function CourseSearchItem(props: CourseSearchItemProps) {
   const { course } = props;
 
   return (
-    <Container>
+    <Container onClick={props.onClick}>
       <SimpleName>{course.simpleName}</SimpleName>
       <FullName>{course.name}</FullName>
-      <CreditHours>{course.creditHours}</CreditHours>
+      <CreditHours>({course.creditHours})</CreditHours>
       <Icon>
-        <Fa icon="plus" color={styles.blue} />
+        <Fa
+          icon={props.delete ? 'trash' : 'plus'}
+          color={props.delete ? styles.red : styles.blue}
+        />
       </Icon>
     </Container>
   );
