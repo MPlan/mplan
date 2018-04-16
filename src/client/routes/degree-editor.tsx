@@ -279,7 +279,41 @@ export class DegreeEditor extends Model.store.connect({
           </Sidebar>
           <Route path="/degree-editor/:degreeId" render={this.renderRoute} />
         </DegreeDetailContainer>
-        <FloatingActionButton message="Create..." actions={fabActions} onAction={() => {}} />
+        <FloatingActionButton
+          message="Create..."
+          actions={
+            /*if*/ this.state.selectedMasteredDegree
+              ? {
+                  degreeGroup: {
+                    text: 'New degree group',
+                    icon: 'plus',
+                    color: styles.blue,
+                  },
+                }
+              : {
+                  degree: {
+                    text: 'New degree',
+                    icon: 'plus',
+                    color: styles.blue,
+                  },
+                }
+          }
+          onAction={action => {
+            if (action === 'degreeGroup') {
+              this.handleDegreeUpdate(degree =>
+                degree.addGroup(
+                  new Model.MasteredDegreeGroup({
+                    _id: Model.ObjectId(),
+                    name: 'New degree group',
+                    descriptionHtml: 'Default description. Please change!',
+                    creditMaximum: 6,
+                    creditMinimum: 6,
+                  }),
+                ),
+              );
+            }
+          }}
+        />
       </Container>
     );
   }
