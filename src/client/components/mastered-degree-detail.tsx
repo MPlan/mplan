@@ -5,6 +5,7 @@ import * as styles from '../styles';
 import { View } from './view';
 import { Text } from './text';
 import { DropdownMenu } from './dropdown-menu';
+import { Button } from './button';
 import { DegreeDescription } from './degree-description';
 import { DegreeCreditHours } from './degree-credit-hours';
 import { MasteredDegreeGroup } from './mastered-degree-group';
@@ -37,7 +38,7 @@ const Header = styled(View)`
 const Card = styled(View)`
   background-color: ${styles.white};
   padding: ${styles.space(0)};
-  box-shadow: ${styles.boxShadow(1)};
+  box-shadow: ${styles.boxShadow(0)};
 `;
 const Body = styled(View)`
   flex: 1;
@@ -59,6 +60,9 @@ const Hr = styled.hr`
   margin-bottom: ${styles.space(0)};
 `;
 const DegreeGroups = styled(View)``;
+const Row = styled(View)`
+  flex-direction: row;
+`;
 
 const titleDropdownActions = {
   rename: {
@@ -171,6 +175,19 @@ export class MasteredDegreeDetail extends React.Component<
               <Text strong>There are no degree groups. Click the blue plus to create one.</Text>
             ) : null}
           </DegreeGroups>
+          <GroupHeader>Publish</GroupHeader>
+          <GroupSubHeader>
+            This degree won't be usable by students until it is published.
+          </GroupSubHeader>
+          <Card>
+            <Row>
+              <Text style={{fontWeight: 'bold', marginRight: styles.space(0)}}>Current status:</Text>
+              <Text style={{marginRight: styles.space(0)}}>Not published</Text>
+              <Text style={{marginRight: styles.space(0)}}>Edited. Changes not published.</Text>
+              <Text style={{marginRight: styles.space(0)}}>Published</Text>
+              <Button>Publish</Button>
+            </Row>
+          </Card>
         </Body>
       </Container>
     );
