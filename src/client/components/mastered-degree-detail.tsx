@@ -63,6 +63,15 @@ const DegreeGroups = styled(View)``;
 const Row = styled(View)`
   flex-direction: row;
 `;
+const TitleForm = styled.form``;
+const TitleInput = styled.input`
+  background-color: transparent;
+  border: none;
+  outline: none;
+  font-size: ${styles.space(2)};
+  font-weight: ${styles.bold};
+  font-family: ${styles.fontFamily};
+`;
 
 const titleDropdownActions = {
   rename: {
@@ -76,9 +85,9 @@ const titleDropdownActions = {
   },
 };
 
-const initialState = {};
-type InitialState = typeof initialState;
-interface MasteredDegreeDetailState extends InitialState {}
+interface MasteredDegreeDetailState {
+  editingTitle: boolean;
+}
 
 export interface MasteredDegreeDetailProps {
   catalog: Model.Catalog;
@@ -92,10 +101,16 @@ export class MasteredDegreeDetail extends React.Component<
 > {
   constructor(props: MasteredDegreeDetailProps) {
     super(props);
-    this.state = initialState;
+    this.state = {
+      editingTitle: false,
+    };
   }
 
-  handleTitleActions = (action: keyof typeof titleDropdownActions) => {};
+  handleTitleActions = (action: keyof typeof titleDropdownActions) => {
+    if (action === 'rename') {
+      this.handleTitleClick();
+    }
+  };
 
   handleDescriptionChange = (html: string) => {
     this.props.onDegreeUpdate(degree => degree.set('descriptionHtml', html));
@@ -124,13 +139,57 @@ export class MasteredDegreeDetail extends React.Component<
     });
   }
 
+  handleTitleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    this.setState(previousState => ({
+      ...previousState,
+      editingTitle: false,
+    }));
+  };
+
+  handleTitleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.currentTarget.value;
+    this.props.onDegreeUpdate(degree => degree.set('name', value));
+  };
+
+  handleTitleBlur = () => {
+    this.setState(previousState => ({
+      ...previousState,
+      editingTitle: false,
+    }));
+  };
+
+  handleTitleRef = (e: HTMLInputElement | null | undefined) => {
+    if (!e) return;
+    e.focus();
+    e.select();
+  };
+
+  handleTitleClick = () => {
+    this.setState(previousState => ({
+      ...previousState,
+      editingTitle: true,
+    }));
+  };
+
   render() {
     const { masteredDegree } = this.props;
     return (
       <Container>
         <Header>
           <TitleRow>
-            <Title>{masteredDegree.name}</Title>
+            {/*if*/ this.state.editingTitle ? (
+              <TitleForm onSubmit={this.handleTitleFormSubmit}>
+                <TitleInput
+                  onChange={this.handleTitleInputChange}
+                  onBlur={this.handleTitleBlur}
+                  innerRef={this.handleTitleRef}
+                  defaultValue={masteredDegree.name}
+                />
+              </TitleForm>
+            ) : (
+              <Title onClick={this.handleTitleClick}>{masteredDegree.name}</Title>
+            )}
             <Separator />
             <DropdownMenu
               header={masteredDegree.name}
@@ -181,10 +240,12 @@ export class MasteredDegreeDetail extends React.Component<
           </GroupSubHeader>
           <Card>
             <Row>
-              <Text style={{fontWeight: 'bold', marginRight: styles.space(0)}}>Current status:</Text>
-              <Text style={{marginRight: styles.space(0)}}>Not published</Text>
-              <Text style={{marginRight: styles.space(0)}}>Edited. Changes not published.</Text>
-              <Text style={{marginRight: styles.space(0)}}>Published</Text>
+              <Text style={{ fontWeight: 'bold', marginRight: styles.space(0) }}>
+                Current status:
+              </Text>
+              <Text style={{ marginRight: styles.space(0) }}>Not published</Text>
+              <Text style={{ marginRight: styles.space(0) }}>Edited. Changes not published.</Text>
+              <Text style={{ marginRight: styles.space(0) }}>Published</Text>
               <Button>Publish</Button>
             </Row>
           </Card>

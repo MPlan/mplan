@@ -84,6 +84,7 @@ const DegreeSearchInput = styled.input`
   outline: none;
   border: none;
   flex: 1;
+  font-family: ${styles.fontFamily};
 `;
 const DegreeSearchButton = styled.button`
   border: none;

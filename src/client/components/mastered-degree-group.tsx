@@ -99,6 +99,7 @@ const NameInput = styled.input`
   outline: none;
   font-size: ${styles.space(1)};
   color: ${styles.textLight};
+  font-family: ${styles.fontFamily};
 `;
 
 const headingActions = {

@@ -31,6 +31,7 @@ const Form = styled.form`
 `;
 const Search = styled.input`
   padding: ${styles.space(-1)};
+  font-family: ${styles.fontFamily};
 `;
 const SearchLabel = styled.label`
   margin-bottom: ${styles.space(-1)};
