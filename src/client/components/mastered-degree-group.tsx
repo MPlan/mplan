@@ -10,6 +10,7 @@ import { RightClickMenu } from './right-click-menu';
 import { Button } from './button';
 import { Fa } from './fa';
 import { EditableCourseList } from './editable-course-list';
+import { Modal } from './modal';
 const RichTextEditor = require('react-rte').default;
 
 const Container = styled(View)`
@@ -105,6 +106,11 @@ const headingActions = {
     text: 'Rename',
     icon: 'pencil',
   },
+  delete: {
+    text: 'Delete',
+    icon: 'trash',
+    color: styles.red,
+  },
 };
 
 export interface MasteredDegreeGroupProps {
@@ -113,6 +119,7 @@ export interface MasteredDegreeGroupProps {
   onDegreeGroupUpdate: (
     update: (group: Model.MasteredDegreeGroup) => Model.MasteredDegreeGroup,
   ) => void;
+  onDeleteGroup: () => void;
 }
 
 interface MasteredDegreeGroupState {
@@ -123,6 +130,7 @@ interface MasteredDegreeGroupState {
   editingDescription: boolean;
   editingName: boolean;
   descriptionValue: any;
+  areYouSureModal: boolean;
 }
 
 export class MasteredDegreeGroup extends React.Component<
@@ -143,6 +151,7 @@ export class MasteredDegreeGroup extends React.Component<
         'html',
       ),
       editingName: false,
+      areYouSureModal: false,
     };
   }
 
@@ -245,6 +254,11 @@ export class MasteredDegreeGroup extends React.Component<
   handleHeadingActions = (action: keyof typeof headingActions) => {
     if (action === 'rename') {
       this.handleNameClick();
+    } else if (action === 'delete') {
+      this.setState(previousState => ({
+        ...previousState,
+        areYouSureModal: true,
+      }));
     }
   };
 
@@ -322,10 +336,17 @@ export class MasteredDegreeGroup extends React.Component<
     this.setState(previousState => ({
       ...previousState,
       editingName: false,
-    }))
+    }));
     const value = e.currentTarget.value;
     this.props.onDegreeGroupUpdate(group => group.set('name', value));
-  }
+  };
+
+  handleAreYouSureCancel = () => {
+    this.setState(previousState => ({
+      ...previousState,
+      areYouSureModal: false,
+    }));
+  };
 
   render() {
     const { masteredDegreeGroup, catalog } = this.props;
@@ -534,6 +555,16 @@ export class MasteredDegreeGroup extends React.Component<
             </View>
           </Split>
         </Card>
+        <Modal
+          open={this.state.areYouSureModal}
+          title={`Are you sure you want to delete ${masteredDegreeGroup.name}?`}
+          onBlurCancel={this.handleAreYouSureCancel}
+        >
+          <Row style={{justifyContent: 'space-between'}}>
+            <Button onClick={this.props.onDeleteGroup}>Yes, delete {masteredDegreeGroup.name}</Button>
+            <Button onClick={this.handleAreYouSureCancel}>No, keep it.</Button>
+          </Row>
+        </Modal>
       </Container>
     );
   }

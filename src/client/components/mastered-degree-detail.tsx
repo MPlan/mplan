@@ -8,6 +8,7 @@ import { DropdownMenu } from './dropdown-menu';
 import { DegreeDescription } from './degree-description';
 import { DegreeCreditHours } from './degree-credit-hours';
 import { MasteredDegreeGroup } from './mastered-degree-group';
+import { groupBy } from 'rxjs/operators';
 
 const Container = styled(View)`
   margin: 0 auto;
@@ -111,6 +112,14 @@ export class MasteredDegreeDetail extends React.Component<
     );
   }
 
+  handleDeleteGroup(groupToDelete: Model.MasteredDegreeGroup) {
+    this.props.onDegreeUpdate(degree => {
+      return degree.update('masteredDegreeGroups', groups =>
+        groups.filter(group => group.id !== groupToDelete.id),
+      );
+    });
+  }
+
   render() {
     const { masteredDegree } = this.props;
     return (
@@ -154,9 +163,13 @@ export class MasteredDegreeDetail extends React.Component<
                 key={group.id}
                 masteredDegreeGroup={group}
                 onDegreeGroupUpdate={update => this.handleDegreeGroupUpdate(group, update)}
+                onDeleteGroup={() => this.handleDeleteGroup(group)}
                 catalog={this.props.catalog}
               />
             ))}
+            {/*if*/ masteredDegree.masteredDegreeGroups.count() === 0 ? (
+              <Text strong>There are no degree groups. Click the blue plus to create one.</Text>
+            ) : null}
           </DegreeGroups>
         </Body>
       </Container>
