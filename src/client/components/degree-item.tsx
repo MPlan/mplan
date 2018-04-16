@@ -71,8 +71,8 @@ export function DegreeItem(props: DegreeItemProps) {
       <NameAndDetails>
         <Name>{masteredDegree.name}</Name>
         <Details>
-          <CreditHourTotal>120 Credits</CreditHourTotal>
-          <DegreeGroupTotal>8 Degree groups</DegreeGroupTotal>
+          <CreditHourTotal>{masteredDegree.minimumCredits} credits</CreditHourTotal>
+          <DegreeGroupTotal>{masteredDegree.masteredDegreeGroups.count()} degree groups</DegreeGroupTotal>
         </Details>
       </NameAndDetails>
       <Icon>
