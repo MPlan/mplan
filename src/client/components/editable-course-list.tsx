@@ -28,8 +28,7 @@ const CourseItemFullName = styled(Text)``;
 
 export interface SimpleCourseListProps {
   currentCourses: Model.Course[];
-  onAddCourse: (course: Model.Course) => void;
-  onDeleteCourse: (course: Model.Course) => void;
+  onChangeCourses: (courses: Model.Course[]) => void;
 }
 export interface SimpleCourseListState {
   courseSearchOpen: boolean;
@@ -82,8 +81,8 @@ export class EditableCourseList extends React.Component<
         >
           <CourseSearch
             currentCourses={this.props.currentCourses}
-            onAddCourse={this.props.onAddCourse}
-            onDeleteCourse={this.props.onDeleteCourse}
+            onChangeCourses={this.props.onChangeCourses}
+            onCancel={this.handleModalBlur}
           />
         </Modal>
       </Container>

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as Model from '../models';
+import * as Immutable from 'immutable';
 import styled from 'styled-components';
 import * as styles from '../styles';
 import { View } from './view';
@@ -200,6 +201,18 @@ export class MasteredDegreeGroup extends React.Component<
 
   handleHeadingActions = (action: keyof typeof headingActions) => {};
 
+  handleChangeDefaultCourses = (courses: Model.Course[]) => {
+    this.props.onDegreeGroupUpdate(group => {
+      return group.set('defaultIds', Immutable.List(courses).map(course => course.id));
+    });
+  };
+
+  handleChangeAllowListCourses = (courses: Model.Course[]) => {
+    this.props.onDegreeGroupUpdate(group => {
+      return group.set('allowListIds', Immutable.List(courses).map(course => course.id));
+    });
+  };
+
   render() {
     const { masteredDegreeGroup, catalog } = this.props;
     return (
@@ -329,8 +342,7 @@ export class MasteredDegreeGroup extends React.Component<
                   .map(id => catalog.courseMap.get(id)!)
                   .filter(x => !!x)
                   .toArray()}
-                onAddCourse={() => {}}
-                onDeleteCourse={() => {}}
+                onChangeCourses={this.handleChangeDefaultCourses}
               />
             </View>
             <View>
@@ -349,8 +361,7 @@ export class MasteredDegreeGroup extends React.Component<
                   .map(id => catalog.courseMap.get(id)!)
                   .filter(x => !!x)
                   .toArray()}
-                onAddCourse={() => {}}
-                onDeleteCourse={() => {}}
+                onChangeCourses={this.handleChangeAllowListCourses}
               />
             </View>
           </Split>

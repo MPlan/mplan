@@ -63,8 +63,8 @@ const ButtonRow = styled(View)`
 
 export interface CourseSearchProps {
   currentCourses: Model.Course[];
-  onAddCourse: (course: Model.Course) => void;
-  onDeleteCourse: (course: Model.Course) => void;
+  onChangeCourses: (courses: Model.Course[]) => void;
+  onCancel: () => void;
 }
 
 export class CourseSearch extends Model.store.connect({
@@ -75,6 +75,7 @@ export class CourseSearch extends Model.store.connect({
       count: 0,
       results: Immutable.Seq.Indexed(),
     } as Model.SearchResults,
+    currentCourses: [] as Model.Course[],
   },
   propsExample: (undefined as any) as CourseSearchProps,
 }) {
@@ -91,6 +92,12 @@ export class CourseSearch extends Model.store.connect({
       }));
     });
   }
+  componentWillReceiveProps(nextProps: CourseSearchProps) {
+    this.setState(previousState => ({
+      ...previousState,
+      currentCourses: nextProps.currentCourses,
+    }));
+  }
   componentWillUnmount() {
     this.subscription && this.subscription.unsubscribe();
   }
@@ -102,12 +109,24 @@ export class CourseSearch extends Model.store.connect({
     this.input$.next(value);
   };
 
-  handleAddClick(course: Model.Course) {
-    this.props.onAddCourse(course);
+  handleAddClick(courseToAdd: Model.Course) {
+    this.setState(previousState => ({
+      ...previousState,
+      currentCourses: [...previousState.currentCourses, courseToAdd],
+    }));
   }
-  handleDeleteClick(course: Model.Course) {
-    this.props.onDeleteCourse(course);
+  handleDeleteClick(courseToDelete: Model.Course) {
+    this.setState(previousState => ({
+      ...previousState,
+      currentCourses: previousState.currentCourses.filter(
+        course => course.id !== courseToDelete.id,
+      ),
+    }));
   }
+
+  handleSaveClick = () => {
+    this.props.onChangeCourses([...this.state.currentCourses]);
+  };
 
   render() {
     const takeAway = 20;
@@ -157,11 +176,11 @@ export class CourseSearch extends Model.store.connect({
           </CurrentList>
         </Split>
         <ButtonRow>
-          <Button>
+          <Button onClick={this.props.onCancel}>
             <Fa icon="times" />
             <Text style={{ marginLeft: styles.space(-1) }}>Cancel</Text>
           </Button>
-          <Button>
+          <Button onClick={this.handleSaveClick}>
             <Fa icon="check" />
             <Text style={{ marginLeft: styles.space(-1) }}>Save</Text>
           </Button>
