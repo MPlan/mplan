@@ -61,6 +61,9 @@ const CreditsLabel = styled(Text)`
   flex: 1;
   margin-bottom: ${styles.space(0)};
 `;
+const Row = styled(View)`
+  flex-direction: row;
+`;
 
 const headingActions = {
   rename: {
@@ -71,7 +74,9 @@ const headingActions = {
 
 export interface MasteredDegreeGroupProps {
   masteredDegreeGroup: Model.MasteredDegreeGroup;
-  onDegreeGroupChange: (group: Model.MasteredDegreeGroup) => void;
+  onDegreeGroupChange: (
+    update: (group: Model.MasteredDegreeGroup) => Model.MasteredDegreeGroup,
+  ) => void;
 }
 
 interface MasteredDegreeGroupState {
@@ -102,34 +107,20 @@ export class MasteredDegreeGroup extends React.Component<
       editingCreditMinimum: true,
     }));
   };
+  handleCreditMaximumClick = () => {
+    this.setState(previousState => ({
+      ...previousState,
+      editingCreditMaximum: true,
+    }));
+  };
 
   handleCreditsMinimumSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     this.handleMinimumCreditsSaveClick();
   };
-
-  handleCreditsMinimumChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState(previousState => ({
-      ...previousState,
-      creditMinimumValue: e.currentTarget.value,
-    }));
-  };
-  handleCreditsMaximumChange = (e: React.ChangeEvent<HTMLInputElement>) => {};
-
-  handleAndSelectRef = (e: HTMLInputElement | null | undefined) => {
-    if (!e) return;
-    e.focus();
-    e.select();
-  };
-
-  handleHeadingActions = (action: keyof typeof headingActions) => {};
-
-  handleMinimumCreditsCancelClick = () => {
-    this.setState(previousState => ({
-      ...previousState,
-      editingCreditMinimum: false,
-      creditMinimumValue: this.props.masteredDegreeGroup.creditMinimum.toString(),
-    }));
+  handleCreditsMaximumSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    this.handleMaximumCreditsSaveClick();
   };
 
   handleMinimumCreditsSaveClick = () => {
@@ -142,8 +133,56 @@ export class MasteredDegreeGroup extends React.Component<
       ...previousState,
       editingCreditMinimum: false,
     }));
-    // this.props.onChange(newCreditMinimum);
+    this.props.onDegreeGroupChange(group => group.set('creditMinimum', newCreditMinimum));
   };
+  handleMaximumCreditsSaveClick = () => {
+    const newCreditMaximum = parseInt(this.state.creditMaximumValue, 10);
+    if (isNaN(newCreditMaximum)) {
+      this.handleMaximumCreditsCancelClick();
+      return;
+    }
+    this.setState(previousState => ({
+      ...previousState,
+      editingCreditMaximum: false,
+    }));
+    this.props.onDegreeGroupChange(group => group.set('creditMaximum', newCreditMaximum));
+  };
+
+  handleMinimumCreditsCancelClick = () => {
+    this.setState(previousState => ({
+      ...previousState,
+      editingCreditMinimum: false,
+      creditMinimumValue: this.props.masteredDegreeGroup.creditMinimum.toString(),
+    }));
+  };
+  handleMaximumCreditsCancelClick = () => {
+    this.setState(previousState => ({
+      ...previousState,
+      editingCreditMaximum: false,
+      creditMaximumValue: this.props.masteredDegreeGroup.creditMaximum.toString(),
+    }));
+  };
+
+  handleCreditsMinimumChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState(previousState => ({
+      ...previousState,
+      creditMinimumValue: e.currentTarget.value,
+    }));
+  };
+  handleCreditsMaximumChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState(previousState => ({
+      ...previousState,
+      creditMaximumValue: e.currentTarget.value,
+    }));
+  };
+
+  handleAndSelectRef = (e: HTMLInputElement | null | undefined) => {
+    if (!e) return;
+    e.focus();
+    e.select();
+  };
+
+  handleHeadingActions = (action: keyof typeof headingActions) => {};
 
   render() {
     const { masteredDegreeGroup } = this.props;
@@ -163,42 +202,81 @@ export class MasteredDegreeGroup extends React.Component<
             />
           </HeaderRow>
           <Card>
-            <CreditHourBlock>
-              {!this.state.editingCreditMinimum ? (
-                <CreditHourNumber onClick={this.handleCreditMinimumClick}>
-                  {masteredDegreeGroup.creditMinimum}
-                </CreditHourNumber>
-              ) : (
-                <Form onSubmit={this.handleCreditsMinimumSubmit}>
-                  <Input
-                    type="number"
-                    value={this.state.creditMinimumValue}
-                    onChange={this.handleCreditsMinimumChange}
-                    innerRef={this.handleAndSelectRef}
-                  />
-                </Form>
-              )}
-              <CreditsLabel>credit minimum</CreditsLabel>
-              {!this.state.editingCreditMinimum ? (
-                <ButtonRow>
-                  <Button onClick={this.handleCreditMinimumClick}>
-                    <Fa icon="pencil" />
-                    <Text style={{ marginLeft: styles.space(-1) }}>Edit</Text>
-                  </Button>
-                </ButtonRow>
-              ) : (
-                <ButtonRow>
-                  <Button onClick={this.handleMinimumCreditsCancelClick}>
-                    <Fa icon="times" />
-                    <Text style={{ marginLeft: styles.space(-1) }}>Cancel</Text>
-                  </Button>
-                  <Button onClick={this.handleMinimumCreditsSaveClick}>
-                    <Fa icon="check" color={styles.blue} />
-                    <Text style={{ marginLeft: styles.space(-1) }}>Save</Text>
-                  </Button>
-                </ButtonRow>
-              )}
-            </CreditHourBlock>
+            <Row>
+              <CreditHourBlock>
+                {!this.state.editingCreditMinimum ? (
+                  <CreditHourNumber onClick={this.handleCreditMinimumClick}>
+                    {masteredDegreeGroup.creditMinimum}
+                  </CreditHourNumber>
+                ) : (
+                  <Form onSubmit={this.handleCreditsMinimumSubmit}>
+                    <Input
+                      type="number"
+                      value={this.state.creditMinimumValue}
+                      onChange={this.handleCreditsMinimumChange}
+                      innerRef={this.handleAndSelectRef}
+                    />
+                  </Form>
+                )}
+                <CreditsLabel>credit minimum</CreditsLabel>
+                {!this.state.editingCreditMinimum ? (
+                  <ButtonRow>
+                    <Button onClick={this.handleCreditMinimumClick}>
+                      <Fa icon="pencil" />
+                      <Text style={{ marginLeft: styles.space(-1) }}>Edit</Text>
+                    </Button>
+                  </ButtonRow>
+                ) : (
+                  <ButtonRow>
+                    <Button onClick={this.handleMinimumCreditsCancelClick}>
+                      <Fa icon="times" />
+                      <Text style={{ marginLeft: styles.space(-1) }}>Cancel</Text>
+                    </Button>
+                    <Button onClick={this.handleMinimumCreditsSaveClick}>
+                      <Fa icon="check" color={styles.blue} />
+                      <Text style={{ marginLeft: styles.space(-1) }}>Save</Text>
+                    </Button>
+                  </ButtonRow>
+                )}
+              </CreditHourBlock>
+
+              <CreditHourBlock>
+                {!this.state.editingCreditMaximum ? (
+                  <CreditHourNumber onClick={this.handleCreditMaximumClick}>
+                    {masteredDegreeGroup.creditMaximum}
+                  </CreditHourNumber>
+                ) : (
+                  <Form onSubmit={this.handleCreditsMaximumSubmit}>
+                    <Input
+                      type="number"
+                      value={this.state.creditMaximumValue}
+                      onChange={this.handleCreditsMaximumChange}
+                      innerRef={this.handleAndSelectRef}
+                    />
+                  </Form>
+                )}
+                <CreditsLabel>credit maximum</CreditsLabel>
+                {!this.state.editingCreditMaximum ? (
+                  <ButtonRow>
+                    <Button onClick={this.handleCreditMaximumClick}>
+                      <Fa icon="pencil" />
+                      <Text style={{ marginLeft: styles.space(-1) }}>Edit</Text>
+                    </Button>
+                  </ButtonRow>
+                ) : (
+                  <ButtonRow>
+                    <Button onClick={this.handleMaximumCreditsCancelClick}>
+                      <Fa icon="times" />
+                      <Text style={{ marginLeft: styles.space(-1) }}>Cancel</Text>
+                    </Button>
+                    <Button onClick={this.handleMaximumCreditsSaveClick}>
+                      <Fa icon="check" color={styles.blue} />
+                      <Text style={{ marginLeft: styles.space(-1) }}>Save</Text>
+                    </Button>
+                  </ButtonRow>
+                )}
+              </CreditHourBlock>
+            </Row>
           </Card>
         </RightClickMenu>
       </Container>
