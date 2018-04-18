@@ -120,18 +120,35 @@ export class Plan extends Record.define({
 
     // HOW TO USE DATA MODEL
     // a plan has many semesters
-    // const semester = this.semesterMap.valueSeq().first()!;
-    // // a semester has many catalog ids
-    // const catalogIdOfCourse = semester._courseIds.first()!;
+    
+  for( let i = 0; i < this.semesterMap.valueSeq.length; i+=1){
+        const semester = this.semesterMap.valueSeq().get(i)!;
+        for(let j = 0; j < semester.courseCount;j+=1){
+           const catalogIdOfCourse = semester._courseIds.get(j)!;
+            const course = catalog.getCourseFromCatalogId(catalogIdOfCourse)!;
+            let numOfWinterSections = course.winterSections.count();
+            for(let k = 0; k < numOfWinterSections;k+=1){
+          const section = course.winterSections.first()!;
+          
+          if(section.remaining <= 3){
+      return [course.simpleName + ' fills up fast!']
+          }//if section.remaining
+    }//for k
+        }//for j
+ // // a semester has many catalog ids
+    
     // // use the catalog to get a course from an id
-    // const course = catalog.getCourseFromCatalogId(catalogIdOfCourse)!;
+     
     // // use the course to grab the sections
-    // const section = course.winterSections.first()!;
+     
 
     // // use these to calculate
     // section.capacity
-    // section.remaining
-//
-    return ['something'];
+   
+  }//for i
+     
+   
+    
+      return ['something'];
   }
 }
