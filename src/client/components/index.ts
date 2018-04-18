@@ -20,3 +20,4 @@ export * from './degree-item';
 export * from './degree-item-sidebar';
 export * from './mastered-degree-detail';
 export * from './checkbox';
+export * from './catalog-course';
