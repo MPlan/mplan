@@ -113,6 +113,11 @@ export class Toolbox extends Model.store.connect({
                 <Text>{warning}</Text>
               </Warning>
             ))}
+            {plan.warningsDoesNotFillUp(catalog).map(warning => (
+              <Warning key={warning}>
+                <Text>{warning}</Text>
+              </Warning>
+            ))}
           </Accordion>
         </Body>
       </Container>

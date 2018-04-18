@@ -2,7 +2,7 @@ import * as Recordize from './record';
 import * as Immutable from 'immutable';
 
 describe('record', () => {
-  fdescribe('fromJS', () => {
+  describe('fromJS', () => {
     it('recursively converts maps to immutable types', () => {
       class Baz extends Recordize.define({
         baz: 'whoa',

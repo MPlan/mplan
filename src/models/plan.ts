@@ -12,6 +12,7 @@ export class Plan extends Record.define({
 }) {
   static unplacedCoursesMemo = new Map<any, any>();
   static warningsNotOfferedDuringSeason = new Map<any, any>();
+
   updateSemester(id: string, updater: (semester: Semester) => Semester) {
     return this.update('semesterMap', map => map.update(id, updater));
   }
@@ -100,8 +101,37 @@ export class Plan extends Record.define({
     return allWarningsFlattened;
   }
 
-  // TODO:
-  // validate() {
+  warningsNotSatisfiedPrerequisites(catalog: Catalog): string[] {
+    // HOW TO DO
+    // look at previous semester, calculate,
 
-  // }
+    return [];
+  }
+
+  warningsDoesNotFillUp(catalog: Catalog): string[] {
+    // HOW TO DO
+    // (logic might not be right but you get the point)
+    // this would throw warning if the courses always reaches full capacity.
+    // you'd go through every semester and grab the list of courses,
+    // for each course, you'd have to grab the sections,
+    // and in each section, you'd have to look at the capacity and seats remaining
+    // if all sections fill up with less than 3 seats remaining, then output a warning
+    // saying that the class always fills up
+
+    // HOW TO USE DATA MODEL
+    // a plan has many semesters
+    // const semester = this.semesterMap.valueSeq().first()!;
+    // // a semester has many catalog ids
+    // const catalogIdOfCourse = semester._courseIds.first()!;
+    // // use the catalog to get a course from an id
+    // const course = catalog.getCourseFromCatalogId(catalogIdOfCourse)!;
+    // // use the course to grab the sections
+    // const section = course.winterSections.first()!;
+
+    // // use these to calculate
+    // section.capacity
+    // section.remaining
+
+    return ['something'];
+  }
 }

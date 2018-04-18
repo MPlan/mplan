@@ -6,7 +6,7 @@ import { Course } from './course';
 
 export class Semester extends Record.define({
   _id: ObjectId(),
-  /** these are in the form `__subjectCode|courseNumber__` */
+  /** these are in the form `subjectCode__|__courseNumber` */
   _courseIds: Immutable.List<string>(),
   season: 'Fall' as 'Fall' | 'Winter' | 'Summer',
   year: 0,

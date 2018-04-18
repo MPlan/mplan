@@ -10,6 +10,11 @@ export interface SearchResults {
 export class Catalog extends Record.define({
   courseMap: Record.MapOf(Course),
 }) {
+
+  getCourseFromCatalogId(catalogId: string) {
+    return this.courseMap.get(catalogId);
+  }
+
   getCourse(subjectCode: string, courseNumber: string) {
     return this.courseMap.get(`${subjectCode}__|__${courseNumber}`.toUpperCase());
   }
@@ -28,10 +33,7 @@ export class Catalog extends Record.define({
     });
   }
 
-  search(query: string): SearchResults {
-    if (query === '') {
-      return { count: 0, results: Immutable.Seq.Indexed() };
-    }
+  search(query: string, dontExcludeZeroRank?: boolean): SearchResults {
     const querySplit = query
       .toLowerCase()
       .split(' ')
@@ -51,7 +53,7 @@ export class Catalog extends Record.define({
           .reduce((sum, next) => sum + next, 0 as number);
         return { rank, course };
       })
-      .filter(({ rank }) => rank > 0)
+      .filter(({ rank }) => dontExcludeZeroRank || rank > 0)
       .sortBy(
         ({ rank, course }) => rank * 10000 - parseInt(course.courseNumber.replace(/[^\d]/g, ''), 10),
       )
