@@ -28,6 +28,7 @@ const Body = styled(View)`
 `;
 const Warning = styled(View)`
   padding: ${styles.space(-1)};
+  flex-shrink: 0;
 `;
 
 export class Toolbox extends Model.store.connect({

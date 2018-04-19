@@ -8,7 +8,7 @@ import { Degree } from './degree';
 import { flatten } from 'lodash';
 
 export class Plan extends Record.define({
-  semesterMap: Record.MapOf(Semester),
+  semesterMap: Record.MapOf(Semester)
 }) {
   static unplacedCoursesMemo = new Map<any, any>();
   static warningsNotOfferedDuringSeason = new Map<any, any>();
@@ -34,7 +34,7 @@ export class Plan extends Record.define({
     const newSemester = new Semester({
       _id: ObjectId(),
       year: nextSemester.year,
-      season: nextSemester.season,
+      season: nextSemester.season
     });
     return this.update('semesterMap', map => map.set(newSemester.id, newSemester));
   }
@@ -72,7 +72,7 @@ export class Plan extends Record.define({
         semester._courseIds
           .map(courseId => ({
             course: catalog.courseMap.get(courseId)!,
-            semester,
+            semester
           }))
           .filter(({ course }) => !!course)
           .map(({ course, semester }) => ({
@@ -85,14 +85,14 @@ export class Plan extends Record.define({
                   ? course.summerSections.count() > 0
                   : semester.season === 'Fall'
                     ? course.winterSections.count() > 0
-                    : false,
+                    : false
           }))
           .filter(({ hasRanDuringSeason }) => !hasRanDuringSeason)
           .map(
             ({ course, semester }) =>
-              `Course ${course.simpleName} has never ran during the ${semester.season}`,
+              `Course ${course.simpleName} has never ran during the ${semester.season}`
           )
-          .toArray(),
+          .toArray()
       )
       .toArray();
     const allWarningsFlattened = flatten(allCourses);
@@ -120,37 +120,69 @@ export class Plan extends Record.define({
 
     // HOW TO USE DATA MODEL
     // a plan has many semesters
-    
-  //for( let i = 0; i < this.semesterMap.valueSeq.length; i+=1){
-        const semester = this.semesterMap.valueSeq().first()!;
-        //for(let j = 0; j < semester.courseCount;j+=1){
-           const catalogIdOfCourse = semester._courseIds.first()!;
-            const course = catalog.getCourseFromCatalogId(catalogIdOfCourse)!;
-          
-          const winterSection = course.winterSections.valueSeq().first()!;
-         
-        if(winterSection.remaining <= 3){
-          return [course.simpleName + ' fills up fast!']
-        }
-          else
-          return ['something'];
-     
-          
-      //  }//for j
- // // a semester has many catalog ids
-    
-    // // use the catalog to get a course from an id
-     
-    // // use the course to grab the sections
-     
+    // ArrayList<String> warningsArray = new ArrayList<>(); // java version
+    const warningsArray: Array<string> = [];
+    warningsArray.push('-- Class Capacity Warnings --');
+    warningsArray.push(' ');
+    let semLength = this.semesterMap.count();
+    for (let i = 0; i < semLength; i += 1) {
+      const semester = this.semesterMap.valueSeq().get(i)!;
+      for (let j = 0; j < semester.courseCount; j += 1) {
+        const catalogIdOfCourse = semester._courseIds.get(j)!;
+        const course = catalog.getCourseFromCatalogId(catalogIdOfCourse)!;
 
-    // // use these to calculate
-    // section.capacity
-   
-  //}//for i
+        const winterSection = course.winterSections.valueSeq().first();
+        const summerSection = course.summerSections.valueSeq().first();
+        const fallSection = course.fallSections.valueSeq().first();
 
-     
-   
-    
+        if (semester.season === 'Winter') {
+          if (!winterSection) continue;
+
+          if (winterSection.remaining <= 3) {
+            if(winterSection.remaining > 0){
+            warningsArray.push(`${course.simpleName} had: ${winterSection.remaining} seats remaining last winter`);
+            }
+            else
+            warningsArray.push(`${course.simpleName} was completely full last winter`);            
+          }
+        } //if === 'Winter'
+
+        if (semester.season === 'Summer') {
+          if (!summerSection) continue;
+
+          if (summerSection.remaining <= 3) {
+            if(summerSection.remaining > 0){
+              warningsArray.push(`${course.simpleName} had: ${summerSection.remaining} seats remaining last summer`);
+            }
+            else
+            warningsArray.push(`${course.simpleName} was completely full last summer`); 
+            
+          }
+        } //if === 'Summer'
+        if (semester.season === 'Fall') {
+          if (!fallSection) continue;
+
+          if (fallSection.remaining <= 3) {
+            if(fallSection.remaining > 0){
+              warningsArray.push(`${course.simpleName} had: ${fallSection.remaining} seats remaining last fall`);
+            }
+            else
+            warningsArray.push(`${course.simpleName} was completely full last fall`);
+          }
+        } //if === 'Fall'
+      } //for j
+      // // a semester has many catalog ids
+
+      // // use the catalog to get a course from an id
+
+      // // use the course to grab the sections
+
+      // // use these to calculate
+      // section.capacity
+    } //for i
+
+    if (warningsArray.length === 0) {
+      return ['no warnings for filling up'];
+    } else return warningsArray;
   }
 }
