@@ -18,7 +18,7 @@ Restore the node dependencies and build the project
     npm install
     npm run build
 
-> If you're on macOS, you may need to chown `/data/db`
+> You may need to chown `/data/db`
 > You can do that like so:
 > 
 > `chown -R $(whoami) /data/db`
