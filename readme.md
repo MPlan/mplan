@@ -7,7 +7,7 @@
 You'll need to ensure the following are installed:
 
 * [node](https://nodejs.org/en/download/)
-* [mongodb](https://docs.mongodb.com/manual/installation/)
+* [mongodb](https://docs.mongodb.com/manual/administration/install-community/)
 
 Restore the database. Make sure you're in the same directory at this file.
 
