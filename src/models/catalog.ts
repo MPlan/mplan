@@ -28,7 +28,7 @@ export class Catalog extends Record.define({
     });
   }
 
-  search(query: string): SearchResults {
+  search(query: string, dontRemove = false): SearchResults {
     if (query === '') {
       return { count: 0, results: Immutable.Seq.Indexed() };
     }
