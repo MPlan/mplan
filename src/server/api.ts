@@ -8,10 +8,13 @@ import * as HttpStatus from 'http-status';
 import { users } from './users';
 import { checkJwts } from './check-jwts';
 import { degrees } from './degrees';
+import { auth } from './auth';
 
 let catalog: Model.Catalog;
 
-api.use(express.json(), checkJwts);
+api.use(express.json());
+api.use('/auth', auth);
+api.use(checkJwts);
 
 function termCodeToSeason(termCode: string) {
   const endOfTermCode = termCode.substring(termCode.length - 2, termCode.length);
@@ -70,5 +73,4 @@ api.get('/catalog', compression(), async (req, res) => {
 });
 
 api.use('/users', users);
-
 api.use('/degrees', degrees);

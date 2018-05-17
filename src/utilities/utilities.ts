@@ -155,3 +155,19 @@ export function createClassName(s: string) {
     .map(s => s.replace(/\W/g, ''))
     .join('-');
 }
+
+function encodeNoFail(s: string) {
+  try {
+    return encodeURIComponent(s);
+  } catch {
+    return s;
+  }
+}
+
+export function encode(obj: { [key: string]: string }) {
+  return Object.entries(obj)
+    .map(([key, value]) => {
+      return `${encodeNoFail(key)}=${encodeNoFail(value)}`;
+    })
+    .join('&');
+}
