@@ -52,7 +52,7 @@ function userDisplayName() {
   if (!decoded) {
     return undefined;
   }
-  return decoded.name || decoded.nickname || undefined;
+  return decoded.sub || undefined;
 }
 
 function username() {
