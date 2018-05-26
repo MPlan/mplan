@@ -4,6 +4,7 @@ import axios from 'axios';
 import { getOrThrow } from '../utilities/utilities';
 const jwkToPem = require('jwk-to-pem');
 import * as jwt from 'jsonwebtoken';
+import { IdTokenPayload } from '../models/id-token';
 
 const jwkUri = getOrThrow(process.env.JWK_URI);
 const audience = getOrThrow(process.env.CLIENT_ID);
@@ -20,12 +21,16 @@ export async function getPublicKeyFromJwk() {
   return pem;
 }
 
-interface IdToken {
-  sub: string;
-}
-
 /** middleware that checks the auth using JWTs taken directly from auth0's docs */
-export const checkJwts = async (req: Request, res: Response, next: NextFunction) => {
+export async function checkJwts(req: Request, res: Response, next: NextFunction) {
+  if (process.env.NODE_ENV !== 'production') {
+    req.user = {
+      nickname: process.env.TEST_USERNAME
+    };
+    next();
+    return;
+  }
+
   const authorization = req.headers.authorization;
   if (!authorization) {
     res.sendStatus(HttpStatus.UNAUTHORIZED);
@@ -41,11 +46,11 @@ export const checkJwts = async (req: Request, res: Response, next: NextFunction)
     res.sendStatus(HttpStatus.UNAUTHORIZED);
     return;
   }
-  
+
   try {
     const pem = await getPublicKeyFromJwk();
-    const result = jwt.verify(token, pem) as IdToken;
-  
+    const result = jwt.verify(token, pem) as IdTokenPayload;
+
     req.user = result;
     req.user.nickname = result.sub;
     next();
@@ -53,4 +58,4 @@ export const checkJwts = async (req: Request, res: Response, next: NextFunction)
     res.sendStatus(HttpStatus.UNAUTHORIZED);
     return;
   }
-};
+}

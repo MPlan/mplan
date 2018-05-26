@@ -5,6 +5,7 @@ import axios from 'axios';
 import { encode, getOrThrow } from '../utilities/utilities';
 import * as jwtDecode from 'jwt-decode';
 import { dbConnection } from './models/mongo';
+import { IdTokenPayload } from '../models/id-token';
 
 const tokenUri = getOrThrow(process.env.TOKEN_URI);
 const clientId = getOrThrow(process.env.CLIENT_ID);
@@ -19,33 +20,18 @@ interface TokenResponse {
   id_token: string;
 }
 
-interface IdToken {
-  sub: string;
-  aud: string;
-  auth_time: number;
-  kid: string;
-  iss: string;
-  exp: string;
-  iat: string;
-  jti: string;
-}
-
 async function exchangeForToken(code: string, redirectUri: string) {
   const url = `${tokenUri}?${encode({
     grant_type: 'authorization_code',
     client_id: clientId,
     client_secret: clientSecret,
     code: code,
-    redirect_uri: redirectUri,
+    redirect_uri: redirectUri
   })}`;
 
   const tokenResponse = await axios.post(url);
   return tokenResponse.data as TokenResponse;
 }
-
-// async function getOrCreateUser(username: string) {
-//   cons
-// }
 
 auth.post('/token', async (req, res) => {
   const code = req.body.code;
@@ -55,14 +41,10 @@ auth.post('/token', async (req, res) => {
 
   try {
     const tokenResponse = await exchangeForToken(code, redirectUri);
-    const idToken = jwtDecode(tokenResponse.id_token) as IdToken;
+    const idToken = jwtDecode(tokenResponse.id_token) as IdTokenPayload;
 
     const username = idToken.sub;
-    res.json({
-      tokenResponse,
-      idToken,
-      username,
-    })
+    res.json({ id_token: idToken });
   } catch (e) {
     res.status(HttpStatus.INTERNAL_SERVER_ERROR);
     res.send('Could not exchange code for token');

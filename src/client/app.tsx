@@ -9,7 +9,7 @@ import { Landing } from './routes/landing';
 import { Callback } from './routes/callback';
 import * as Model from './models';
 
-import { createBrowserHistory } from 'history';
+import createBrowserHistory from 'history/createBrowserHistory';
 export const history = createBrowserHistory();
 
 const StyledView = styled(View)`
