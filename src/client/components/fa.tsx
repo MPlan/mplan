@@ -1,6 +1,6 @@
 import * as React from 'react';
 const FontAwesomeIcon = require('@fortawesome/react-fontawesome').default;
-const icons = require('@fortawesome/fontawesome-pro-light').default;
+const icons = require('@ricokahler/fontawesome-pro-light').default;
 
 interface FaProps {
   icon: string;
