@@ -41,9 +41,7 @@ auth.post('/token', async (req, res) => {
 
   try {
     const tokenResponse = await exchangeForToken(code, redirectUri);
-    const idToken = jwtDecode(tokenResponse.id_token) as IdTokenPayload;
-
-    const username = idToken.sub;
+    const idToken = tokenResponse.id_token;
     res.json({ id_token: idToken });
   } catch (e) {
     res.status(HttpStatus.INTERNAL_SERVER_ERROR);

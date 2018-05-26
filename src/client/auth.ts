@@ -80,14 +80,15 @@ async function handleCallback() {
 }
 
 async function fetchToken(code: string) {
-  const result = await fetch('/api/token', {
+  const result = await fetch('/api/auth/token', {
+    method: 'POST',
     body: JSON.stringify({
       code,
       redirect_uri: redirectUri
     })
   });
   const data = await result.json();
-  const token: string = data.id_token;
+  const token = data.id_token as string;
   return token;
 }
 
