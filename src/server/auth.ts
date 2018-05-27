@@ -26,7 +26,7 @@ async function exchangeForToken(code: string, redirectUri: string) {
     client_id: clientId,
     client_secret: clientSecret,
     code: code,
-    redirect_uri: redirectUri
+    redirect_uri: redirectUri,
   })}`;
 
   const tokenResponse = await axios.post(url);
@@ -41,8 +41,11 @@ auth.post('/token', async (req, res) => {
 
   try {
     const tokenResponse = await exchangeForToken(code, redirectUri);
-    const idToken = tokenResponse.id_token;
-    res.json({ id_token: idToken });
+    res.json({
+      id_token: tokenResponse.id_token,
+      refresh_token: tokenResponse.refresh_token,
+      access_token: tokenResponse.access_token
+    });
   } catch (e) {
     res.status(HttpStatus.INTERNAL_SERVER_ERROR);
     res.send('Could not exchange code for token');
