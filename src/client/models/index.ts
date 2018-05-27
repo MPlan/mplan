@@ -22,10 +22,11 @@ user$.pipe(debounceTime(300)).subscribe(user => {
 
 user$.pipe(debounceTime(3000)).subscribe(async user => {
   console.log('sending to server...');
+  const token = await Auth.token();
   await fetch(`/api/users/${user.username}`, {
     method: 'PUT',
     headers: new Headers({
-      Authorization: `Bearer ${localStorage.getItem('idToken')}`,
+      Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
     }),
     body: JSON.stringify(user.toJS()),
@@ -43,10 +44,11 @@ const masteredDegrees$ = Observable.create((observer: Observer<Record.App>) => {
 
 masteredDegrees$.pipe(debounceTime(3000)).subscribe(async user => {
   console.log('sending degrees to server...');
+  const token = await Auth.token();
   await fetch(`/api/degrees`, {
     method: 'PUT',
     headers: new Headers({
-      Authorization: `Bearer ${localStorage.getItem('idToken')}`,
+      Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
     }),
     body: JSON.stringify(user.toJS()),
@@ -55,9 +57,10 @@ masteredDegrees$.pipe(debounceTime(3000)).subscribe(async user => {
 });
 
 async function fetchCatalog() {
+  const token = await Auth.token();
   const response = await fetch('/api/catalog', {
     headers: new Headers({
-      Authorization: `Bearer ${localStorage.getItem('idToken')}`,
+      Authorization: `Bearer ${token}`,
     }),
   });
   const courses = (await response.json()) as Model.Catalog;
@@ -89,7 +92,7 @@ async function fetchCatalog() {
 }
 
 async function fetchUser() {
-  const token = localStorage.getItem('idToken');
+  const token = await Auth.token();
   const uniqueName = Auth.username();
   if (!uniqueName) {
     Auth.logout();
@@ -110,7 +113,7 @@ async function fetchUser() {
 }
 
 async function fetchMasteredDegrees() {
-  const token = localStorage.getItem('idToken');
+  const token = await Auth.token();
   const response = await fetch('/api/degrees/', {
     headers: new Headers({
       Authorization: `Bearer ${token}`,

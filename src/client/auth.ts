@@ -3,6 +3,7 @@ import { history } from './app';
 import * as jwtDecode from 'jwt-decode';
 import { encode } from '../utilities/utilities';
 import { IdTokenPayload } from '../models/id-token';
+import { wait } from '../utilities/utilities';
 
 const authorizeUrl = 'https://shibboleth.umich.edu/idp/profile/oidc/authorize';
 const redirectUri = `${window.location.protocol}//${window.location.host}/callback`;
@@ -11,11 +12,11 @@ function login() {
   if (process.env.NODE_ENV !== 'production') {
     window.location.href = `${window.location.origin}/callback`;
   }
-  
+
   window.location.href = `${authorizeUrl}?${encode({
     response_type: 'code',
     client_id: '7be756e5-fa58-4699-87b7-67acb051125f',
-    redirect_uri: redirectUri
+    redirect_uri: redirectUri,
   })}`;
 }
 
@@ -83,15 +84,26 @@ async function fetchToken(code: string) {
   const result = await fetch('/api/auth/token', {
     method: 'POST',
     headers: new Headers({
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     }),
     body: JSON.stringify({
       code,
-      redirect_uri: redirectUri
-    })
+      redirect_uri: redirectUri,
+    }),
   });
   const data = await result.json();
   const token = data.id_token as string;
+  return token;
+}
+
+async function token() {
+  while (!loggedIn()) {
+    await wait(500);
+  }
+
+  const token = localStorage.getItem('idToken');
+  if (!token) throw new Error('Could not get token after log in');
+  
   return token;
 }
 
@@ -101,5 +113,6 @@ export const Auth = {
   loggedIn,
   userDisplayName,
   handleCallback,
-  username
+  username,
+  token,
 };
