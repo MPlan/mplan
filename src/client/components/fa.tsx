@@ -5,7 +5,7 @@ const icons = require('@ricokahler/fontawesome-pro-light').default;
 interface FaProps {
   icon: string;
   spin?: boolean;
-  plus?: boolean;
+  pulse?: boolean;
   fixedWidth?: boolean;
   border?: boolean;
   listItem?: boolean;
@@ -18,7 +18,6 @@ interface FaProps {
   mask?: any;
   symbol?: any;
   color?: string;
-  [key: string]: any;
 }
 
 export function Fa(props: FaProps) {
