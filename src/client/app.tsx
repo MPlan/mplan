@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { View, Text, Fa, Nav } from './components';
+import { View, Text, Fa, Nav, Loading } from './components';
 import { Router, Switch, Route, Redirect } from 'react-router';
 import { Routes } from './routes';
 import * as styles from './styles';
@@ -26,13 +26,6 @@ const StyledView = styled(View)`
     color: ${styles.black};
   }
 `;
-
-function renderApp() {
-  if (Auth.loggedIn()) {
-    return <AuthenticatedRoute />;
-  }
-  return <Redirect to="/login" />;
-}
 
 const AuthenticatedRouteContainer = styled(View)`
   flex: 1;
@@ -90,40 +83,47 @@ function handleShowHideToolbox() {
   Model.store.sendUpdate(store => store.updateUi(ui => ui.update('showToolbox', show => !show)));
 }
 
-export function AuthenticatedRoute() {
-  return (
-    <AuthenticatedRouteContainer>
-      <Header>
-        <View>
-          <Brand large strong>
-            MPlan
-          </Brand>
-        </View>
+export class AuthenticatedRoute extends Model.store.connect({
+  scope: store => store.ui,
+  descope: (store, ui: Model.Ui) => store.set('ui', ui),
+}) {
+  render() {
+    return !this.store.loaded ? (
+      <Loading />
+    ) : (
+      <AuthenticatedRouteContainer>
+        <Header>
+          <View>
+            <Brand large strong>
+              MPlan
+            </Brand>
+          </View>
 
-        <HeaderContent>
-          <User>
-            <Fa icon="user" size="2x" />
-            <UserName>{Auth.userDisplayName() || ''}</UserName>
-          </User>
-          <ShowHideToolbox onClick={handleShowHideToolbox}>
-            <Fa icon="columns" size="2x" />
-          </ShowHideToolbox>
-        </HeaderContent>
-      </Header>
+          <HeaderContent>
+            <User>
+              <Fa icon="user" size="2x" />
+              <UserName>{Auth.userDisplayName() || ''}</UserName>
+            </User>
+            <ShowHideToolbox onClick={handleShowHideToolbox}>
+              <Fa icon="columns" size="2x" />
+            </ShowHideToolbox>
+          </HeaderContent>
+        </Header>
 
-      <Body>
-        <Nav />
-        <Content>
-          <Switch>
-            {Routes.map(route => (
-              <Route key={route.path} path={route.path} component={route.component as any} />
-            ))}
-            <Redirect from="/" to={Routes[0].path} />
-          </Switch>
-        </Content>
-      </Body>
-    </AuthenticatedRouteContainer>
-  );
+        <Body>
+          <Nav />
+          <Content>
+            <Switch>
+              {Routes.map(route => (
+                <Route key={route.path} path={route.path} component={route.component} />
+              ))}
+              <Redirect from="/" to={Routes[0].path} />
+            </Switch>
+          </Content>
+        </Body>
+      </AuthenticatedRouteContainer>
+    );
+  }
 }
 
 function renderLanding() {
@@ -131,6 +131,13 @@ function renderLanding() {
     return <Redirect to="/timeline" />;
   }
   return <Landing />;
+}
+
+function renderApp() {
+  if (Auth.loggedIn()) {
+    return <AuthenticatedRoute />;
+  }
+  return <Redirect to="/login" />;
 }
 
 export interface AppContentProps

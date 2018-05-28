@@ -18,6 +18,7 @@ interface FaProps {
   mask?: any;
   symbol?: any;
   color?: string;
+  [key: string]: any;
 }
 
 export function Fa(props: FaProps) {

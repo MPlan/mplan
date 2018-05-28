@@ -97,6 +97,8 @@ async function fetchToken(code: string) {
 }
 
 async function token() {
+  if (process.env.NODE_ENV !== 'production') return 'fake_token';
+  
   while (!loggedIn()) {
     await wait(500);
   }

@@ -139,7 +139,8 @@ async function load() {
     store
       .set('catalog', catalog)
       .set('user', userFromServer!)
-      .set('masteredDegrees', degrees),
+      .set('masteredDegrees', degrees)
+      .updateUi(ui => ui.set('loaded', true)),
   );
 }
 
