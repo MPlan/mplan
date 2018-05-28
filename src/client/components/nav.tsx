@@ -59,6 +59,7 @@ const NavContainer = styled(View)`
   min-width: 5rem;
   background-color: ${styles.deepCove};
   color: ${styles.white};
+  overflow: auto;
 `;
 
 export function Nav() {
