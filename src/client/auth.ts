@@ -2,8 +2,8 @@ import { WebAuth } from 'auth0-js';
 import { history } from './app';
 import * as jwtDecode from 'jwt-decode';
 import { encode } from '../utilities/utilities';
-import { IdTokenPayload } from '../models/id-token';
-import { wait } from '../utilities/utilities';
+import { AccessTokenPayload } from '../models/token';
+import { wait } from 'utilities/utilities';
 
 const authorizeUrl = 'https://shibboleth.umich.edu/idp/profile/oidc/authorize';
 const redirectUri = `${window.location.protocol}//${window.location.host}/callback`;
@@ -21,18 +21,18 @@ function login() {
 }
 
 function logout() {
-  localStorage.removeItem('idToken');
+  localStorage.removeItem('accessToken');
   history.push('/login');
 }
 
 function loggedIn() {
   if (process.env.NODE_ENV !== 'production') return true;
 
-  const idToken = localStorage.getItem('idToken');
-  if (!idToken) {
+  const accessToken = localStorage.getItem('accessToken');
+  if (!accessToken) {
     return false;
   }
-  const decoded = jwtDecode(idToken) as any;
+  const decoded = jwtDecode(accessToken) as AccessTokenPayload;
   if (!decoded) {
     return false;
   }
@@ -45,11 +45,11 @@ function loggedIn() {
 function userDisplayName() {
   if (process.env.NODE_ENV !== 'production') return 'Local Test User';
 
-  const idToken = localStorage.getItem('idToken');
-  if (!idToken) {
+  const accessToken = localStorage.getItem('accessToken');
+  if (!accessToken) {
     return undefined;
   }
-  const decoded = jwtDecode(idToken) as any;
+  const decoded = jwtDecode(accessToken) as any;
   if (!decoded) {
     return undefined;
   }
@@ -59,11 +59,11 @@ function userDisplayName() {
 function username() {
   if (process.env.NODE_ENV !== 'production') return process.env.TEST_USERNAME;
 
-  const idToken = localStorage.getItem('idToken');
-  if (!idToken) {
+  const accessToken = localStorage.getItem('accessToken');
+  if (!accessToken) {
     return undefined;
   }
-  const decoded = jwtDecode(idToken) as IdTokenPayload;
+  const decoded = jwtDecode(accessToken) as AccessTokenPayload;
   if (!decoded) {
     return undefined;
   }
@@ -77,7 +77,7 @@ async function handleCallback() {
   if (!code) return;
   const token = await fetchToken(code);
 
-  localStorage.setItem('idToken', token);
+  localStorage.setItem('accessToken', token);
 }
 
 async function fetchToken(code: string) {
@@ -92,7 +92,7 @@ async function fetchToken(code: string) {
     }),
   });
   const data = await result.json();
-  const token = data.id_token as string;
+  const token = data.access_token as string;
   return token;
 }
 
@@ -103,7 +103,7 @@ async function token() {
     await wait(500);
   }
 
-  const token = localStorage.getItem('idToken');
+  const token = localStorage.getItem('accessToken');
   if (!token) throw new Error('Could not get token after log in');
   
   return token;

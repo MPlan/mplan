@@ -1,6 +1,4 @@
-/// <reference path="./webpack.d.ts" />
 const path = require('path');
-const { BaseHrefWebpackPlugin } = require('base-href-webpack-plugin');
 const webpack = require('webpack');
 
 if (process.env.NODE_ENV !== 'production') {
@@ -26,6 +24,12 @@ const webpackConfig = {
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js', '.jsx', '.css'],
+    alias: {
+      styles: path.resolve(__dirname, './src/client/styles'),
+      models: path.resolve(__dirname, './src/models'),
+      utilities: path.resolve(__dirname, './src/utilities'),
+      components: path.resolve(__dirname, './src/client/components'),
+    },
   },
   devtool: 'source-map',
   devServer: {

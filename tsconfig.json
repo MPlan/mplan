@@ -2,12 +2,17 @@
   "compilerOptions": {
     "target": "es5",
     "module": "commonjs",
-    "lib": [
-      "es2017", "dom"
-    ],
+    "lib": ["es2017", "dom"],
     "jsx": "react",
     "strict": true,
     "skipLibCheck": true,
-    "downlevelIteration": true
+    "downlevelIteration": true,
+    "baseUrl": "./src",
+    "paths": {
+      "styles": ["client/styles"],
+      "components": ["client/components"],
+      "models": ["models"],
+      "utilities": ["utilities"]
+    }
   }
 }

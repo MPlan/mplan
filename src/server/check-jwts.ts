@@ -4,7 +4,7 @@ import axios from 'axios';
 import { getOrThrow } from '../utilities/utilities';
 const jwkToPem = require('jwk-to-pem');
 import * as jwt from 'jsonwebtoken';
-import { IdTokenPayload } from '../models/id-token';
+import { AccessTokenPayload } from 'models/token';
 
 const jwkUri = getOrThrow(process.env.JWK_URI);
 const audience = getOrThrow(process.env.CLIENT_ID);
@@ -49,7 +49,7 @@ export async function checkJwts(req: Request, res: Response, next: NextFunction)
 
   try {
     const pem = await getPublicKeyFromJwk();
-    const result = jwt.verify(token, pem) as IdTokenPayload;
+    const result = jwt.verify(token, pem) as AccessTokenPayload;
 
     req.user = result;
     req.user.nickname = result.sub;

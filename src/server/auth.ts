@@ -5,7 +5,7 @@ import axios from 'axios';
 import { encode, getOrThrow } from '../utilities/utilities';
 import * as jwtDecode from 'jwt-decode';
 import { dbConnection } from './models/mongo';
-import { IdTokenPayload } from '../models/id-token';
+import { IdTokenPayload } from 'models/token';
 
 const tokenUri = getOrThrow(process.env.TOKEN_URI);
 const clientId = getOrThrow(process.env.CLIENT_ID);
