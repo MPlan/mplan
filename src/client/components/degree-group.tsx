@@ -6,9 +6,10 @@ import { ActionableText } from './actionable-text';
 import styled from 'styled-components';
 import { DegreeGroupCourse } from './degree-group-course';
 import * as styles from '../styles';
-import { wait } from '../../utilities/utilities';
 import { DropdownMenu } from './dropdown-menu';
 import { RightClickMenu } from './right-click-menu';
+import { wait } from 'utilities/utilities';
+import { activateOnEdit, selectTextFromInputRef } from 'utilities/refs';
 
 const Container = styled(View)`
   max-width: 25rem;
@@ -100,12 +101,21 @@ const groupActions = {
 };
 
 export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupState> {
+  inputRef = React.createRef<HTMLInputElement>();
   constructor(props: DegreeGroupProps) {
     super(props);
 
     this.state = {
       editingName: false,
     };
+  }
+
+  componentDidUpdate(_: any, previousState: DegreeGroupState) {
+    activateOnEdit({
+      editingBefore: previousState.editingName,
+      editingNow: this.state.editingName,
+      onEditChange: () => selectTextFromInputRef(this.inputRef),
+    });
   }
 
   nameInputElement: HTMLInputElement | undefined;
@@ -140,10 +150,6 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
       ...previousState,
       editingName: false,
     }));
-  };
-
-  handleNameInputRef = (e: HTMLInputElement | undefined) => {
-    this.nameInputElement = e;
   };
 
   handleGroupAction = (action: keyof typeof groupActions) => {
@@ -186,7 +192,7 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
               {this.state.editingName ? (
                 <NameForm onSubmit={this.handleNameSubmit}>
                   <NameInput
-                    innerRef={this.handleNameInputRef}
+                    innerRef={this.inputRef}
                     onChange={this.handleNameChange}
                     onBlur={this.handleNameBlur}
                     defaultValue={degreeGroup.name}

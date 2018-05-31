@@ -48,7 +48,6 @@ export class Dropzone extends Model.store.connect({
   },
 }) {
   lastDragOverTime = 0;
-  containerRef: HTMLDivElement | null | undefined;
   mounted = false;
   dragOver$ = new Subject<{ clientY: number; clientX: number }>();
   dropzoneActivePoll$ = Observable.interval(100);
@@ -78,10 +77,6 @@ export class Dropzone extends Model.store.connect({
       this.dropzoneActivePollSubscription.unsubscribe();
     }
   }
-
-  handleContainerRef = (e: HTMLDivElement | null | undefined) => {
-    e = this.containerRef;
-  };
 
   handleDragOverThrottled = ({ clientY, clientX }: { clientY: number; clientX: number }) => {
     this.lastDragOverTime = new Date().getTime();
@@ -206,7 +201,6 @@ export class Dropzone extends Model.store.connect({
   render() {
     return (
       <Container
-        innerRef={this.handleContainerRef}
         className={`dropzone dropzone-${this.props.id}`}
         onDragStart={this.handleDragStart}
         onDrop={this.handleDrop}

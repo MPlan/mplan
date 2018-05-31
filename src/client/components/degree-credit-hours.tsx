@@ -6,6 +6,7 @@ import { View } from './view';
 import { Text } from './text';
 import { Button } from './button';
 import { Fa } from './fa';
+import { activateOnEdit, selectTextFromInputRef } from 'utilities/refs';
 
 const Container = styled(View)`
   flex-shrink: 0;
@@ -87,12 +88,22 @@ export class DegreeCreditHours extends React.Component<
   DegreeCreditHoursProps,
   DegreeCreditHoursState
 > {
+  inputRef = React.createRef<HTMLInputElement>();
+
   constructor(props: DegreeCreditHoursProps) {
     super(props);
     this.state = {
       editing: false,
       value: props.minimumCredits.toString(),
     };
+  }
+
+  componentDidUpdate(_: any, previousState: DegreeCreditHoursState) {
+    activateOnEdit({
+      editingBefore: previousState.editing,
+      editingNow: this.state.editing,
+      onEditChange: () => selectTextFromInputRef(this.inputRef),
+    });
   }
 
   componentWillReceiveProps(nextProps: DegreeCreditHoursProps) {
@@ -142,12 +153,6 @@ export class DegreeCreditHours extends React.Component<
     }));
   };
 
-  handleInputRef = (e: HTMLInputElement | null | undefined) => {
-    if (!e) return;
-    e.focus();
-    e.select();
-  };
-
   render() {
     return (
       <Container>
@@ -169,7 +174,7 @@ export class DegreeCreditHours extends React.Component<
                     type="number"
                     value={this.state.value}
                     onChange={this.handleChange}
-                    innerRef={this.handleInputRef}
+                    innerRef={this.inputRef}
                   />
                 </Form>
               )}

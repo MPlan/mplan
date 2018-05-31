@@ -55,6 +55,7 @@ export async function checkJwts(req: Request, res: Response, next: NextFunction)
     req.user.nickname = result.sub;
     next();
   } catch (e) {
+    console.warn(e);
     res.sendStatus(HttpStatus.UNAUTHORIZED);
     return;
   }

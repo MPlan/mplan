@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as Model from '../models';
 import * as Immutable from 'immutable';
 import styled from 'styled-components';
-import * as styles from '../styles';
+import * as styles from 'styles';
 import { View } from './view';
 import { Text } from './text';
 import { DropdownMenu } from './dropdown-menu';
@@ -11,6 +11,7 @@ import { Button } from './button';
 import { Fa } from './fa';
 import { EditableCourseList } from './editable-course-list';
 import { Modal } from './modal';
+import { activateOnEdit, selectTextFromInputRef } from 'utilities/refs';
 const RichTextEditor = require('react-rte').default;
 
 const Container = styled(View)`
@@ -138,6 +139,10 @@ export class MasteredDegreeGroup extends React.Component<
   MasteredDegreeGroupProps,
   MasteredDegreeGroupState
 > {
+  nameInputRef = React.createRef<HTMLInputElement>();
+  creditsMinimumRef = React.createRef<HTMLInputElement>();
+  creditsMaximumRef = React.createRef<HTMLInputElement>();
+
   constructor(props: MasteredDegreeGroupProps) {
     super(props);
     const { masteredDegreeGroup } = props;
@@ -154,6 +159,26 @@ export class MasteredDegreeGroup extends React.Component<
       editingName: false,
       areYouSureModal: false,
     };
+  }
+
+  componentDidUpdate(_: MasteredDegreeGroupProps, previousState: MasteredDegreeGroupState) {
+    activateOnEdit({
+      editingBefore: previousState.editingName,
+      editingNow: this.state.editingName,
+      onEditChange: () => selectTextFromInputRef(this.nameInputRef),
+    });
+
+    activateOnEdit({
+      editingBefore: previousState.editingCreditMaximum,
+      editingNow: this.state.editingCreditMaximum,
+      onEditChange: () => selectTextFromInputRef(this.creditsMaximumRef),
+    });
+
+    activateOnEdit({
+      editingBefore: previousState.editingCreditMinimum,
+      editingNow: this.state.editingCreditMinimum,
+      onEditChange: () => selectTextFromInputRef(this.creditsMinimumRef),
+    });
   }
 
   componentWillReceiveProps(nextProps: MasteredDegreeGroupProps) {
@@ -246,12 +271,6 @@ export class MasteredDegreeGroup extends React.Component<
     }));
   };
 
-  handleAndSelectRef = (e: HTMLInputElement | null | undefined) => {
-    if (!e) return;
-    e.focus();
-    e.select();
-  };
-
   handleHeadingActions = (action: keyof typeof headingActions) => {
     if (action === 'rename') {
       this.handleNameClick();
@@ -310,12 +329,6 @@ export class MasteredDegreeGroup extends React.Component<
     }));
   };
 
-  handleNameInputRef = (e: HTMLInputElement | null | undefined) => {
-    if (!e) return;
-    e.focus();
-    e.select();
-  };
-
   handleNameSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     this.setState(previousState => ({
@@ -364,7 +377,7 @@ export class MasteredDegreeGroup extends React.Component<
                 <NameInput
                   className="name-input"
                   type="text"
-                  innerRef={this.handleNameInputRef}
+                  innerRef={this.nameInputRef}
                   onBlur={this.handleNameBlur}
                   defaultValue={masteredDegreeGroup.name}
                 />
@@ -445,7 +458,7 @@ export class MasteredDegreeGroup extends React.Component<
                     type="number"
                     value={this.state.creditMinimumValue}
                     onChange={this.handleCreditsMinimumChange}
-                    innerRef={this.handleAndSelectRef}
+                    innerRef={this.creditsMinimumRef}
                   />
                 </Form>
               )}
@@ -482,7 +495,7 @@ export class MasteredDegreeGroup extends React.Component<
                     type="number"
                     value={this.state.creditMaximumValue}
                     onChange={this.handleCreditsMaximumChange}
-                    innerRef={this.handleAndSelectRef}
+                    innerRef={this.creditsMaximumRef}
                   />
                 </Form>
               )}
@@ -561,8 +574,10 @@ export class MasteredDegreeGroup extends React.Component<
           title={`Are you sure you want to delete ${masteredDegreeGroup.name}?`}
           onBlurCancel={this.handleAreYouSureCancel}
         >
-          <Row style={{justifyContent: 'space-between'}}>
-            <Button onClick={this.props.onDeleteGroup}>Yes, delete {masteredDegreeGroup.name}</Button>
+          <Row style={{ justifyContent: 'space-between' }}>
+            <Button onClick={this.props.onDeleteGroup}>
+              Yes, delete {masteredDegreeGroup.name}
+            </Button>
             <Button onClick={this.handleAreYouSureCancel}>No, keep it.</Button>
           </Row>
         </Modal>

@@ -113,11 +113,11 @@ export class Sequence extends Model.store.connect({
     graphWrapperHeight: 1000,
   },
 }) {
-  graphContainerElement: HTMLElement | undefined;
-  graphWrapperElement: HTMLElement | undefined;
   mounted = false;
   reflowEvents$ = new Subject<void>();
   static edgesMemo = new Map<any, any>();
+
+  graphWrapperRef = React.createRef<HTMLElement>();
 
   async componentDidMount() {
     this.mounted = true;
@@ -135,8 +135,6 @@ export class Sequence extends Model.store.connect({
     super.componentWillUnmount();
     document.removeEventListener('keydown', this.handleDocumentKeyDown);
     this.mounted = false;
-    if (!this.graphContainerElement) return;
-    this.graphContainerElement.removeEventListener('scroll', this.reflowTrigger);
   }
 
   get focusMode() {
@@ -145,25 +143,18 @@ export class Sequence extends Model.store.connect({
 
   reflowArrows() {
     const edges = this.calculateEdges();
-    this.setState(previousState => ({
-      ...previousState,
-      edges,
-      graphWrapperHeight:
-        (this.graphWrapperElement && this.graphWrapperElement.clientHeight) || 1000,
-      graphWrapperWidth: (this.graphWrapperElement && this.graphWrapperElement.clientWidth) || 1000,
-    }));
+    this.setState(previousState => {
+      const graphWrapperElement = this.graphWrapperRef.current;
+      if (!graphWrapperElement) return null;
+
+      return {
+        ...previousState,
+        edges,
+        graphWrapperHeight: (graphWrapperElement && graphWrapperElement.clientHeight) || 1000,
+        graphWrapperWidth: (graphWrapperElement && graphWrapperElement.clientWidth) || 1000,
+      };
+    });
   }
-
-  handleGraphContainerRef = (element: HTMLElement | undefined) => {
-    if (!element) return;
-    this.graphContainerElement = element;
-    element.addEventListener('scroll', this.reflowTrigger);
-  };
-
-  handleGraphWrapperRef = (element: HTMLElement | undefined) => {
-    if (!element) return;
-    this.graphWrapperElement = element;
-  };
 
   handleCompactModeToggle = async () => {
     this.setState(previousState => ({
@@ -403,8 +394,8 @@ export class Sequence extends Model.store.connect({
             </label>
           </HeaderRight>
         </Header>
-        <GraphContainer className="graph-container" innerRef={this.handleGraphContainerRef}>
-          <GraphWrapper className="graph-wrapper" innerRef={this.handleGraphWrapperRef}>
+        <GraphContainer className="graph-container" onScroll={this.reflowTrigger}>
+          <GraphWrapper className="graph-wrapper" innerRef={this.graphWrapperRef}>
             {this.store.user.degree.levels(this.store.catalog).map((level, levelIndex) => (
               <Level
                 key={levelIndex}

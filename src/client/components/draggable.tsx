@@ -89,8 +89,8 @@ export class Draggable extends Model.store.connect({
   },
 }) {
   draggableId = uuid();
-  childWrapperRef: HTMLElement | null | undefined;
-  containerRef: HTMLElement | null | undefined;
+  childWrapperRef = React.createRef<HTMLElement>();
+  containerRef = React.createRef<HTMLElement>();
 
   componentDidMount() {}
 
@@ -112,7 +112,7 @@ export class Draggable extends Model.store.connect({
   handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
     e.dataTransfer.setData('text', this.draggableId);
     e.dataTransfer.effectAllowed = 'copyMove';
-    const childWrapperRef = this.childWrapperRef;
+    const childWrapperRef = this.childWrapperRef.current;
     const childHeight = childWrapperRef && childWrapperRef.getBoundingClientRect().height;
 
     this.setStore(store =>
@@ -128,32 +128,21 @@ export class Draggable extends Model.store.connect({
     this.setStore(store => store.set('dragging', false));
   };
 
-  handleChildWrapperRef = (e: HTMLElement | null | undefined) => {
-    this.childWrapperRef = e;
-    if (e) {
-      e.offsetWidth;
-    }
-  };
-
-  handleContainerRef = (e: HTMLElement | null | undefined) => {
-    this.containerRef = e;
-  };
-
   getChildBoundingRect() {
-    if (!this.childWrapperRef) return undefined;
-    return this.childWrapperRef.getBoundingClientRect();
+    if (!this.childWrapperRef.current) return undefined;
+    return this.childWrapperRef.current.getBoundingClientRect();
   }
 
   getContainerBoundingRect() {
-    if (!this.containerRef) return undefined;
-    return this.containerRef.getBoundingClientRect();
+    if (!this.containerRef.current) return undefined;
+    return this.containerRef.current.getBoundingClientRect();
   }
 
   render() {
     return (
       <Container
         className={['draggable', `draggable-${this.draggableId}`].join(' ')}
-        innerRef={this.handleContainerRef}
+        innerRef={this.containerRef}
       >
         <ChildWrapper
           draggable
@@ -163,7 +152,7 @@ export class Draggable extends Model.store.connect({
             `drag-id-${this.props.id}`,
             this.store.dragging ? 'drag-mode' : '',
           ].join(' ')}
-          innerRef={this.handleChildWrapperRef}
+          innerRef={this.childWrapperRef}
           onDragStart={this.handleDragStart}
           onDragEnd={this.handleDragEnd}
         >

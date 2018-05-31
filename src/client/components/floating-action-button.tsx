@@ -150,7 +150,7 @@ export class FloatingActionButton<T extends { [P in keyof T]: MenuItem }> extend
   FloatingActionButtonProps<T>,
   FloatingActionButtonState
 > {
-  containerRef: HTMLDivElement | null | undefined;
+  containerRef = React.createRef<HTMLElement>();
   constructor(props: FloatingActionButtonProps<T>) {
     super(props);
     this.state = {
@@ -190,10 +190,11 @@ export class FloatingActionButton<T extends { [P in keyof T]: MenuItem }> extend
   }
 
   handleBlur = (e: React.FocusEvent<HTMLElement>) => {
-    if (!this.containerRef) return;
+    const containerRef = this.containerRef.current;
+    if (!containerRef) return;
     const relatedTarget = e.relatedTarget as HTMLElement | null;
     if (relatedTarget) {
-      if (this.containerRef.contains(relatedTarget)) return;
+      if (containerRef.contains(relatedTarget)) return;
     }
     this.setState(previousState => ({
       ...previousState,
@@ -215,15 +216,11 @@ export class FloatingActionButton<T extends { [P in keyof T]: MenuItem }> extend
     }));
   };
 
-  handleContainerRef = (e: HTMLDivElement | null | undefined) => {
-    this.containerRef = e;
-  };
-
   render() {
     const { message, onClick, ref, ...restOfProps } = this.props;
 
     return (
-      <Container innerRef={this.handleContainerRef}>
+      <Container innerRef={this.containerRef}>
         <Fab
           className={this.state.itemMouseDown ? 'item-mouse-down' : ''}
           onClick={this.handleClick}

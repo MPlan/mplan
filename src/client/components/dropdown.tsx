@@ -69,8 +69,7 @@ export class Dropdown<T extends { [P in keyof T]: MenuItem }> extends React.Comp
   DropdownProps<T>,
   DropdownState<T>
 > {
-  containerElement: HTMLElement | undefined;
-  menuElement: HTMLElement | undefined;
+  containerRef = React.createRef<HTMLElement>();
 
   constructor(props: DropdownProps<T>) {
     super(props);
@@ -96,14 +95,6 @@ export class Dropdown<T extends { [P in keyof T]: MenuItem }> extends React.Comp
     document.removeEventListener('keydown', this.handleKeydown);
     document.removeEventListener('keyup', this.handleKeyup);
   }
-
-  handleContainerRef = (e: HTMLElement | undefined) => {
-    this.containerElement = e;
-  };
-
-  handleMenuRef = (e: HTMLUListElement | undefined) => {
-    this.menuElement = e;
-  };
 
   handleKeydown = (e: KeyboardEvent) => {
     if (!this.props.open) return;
@@ -206,7 +197,7 @@ export class Dropdown<T extends { [P in keyof T]: MenuItem }> extends React.Comp
   };
 
   handleContainerBlur = (e: React.FocusEvent<HTMLDivElement>) => {
-    const containerElement = this.containerElement;
+    const containerElement = this.containerRef.current;
     if (!containerElement) return;
 
     const relatedTarget = e.relatedTarget as any;
@@ -222,10 +213,9 @@ export class Dropdown<T extends { [P in keyof T]: MenuItem }> extends React.Comp
 
   render() {
     return (
-      <Container innerRef={this.handleContainerRef} onBlur={this.handleContainerBlur}>
+      <Container innerRef={this.containerRef} onBlur={this.handleContainerBlur}>
         <Menu
           className="menu"
-          innerRef={this.handleMenuRef}
           style={{ display: this.props.open ? 'flex' : 'none' }}
         >
           <Header>

@@ -20,16 +20,21 @@ const Label = styled.label`
 
 export interface CheckboxProps extends React.HTMLProps<HTMLInputElement> {
   label: string;
-  innerRef?: (ref: HTMLInputElement | null | undefined) => void;
+  innerRef?: React.Ref<any>;
 }
 
 export class Checkbox extends React.Component<CheckboxProps, {}> {
   labelId = `label-${uuid()}`;
   render() {
-    const { label, ref, ...restOfProps } = this.props;
+    const { label, ref, innerRef, ...restOfProps } = this.props;
     return (
       <Container>
-        <StyledCheckbox id={this.labelId} {...restOfProps} type="checkbox" />
+        <StyledCheckbox
+          id={this.labelId}
+          innerRef={innerRef as any}
+          {...restOfProps}
+          type="checkbox"
+        />
         <Label htmlFor={this.labelId}>{this.props.label}</Label>
       </Container>
     );

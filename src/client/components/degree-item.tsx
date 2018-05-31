@@ -67,18 +67,20 @@ export function DegreeItem(props: DegreeItemProps) {
   const { masteredDegree } = props;
   return (
     <StyledLink to={`/degree-editor/${masteredDegree.id}`} activeClassName="active">
-    <Container>
-      <NameAndDetails>
-        <Name>{masteredDegree.name}</Name>
-        <Details>
-          <CreditHourTotal>{masteredDegree.minimumCredits} credits</CreditHourTotal>
-          <DegreeGroupTotal>{masteredDegree.masteredDegreeGroups.count()} degree groups</DegreeGroupTotal>
-        </Details>
-      </NameAndDetails>
-      <Icon>
-        <Fa icon="chevronRight" />
-      </Icon>
-    </Container>
+      <Container>
+        <NameAndDetails>
+          <Name>{masteredDegree.name}</Name>
+          <Details>
+            <CreditHourTotal>{masteredDegree.minimumCredits} credits</CreditHourTotal>
+            <DegreeGroupTotal>
+              {masteredDegree.masteredDegreeGroups.count()} degree groups
+            </DegreeGroupTotal>
+          </Details>
+        </NameAndDetails>
+        <Icon>
+          <Fa icon="chevronRight" />
+        </Icon>
+      </Container>
     </StyledLink>
   );
 }

@@ -10,6 +10,7 @@ import { DegreeDescription } from './degree-description';
 import { DegreeCreditHours } from './degree-credit-hours';
 import { MasteredDegreeGroup } from './mastered-degree-group';
 import { groupBy } from 'rxjs/operators';
+import { activateOnEdit, selectTextFromInputRef } from 'utilities/refs';
 
 const Container = styled(View)`
   margin: 0 auto;
@@ -99,11 +100,18 @@ export class MasteredDegreeDetail extends React.Component<
   MasteredDegreeDetailProps,
   MasteredDegreeDetailState
 > {
-  constructor(props: MasteredDegreeDetailProps) {
-    super(props);
-    this.state = {
-      editingTitle: false,
-    };
+  titleInputRef = React.createRef<HTMLInputElement>();
+
+  state = {
+    editingTitle: false,
+  };
+
+  componentDidUpdate(_: MasteredDegreeDetailProps, previousState: MasteredDegreeDetailState) {
+    activateOnEdit({
+      editingBefore: previousState.editingTitle,
+      editingNow: this.state.editingTitle,
+      onEditChange: () => selectTextFromInputRef(this.titleInputRef),
+    });
   }
 
   handleTitleActions = (action: keyof typeof titleDropdownActions) => {
@@ -159,12 +167,6 @@ export class MasteredDegreeDetail extends React.Component<
     }));
   };
 
-  handleTitleRef = (e: HTMLInputElement | null | undefined) => {
-    if (!e) return;
-    e.focus();
-    e.select();
-  };
-
   handleTitleClick = () => {
     this.setState(previousState => ({
       ...previousState,
@@ -183,7 +185,7 @@ export class MasteredDegreeDetail extends React.Component<
                 <TitleInput
                   onChange={this.handleTitleInputChange}
                   onBlur={this.handleTitleBlur}
-                  innerRef={this.handleTitleRef}
+                  innerRef={this.titleInputRef}
                   defaultValue={masteredDegree.name}
                 />
               </TitleForm>

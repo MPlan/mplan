@@ -158,11 +158,10 @@ export class DegreeEditor extends Model.store.connect({
   initialState,
   propsExample: (undefined as any) as DegreeEditorProps,
 }) {
-  searchRefMain: HTMLInputElement | null | undefined;
-  searchRefSidebar: HTMLInputElement | null | undefined;
+  searchMainRef = React.createRef<HTMLInputElement>();
 
   componentDidMount() {
-    const searchRef = this.searchRefMain;
+    const searchRef = this.searchMainRef.current;
     if (!searchRef) return;
     searchRef.focus();
     searchRef.select();
@@ -180,14 +179,6 @@ export class DegreeEditor extends Model.store.connect({
 
   handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-  };
-
-  handleSearchRefMain = (e: HTMLInputElement | null | undefined) => {
-    this.searchRefMain = e;
-  };
-
-  handleSearchRefSidebar = (e: HTMLInputElement | null | undefined) => {
-    this.searchRefSidebar = e;
   };
 
   handleDegreeUpdate = (update: (degree: Model.MasteredDegree) => Model.MasteredDegree) => {
@@ -233,7 +224,7 @@ export class DegreeEditor extends Model.store.connect({
                   <DegreeSearchInput
                     type="input"
                     placeholder="search for a degree..."
-                    innerRef={this.handleSearchRefMain}
+                    innerRef={this.searchMainRef}
                   />
                   <DegreeSearchButton>
                     <Fa icon="search" />
@@ -263,7 +254,6 @@ export class DegreeEditor extends Model.store.connect({
               <DegreeSearchInput
                 type="input"
                 placeholder="search for a degree..."
-                innerRef={this.handleSearchRefSidebar}
               />
               <DegreeSearchButton>
                 <Fa icon="search" />

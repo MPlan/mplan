@@ -56,7 +56,7 @@ export class DropdownMenu<T extends { [P in keyof T]: MenuItem }> extends React.
   DropdownMenuProps<T>,
   DropdownMenuState<T>
 > {
-  dropdownRef: Dropdown<T> | undefined;
+  dropdownRef = React.createRef<Dropdown<T>>();
 
   constructor(props: DropdownMenuProps<T>) {
     super(props);
@@ -90,8 +90,9 @@ export class DropdownMenu<T extends { [P in keyof T]: MenuItem }> extends React.
       return;
     }
 
-    if (!this.dropdownRef) return;
-    const dropdownContainerElement = this.dropdownRef.containerElement;
+    const dropdownRef = this.dropdownRef.current;
+    if (!dropdownRef) return;
+    const dropdownContainerElement = dropdownRef.containerRef.current;
 
     if (!dropdownContainerElement) return;
     if (dropdownContainerElement.contains(relatedTarget)) return;
@@ -102,10 +103,6 @@ export class DropdownMenu<T extends { [P in keyof T]: MenuItem }> extends React.
     }));
   };
 
-  handleDropdownRef = (dropdownRef: Dropdown<T>) => {
-    this.dropdownRef = dropdownRef;
-  };
-
   render() {
     return (
       <Container>
@@ -114,7 +111,7 @@ export class DropdownMenu<T extends { [P in keyof T]: MenuItem }> extends React.
         </EllipsisButton>
         <Dropdown
           header={this.props.header}
-          ref={this.handleDropdownRef}
+          ref={this.dropdownRef}
           open={this.state.open}
           onBlur={this.handleDropdownBlur}
           actions={this.props.actions}

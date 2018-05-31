@@ -51,7 +51,7 @@ export class RightClickMenu<T extends { [P in keyof T]: MenuItem }> extends Reac
   RightClickMenuProps<T>,
   RightClickMenuState
 > {
-  containerRef: HTMLDivElement | null | undefined;
+  containerRef = React.createRef<HTMLElement>();
 
   constructor(props: RightClickMenuProps<T>) {
     super(props);
@@ -70,7 +70,7 @@ export class RightClickMenu<T extends { [P in keyof T]: MenuItem }> extends Reac
   }
 
   nestedRightClickMenuCount() {
-    const containerRef = this.containerRef;
+    const containerRef = this.containerRef.current;
     if (!containerRef) return Number.POSITIVE_INFINITY;
     return containerRef.querySelectorAll('.right-click-menu').length;
   }
@@ -80,7 +80,7 @@ export class RightClickMenu<T extends { [P in keyof T]: MenuItem }> extends Reac
     const containerRect = e.currentTarget.getBoundingClientRect();
 
     const closestRightClickParent = findClosestRightClickParent(e.target as HTMLElement);
-    if (closestRightClickParent !== this.containerRef) {
+    if (closestRightClickParent !== this.containerRef.current) {
       this.setState(previousState => ({
         ...previousState,
         open: false,
@@ -118,7 +118,7 @@ export class RightClickMenu<T extends { [P in keyof T]: MenuItem }> extends Reac
   };
 
   handleClick = (e: MouseEvent) => {
-    const containerRef = this.containerRef;
+    const containerRef = this.containerRef.current;
     if (!containerRef) {
       this.closeMenu();
       return;
@@ -152,16 +152,12 @@ export class RightClickMenu<T extends { [P in keyof T]: MenuItem }> extends Reac
     }));
   };
 
-  handleContainerRef = (e: HTMLDivElement | null | undefined) => {
-    this.containerRef = e;
-  };
-
   render() {
     return (
       <Container
         className="right-click-menu"
         onContextMenu={this.handleContextMenu}
-        innerRef={this.handleContainerRef}
+        innerRef={this.containerRef}
       >
         <DropdownContainer style={{ top: this.state.y, left: this.state.x }}>
           <Dropdown
