@@ -77,7 +77,7 @@ describe('record models', () => {
 
   it('prerequisitesFlattened', () => {
     const course = catalog.getCourse('CIS', '450')!;
-    const prerequisitesFlattened = course.options(catalog);
+    const prerequisitesFlattened = course.options();
 
     console.log(
       `unflattened course prerequisite options for ${course.subjectCode} ${course.courseNumber}`,
@@ -134,7 +134,7 @@ ALL
       .add(cis350)
       .add(cis200)
       .add(comp270);
-    const depth = cis4962.depth(catalog, preferredCourses);
+    const depth = cis4962.depth(preferredCourses);
 
     console.log(depth);
   });
@@ -148,20 +148,20 @@ ALL
       .add(cis350)
       .add(cis200);
 
-    const result = cis375.intersection(preferredCourses, catalog);
+    const result = cis375.intersection(preferredCourses);
     console.log(result.count());
   });
 
   it('minDepth', () => {
     const math104 = catalog.getCourse('MATH', '104')!;
 
-    expect(math104.minDepth(catalog)).toBe(1);
+    expect(math104.minDepth()).toBe(1);
   });
 
   it('options', () => {
     const math115 = catalog.getCourse('MATH', '115')!;
 
-    const options = math115.options(catalog);
+    const options = math115.options();
 
     const optionsAsStrings = options.toArray().map(option => {
       return option
@@ -180,7 +180,7 @@ ALL
   it('bestOption', () => {
     const math115 = catalog.getCourse('MATH', '115')!;
 
-    const bestOption = math115.bestOption(catalog, Immutable.Set<string | Record.Course>());
+    const bestOption = math115.bestOption(Immutable.Set<string | Record.Course>());
 
     expect(bestOption.first()).toBe('Mathematics Placement 115');
   });
@@ -238,7 +238,7 @@ ALL
       .add(math115)
       .add(comp105);
 
-    const closure = catalog.getCourse('CIS', '4962')!.closure(catalog, preferredCourses);
+    const closure = catalog.getCourse('CIS', '4962')!.closure(preferredCourses);
 
     console.log(
       closure

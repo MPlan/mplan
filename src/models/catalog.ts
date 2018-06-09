@@ -2,6 +2,7 @@ import * as Immutable from 'immutable';
 import * as Record from '../recordize';
 import { Course } from './course';
 import { pointer } from './pointer';
+import { App } from './app';
 
 export interface SearchResults {
   count: number;
@@ -11,7 +12,7 @@ export interface SearchResults {
 export class Catalog extends Record.define({
   courseMap: Record.MapOf(Course),
 }) {
-  get root() {
+  get root(): App {
     return pointer.store.current();
   }
 

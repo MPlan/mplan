@@ -81,7 +81,7 @@ export function generatePlans(degree: Degree, catalog: Catalog, options: PlanOpt
       return true;
     }
 
-    const unplacedCoursesSorted = unplacedCourses.toList().sortBy(c => c.priority(degree, catalog));
+    const unplacedCoursesSorted = unplacedCourses.toList().sortBy(c => c.priority());
     for (let i = 0; i < unplacedCount; i += 1) {
       const course = unplacedCoursesSorted.get(i)!;
       if (canPlace(course, currentSemester)) {
@@ -151,7 +151,7 @@ export class Degree extends Record.define({
       .map(
         course =>
           /*if*/ course instanceof Course
-            ? course.closure(catalog, preferredCourses)
+            ? course.closure(preferredCourses)
             : Immutable.Set<string | Course>().add(course),
       )
       .reduce(
@@ -175,7 +175,7 @@ export class Degree extends Record.define({
 
     for (const course of closure) {
       if (course instanceof Course) {
-        const depth = course.depth(catalog, preferredCourses);
+        const depth = course.depth(preferredCourses);
         const set = levelsMutable[depth] || new Set<string | Course>();
         set.add(course);
         levelsMutable[depth] = set;

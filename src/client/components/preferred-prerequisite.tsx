@@ -29,7 +29,7 @@ export function PreferredPrerequisite(props: PreferredPrerequisiteProps) {
       <Header small>Preferred prerequisites:</Header>
       <PrerequisiteList>
         {course
-          .bestOption(catalog, degree.preferredCourses(catalog))
+          .bestOption(degree.preferredCourses())
           .map(course => (course instanceof Model.Course ? course.simpleName : course))
           .map(course => (
             <PrerequisiteItem key={course}>

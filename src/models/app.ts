@@ -13,7 +13,7 @@ export class App extends Record.define({
   ui: new Ui(),
   masteredDegrees: Record.MapOf(MasteredDegree),
 }) {
-  get root() {
+  get root(): App {
     return pointer.store.current();
   }
 

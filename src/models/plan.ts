@@ -58,7 +58,7 @@ export class Plan extends Record.define({
 
     const unplacedCourses = closure
       .subtract(coursesInPlan)
-      .sortBy(c => c.priority(degree, catalog))
+      .sortBy(c => c.priority())
       .toArray();
     Plan.unplacedCoursesMemo.set(hash, unplacedCourses);
     return unplacedCourses;

@@ -245,15 +245,15 @@ export class Sequence extends Model.store.connect({
         .filter(course => course instanceof Model.Course)
         .map(course => course as Model.Course)
         .map(course => {
-          const preferredCourses = degree.preferredCourses(catalog);
-          const options = course.bestOption(catalog, preferredCourses);
+          const preferredCourses = degree.preferredCourses();
+          const options = course.bestOption(preferredCourses);
           const coursePoints = pointMap.get(course);
           if (!coursePoints) return undefined;
-          const courseDepth = course.depth(catalog, preferredCourses);
+          const courseDepth = course.depth(preferredCourses);
           const edges = options
             .map(option => {
               const depth =
-                /*if*/ option instanceof Model.Course ? option.depth(catalog, preferredCourses) : 0;
+                /*if*/ option instanceof Model.Course ? option.depth(preferredCourses) : 0;
               const optionPoints = pointMap.get(option);
               if (!optionPoints) return undefined;
               if (depth < courseDepth) {
@@ -327,14 +327,14 @@ export class Sequence extends Model.store.connect({
     if (typeof course === 'string') return false;
     const degree = this.store.user.degree;
     const catalog = this.store.catalog;
-    const preferredCourses = degree.preferredCourses(catalog);
-    const bestOption = course.bestOption(this.store.catalog, preferredCourses);
+    const preferredCourses = degree.preferredCourses();
+    const bestOption = course.bestOption(preferredCourses);
     if (this.state.mouseOverCourse === undefined) {
       const selectedCourse = this.state.selectedCourse;
       if (bestOption.contains(selectedCourse || '')) return true;
       if (
         selectedCourse instanceof Model.Course &&
-        selectedCourse.bestOption(this.store.catalog, preferredCourses).contains(course || '')
+        selectedCourse.bestOption(preferredCourses).contains(course || '')
       ) {
         return true;
       }
@@ -344,7 +344,7 @@ export class Sequence extends Model.store.connect({
     const selectedCourse = this.state.mouseOverCourse;
     if (
       selectedCourse instanceof Model.Course &&
-      selectedCourse.bestOption(this.store.catalog, preferredCourses).contains(course || '')
+      selectedCourse.bestOption(preferredCourses).contains(course || '')
     ) {
       return true;
     }

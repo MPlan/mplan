@@ -59,7 +59,7 @@ export interface SemesterCourseProps {
 
 export function SemesterCourse(props: SemesterCourseProps) {
   const { course, degree, catalog, onDeleteCourse } = props;
-  const criticalLevel = course.criticalLevel(degree, catalog);
+  const criticalLevel = course.criticalLevel();
 
   function handleAction(action: string) {
     if (action === 'delete') {

@@ -97,12 +97,12 @@ export function SequenceCourse(props: SequenceCourseProps) {
             <ActionableText small>{course.name}</ActionableText>
           </NameCompact>
           <CriticalCompact>
-            {/*if*/ course.criticalLevel(degree, catalog) <= 0 ? (
+            {/*if*/ course.criticalLevel() <= 0 ? (
               <Text color={styles.red} small>
                 Critical
               </Text>
             ) : (
-              <Text small>Can move {course.criticalLevel(degree, catalog)} later</Text>
+              <Text small>Can move {course.criticalLevel()} later</Text>
             )}
           </CriticalCompact>
         </View>
@@ -113,7 +113,7 @@ export function SequenceCourse(props: SequenceCourseProps) {
             <ActionableText>{course.name}</ActionableText>
           </Name>
           <Critical>
-            {/*if*/ course.criticalLevel(degree, catalog) <= 0 ? (
+            {/*if*/ course.criticalLevel() <= 0 ? (
               <Text small>
                 <Text color={styles.red} small>
                   Critical:&nbsp;
@@ -122,7 +122,7 @@ export function SequenceCourse(props: SequenceCourseProps) {
               </Text>
             ) : (
               <Text small>
-                Can be taken as many as {course.criticalLevel(degree, catalog)} semesters later
+                Can be taken as many as {course.criticalLevel()} semesters later
                 without delaying graduation.
               </Text>
             )}
