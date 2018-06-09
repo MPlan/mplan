@@ -147,7 +147,7 @@ export class Course
       return Course.priorityMemo.get(hash);
     }
 
-    const priority = this.depth(degree.preferredCourses()) + this.criticalLevel();
+    const priority = this.depth() + this.criticalLevel();
 
     Course.priorityMemo.set(hash, priority);
     return priority;
@@ -180,7 +180,7 @@ export class Course
       const levelHasCourse = nextLevel
         .filter(course => course instanceof Course)
         .map(x => x as Course)
-        .some(course => course.bestOption(degree.preferredCourses()).has(this));
+        .some(course => course.bestOption().has(this));
 
       if (levelHasCourse) {
         Course.criticalMemo.set(hash, criticalLevel);
@@ -212,15 +212,16 @@ export class Course
    * given a set of preferred courses, this will return the best option has the most preferred
    * courses
    */
-  bestOption(preferredCourses: Immutable.Set<string | Course>): Immutable.Set<string | Course> {
+  bestOption(): Immutable.Set<string | Course> {
     const catalog = this.root.catalog;
+    const preferredCourses = this.root.user.degree.preferredCourses();
     const hash = hashObjects({ catalog, preferredCourses, course: this });
     if (Course.bestOptionMemo.has(hash)) {
       return Course.bestOptionMemo.get(hash);
     }
 
     if (typeof preferredCourses.intersect !== 'function') {
-      throw new Error('nope')
+      throw new Error('nope');
     }
 
     const options = this.options();
@@ -257,7 +258,7 @@ export class Course
 
       const closure = option.reduce((fullClosure, course) => {
         if (course instanceof Course) {
-          return fullClosure.add(course).union(course.closure(preferredCourses));
+          return fullClosure.add(course).union(course.closure());
         }
         return fullClosure.add(course);
       }, Immutable.Set<string | Course>());
@@ -285,7 +286,8 @@ export class Course
    * finds the intersection of the given `preferredCourses` and the current course's prerequisite
    * tree.
    */
-  intersection(preferredCourses: Immutable.Set<string | Course>): Immutable.Set<string | Course> {
+  intersection(): Immutable.Set<string | Course> {
+    const preferredCourses = this.root.user.degree.preferredCourses();
     const catalog = this.root.catalog;
     const hash = hashObjects({ preferredCourses, catalog, course: this });
     if (Course.intersectionMemo.has(hash)) {
@@ -305,7 +307,7 @@ export class Course
         }
         if (course instanceof Course) {
           foundCourses = course
-            .intersection(preferredCourses)
+            .intersection()
             .reduce((foundCourses, next) => foundCourses.add(next), foundCourses);
         }
       }
@@ -347,19 +349,20 @@ export class Course
   /**
    * finds the depth of the prerequisite tree using the `bestOption`
    */
-  depth(preferredCourses: Immutable.Set<string | Course>): number {
+  depth(): number {
     const catalog = this.root.catalog;
+    const preferredCourses = this.root.user.degree.preferredCourses();
     const hash = hashObjects({ catalog, preferredCourses, course: this });
     if (Course.depthMemo.has(hash)) {
       return Course.depthMemo.get(hash);
     }
 
-    const bestOption = this.bestOption(preferredCourses);
+    const bestOption = this.bestOption();
 
     let maxDepth = 0;
     for (const course of bestOption) {
       if (course instanceof Course) {
-        const courseDepth = course.depth(preferredCourses);
+        const courseDepth = course.depth();
         if (courseDepth > maxDepth) {
           maxDepth = courseDepth;
         }
@@ -405,8 +408,9 @@ export class Course
     return value;
   }
 
-  closure(preferredCourses: Immutable.Set<string | Course>): Immutable.Set<string | Course> {
+  closure(): Immutable.Set<string | Course> {
     const catalog = this.root.catalog;
+    const preferredCourses = this.root.user.degree.preferredCourses();
     const hash = hashObjects({ course: this, catalog, preferredCourses });
     if (Course.closureMemo.has(hash)) {
       return Course.closureMemo.get(hash);
@@ -415,11 +419,11 @@ export class Course
     let coursesInClosure = Immutable.Set<string | Course>();
     coursesInClosure = coursesInClosure.add(this);
 
-    const bestOption = this.bestOption(preferredCourses);
+    const bestOption = this.bestOption();
     for (const course of bestOption) {
       coursesInClosure = coursesInClosure.add(course);
       if (course instanceof Course) {
-        coursesInClosure = coursesInClosure.union(course.closure(preferredCourses));
+        coursesInClosure = coursesInClosure.union(course.closure());
       }
     }
 
@@ -427,23 +431,18 @@ export class Course
     return coursesInClosure;
   }
 
-  prerequisitesSatisfied(
-    catalog: Catalog,
-    previousCourses: Immutable.Set<string | Course>,
-  ): boolean {
+  prerequisitesSatisfied(previousCourses: Immutable.Set<string | Course>): boolean {
+    const catalog = this.root.catalog;
     const hash = hashObjects({ catalog, previousCourses, course: this });
     if (Course.prerequisitesSatisfiedMemo.has(hash)) {
       return Course.prerequisitesSatisfiedMemo.get(hash);
     }
-    const value = this._prerequisitesSatisfied(catalog, previousCourses);
+    const value = this._prerequisitesSatisfied(previousCourses);
     Course.prerequisitesSatisfiedMemo.set(hash, value);
     return value;
   }
 
-  private _prerequisitesSatisfied(
-    catalog: Catalog,
-    previousCourses: Immutable.Set<string | Course>,
-  ): boolean {
+  private _prerequisitesSatisfied(previousCourses: Immutable.Set<string | Course>): boolean {
     const options = this.options();
     if (options.isEmpty()) return true;
     for (const option of options) {

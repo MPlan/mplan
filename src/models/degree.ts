@@ -67,7 +67,7 @@ export function generatePlans(degree: Degree, catalog: Catalog, options: PlanOpt
     const newCourseCredits = course.credits || course.creditHours || 0;
 
     if (totalCredits + newCourseCredits > creditHourCap) return false;
-    if (!course.prerequisitesSatisfied(catalog, processedCourses)) return false;
+    if (!course.prerequisitesSatisfied(processedCourses)) return false;
     return true;
   }
 
@@ -132,7 +132,7 @@ export class Degree extends Record.define({
     }
 
     const combined = this.degreeGroups.reduce(
-      (combined, group) => combined.union(group.courses(catalog)),
+      (combined, group) => combined.union(group.courses()),
       Immutable.Set<string | Course>(),
     );
     Degree.preferredCoursesMemo.set(hash, combined);
@@ -151,7 +151,7 @@ export class Degree extends Record.define({
       .map(
         course =>
           /*if*/ course instanceof Course
-            ? course.closure(preferredCourses)
+            ? course.closure()
             : Immutable.Set<string | Course>().add(course),
       )
       .reduce(
@@ -171,11 +171,10 @@ export class Degree extends Record.define({
 
     const closure = this.closure(catalog);
     const levelsMutable = [] as Array<Set<string | Course>>;
-    const preferredCourses = this.preferredCourses();
 
     for (const course of closure) {
       if (course instanceof Course) {
-        const depth = course.depth(preferredCourses);
+        const depth = course.depth();
         const set = levelsMutable[depth] || new Set<string | Course>();
         set.add(course);
         levelsMutable[depth] = set;
@@ -192,13 +191,14 @@ export class Degree extends Record.define({
     return levels;
   }
 
-  totalCredits(catalog: Catalog): number {
+  totalCredits(): number {
+    const catalog = this.root.catalog;
     return this.getOrCalculate('totalCredits', [catalog, this], () => {
       return this.degreeGroups.reduce(
         (totalCredits, group) =>
           totalCredits +
           group
-            .courses(catalog)
+            .courses()
             .reduce(
               (totalCredits, course) =>
                 totalCredits +
@@ -210,15 +210,16 @@ export class Degree extends Record.define({
     });
   }
 
-  completedCredits(catalog: Catalog): number {
+  completedCredits(): number {
     return 0;
   }
 
-  percentComplete(catalog: Catalog) {
-    return this.completedCredits(catalog) / this.totalCredits(catalog);
+  percentComplete() {
+    return this.completedCredits() / this.totalCredits();
   }
 
-  generatePlan(catalog: Catalog, planOptions: PlanOptions) {
+  generatePlan(planOptions: PlanOptions) {
+    const catalog = this.root.catalog;
     const plan = generatePlans(this, catalog, planOptions);
     const semesterMap = plan
       .map(

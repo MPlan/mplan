@@ -149,7 +149,7 @@ export class Timeline extends Model.store.connect({
     const considerHistoricalData = considerHistoricalDataElement.checked;
 
     this.setStore(store => {
-      const newPlan = store.user.degree.generatePlan(store.catalog, {
+      const newPlan = store.user.degree.generatePlan({
         considerHistoricalData,
         creditHourCap,
         includeSummerCourses: considerSummerClasses,

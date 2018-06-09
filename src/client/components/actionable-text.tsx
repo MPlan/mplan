@@ -7,7 +7,7 @@ export const ActionableText = styled(Text)`
   font-family: ${styles.fontFamily};
   color: ${styles.link};
   &:active {
-    ${styles.linkActive};
+    color: ${styles.linkActive};
   }
   &:hover {
     text-decoration: underline;
