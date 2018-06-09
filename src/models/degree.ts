@@ -50,7 +50,7 @@ export function generatePlans(degree: Degree, catalog: Catalog, options: PlanOpt
   let unplacedCourses = Immutable.Set<Course>();
 
   // === INITIALIZE WITH INITIAL STATE ===
-  const closure = degree.closure(catalog);
+  const closure = degree.closure();
   processedCourses = closure.filter(prerequisite => typeof prerequisite === 'string');
   unplacedCourses = closure
     .filter(prerequisite => prerequisite instanceof Course)
@@ -139,7 +139,8 @@ export class Degree extends Record.define({
     return combined;
   }
 
-  closure(catalog: Catalog): Immutable.Set<string | Course> {
+  closure(): Immutable.Set<string | Course> {
+    const catalog = this.root.catalog;
     const hash = hashObjects({ catalog, degree: this });
     if (Degree.closureMemo.has(hash)) {
       return Degree.closureMemo.get(hash);
@@ -163,13 +164,14 @@ export class Degree extends Record.define({
     return closure;
   }
 
-  levels(catalog: Catalog): Immutable.List<Immutable.Set<string | Course>> {
+  levels(): Immutable.List<Immutable.Set<string | Course>> {
+    const catalog = this.root.catalog;
     const hash = hashObjects({ degree: this, catalog });
     if (Degree.levelsMemo.has(hash)) {
       return Degree.levelsMemo.get(hash);
     }
 
-    const closure = this.closure(catalog);
+    const closure = this.closure();
     const levelsMutable = [] as Array<Set<string | Course>>;
 
     for (const course of closure) {

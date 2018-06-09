@@ -40,19 +40,21 @@ export class Semester extends Record.define({
     });
   }
 
-  totalCredits(catalog: Catalog) {
-    return this.courses(catalog)
+  totalCredits() {
+    return this.courses()
       .map(course => course.credits || 0)
       .reduce((sum, next) => sum + next, 0);
   }
 
-  courses(catalog: Catalog) {
+  courses() {
+    const catalog = this.root.catalog;
     return this.getOrCalculate('courses', [catalog, this], () => {
       return this._courseIds.map(courseId => catalog.courseMap.get(courseId)!);
     });
   }
 
-  courseArray(catalog: Catalog) {
+  courseArray() {
+    const catalog = this.root.catalog;
     return this.getOrCalculate('courseArray', [catalog, this], () => {
       return this._courseIds.map(courseId => catalog.courseMap.get(courseId)!).toArray();
     });

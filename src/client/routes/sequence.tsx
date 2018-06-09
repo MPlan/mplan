@@ -212,7 +212,7 @@ export class Sequence extends Model.store.connect({
     }
 
     const pointMap = degree
-      .closure(catalog)
+      .closure()
       .map(course => {
         const sequenceCourseElement = document.querySelector(`.${courseIdClassName(course)}`);
         if (!sequenceCourseElement) return undefined;
@@ -241,7 +241,7 @@ export class Sequence extends Model.store.connect({
 
     const edges = flatten(
       degree
-        .closure(catalog)
+        .closure()
         .filter(course => course instanceof Model.Course)
         .map(course => course as Model.Course)
         .map(course => {
@@ -251,8 +251,7 @@ export class Sequence extends Model.store.connect({
           const courseDepth = course.depth();
           const edges = options
             .map(option => {
-              const depth =
-                /*if*/ option instanceof Model.Course ? option.depth() : 0;
+              const depth = /*if*/ option instanceof Model.Course ? option.depth() : 0;
               const optionPoints = pointMap.get(option);
               if (!optionPoints) return undefined;
               if (depth < courseDepth) {
@@ -394,7 +393,7 @@ export class Sequence extends Model.store.connect({
         </Header>
         <GraphContainer className="graph-container" onScroll={this.reflowTrigger}>
           <GraphWrapper className="graph-wrapper" innerRef={this.graphWrapperRef}>
-            {this.store.user.degree.levels(this.store.catalog).map((level, levelIndex) => (
+            {this.store.user.degree.levels().map((level, levelIndex) => (
               <Level
                 key={levelIndex}
                 style={{

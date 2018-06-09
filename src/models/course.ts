@@ -161,7 +161,7 @@ export class Course
       return Course.criticalMemo.get(hash);
     }
 
-    const levels = degree.levels(catalog);
+    const levels = degree.levels();
     const levelCount = levels.count();
     const levelIndex = levels.findIndex(level => level.has(this));
     if (levelIndex <= -1) {

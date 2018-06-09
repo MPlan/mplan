@@ -43,17 +43,19 @@ export class Plan extends Record.define({
     return this.update('semesterMap', map => map.set(newSemester.id, newSemester));
   }
 
-  unplacedCourses(degree: Degree, catalog: Catalog): Course[] {
+  unplacedCourses(): Course[] {
+    const degree = this.root.user.degree;
+    const catalog = this.root.catalog;
     const hash = hashObjects({ plan: this, degree, catalog });
     if (Plan.unplacedCoursesMemo.has(hash)) {
       return Plan.unplacedCoursesMemo.get(hash);
     }
 
-    const closure = degree
-      .closure(catalog)
-      .filter(course => course instanceof Course) as Immutable.Set<Course>;
+    const closure = degree.closure().filter(course => course instanceof Course) as Immutable.Set<
+      Course
+    >;
     const coursesInPlan = this.semesterMap
-      .map(semester => semester.courses(catalog))
+      .map(semester => semester.courses())
       .reduce((coursesInPlan, courses) => coursesInPlan.union(courses), Immutable.Set<Course>());
 
     const unplacedCourses = closure
@@ -64,7 +66,8 @@ export class Plan extends Record.define({
     return unplacedCourses;
   }
 
-  warningsNotOfferedDuringSeason(catalog: Catalog): string[] {
+  warningsNotOfferedDuringSeason(): string[] {
+    const catalog = this.root.catalog;
     const hash = hashObjects({ plan: this, catalog });
     if (Plan.warningsNotOfferedDuringSeason.has(hash)) {
       return Plan.warningsNotOfferedDuringSeason.get(hash);

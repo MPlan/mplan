@@ -72,14 +72,7 @@ export class Toolbox extends Model.store.connect({
   };
 
   renderCourse = (course: Model.Course) => {
-    return (
-      <SemesterCourse
-        key={course.id}
-        course={course}
-        degree={this.store.user.degree}
-        catalog={this.store.catalog}
-      />
-    );
+    return <SemesterCourse key={course.id} course={course} />;
   };
 
   render() {
@@ -97,7 +90,7 @@ export class Toolbox extends Model.store.connect({
           >
             <Dropzone
               id={'unplaced-courses'}
-              elements={plan.unplacedCourses(degree, catalog)}
+              elements={plan.unplacedCourses()}
               getKey={course => course.id}
               onChangeSort={this.handleChangeSort}
               render={this.renderCourse}
@@ -108,7 +101,7 @@ export class Toolbox extends Model.store.connect({
             onToggle={this.handleWarningsToggle}
             open={this.state.warningsOpen}
           >
-            {plan.warningsNotOfferedDuringSeason(catalog).map(warning => (
+            {plan.warningsNotOfferedDuringSeason().map(warning => (
               <Warning key={warning}>
                 <Text>{warning}</Text>
               </Warning>

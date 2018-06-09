@@ -83,8 +83,6 @@ const Circle = styled.div`
 
 export interface SemesterProps {
   semester: Model.Semester;
-  degree: Model.Degree;
-  catalog: Model.Catalog;
 }
 
 const actions = {
@@ -113,7 +111,7 @@ export class Semester extends Model.store.connect({
       store.updatePlan(plan => {
         const semester = plan.semesterMap.get(fromDropzoneId);
         if (fromDropzoneId === 'unplaced-courses') {
-          const course = plan.unplacedCourses(this.store.user.degree, this.store.catalog)[oldIndex];
+          const course = plan.unplacedCourses()[oldIndex];
           return plan.updateSemester(toDropzoneId, semester => {
             const newCourses = semester._courseIds.insert(newIndex, course.catalogId);
             return semester.set('_courseIds', newCourses);
@@ -153,8 +151,6 @@ export class Semester extends Model.store.connect({
       <SemesterCourse
         key={course.id}
         course={course}
-        degree={this.props.degree}
-        catalog={this.props.catalog}
         onDeleteCourse={() => this.handleDeleteCourse(course)}
       />
     );
@@ -163,9 +159,9 @@ export class Semester extends Model.store.connect({
   handleAction = (action: keyof typeof actions) => {};
 
   render() {
-    const { semester, catalog } = this.props;
-    const courses = semester.courseArray(catalog);
-    const totalCredits = semester.totalCredits(catalog);
+    const { semester } = this.props;
+    const courses = semester.courseArray();
+    const totalCredits = semester.totalCredits();
     return (
       <RightClickMenu header={semester.name} actions={actions} onAction={this.handleAction}>
         <Container className={`semester-${semester.id}`}>

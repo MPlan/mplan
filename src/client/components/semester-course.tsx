@@ -52,13 +52,11 @@ const Body = styled(View)`
 
 export interface SemesterCourseProps {
   course: Model.Course;
-  degree: Model.Degree;
-  catalog: Model.Catalog;
   onDeleteCourse?: () => void;
 }
 
 export function SemesterCourse(props: SemesterCourseProps) {
-  const { course, degree, catalog, onDeleteCourse } = props;
+  const { course, onDeleteCourse } = props;
   const criticalLevel = course.criticalLevel();
 
   function handleAction(action: string) {
