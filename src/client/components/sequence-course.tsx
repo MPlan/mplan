@@ -4,7 +4,6 @@ import { ActionableText } from './actionable-text';
 import { View, Text } from './';
 import * as Model from '../models';
 import * as styles from '../styles';
-import * as Immutable from 'immutable';
 import { createClassName } from '../../utilities/utilities';
 import { PreferredPrerequisite } from './preferred-prerequisite';
 
@@ -29,8 +28,6 @@ const NameCompact = styled(ActionableText)`
   overflow: hidden;
   text-overflow: ellipsis;
 `;
-
-const TooltipName = styled(Text)``;
 
 const Critical = styled(View)`
   margin-bottom: ${styles.space(-1)};

@@ -3,7 +3,6 @@ import * as Model from '../models';
 import styled from 'styled-components';
 import { View } from './view';
 import { Draggable } from './draggable';
-import * as uuid from 'uuid/v4';
 import { oneLine } from 'common-tags';
 import { Subject } from 'rxjs/Subject';
 import { throttleTime } from 'rxjs/operators';
@@ -78,6 +77,7 @@ export class Dropzone extends Model.store.connect({
     }
   }
 
+  // TODO: this doesn't need clientX?
   handleDragOverThrottled = ({ clientY, clientX }: { clientY: number; clientX: number }) => {
     this.lastDragOverTime = new Date().getTime();
 
@@ -111,15 +111,13 @@ export class Dropzone extends Model.store.connect({
 
     let closestElementId = '';
     let closestDistance = Number.POSITIVE_INFINITY;
-    let closestY = 0;
     let aboveMidpoint = false;
 
-    for (const { y, x, dragId, midpoint } of draggables) {
+    for (const { y, dragId, midpoint } of draggables) {
       const distance = abs(clientY - y);
       if (distance < closestDistance) {
         closestDistance = distance;
         closestElementId = dragId;
-        closestY = y;
         aboveMidpoint = clientY < midpoint;
       }
     }

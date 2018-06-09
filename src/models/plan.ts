@@ -1,10 +1,8 @@
 import * as Immutable from 'immutable';
 import * as Record from '../recordize';
 import { ObjectId, hashObjects } from './';
-import { Catalog } from './catalog';
 import { Course } from './course';
 import { Semester } from './semester';
-import { Degree } from './degree';
 import { flatten } from 'lodash';
 import { pointer } from './pointer';
 import { App } from './app';

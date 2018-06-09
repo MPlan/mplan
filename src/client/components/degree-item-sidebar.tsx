@@ -19,9 +19,6 @@ const Container = styled(View)`
     box-shadow: 0 0.2rem 1.3rem 0 rgba(12, 0, 51, 0.2);
   }
 `;
-const Body = styled(View)`
-  flex: 1;
-`;
 const Icon = styled(View)`
   min-width: ${styles.space(1)};
   flex-direction: row;

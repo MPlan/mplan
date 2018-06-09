@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import * as styles from '../styles';
 import { View } from './view';
 import { Text } from './text';
-import { Button } from './button';
 import { Fa } from './fa';
 
 const Container = styled(View)`

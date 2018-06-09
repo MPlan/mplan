@@ -17,8 +17,6 @@ const CourseHeader = styled(View)`
   align-items: baseline;
 `;
 
-const CoursePrerequisites = styled(View)``;
-
 const CriticalInfo = styled(View)`
   margin-bottom: ${styles.space(-1)};
 `;

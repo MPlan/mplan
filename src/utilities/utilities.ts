@@ -1,4 +1,3 @@
-import * as cluster from 'cluster';
 import * as colors from 'colors';
 import { oneLine } from 'common-tags';
 

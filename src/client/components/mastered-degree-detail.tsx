@@ -9,7 +9,6 @@ import { Button } from './button';
 import { DegreeDescription } from './degree-description';
 import { DegreeCreditHours } from './degree-credit-hours';
 import { MasteredDegreeGroup } from './mastered-degree-group';
-import { groupBy } from 'rxjs/operators';
 import { activateOnEdit, selectTextFromInputRef } from 'utilities/refs';
 
 const Container = styled(View)`

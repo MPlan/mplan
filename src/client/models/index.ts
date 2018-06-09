@@ -1,11 +1,8 @@
-import * as Recordize from '../../recordize';
 import * as Record from '../../models';
 import * as Immutable from 'immutable';
 import * as Model from '../../models/models';
 import { store } from '../../models/store';
 export { store };
-// export const store = Recordize.createStore(new Record.App());
-import { oneLine } from 'common-tags';
 import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs/Observer';
 import { map, distinct, debounceTime, share } from 'rxjs/operators';
@@ -134,9 +131,6 @@ async function fetchMasteredDegrees() {
   }, Immutable.Map<string, Record.MasteredDegree>());
   return map;
 }
-
-const id0 = Record.ObjectId();
-const id1 = Record.ObjectId();
 
 async function load() {
   const [catalog, userFromServer, degrees] = await Promise.all([

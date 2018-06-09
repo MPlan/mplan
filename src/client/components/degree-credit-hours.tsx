@@ -1,5 +1,4 @@
 import * as React from 'react';
-import * as Model from '../models';
 import * as styles from '../styles';
 import styled from 'styled-components';
 import { View } from './view';
@@ -19,24 +18,6 @@ const Header = styled(Text)`
 const SubHeader = styled(Text)`
   margin-bottom: ${styles.space(-1)};
   color: ${styles.textLight};
-`;
-const EditButton = styled.button`
-  background-color: transparent;
-  border: none;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  width: ${styles.space(1)};
-  outline: none;
-  color: ${styles.gray};
-  &:hover,
-  &:focus {
-    color: ${styles.grayDark};
-  }
-  &:active {
-    color: ${styles.black};
-  }
 `;
 const ButtonRow = styled(View)`
   flex-direction: row;

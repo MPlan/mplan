@@ -12,21 +12,6 @@ import * as Model from './models';
 import createBrowserHistory from 'history/createBrowserHistory';
 export const history = createBrowserHistory();
 
-const StyledView = styled(View)`
-  &,
-  & * {
-    color: ${styles.gray};
-  }
-  &:hover,
-  &:hover * {
-    color: ${styles.grayDark};
-  }
-  &:active,
-  &:active * {
-    color: ${styles.black};
-  }
-`;
-
 const AuthenticatedRouteContainer = styled(View)`
   flex: 1;
 `;

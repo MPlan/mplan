@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styled, { ThemedStyledFunction } from 'styled-components';
+import styled from 'styled-components';
 
 export interface ViewProps
   extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {}

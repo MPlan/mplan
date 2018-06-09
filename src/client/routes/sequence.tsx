@@ -3,8 +3,6 @@ import * as Model from '../models';
 import {
   View,
   Text,
-  Button,
-  Prerequisite,
   SequenceCourse,
   courseIdClassName,
   ActionableText,
@@ -68,8 +66,6 @@ const LevelHeader = styled(View)`
   justify-content: flex-end;
   min-height: 4rem;
 `;
-
-const PrerequisiteContainer = styled(View)``;
 
 const Header = styled(View)`
   padding: ${styles.space(1)};
@@ -173,7 +169,7 @@ export class Sequence extends Model.store.connect({
     }));
   }
 
-  handleCourseMouseExit(course: string | Model.Course) {
+  handleCourseMouseExit() {
     this.setState(previousState => ({
       ...previousState,
       mouseOverCourse: undefined,
@@ -186,7 +182,7 @@ export class Sequence extends Model.store.connect({
       selectedCourse: course,
     }));
   }
-  handleCourseBlur(course: string | Model.Course) {
+  handleCourseBlur() {
     this.setState(previousState => ({
       ...previousState,
       selectedCourse: undefined,
@@ -323,8 +319,6 @@ export class Sequence extends Model.store.connect({
 
   courseHighlighted(course: string | Model.Course) {
     if (typeof course === 'string') return false;
-    const degree = this.store.user.degree;
-    const catalog = this.store.catalog;
     const bestOption = course.bestOption();
     if (this.state.mouseOverCourse === undefined) {
       const selectedCourse = this.state.selectedCourse;
@@ -427,8 +421,8 @@ export class Sequence extends Model.store.connect({
                         key={/*if*/ course instanceof Model.Course ? course.id : course}
                         course={course}
                         onMouseOver={() => this.handleCourseMouseOver(course)}
-                        onMouseExit={() => this.handleCourseMouseExit(course)}
-                        onBlur={() => this.handleCourseBlur(course)}
+                        onMouseExit={() => this.handleCourseMouseExit()}
+                        onBlur={() => this.handleCourseBlur()}
                         onFocus={() => this.handleCourseFocus(course)}
                         focused={this.courseFocused(course)}
                         highlighted={this.courseHighlighted(course)}
@@ -447,7 +441,7 @@ export class Sequence extends Model.store.connect({
                 viewBox={`0 0 ${graphWidth} ${graphHeight}`}
                 preserveAspectRatio="none"
               >
-                {this.state.edges.map((edge, index) => {
+                {this.state.edges.map((edge) => {
                   const nodesFocused = edge.nodes.some(node => this.courseFocused(node));
                   const nodesDimmed = edge.nodes.some(node => this.courseDimmed(node));
                   const startingPointX = edge.x1;

@@ -12,12 +12,7 @@ import {
 } from '../components';
 import * as styles from '../styles';
 import * as Model from '../models';
-import * as Immutable from 'immutable';
 import styled from 'styled-components';
-import { allCombinations } from '../models';
-import { parseToRgb } from 'polished';
-
-const rgbaBlue = parseToRgb(styles.blue);
 
 const Container = styled(View)`
   flex-direction: row;
@@ -134,7 +129,6 @@ export class Timeline extends Model.store.connect({
   handleScheduleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formElement = e.currentTarget;
-    const scheduleStartElement = formElement.querySelector('.schedule-start') as HTMLInputElement;
     const creditHourCapElement = formElement.querySelector('.credit-hour-cap') as HTMLInputElement;
     const considerSummerClassesElement = formElement.querySelector(
       '.consider-summer-classes',
@@ -143,7 +137,6 @@ export class Timeline extends Model.store.connect({
       '.consider-historical-data',
     ) as HTMLInputElement;
 
-    const scheduleStart = scheduleStartElement.value;
     const creditHourCap = parseInt(creditHourCapElement.value, 10);
     const considerSummerClasses = considerSummerClassesElement.checked;
     const considerHistoricalData = considerHistoricalDataElement.checked;

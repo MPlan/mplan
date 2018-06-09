@@ -5,7 +5,6 @@ import { View } from './view';
 import { Text } from './text';
 import * as uuid from 'uuid/v4';
 import * as styles from '../styles';
-import { wait } from '../../utilities/utilities';
 
 const Container = styled(View)`
   position: relative;
@@ -14,11 +13,6 @@ const Container = styled(View)`
   &:active {
     cursor: grabbing;
   }
-`;
-const FloatingChild = styled.div`
-  position: absolute;
-  z-index: 200;
-  box-shadow: 0 0.4rem 1.3rem 0 rgba(12, 0, 51, 0.2);
 `;
 const ChildWrapperContainer = styled.div`
   transition: all 200ms;

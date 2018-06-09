@@ -5,10 +5,7 @@ import { Text } from './text';
 import styled from 'styled-components';
 import * as styles from '../styles';
 import { DropdownMenu } from './dropdown-menu';
-import { Fa } from './fa';
-import { PreferredPrerequisite } from './preferred-prerequisite';
 import { RightClickMenu } from './right-click-menu';
-import { StringIterator } from 'lodash';
 
 const Container = styled(View)`
   padding: ${styles.space(-1)} ${styles.space(0)};

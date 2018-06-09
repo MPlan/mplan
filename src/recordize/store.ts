@@ -2,12 +2,7 @@ import * as Immutable from 'immutable';
 import * as React from 'react';
 import { oneLine } from 'common-tags';
 
-export interface ConnectionOptions<
-  Store,
-  Props = {},
-  State = {},
-  Scope = Store
-> {
+export interface ConnectionOptions<Store, Props = {}, State = {}, Scope = Store> {
   scope?: (store: Store) => Scope;
   descope?: (store: Store, scope: Scope) => Store;
   initialState?: State;
@@ -109,8 +104,6 @@ export function createStore<Store extends Immutable.Record<any>>(initialStore: S
     class ComponentClass extends React.Component<Props, State> {
       constructor(props: Props, context?: any) {
         super(props, context);
-        const getScope = connectionOptions.scope || ((store: Store) => (store as any) as Scope);
-        const scope = getScope(currentStore);
         this.state = {
           ...((connectionOptions.initialState || {}) as any),
         };
@@ -175,7 +168,7 @@ export function createStore<Store extends Immutable.Record<any>>(initialStore: S
         const update = (previousStore: Store) => {
           const getScope = connectionOptions.scope || ((store: Store) => (store as any) as Scope);
           const setScope =
-            connectionOptions.descope || ((store: any, scope: any) => scope as Store);
+            connectionOptions.descope || ((_: any, scope: any) => scope as Store);
 
           const scope = getScope(previousStore);
           const updatedScope = updateScope(scope);

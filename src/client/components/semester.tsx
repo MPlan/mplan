@@ -156,7 +156,7 @@ export class Semester extends Model.store.connect({
     );
   };
 
-  handleAction = (action: keyof typeof actions) => {};
+  handleAction = (_: keyof typeof actions) => {};
 
   render() {
     const { semester } = this.props;

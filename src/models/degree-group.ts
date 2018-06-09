@@ -1,7 +1,6 @@
 import * as Immutable from 'immutable';
 import * as Record from '../recordize';
 import { ObjectId } from './';
-import { Catalog } from './catalog';
 import { Course } from './course';
 import { pointer } from './pointer';
 import { App } from './app';

@@ -166,6 +166,7 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
   render() {
     const { degreeGroup } = this.props;
     const courses = degreeGroup.courses();
+    // TODO: fix logic here
     const creditHoursMin = courses.reduce(
       (creditHoursMin, next) =>
         next instanceof Model.Course ? next.creditsMin || next.creditHoursMin || 0 : creditHoursMin,

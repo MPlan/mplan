@@ -240,8 +240,6 @@ export class Degree extends Model.store.connect({
     });
   };
 
-  handleSelectMajor(majorId: string) {}
-
   render() {
     const currentDegreeGroup = this.state.currentDegreeGroup;
     const degree = this.store.user.degree;

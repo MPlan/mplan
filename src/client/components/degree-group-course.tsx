@@ -2,7 +2,6 @@ import * as React from 'react';
 import * as Model from '../models';
 import { View } from './view';
 import { Text } from './text';
-import { Fa } from './fa';
 import { ActionableText } from './actionable-text';
 import { DropdownMenu } from './dropdown-menu';
 import styled from 'styled-components';

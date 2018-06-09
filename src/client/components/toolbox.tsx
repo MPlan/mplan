@@ -50,10 +50,10 @@ export class Toolbox extends Model.store.connect({
     }));
   };
 
-  handleDeleteCourse(course: Model.Course) {}
+  handleDeleteCourse(_: Model.Course) {}
 
   handleChangeSort = (e: SortChange) => {
-    const { fromDropzoneId, toDropzoneId, newIndex, oldIndex } = e;
+    const { fromDropzoneId, oldIndex } = e;
     this.setStore(store =>
       store.updatePlan(plan => {
         const semester = plan.semesterMap.get(fromDropzoneId);
@@ -76,9 +76,7 @@ export class Toolbox extends Model.store.connect({
   };
 
   render() {
-    const degree = this.store.user.degree;
     const plan = this.store.user.plan;
-    const catalog = this.store.catalog;
     return (
       <Container style={{ maxWidth: this.store.ui.showToolbox ? '16rem' : 0 }}>
         <Header>Toolbox</Header>

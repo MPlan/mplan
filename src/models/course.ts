@@ -4,7 +4,6 @@ import * as Model from './models';
 import { ObjectId, hashObjects } from './';
 import { Section } from './section';
 import { Catalog } from './catalog';
-import { Degree } from './degree';
 import { pointer } from './pointer';
 import { App } from './app';
 

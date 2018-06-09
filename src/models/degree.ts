@@ -1,7 +1,6 @@
 import * as Immutable from 'immutable';
 import * as Record from '../recordize';
 import { ObjectId, hashObjects } from './';
-import { Catalog } from './catalog';
 import { Course } from './course';
 import { Semester } from './semester';
 import { DegreeGroup } from './degree-group';
@@ -38,7 +37,7 @@ export interface PlanOptions {
   considerHistoricalData: boolean;
 }
 
-export function generatePlans(degree: Degree, catalog: Catalog, options: PlanOptions) {
+export function generatePlans(degree: Degree, options: PlanOptions) {
   // === DEFINE CONSTANTS ===
   const creditHourCap = options.creditHourCap;
   const semesterCap = 15;
@@ -221,8 +220,7 @@ export class Degree extends Record.define({
   }
 
   generatePlan(planOptions: PlanOptions) {
-    const catalog = this.root.catalog;
-    const plan = generatePlans(this, catalog, planOptions);
+    const plan = generatePlans(this, planOptions);
     const semesterMap = plan
       .map(
         (set, i) =>

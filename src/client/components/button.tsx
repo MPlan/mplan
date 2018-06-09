@@ -1,12 +1,5 @@
-import * as React from 'react';
 import styled from 'styled-components';
 import * as styles from '../styles';
-
-interface ButtonProps
-  extends React.DetailedHTMLProps<
-      React.ButtonHTMLAttributes<HTMLButtonElement>,
-      HTMLButtonElement
-    > {}
 
 export const Button = styled.button`
   background-color: ${styles.white};

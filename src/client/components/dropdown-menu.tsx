@@ -4,8 +4,7 @@ import { Text } from './text';
 import styled from 'styled-components';
 import { Fa } from './fa';
 import * as styles from '../styles';
-import { wait } from '../../utilities/utilities';
-import { Dropdown, DropdownProps } from './dropdown';
+import { Dropdown } from './dropdown';
 import { MenuItem } from './menu-item';
 
 const Container = styled(View)`
@@ -37,9 +36,6 @@ const EllipsisButton = styled.button`
     background-color: ${styles.grayLighter};
   }
   transition: all 0.2;
-`;
-const Icon = styled(Fa)`
-  margin-right: ${styles.space(0)};
 `;
 
 export interface DropdownMenuProps<T extends { [P in keyof T]: MenuItem }> {

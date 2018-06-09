@@ -1,9 +1,8 @@
 import * as React from 'react';
-import { Dropdown, DropdownProps } from './dropdown';
+import { Dropdown } from './dropdown';
 import { MenuItem } from './menu-item';
 import styled from 'styled-components';
 import { View } from './view';
-import { wait } from '../../utilities/utilities';
 
 const Container = styled(View)`
   position: relative;

@@ -1,4 +1,3 @@
-import { WebAuth } from 'auth0-js';
 import { history } from './app';
 import * as jwtDecode from 'jwt-decode';
 import { encode } from '../utilities/utilities';

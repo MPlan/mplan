@@ -5,7 +5,6 @@ import {
   Text,
   FloatingActionButton,
   DegreeItem,
-  Toolbox,
   Fa,
   DegreeItemSidebar,
   MasteredDegreeDetail,
@@ -138,14 +137,7 @@ const SidebarContent = styled(View)`
   overflow: auto;
   flex: 1;
 `;
-const fabActions = {
-  degree: {
-    text: 'New degree',
-    icon: 'plus',
-    color: styles.blue,
-  },
-};
-
+ 
 const initialState = {
   selectedMasteredDegree: undefined as Model.MasteredDegree | undefined,
 };
@@ -167,7 +159,7 @@ export class DegreeEditor extends Model.store.connect({
     searchRef.select();
   }
 
-  componentWillReceiveProps(nextProps: DegreeEditorProps, state: DegreeEditorState) {
+  componentWillReceiveProps(nextProps: DegreeEditorProps) {
     const degreeIdMatch = /\/degree-editor\/([^&/?#]*)/.exec(nextProps.location.pathname);
     // the OR makes the `selectedMasteredDegree` undefined
     const degreeId = (degreeIdMatch && degreeIdMatch[1]) || 'NO_MATCH';
