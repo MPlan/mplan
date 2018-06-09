@@ -91,7 +91,6 @@ interface MasteredDegreeDetailState {
 }
 
 export interface MasteredDegreeDetailProps {
-  catalog: Model.Catalog;
   masteredDegree: Model.MasteredDegree;
   onDegreeUpdate: (update: (degree: Model.MasteredDegree) => Model.MasteredDegree) => void;
 }
@@ -229,7 +228,6 @@ export class MasteredDegreeDetail extends React.Component<
                 masteredDegreeGroup={group}
                 onDegreeGroupUpdate={update => this.handleDegreeGroupUpdate(group, update)}
                 onDeleteGroup={() => this.handleDeleteGroup(group)}
-                catalog={this.props.catalog}
               />
             ))}
             {/*if*/ masteredDegree.masteredDegreeGroups.count() === 0 ? (

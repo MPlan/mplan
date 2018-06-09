@@ -23,6 +23,22 @@ export class MasteredDegreeGroup extends Record.define({
     return this._id.toHexString();
   }
 
+  defaultCourses() {
+    const catalog = this.root.catalog;
+    return this.defaultIds
+      .map(id => catalog.courseMap.get(id)!)
+      .filter(x => !!x)
+      .toArray();
+  }
+
+  allowedCourses() {
+    const catalog = this.root.catalog;
+    return this.allowListIds
+      .map(id => catalog.courseMap.get(id)!)
+      .filter(x => !!x)
+      .toArray();
+  }
+
   addToDefaults(course: string | Course) {
     const id = course instanceof Course ? course.catalogId : course;
     if (this.defaultIds.includes(id)) {

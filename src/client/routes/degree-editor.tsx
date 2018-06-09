@@ -200,7 +200,6 @@ export class DegreeEditor extends Model.store.connect({
     return (
       <DegreeDetailContent>
         <MasteredDegreeDetail
-          catalog={this.store.catalog}
           masteredDegree={selectedDegree}
           onDegreeUpdate={this.handleDegreeUpdate}
         />
@@ -251,10 +250,7 @@ export class DegreeEditor extends Model.store.connect({
               <SidebarHeaderText>Back</SidebarHeaderText>
             </SidebarBack>
             <DegreeSearch tabIndex={0} onSubmit={this.handleSearchSubmit}>
-              <DegreeSearchInput
-                type="input"
-                placeholder="search for a degree..."
-              />
+              <DegreeSearchInput type="input" placeholder="search for a degree..." />
               <DegreeSearchButton>
                 <Fa icon="search" />
               </DegreeSearchButton>
@@ -306,13 +302,16 @@ export class DegreeEditor extends Model.store.connect({
               this.setStore(store =>
                 store.update('masteredDegrees', degrees => {
                   const id = Model.ObjectId();
-                  return degrees.set(id.toHexString(), new Model.MasteredDegree({
-                    _id: id,
-                    name: 'New degree',
-                    descriptionHtml: 'Default description. Please change!',
-                    minimumCredits: 120,
-                    published: false
-                  }));
+                  return degrees.set(
+                    id.toHexString(),
+                    new Model.MasteredDegree({
+                      _id: id,
+                      name: 'New degree',
+                      descriptionHtml: 'Default description. Please change!',
+                      minimumCredits: 120,
+                      published: false,
+                    }),
+                  );
                 }),
               );
             }

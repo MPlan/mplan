@@ -23,15 +23,13 @@ const CriticalInfo = styled(View)`
   margin-bottom: ${styles.space(-1)};
 `;
 
-export function CourseWithPrerequisites({
-  course,
-  criticalLevel
-}: {
+interface CourseWithPrerequisitesProps {
   course: string | Model.Course;
   criticalLevel: number;
-}) {
-  const courseName =
-    /*if*/ course instanceof Model.Course ? course.simpleName : course;
+}
+
+export function CourseWithPrerequisites({ course, criticalLevel }: CourseWithPrerequisitesProps) {
+  const courseName = /*if*/ course instanceof Model.Course ? course.simpleName : course;
 
   if (typeof course === 'string') {
     return (

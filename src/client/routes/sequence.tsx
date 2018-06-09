@@ -426,8 +426,6 @@ export class Sequence extends Model.store.connect({
                       <SequenceCourse
                         key={/*if*/ course instanceof Model.Course ? course.id : course}
                         course={course}
-                        catalog={this.store.catalog}
-                        degree={this.store.user.degree}
                         onMouseOver={() => this.handleCourseMouseOver(course)}
                         onMouseExit={() => this.handleCourseMouseExit(course)}
                         onBlur={() => this.handleCourseBlur(course)}

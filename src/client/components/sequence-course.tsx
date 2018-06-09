@@ -40,8 +40,6 @@ const CriticalCompact = styled(View)``;
 
 export interface SequenceCourseProps {
   course: string | Model.Course;
-  catalog: Model.Catalog;
-  degree: Model.Degree;
   highlighted: boolean;
   focused: boolean;
   compactMode: boolean;
@@ -57,12 +55,14 @@ export function courseIdClassName(course: string | Model.Course) {
 }
 
 export function SequenceCourse(props: SequenceCourseProps) {
-  const { course, catalog, degree } = props;
+  const { course } = props;
 
   const style = {
     backgroundColor: /*if*/ props.focused
       ? styles.highlightBlue
-      : /*if*/ props.highlighted ? styles.highlight : styles.white,
+      : /*if*/ props.highlighted
+        ? styles.highlight
+        : styles.white,
     outline: /*if*/ props.focused
       ? `${styles.borderWidth} solid ${styles.focusBorderColor}`
       : 'none',
@@ -122,15 +122,13 @@ export function SequenceCourse(props: SequenceCourseProps) {
               </Text>
             ) : (
               <Text small>
-                Can be taken as many as {course.criticalLevel()} semesters later
-                without delaying graduation.
+                Can be taken as many as {course.criticalLevel()} semesters later without delaying
+                graduation.
               </Text>
             )}
           </Critical>
 
-          {/*if*/ course.prerequisites ? (
-            <PreferredPrerequisite course={course} degree={degree} catalog={catalog} />
-          ) : null}
+          {/*if*/ course.prerequisites ? <PreferredPrerequisite course={course} /> : null}
         </View>
       )}
     </Container>

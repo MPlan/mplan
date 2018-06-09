@@ -116,7 +116,6 @@ const headingActions = {
 };
 
 export interface MasteredDegreeGroupProps {
-  catalog: Model.Catalog;
   masteredDegreeGroup: Model.MasteredDegreeGroup;
   onDegreeGroupUpdate: (
     update: (group: Model.MasteredDegreeGroup) => Model.MasteredDegreeGroup,
@@ -363,7 +362,7 @@ export class MasteredDegreeGroup extends React.Component<
   };
 
   render() {
-    const { masteredDegreeGroup, catalog } = this.props;
+    const { masteredDegreeGroup } = this.props;
     return (
       <Container>
         <RightClickMenu
@@ -541,10 +540,7 @@ export class MasteredDegreeGroup extends React.Component<
               </Row>
               <Hr />
               <EditableCourseList
-                currentCourses={masteredDegreeGroup.defaultIds
-                  .map(id => catalog.courseMap.get(id)!)
-                  .filter(x => !!x)
-                  .toArray()}
+                currentCourses={masteredDegreeGroup.defaultCourses()}
                 onChangeCourses={this.handleChangeDefaultCourses}
               />
             </View>
@@ -560,10 +556,7 @@ export class MasteredDegreeGroup extends React.Component<
               </Row>
               <Hr />
               <EditableCourseList
-                currentCourses={masteredDegreeGroup.allowListIds
-                  .map(id => catalog.courseMap.get(id)!)
-                  .filter(x => !!x)
-                  .toArray()}
+                currentCourses={masteredDegreeGroup.allowedCourses()}
                 onChangeCourses={this.handleChangeAllowListCourses}
               />
             </View>

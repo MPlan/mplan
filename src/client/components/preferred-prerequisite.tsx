@@ -18,12 +18,10 @@ const PrerequisiteItem = styled.li``;
 
 export interface PreferredPrerequisiteProps {
   course: Model.Course;
-  catalog: Model.Catalog;
-  degree: Model.Degree;
 }
 
 export function PreferredPrerequisite(props: PreferredPrerequisiteProps) {
-  const { course, catalog, degree } = props;
+  const { course } = props;
   return (
     <Container>
       <Header small>Preferred prerequisites:</Header>

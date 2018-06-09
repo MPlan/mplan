@@ -26,19 +26,19 @@ const CourseItemSimpleName = styled(Text)`
 `;
 const CourseItemFullName = styled(Text)``;
 
-export interface SimpleCourseListProps {
+export interface EditableCourseListProps {
   currentCourses: Model.Course[];
   onChangeCourses: (courses: Model.Course[]) => void;
 }
-export interface SimpleCourseListState {
+export interface EditableCourseListState {
   courseSearchOpen: boolean;
 }
 
 export class EditableCourseList extends React.Component<
-  SimpleCourseListProps,
-  SimpleCourseListState
+  EditableCourseListProps,
+  EditableCourseListState
 > {
-  constructor(props: SimpleCourseListProps) {
+  constructor(props: EditableCourseListProps) {
     super(props);
     this.state = {
       courseSearchOpen: false,
