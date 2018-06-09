@@ -3,6 +3,8 @@ import * as Record from '../recordize';
 import { ObjectId } from './';
 import { Catalog } from './catalog';
 import { Course } from './course';
+import { pointer } from './pointer';
+import { App } from './app';
 
 export class Semester extends Record.define({
   _id: ObjectId(),
@@ -11,6 +13,9 @@ export class Semester extends Record.define({
   season: 'Fall' as 'Fall' | 'Winter' | 'Summer',
   year: 0,
 }) {
+  get root(): App {
+    return pointer.store.current();
+  }
   get id() {
     return this._id.toHexString();
   }

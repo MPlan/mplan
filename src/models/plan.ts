@@ -6,12 +6,17 @@ import { Course } from './course';
 import { Semester } from './semester';
 import { Degree } from './degree';
 import { flatten } from 'lodash';
+import { pointer } from './pointer';
+import { App } from './app';
 
 export class Plan extends Record.define({
   semesterMap: Record.MapOf(Semester),
 }) {
   static unplacedCoursesMemo = new Map<any, any>();
   static warningsNotOfferedDuringSeason = new Map<any, any>();
+  get root(): App {
+    return pointer.store.current();
+  }
   updateSemester(id: string, updater: (semester: Semester) => Semester) {
     return this.update('semesterMap', map => map.update(id, updater));
   }

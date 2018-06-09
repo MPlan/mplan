@@ -2,6 +2,8 @@ import * as Immutable from 'immutable';
 import * as Record from '../recordize';
 import { ObjectId } from './';
 import { Course } from './course';
+import { pointer } from './pointer';
+import { App } from './app';
 
 export class MasteredDegreeGroup extends Record.define({
   _id: ObjectId(),
@@ -14,6 +16,9 @@ export class MasteredDegreeGroup extends Record.define({
   creditMinimum: 0,
   creditMaximum: 0,
 }) {
+  get root(): App {
+    return pointer.store.current();
+  }
   get id() {
     return this._id.toHexString();
   }

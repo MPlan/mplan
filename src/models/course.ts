@@ -5,6 +5,8 @@ import { ObjectId, hashObjects } from './';
 import { Section } from './section';
 import { Catalog } from './catalog';
 import { Degree } from './degree';
+import { pointer } from './pointer';
+import { App } from './app';
 
 export function allCombinations(
   listsOfLists: Array<Immutable.Set<Immutable.Set<string | Course>>>,
@@ -101,6 +103,10 @@ export class Course
     ['prerequisites', 'corequisites', 'crossList', 'scheduleTypes'],
   )
   implements Model.Course {
+  get root(): App {
+    return pointer.store.current();
+  }
+
   get id() {
     return this._id.toHexString();
   }

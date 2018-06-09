@@ -3,6 +3,8 @@ import * as Record from '../recordize';
 import { ObjectId } from './';
 import { Catalog } from './catalog';
 import { Course } from './course';
+import { pointer } from './pointer';
+import { App } from './app';
 
 export class DegreeGroup extends Record.define({
   _id: ObjectId(),
@@ -11,6 +13,9 @@ export class DegreeGroup extends Record.define({
   /** this can be either `subjectCode__|__courseNumber` or a string for placement exams */
   _courseIds: Immutable.List<string>(),
 }) {
+  get root(): App {
+    return pointer.store.current();
+  }
   get id() {
     return this._id.toHexString();
   }

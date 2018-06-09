@@ -3,6 +3,8 @@ import * as Model from './models';
 import { ObjectId } from './';
 import { Degree } from './degree';
 import { Plan } from './plan';
+import { pointer } from './pointer';
+import { App } from './app';
 
 export class User
   extends Record.define({
@@ -18,6 +20,9 @@ export class User
     degree: new Degree(),
   })
   implements Model.User {
+  get root(): App {
+    return pointer.store.current();
+  }
   updateDegree(updater: (degree: Degree) => Degree) {
     return this.update('degree', updater);
   }

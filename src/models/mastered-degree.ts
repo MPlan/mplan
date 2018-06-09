@@ -1,6 +1,8 @@
 import * as Record from '../recordize';
 import { ObjectId } from './';
 import { MasteredDegreeGroup } from './mastered-degree-group';
+import { pointer } from './pointer';
+import { App } from './app';
 
 export class MasteredDegree extends Record.define({
   _id: ObjectId(),
@@ -10,6 +12,9 @@ export class MasteredDegree extends Record.define({
   masteredDegreeGroups: Record.ListOf(MasteredDegreeGroup),
   published: false,
 }) {
+  get root(): App {
+    return pointer.store.current();
+  }
   get id() {
     return this._id.toHexString();
   }

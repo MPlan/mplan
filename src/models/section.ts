@@ -1,6 +1,8 @@
 import * as Record from '../recordize';
 import * as Model from './models';
 import { ObjectId } from './';
+import { pointer } from './pointer';
+import { App } from './app';
 
 export class Section
   extends Record.define({
@@ -19,6 +21,9 @@ export class Section
     remaining: 0,
   })
   implements Model.Section {
+  get root(): App {
+    return pointer.store.current();
+  }
   get id() {
     return this._id.toHexString();
   }
