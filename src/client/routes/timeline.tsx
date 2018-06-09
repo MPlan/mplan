@@ -186,14 +186,7 @@ export class Timeline extends Model.store.connect({
             </HeaderRight>
           </Header>
           <SemestersContainer className="semesters-container">
-            {semestersSorted.map(semester => (
-              <Semester
-                key={semester.id}
-                semester={semester}
-                degree={this.store.user.degree}
-                catalog={this.store.catalog}
-              />
-            ))}
+            {semestersSorted.map(semester => <Semester key={semester.id} semester={semester} />)}
           </SemestersContainer>
           <Navigator>
             {semestersSorted.map(semester => (
