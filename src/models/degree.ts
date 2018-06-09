@@ -6,6 +6,8 @@ import { Course } from './course';
 import { Semester } from './semester';
 import { DegreeGroup } from './degree-group';
 import { Plan } from './plan';
+import { pointer } from './pointer';
+import { App } from './app';
 
 export function printSchedule(schedule: Immutable.List<Immutable.Set<Course>>) {
   const totalCourses = schedule.reduce((total, semester) => total + semester.count(), 0);
@@ -115,7 +117,12 @@ export class Degree extends Record.define({
   static closureMemo = new Map<any, any>();
   static levelsMemo = new Map<any, any>();
 
-  preferredCourses(catalog: Catalog) {
+  get root(): App {
+    return pointer.store.current();
+  }
+
+  preferredCourses() {
+    const catalog = this.root.catalog;
     const hash = hashObjects({
       degree: this,
       catalog,
@@ -138,7 +145,7 @@ export class Degree extends Record.define({
       return Degree.closureMemo.get(hash);
     }
 
-    const preferredCourses = this.preferredCourses(catalog);
+    const preferredCourses = this.preferredCourses();
 
     const closure = preferredCourses
       .map(
@@ -164,7 +171,7 @@ export class Degree extends Record.define({
 
     const closure = this.closure(catalog);
     const levelsMutable = [] as Array<Set<string | Course>>;
-    const preferredCourses = this.preferredCourses(catalog);
+    const preferredCourses = this.preferredCourses();
 
     for (const course of closure) {
       if (course instanceof Course) {

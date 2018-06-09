@@ -140,7 +140,7 @@ export class Course
     }
 
     const priority =
-      this.depth(catalog, degree.preferredCourses(catalog)) + this.criticalLevel(degree, catalog);
+      this.depth(catalog, degree.preferredCourses()) + this.criticalLevel(degree, catalog);
 
     Course.priorityMemo.set(hash, priority);
     return priority;
@@ -171,7 +171,7 @@ export class Course
       const levelHasCourse = nextLevel
         .filter(course => course instanceof Course)
         .map(x => x as Course)
-        .some(course => course.bestOption(catalog, degree.preferredCourses(catalog)).has(this));
+        .some(course => course.bestOption(catalog, degree.preferredCourses()).has(this));
 
       if (levelHasCourse) {
         Course.criticalMemo.set(hash, criticalLevel);

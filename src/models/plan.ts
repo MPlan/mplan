@@ -39,7 +39,6 @@ export class Plan extends Record.define({
   }
 
   unplacedCourses(degree: Degree, catalog: Catalog): Course[] {
-    ``;
     const hash = hashObjects({ plan: this, degree, catalog });
     if (Plan.unplacedCoursesMemo.has(hash)) {
       return Plan.unplacedCoursesMemo.get(hash);

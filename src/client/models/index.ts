@@ -1,20 +1,27 @@
 import * as Recordize from '../../recordize';
 import * as Record from '../../models';
-export * from '../../models';
 import * as Immutable from 'immutable';
 import * as Model from '../../models/models';
-export const store = Recordize.createStore(new Record.App());
+import { store } from '../../models/store';
+export { store };
+// export const store = Recordize.createStore(new Record.App());
 import { oneLine } from 'common-tags';
 import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs/Observer';
 import { map, distinct, debounceTime, share } from 'rxjs/operators';
 import { Auth } from '../auth';
 
+export * from '../../models';
+
 const user$ = Observable.create((observer: Observer<Record.App>) => {
   store.subscribe(store => {
     observer.next(store);
   });
-}).pipe(share(), map((store: Record.App) => store.user), distinct()) as Observable<Record.User>;
+}).pipe(
+  share(),
+  map((store: Record.App) => store.user),
+  distinct(),
+) as Observable<Record.User>;
 
 user$.pipe(debounceTime(300)).subscribe(user => {
   localStorage.setItem('user_data', JSON.stringify(user.toJS()));
@@ -38,9 +45,11 @@ const masteredDegrees$ = Observable.create((observer: Observer<Record.App>) => {
   store.subscribe(store => {
     observer.next(store);
   });
-}).pipe(share(), map((store: Record.App) => store.masteredDegrees), distinct()) as Observable<
-  Immutable.Map<string, Record.MasteredDegree>
->;
+}).pipe(
+  share(),
+  map((store: Record.App) => store.masteredDegrees),
+  distinct(),
+) as Observable<Immutable.Map<string, Record.MasteredDegree>>;
 
 masteredDegrees$.pipe(debounceTime(3000)).subscribe(async user => {
   console.log('sending degrees to server...');

@@ -1,6 +1,7 @@
 import * as Immutable from 'immutable';
 import * as Record from '../recordize';
 import { Course } from './course';
+import { pointer } from './pointer';
 
 export interface SearchResults {
   count: number;
@@ -10,6 +11,10 @@ export interface SearchResults {
 export class Catalog extends Record.define({
   courseMap: Record.MapOf(Course),
 }) {
+  get root() {
+    return pointer.store.current();
+  }
+
   getCourse(subjectCode: string, courseNumber: string) {
     return this.courseMap.get(`${subjectCode}__|__${courseNumber}`.toUpperCase());
   }
@@ -53,7 +58,8 @@ export class Catalog extends Record.define({
       })
       .filter(({ rank }) => rank > 0)
       .sortBy(
-        ({ rank, course }) => rank * 10000 - parseInt(course.courseNumber.replace(/[^\d]/g, ''), 10),
+        ({ rank, course }) =>
+          rank * 10000 - parseInt(course.courseNumber.replace(/[^\d]/g, ''), 10),
       )
       .map(({ course }) => course)
       .reverse();
