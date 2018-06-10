@@ -41,4 +41,4 @@ const container = Model.store.connect(DegreeEditor)({
   },
 });
 
-export { container as Catalog };
+export { container as DegreeEditor };

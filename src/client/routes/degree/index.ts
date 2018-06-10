@@ -97,4 +97,4 @@ const container = Model.store.connect(Degree)({
   },
 });
 
-export { container as Catalog };
+export { container as Degree };
