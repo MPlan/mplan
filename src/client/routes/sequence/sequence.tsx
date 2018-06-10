@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Model from '../models';
+import * as Model from 'models';
 import {
   View,
   Text,
@@ -7,10 +7,10 @@ import {
   courseIdClassName,
   ActionableText,
   FloatingActionButton,
-} from '../components';
+} from 'components';
 import styled from 'styled-components';
-import * as styles from '../styles';
-import { flatten, createClassName, wait } from '../../utilities/utilities';
+import * as styles from 'styles';
+import { flatten, createClassName, wait } from 'utilities/utilities';
 import * as Immutable from 'immutable';
 import { Subject } from 'rxjs/Subject';
 import { debounceTime } from 'rxjs/operators';
@@ -99,16 +99,32 @@ const GraphWrapper = styled(View)`
   margin: auto;
 `;
 
-export class Sequence extends Model.store.connect({
-  initialState: {
-    mouseOverCourse: undefined as undefined | string | Model.Course,
-    selectedCourse: undefined as undefined | string | Model.Course,
-    compactMode: true,
-    edges: [] as Edge[],
-    graphWrapperWidth: 1000,
-    graphWrapperHeight: 1000,
-  },
-}) {
+export interface SequenceProps {
+  catalog: Model.Catalog;
+  degree: Model.Degree;
+}
+export interface SequenceState {
+  mouseOverCourse: string | Model.Course | undefined;
+  selectedCourse: string | Model.Course | undefined;
+  compactMode: boolean;
+  edges: Edge[];
+  graphWrapperWidth: number;
+  graphWrapperHeight: number;
+}
+
+export class Sequence extends React.Component<SequenceProps, SequenceState> {
+  constructor(props: SequenceProps) {
+    super(props);
+    this.state = {
+      mouseOverCourse: undefined,
+      selectedCourse: undefined,
+      compactMode: true,
+      edges: [],
+      graphWrapperWidth: 1000,
+      graphWrapperHeight: 1000,
+    };
+  }
+
   mounted = false;
   reflowEvents$ = new Subject<void>();
   static edgesMemo = new Map<any, any>();
@@ -128,7 +144,6 @@ export class Sequence extends Model.store.connect({
   }
 
   componentWillUnmount() {
-    super.componentWillUnmount();
     document.removeEventListener('keydown', this.handleDocumentKeyDown);
     this.mounted = false;
   }
@@ -199,8 +214,8 @@ export class Sequence extends Model.store.connect({
   };
 
   calculateEdges() {
-    const catalog = this.store.catalog;
-    const degree = this.store.user.degree;
+    const catalog = this.props.catalog;
+    const degree = this.props.degree;
 
     const hash = Model.hashObjects({ catalog, degree });
     if (Sequence.edgesMemo.has(hash)) {
@@ -359,7 +374,7 @@ export class Sequence extends Model.store.connect({
   render() {
     const graphWidth = this.state.graphWrapperWidth;
     const graphHeight = this.state.graphWrapperHeight;
-    const masteredDegree = this.store.masteredDegrees.get(this.store.user.degree.masteredDegreeId);
+    const masteredDegree = this.props.degree.masteredDegree();
     const masteredDegreeName = (masteredDegree && masteredDegree.name) || '';
     return (
       <SequenceContainer onMouseMove={this.reflowTrigger}>
@@ -387,7 +402,7 @@ export class Sequence extends Model.store.connect({
         </Header>
         <GraphContainer className="graph-container" onScroll={this.reflowTrigger}>
           <GraphWrapper className="graph-wrapper" innerRef={this.graphWrapperRef}>
-            {this.store.user.degree.levels().map((level, levelIndex) => (
+            {this.props.degree.levels().map((level, levelIndex) => (
               <Level
                 key={levelIndex}
                 style={{
@@ -441,7 +456,7 @@ export class Sequence extends Model.store.connect({
                 viewBox={`0 0 ${graphWidth} ${graphHeight}`}
                 preserveAspectRatio="none"
               >
-                {this.state.edges.map((edge) => {
+                {this.state.edges.map(edge => {
                   const nodesFocused = edge.nodes.some(node => this.courseFocused(node));
                   const nodesDimmed = edge.nodes.some(node => this.courseDimmed(node));
                   const startingPointX = edge.x1;
