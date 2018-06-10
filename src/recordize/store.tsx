@@ -5,17 +5,20 @@ type ValueOf<T> = T[keyof T];
 type TypeIn<T, U extends keyof T> = ValueOf<Pick<T, U>>;
 
 interface ConnectionOptions<Store, Scope, OwnProps, ComponentProps> {
-  select: (store: Store) => Scope;
+  scope: (store: Store) => Scope;
   mapScopeToProps: (
-    scope: Scope,
-    sendUpdate: (updater: (store: Store) => Store) => void,
-    ownProps: OwnProps,
+    params: {
+      store: Store;
+      scope: Scope;
+      sendUpdate: (updater: (store: Store) => Store) => void;
+      ownProps: OwnProps;
+    },
   ) => ComponentProps;
 }
 
 interface ComponentTuple<Store, Scope> {
   setState: TypeIn<React.Component<any, Scope>, 'setState'>;
-  select: (store: Store) => Scope;
+  scope: (store: Store) => Scope;
 }
 
 function shallowIsEqual(a: any, b: any) {
@@ -43,9 +46,9 @@ export function createStore<Store extends Immutable.Record<any>>(initialStore: S
       currentStore = update(previousStore);
       if (previousStore === currentStore) return;
 
-      for (const { select, setState } of connectedComponents) {
-        const scope = select(currentStore);
-        setState(scope);
+      for (const { scope, setState } of connectedComponents) {
+        const nextScope = scope(currentStore);
+        setState(nextScope);
       }
     }, 0);
   }
@@ -67,23 +70,21 @@ export function createStore<Store extends Immutable.Record<any>>(initialStore: S
     return currentStore;
   }
 
-  function connect<
-    OwnProps extends { innerRef?: any },
-    ComponentProps extends { ref?: any },
-    Scope
-  >(connectionOptions: ConnectionOptions<Store, Scope, OwnProps, ComponentProps>) {
-    const { mapScopeToProps, select } = connectionOptions;
-    const scope = select(currentStore);
-
-    return (Component: React.ComponentType<ComponentProps>) =>
-      class extends React.Component<OwnProps> {
+  function connect<OwnProps extends { innerRef?: any }, ComponentProps, Scope>(
+    Component: React.ComponentType<ComponentProps>,
+  ) {
+    
+    return (connectionOptions: ConnectionOptions<Store, Scope, OwnProps, ComponentProps>) => {
+      const { mapScopeToProps, scope } = connectionOptions;
+      const initialScope = scope(currentStore);
+      return class extends React.Component<OwnProps, Scope> {
         componentTuple: ComponentTuple<Store, Scope> | undefined;
-        state = scope;
+        state = initialScope;
 
         componentDidMount() {
           this.componentTuple = {
             setState: this.setState.bind(this),
-            select,
+            scope,
           };
           connectedComponents.add(this.componentTuple);
         }
@@ -101,10 +102,16 @@ export function createStore<Store extends Immutable.Record<any>>(initialStore: S
         }
 
         render() {
-          const componentProps = mapScopeToProps(this.state, sendUpdate, this.props);
-          return <Component {...componentProps} ref={this.props.innerRef} />;
+          const componentProps = mapScopeToProps({
+            store: currentStore,
+            scope: this.state,
+            sendUpdate,
+            ownProps: this.props,
+          });
+          return <Component {...componentProps} />;
         }
       };
+    };
   }
 
   return {
