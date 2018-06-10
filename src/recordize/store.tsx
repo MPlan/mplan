@@ -5,7 +5,7 @@ type ValueOf<T> = T[keyof T];
 type TypeIn<T, U extends keyof T> = ValueOf<Pick<T, U>>;
 
 interface ConnectionOptions<Store, Scope, OwnProps, ComponentProps> {
-  scope: (store: Store) => Scope;
+  scopeDefiner: (store: Store) => Scope;
   mapScopeToProps: (
     params: {
       store: Store;
@@ -18,7 +18,7 @@ interface ConnectionOptions<Store, Scope, OwnProps, ComponentProps> {
 
 interface ComponentTuple<Store, Scope> {
   setState: TypeIn<React.Component<any, Scope>, 'setState'>;
-  scope: (store: Store) => Scope;
+  scopeDefiner: (store: Store) => Scope;
 }
 
 function shallowIsEqual(a: any, b: any) {
@@ -46,8 +46,8 @@ export function createStore<Store extends Immutable.Record<any>>(initialStore: S
       currentStore = update(previousStore);
       if (previousStore === currentStore) return;
 
-      for (const { scope, setState } of connectedComponents) {
-        const nextScope = scope(currentStore);
+      for (const { scopeDefiner, setState } of connectedComponents) {
+        const nextScope = scopeDefiner(currentStore);
         setState(nextScope);
       }
     }, 0);
@@ -73,10 +73,9 @@ export function createStore<Store extends Immutable.Record<any>>(initialStore: S
   function connect<OwnProps extends { innerRef?: any }, ComponentProps, Scope>(
     Component: React.ComponentType<ComponentProps>,
   ) {
-    
     return (connectionOptions: ConnectionOptions<Store, Scope, OwnProps, ComponentProps>) => {
-      const { mapScopeToProps, scope } = connectionOptions;
-      const initialScope = scope(currentStore);
+      const { mapScopeToProps, scopeDefiner } = connectionOptions;
+      const initialScope = scopeDefiner(currentStore);
       return class extends React.Component<OwnProps, Scope> {
         componentTuple: ComponentTuple<Store, Scope> | undefined;
         state = initialScope;
@@ -84,7 +83,7 @@ export function createStore<Store extends Immutable.Record<any>>(initialStore: S
         componentDidMount() {
           this.componentTuple = {
             setState: this.setState.bind(this),
-            scope,
+            scopeDefiner,
           };
           connectedComponents.add(this.componentTuple);
         }

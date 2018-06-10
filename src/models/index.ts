@@ -22,3 +22,4 @@ export * from './section';
 export * from './semester';
 export * from './ui';
 export * from './user';
+export * from './store';

@@ -1,8 +1,8 @@
 import * as React from 'react';
-import * as Model from '../models';
+import * as Model from 'models';
 import styled from 'styled-components';
-import { View, Text, CatalogCourse } from '../components';
-import * as styles from '../styles';
+import { View, Text, CatalogCourse } from 'components';
+import * as styles from 'styles';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
 import { debounceTime } from 'rxjs/operators';
@@ -65,25 +65,24 @@ const Card = styled(View)`
   }
 `;
 
-export class Catalog extends Model.store.connect({
-  initialState: {
-    searchResults: Model.store.current().catalog.search('', true),
-  },
-}) {
+export interface CatalogProps {
+  searchResults: Model.SearchResults;
+  onSearch: (query: string) => void;
+}
+
+interface CatalogState {}
+
+export class Catalog extends React.Component<CatalogProps> {
   searchInput$ = new Subject<string>();
   subscription: Subscription | undefined;
 
   componentDidMount() {
-    this.subscription = this.searchInput$.pipe(debounceTime(INPUT_DEBOUNCE_TIME)).subscribe(input =>
-      this.setState(previousState => ({
-        ...previousState,
-        searchResults: this.store.catalog.search(input, true),
-      })),
-    );
+    this.subscription = this.searchInput$
+      .pipe(debounceTime(INPUT_DEBOUNCE_TIME))
+      .subscribe(this.props.onSearch);
   }
 
   componentWillUnmount() {
-    super.componentWillUnmount();
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
@@ -115,7 +114,7 @@ export class Catalog extends Model.store.connect({
             />
           </Form>
           <Card>
-            {this.state.searchResults.results
+            {this.props.searchResults.results
               .take(100)
               .map(course => <CatalogCourse key={course.id} course={course} />)}
           </Card>
