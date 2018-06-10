@@ -7,6 +7,7 @@ import { Plan } from './plan';
 import { MasteredDegree } from './mastered-degree';
 import { pointer } from './pointer';
 import { CatalogUi } from './catalog-ui';
+import { DegreePage } from './degree-page';
 
 export class App extends Record.define({
   catalog: new Catalog(),
@@ -14,6 +15,7 @@ export class App extends Record.define({
   ui: new Ui(),
   masteredDegrees: Record.MapOf(MasteredDegree),
   catalogUi: new CatalogUi(),
+  degreePage: new DegreePage(),
 }) {
   get root(): App {
     return pointer.store.current();

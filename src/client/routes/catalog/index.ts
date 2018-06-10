@@ -13,7 +13,7 @@ const container = Model.store.connect(Catalog)({
     const catalogUi = store.catalogUi;
     return {
       searchResults: scope.searchResults,
-      onSearch: query => sendUpdate(store.catalogUi.search(query).updateStore()),
+      onSearch: query => sendUpdate(store => store.catalogUi.search(query).updateStore(store)),
     };
   },
 });

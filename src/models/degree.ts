@@ -120,6 +120,17 @@ export class Degree extends Record.define({
     return pointer.store.current();
   }
 
+  updateStore = (store: App) => {
+    return store.update('user', user => user.set('degree', this));
+  };
+
+  masteredDegree() {
+    const masteredDegree = this.root.masteredDegrees.get(this.masteredDegreeId);
+    if (!masteredDegree)
+      throw new Error(`could not find mastered degree with id: "${this.masteredDegreeId}"`);
+    return masteredDegree;
+  }
+
   preferredCourses() {
     const catalog = this.root.catalog;
     const hash = hashObjects({
@@ -238,6 +249,16 @@ export class Degree extends Record.define({
     return new Plan({
       semesterMap,
     });
+  }
+
+  addNewDegreeGroup() {
+    return this.addDegreeGroup(
+      new DegreeGroup({
+        _id: ObjectId(),
+        name: 'New Degree Group',
+        description: 'Custom group',
+      }),
+    );
   }
 
   addDegreeGroup(group: DegreeGroup) {

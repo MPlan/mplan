@@ -114,7 +114,7 @@ export class Catalog extends React.Component<CatalogProps> {
             />
           </Form>
           <Card>
-            {this.props.searchResults.results
+            {this.props.searchResults
               .take(100)
               .map(course => <CatalogCourse key={course.id} course={course} />)}
           </Card>

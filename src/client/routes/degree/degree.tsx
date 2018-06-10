@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Model from '../models';
+import * as Model from 'models';
 import {
   View,
   Text,
@@ -8,9 +8,9 @@ import {
   DegreeGroup,
   Modal,
   SearchResultCourse,
-} from '../components';
+} from 'components';
 import styled from 'styled-components';
-import * as styles from '../styles';
+import * as styles from 'styles';
 import { Subject } from 'rxjs/Subject';
 import { debounceTime } from 'rxjs/operators';
 import { Subscription } from 'rxjs/Subscription';
@@ -92,37 +92,44 @@ const fabActions = {
   },
 };
 
-export class Degree extends Model.store.connect({
-  initialState: {
-    modalOpen: false,
-    pickingMajor: false,
-    currentDegreeGroup: undefined as Model.DegreeGroup | undefined,
-    searchResults: [] as Model.Course[],
-  },
-}) {
+export interface DegreeProps {
+  degree: Model.Degree;
+  courseSearchResults: Model.SearchResults;
+  masteredDegrees: Model.MasteredDegree[];
+  currentDegreeGroup: Model.DegreeGroup | undefined;
+
+  onAddCourseClick: (degreeGroup: Model.DegreeGroup) => void;
+  onAddCourseModalClose: () => void;
+
+  onDeleteCourse: (degreeGroup: Model.DegreeGroup, course: string | Model.Course) => void;
+  onDegreeGroupDelete: (degreeGroup: Model.DegreeGroup) => void;
+  onDegreeGroupNameChange: (degreeGroup: Model.DegreeGroup, newName: string) => void;
+  onDegreeGroupAddCourse: (degreeGroup: Model.DegreeGroup, course: string | Model.Course) => void;
+
+  onSearchCourse: (query: string) => void;
+  onAddDegreeGroup: () => void;
+
+  onChangeMajor: (majorId: string) => void;
+}
+export interface DegreeState {
+  majorModalOpen: boolean;
+}
+
+export class Degree extends React.Component<DegreeProps, DegreeState> {
   readonly searchInput$ = new Subject<string>();
   searchInputSubscription: Subscription | undefined;
+
+  state = {
+    majorModalOpen: false,
+  };
 
   componentDidMount() {
     this.searchInputSubscription = this.searchInput$
       .pipe(debounceTime(50))
-      .subscribe(this.handleSearchInput);
+      .subscribe(this.props.onSearchCourse);
   }
 
-  handleSearchInput = (searchInput: string) => {
-    const searchResults = this.store.catalog
-      .search(searchInput)
-      .results.take(10)
-      .toArray();
-
-    this.setState(previousState => ({
-      ...previousState,
-      searchResults,
-    }));
-  };
-
   componentWillUnmount() {
-    super.componentWillMount();
     if (this.searchInputSubscription) {
       this.searchInputSubscription.unsubscribe();
     }
@@ -130,42 +137,8 @@ export class Degree extends Model.store.connect({
 
   handleFab = (action: keyof typeof fabActions) => {
     if (action === 'group') {
-      this.setStore(store =>
-        store.updateDegree(degree =>
-          degree.addDegreeGroup(
-            new Model.DegreeGroup({
-              _id: Model.ObjectId(),
-              name: 'New Group',
-              description: 'Custom group',
-            }),
-          ),
-        ),
-      );
+      this.props.onAddDegreeGroup();
     }
-  };
-
-  handleDegreeGroupNameChange(degreeGroup: Model.DegreeGroup, newName: string) {
-    this.setStore(store =>
-      store.updateDegree(degree =>
-        degree.updateDegreeGroup(degreeGroup, degreeGroup => degreeGroup.set('name', newName)),
-      ),
-    );
-  }
-
-  handleAddCourseClick(degreeGroup: Model.DegreeGroup) {
-    this.setState(previousState => ({
-      ...previousState,
-      modalOpen: true,
-      currentDegreeGroup: degreeGroup,
-      searchResults: [],
-    }));
-  }
-
-  handleBackdropClick = () => {
-    this.setState(previousState => ({
-      ...previousState,
-      modalOpen: false,
-    }));
   };
 
   handleCourseSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -176,39 +149,17 @@ export class Degree extends Model.store.connect({
     this.searchInput$.next(e.currentTarget.value);
   };
 
-  handleAddCourse(course: string | Model.Course) {
-    const currentDegreeGroup = this.state.currentDegreeGroup;
-    if (!currentDegreeGroup) return;
-    this.setStore(store =>
-      store.updateDegree(degree =>
-        degree.updateDegreeGroup(currentDegreeGroup, group => group.addCourse(course)),
-      ),
-    );
-  }
-
-  handleDeleteCourse(group: Model.DegreeGroup, course: string | Model.Course) {
-    this.setStore(store =>
-      store.updateDegree(degree =>
-        degree.updateDegreeGroup(group, group => group.deleteCourse(course)),
-      ),
-    );
-  }
-
-  handleDeleteGroup(group: Model.DegreeGroup) {
-    this.setStore(store => store.updateDegree(degree => degree.deleteDegreeGroup(group)));
-  }
-
   handleChangeDegree = () => {
     this.setState(previousState => ({
       ...previousState,
-      pickingMajor: true,
+      majorModalOpen: true,
     }));
   };
 
   handleMajorBlur = () => {
     this.setState(previousState => ({
       ...previousState,
-      pickingMajor: false,
+      majorModalOpen: false,
     }));
   };
 
@@ -217,33 +168,13 @@ export class Degree extends Model.store.connect({
     const selectElement = e.currentTarget.querySelector('.select-major') as HTMLSelectElement;
     const majorId = selectElement.value;
     if (!majorId) return;
-    this.setStore(store => {
-      const major = store.masteredDegrees.get(majorId);
-      if (!major) {
-        console.warn('could not find major');
-        return store;
-      }
-      const newStore = store.updateDegree(degree => {
-        const clearedDegree = degree.update('degreeGroups', groups => groups.clear());
-        const newDegree = major.masteredDegreeGroups.reduce((degree, masteredDegreeGroup) => {
-          return degree.set('masteredDegreeId', majorId).addDegreeGroup(
-            new Model.DegreeGroup({
-              _id: Model.ObjectId(),
-              name: masteredDegreeGroup.name,
-              _courseIds: masteredDegreeGroup.defaultIds,
-            }),
-          );
-        }, clearedDegree);
-        return newDegree;
-      });
-      return newStore;
-    });
+    this.props.onChangeMajor(majorId);
   };
 
   render() {
-    const currentDegreeGroup = this.state.currentDegreeGroup;
-    const degree = this.store.user.degree;
-    const masteredDegree = this.store.masteredDegrees.get(degree.masteredDegreeId);
+    const currentDegreeGroup = this.props.currentDegreeGroup;
+    const degree = this.props.degree;
+    const masteredDegree = degree.masteredDegree();
     return (
       <Container>
         <Header>
@@ -270,19 +201,19 @@ export class Degree extends Model.store.connect({
             <DegreeGroup
               key={group.id}
               degreeGroup={group}
-              onNameChange={newName => this.handleDegreeGroupNameChange(group, newName)}
-              onAddCourse={() => this.handleAddCourseClick(group)}
-              onDeleteCourse={course => this.handleDeleteCourse(group, course)}
-              onDeleteGroup={() => this.handleDeleteGroup(group)}
+              onNameChange={newName => this.props.onDegreeGroupNameChange(group, newName)}
+              onAddCourse={() => this.props.onAddCourseClick(group)}
+              onDeleteCourse={course => this.props.onDeleteCourse(group, course)}
+              onDeleteGroup={() => this.props.onDegreeGroupDelete(group)}
             />
           ))}
         </DegreeGroupContainer>
         <FloatingActionButton message="Add…" actions={fabActions} onAction={this.handleFab} />
         <Modal
-          open={this.state.modalOpen}
+          open={!!this.props.currentDegreeGroup}
           title={`Adding courses to ${currentDegreeGroup ? currentDegreeGroup.name : ''}`}
           size="medium"
-          onBlurCancel={this.handleBackdropClick}
+          onBlurCancel={this.props.onAddCourseModalClose}
         >
           <CourseSearchForm onSubmit={this.handleCourseSearchSubmit}>
             <SearchForACourse>Search for a course...</SearchForACourse>
@@ -293,30 +224,30 @@ export class Degree extends Model.store.connect({
             />
           </CourseSearchForm>
           <SearchResults>
-            {this.state.searchResults.map(result => (
+            {this.props.courseSearchResults.map(result => (
               <SearchResultCourse
                 key={result.id}
                 course={result}
-                onAddCourse={() => this.handleAddCourse(result)}
+                onAddCourse={() => {
+                  if (!this.props.currentDegreeGroup) return;
+                  this.props.onDegreeGroupAddCourse(this.props.currentDegreeGroup, result);
+                }}
               />
             ))}
           </SearchResults>
         </Modal>
         <Modal
           title="Pick a major!"
-          open={this.state.pickingMajor}
+          open={this.state.majorModalOpen}
           onBlurCancel={this.handleMajorBlur}
         >
           <FormMajor onSubmit={this.handleMajorSubmit}>
             <select className="select-major">
-              {this.store.masteredDegrees
-                .valueSeq()
-                .sortBy(degree => degree.name)
-                .map(degree => (
-                  <option key={degree.id} value={degree.id}>
-                    {degree.name}
-                  </option>
-                ))}
+              {this.props.masteredDegrees.map(degree => (
+                <option key={degree.id} value={degree.id}>
+                  {degree.name}
+                </option>
+              ))}
             </select>
             <div>
               <button type="button" onClick={this.handleMajorBlur}>

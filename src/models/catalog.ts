@@ -3,11 +3,9 @@ import * as Record from '../recordize';
 import { Course } from './course';
 import { pointer } from './pointer';
 import { App } from './app';
+import { TypeIn } from 'utilities/typings';
 
-export interface SearchResults {
-  count: number;
-  results: Immutable.Seq.Indexed<Course>;
-}
+export type SearchResults = ReturnType<TypeIn<Catalog, 'search'>>;
 
 export class Catalog extends Record.define({
   courseMap: Record.MapOf(Course),
@@ -34,14 +32,15 @@ export class Catalog extends Record.define({
     });
   }
 
-  search(query: string, dontRemove = false): SearchResults {
+  search(query: string, dontRemove = false) {
     if (query === '') {
-      return { count: 0, results: Immutable.Seq.Indexed() };
+      return Immutable.Seq([]);
     }
     const querySplit = query
       .toLowerCase()
       .split(' ')
       .filter(x => x);
+
     const results = this.courseMap
       .valueSeq()
       .map(course => {
@@ -64,6 +63,7 @@ export class Catalog extends Record.define({
       )
       .map(({ course }) => course)
       .reverse();
-    return { count: results.count(), results };
+
+    return results;
   }
 }

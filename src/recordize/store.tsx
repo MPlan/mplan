@@ -1,8 +1,6 @@
 import * as Immutable from 'immutable';
 import * as React from 'react';
-
-type ValueOf<T> = T[keyof T];
-type TypeIn<T, U extends keyof T> = ValueOf<Pick<T, U>>;
+import { TypeIn } from 'utilities/typings';
 
 interface ConnectionOptions<Store, Scope, OwnProps, ComponentProps> {
   scopeDefiner: (store: Store) => Scope;
