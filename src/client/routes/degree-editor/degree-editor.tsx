@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Model from '../models';
+import * as Model from 'models';
 import {
   View,
   Text,
@@ -8,10 +8,10 @@ import {
   Fa,
   DegreeItemSidebar,
   MasteredDegreeDetail,
-} from '../components';
+} from 'components';
 import { Route, RouteComponentProps, NavLink } from 'react-router-dom';
 import styled from 'styled-components';
-import * as styles from '../styles';
+import * as styles from 'styles';
 
 const Container = styled(View)`
   flex: 1;
@@ -137,19 +137,24 @@ const SidebarContent = styled(View)`
   overflow: auto;
   flex: 1;
 `;
- 
+
 const initialState = {
   selectedMasteredDegree: undefined as Model.MasteredDegree | undefined,
 };
 type InitialState = typeof initialState;
 
-export interface DegreeEditorProps extends RouteComponentProps<{}> {}
+export interface DegreeEditorProps extends RouteComponentProps<{}> {
+  masteredDegrees: Model.MasteredDegree[];
+  onCreateMasteredDegreeGroup: (masteredDegree: Model.MasteredDegree) => void;
+  onCreateMasteredDegree: () => void;
+  onMasteredDegreeUpdate: (
+    masteredDegree: Model.MasteredDegree,
+    update: (degree: Model.MasteredDegree) => Model.MasteredDegree,
+  ) => void;
+}
 export interface DegreeEditorState extends InitialState {}
 
-export class DegreeEditor extends Model.store.connect({
-  initialState,
-  propsExample: (undefined as any) as DegreeEditorProps,
-}) {
+export class DegreeEditor extends React.Component<DegreeEditorProps, DegreeEditorState> {
   searchMainRef = React.createRef<HTMLInputElement>();
 
   componentDidMount() {
@@ -159,33 +164,23 @@ export class DegreeEditor extends Model.store.connect({
     searchRef.select();
   }
 
-  componentWillReceiveProps(nextProps: DegreeEditorProps) {
+  static getDerivedStateFromProps(nextProps: DegreeEditorProps, previousState: DegreeEditorState) {
     const degreeIdMatch = /\/degree-editor\/([^&/?#]*)/.exec(nextProps.location.pathname);
     // the OR makes the `selectedMasteredDegree` undefined
     const degreeId = (degreeIdMatch && degreeIdMatch[1]) || 'NO_MATCH';
-    this.setState(previousState => ({
+    return {
       ...previousState,
-      selectedMasteredDegree: this.store.masteredDegrees.find(degree => degree.id === degreeId),
-    }));
+      selectedMasteredDegree: nextProps.masteredDegrees.find(degree => degree.id === degreeId),
+    };
   }
 
   handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
   };
 
-  handleDegreeUpdate = (update: (degree: Model.MasteredDegree) => Model.MasteredDegree) => {
-    this.setStore(store =>
-      store.update('masteredDegrees', degrees => {
-        const selectedMasteredDegree = this.state.selectedMasteredDegree;
-        if (!selectedMasteredDegree) return degrees;
-        return degrees.update(selectedMasteredDegree.id, update);
-      }),
-    );
-  };
-
   renderRoute = (e: RouteComponentProps<any>) => {
     const degreeId = e.match.params['degreeId'] as string;
-    const selectedDegree = this.store.masteredDegrees.find(degree => degree.id === degreeId);
+    const selectedDegree = this.props.masteredDegrees.find(degree => degree.id === degreeId);
     if (!selectedDegree) {
       return <Text>Not found</Text>;
     }
@@ -193,7 +188,7 @@ export class DegreeEditor extends Model.store.connect({
       <DegreeDetailContent>
         <MasteredDegreeDetail
           masteredDegree={selectedDegree}
-          onDegreeUpdate={this.handleDegreeUpdate}
+          onDegreeUpdate={update => this.props.onMasteredDegreeUpdate(selectedDegree, update)}
         />
       </DegreeDetailContent>
     );
@@ -222,12 +217,9 @@ export class DegreeEditor extends Model.store.connect({
                   </DegreeSearchButton>
                 </DegreeSearch>
                 <DegreeList>
-                  {this.store.masteredDegrees
-                    .valueSeq()
-                    .sortBy(degree => degree.name)
-                    .map(masteredDegree => (
-                      <DegreeItem key={masteredDegree.id} masteredDegree={masteredDegree} />
-                    ))}
+                  {this.props.masteredDegrees.map(masteredDegree => (
+                    <DegreeItem key={masteredDegree.id} masteredDegree={masteredDegree} />
+                  ))}
                 </DegreeList>
               </DegreeListCard>
             </DegreeListContainer>
@@ -248,12 +240,9 @@ export class DegreeEditor extends Model.store.connect({
               </DegreeSearchButton>
             </DegreeSearch>
             <SidebarContent>
-              {this.store.masteredDegrees
-                .valueSeq()
-                .sortBy(degree => degree.name)
-                .map(masteredDegree => (
-                  <DegreeItemSidebar key={masteredDegree.id} masteredDegree={masteredDegree} />
-                ))}
+              {this.props.masteredDegrees.map(masteredDegree => (
+                <DegreeItemSidebar key={masteredDegree.id} masteredDegree={masteredDegree} />
+              ))}
             </SidebarContent>
           </Sidebar>
           <Route path="/degree-editor/:degreeId" render={this.renderRoute} />
@@ -279,33 +268,11 @@ export class DegreeEditor extends Model.store.connect({
           }
           onAction={action => {
             if (action === 'degreeGroup') {
-              this.handleDegreeUpdate(degree =>
-                degree.addGroup(
-                  new Model.MasteredDegreeGroup({
-                    _id: Model.ObjectId(),
-                    name: 'New degree group',
-                    descriptionHtml: 'Default description. Please change!',
-                    creditMaximum: 6,
-                    creditMinimum: 6,
-                  }),
-                ),
-              );
+              const selectedMasteredDegree = this.state.selectedMasteredDegree;
+              if (!selectedMasteredDegree) return;
+              this.props.onCreateMasteredDegreeGroup(selectedMasteredDegree);
             } else if (action === 'degree') {
-              this.setStore(store =>
-                store.update('masteredDegrees', degrees => {
-                  const id = Model.ObjectId();
-                  return degrees.set(
-                    id.toHexString(),
-                    new Model.MasteredDegree({
-                      _id: id,
-                      name: 'New degree',
-                      descriptionHtml: 'Default description. Please change!',
-                      minimumCredits: 120,
-                      published: false,
-                    }),
-                  );
-                }),
-              );
+              this.props.onCreateMasteredDegree();
             }
           }}
         />

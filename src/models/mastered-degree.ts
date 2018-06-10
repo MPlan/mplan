@@ -15,8 +15,34 @@ export class MasteredDegree extends Record.define({
   get root(): App {
     return pointer.store.current();
   }
+
+  updateStore = (store: App) => {
+    return store.update('masteredDegrees', masteredDegrees => {
+      const thisMasteredDegree = masteredDegrees.get(this.id);
+      if (!thisMasteredDegree) {
+        console.warn(`could nto find mastered degree with id "${this.id}"`);
+        return masteredDegrees;
+      }
+      return masteredDegrees.set(thisMasteredDegree.id, this);
+    });
+  };
+
   get id() {
     return this._id.toHexString();
+  }
+
+  createNewGroup() {
+    return this.update('masteredDegreeGroups', masteredDegreeGroups =>
+      masteredDegreeGroups.push(
+        new MasteredDegreeGroup({
+          _id: ObjectId(),
+          name: 'New degree group',
+          descriptionHtml: 'Default description. Please change!',
+          creditMaximum: 6,
+          creditMinimum: 6,
+        }),
+      ),
+    );
   }
 
   addGroup(group: MasteredDegreeGroup) {

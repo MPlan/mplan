@@ -8,6 +8,7 @@ import { MasteredDegree } from './mastered-degree';
 import { pointer } from './pointer';
 import { CatalogUi } from './catalog-ui';
 import { DegreePage } from './degree-page';
+import { ObjectId } from './';
 
 export class App extends Record.define({
   catalog: new Catalog(),
@@ -35,5 +36,21 @@ export class App extends Record.define({
 
   updatePlan(updater: (plan: Plan) => Plan) {
     return this.updateUser(user => user.updatePlan(updater));
+  }
+
+  createMasteredDegree() {
+    const id = ObjectId();
+    return this.update('masteredDegrees', masteredDegrees =>
+      masteredDegrees.set(
+        id.toHexString(),
+        new MasteredDegree({
+          _id: id,
+          name: 'New degree',
+          descriptionHtml: 'Default description. Please change!',
+          minimumCredits: 120,
+          published: false,
+        }),
+      ),
+    );
   }
 }
