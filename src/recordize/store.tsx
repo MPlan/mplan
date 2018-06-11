@@ -74,7 +74,7 @@ export function createStore<Store extends Immutable.Record<any>>(initialStore: S
     return (connectionOptions: ConnectionOptions<Store, Scope, OwnProps, ComponentProps>) => {
       const { mapScopeToProps, scopeDefiner } = connectionOptions;
       const initialScope = scopeDefiner(currentStore);
-      return class extends React.Component<OwnProps, Scope> {
+      class Container extends React.Component<OwnProps, Scope> {
         componentTuple: ComponentTuple<Store, Scope> | undefined;
         state = initialScope;
 
@@ -107,7 +107,9 @@ export function createStore<Store extends Immutable.Record<any>>(initialStore: S
           });
           return <Component {...componentProps} />;
         }
-      };
+      }
+
+      return Container as React.ComponentType<OwnProps>;
     };
   }
 

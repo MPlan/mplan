@@ -1,12 +1,12 @@
 import * as React from 'react';
-import * as Model from '../models';
-import * as styles from '../styles';
+import * as Model from 'models';
+import * as styles from 'styles';
 import styled from 'styled-components';
-import { View } from './view';
-import { Text } from './text';
-import { Accordion } from './accordion';
-import { SemesterCourse } from './semester-course';
-import { Dropzone, SortChange } from './dropzone';
+import { View } from 'components/view';
+import { Text } from 'components/text';
+import { Accordion } from 'components/accordion';
+import { SemesterCourse } from 'routes/timeline/semester-course';
+import { Dropzone, SortChange } from 'components/dropzone';
 
 const Container = styled(View)`
   box-shadow: ${styles.boxShadow(0)};
@@ -30,12 +30,25 @@ const Warning = styled(View)`
   padding: ${styles.space(-1)};
 `;
 
-export class Toolbox extends Model.store.connect({
-  initialState: {
-    unplacedCoursesOpen: true,
-    warningsOpen: false,
-  },
-}) {
+export interface ToolboxProps {
+  plan: Model.Plan;
+  showToolbox: boolean;
+  onChangeSort: (sortChange: SortChange) => void;
+}
+
+export interface ToolboxState {
+  unplacedCoursesOpen: boolean;
+  warningsOpen: boolean;
+}
+
+export class Toolbox extends React.Component<ToolboxProps, ToolboxState> {
+  constructor(props: ToolboxProps) {
+    super(props);
+    this.state = {
+      unplacedCoursesOpen: true,
+      warningsOpen: true,
+    };
+  }
   handleUnplacedCoursesToggle = () => {
     this.setState(previousState => ({
       ...previousState,
@@ -50,35 +63,17 @@ export class Toolbox extends Model.store.connect({
     }));
   };
 
+  // TODO
   handleDeleteCourse(_: Model.Course) {}
-
-  handleChangeSort = (e: SortChange) => {
-    const { fromDropzoneId, oldIndex } = e;
-    this.setStore(store =>
-      store.updatePlan(plan => {
-        const semester = plan.semesterMap.get(fromDropzoneId);
-        if (fromDropzoneId === 'unplaced-courses') {
-          return plan;
-        }
-        if (!semester) {
-          return plan;
-        }
-        return plan.updateSemester(fromDropzoneId, semester => {
-          const newCourses = semester._courseIds.filter((_, index) => index !== oldIndex);
-          return semester.set('_courseIds', newCourses);
-        });
-      }),
-    );
-  };
 
   renderCourse = (course: Model.Course) => {
     return <SemesterCourse key={course.id} course={course} />;
   };
 
   render() {
-    const plan = this.store.user.plan;
+    const plan = this.props.plan;
     return (
-      <Container style={{ maxWidth: this.store.ui.showToolbox ? '16rem' : 0 }}>
+      <Container style={{ maxWidth: this.props.showToolbox ? '16rem' : 0 }}>
         <Header>Toolbox</Header>
         <Body>
           <Accordion
@@ -90,7 +85,7 @@ export class Toolbox extends Model.store.connect({
               id={'unplaced-courses'}
               elements={plan.unplacedCourses()}
               getKey={course => course.id}
-              onChangeSort={this.handleChangeSort}
+              onChangeSort={this.props.onChangeSort}
               render={this.renderCourse}
             />
           </Accordion>

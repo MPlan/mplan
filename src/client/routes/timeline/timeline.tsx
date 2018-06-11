@@ -1,18 +1,17 @@
 import * as React from 'react';
-import {
-  View,
-  Text,
-  Semester,
-  FloatingActionButton,
-  Button,
-  Toolbox,
-  ActionableText,
-  Modal,
-  Checkbox,
-} from '../components';
-import * as styles from '../styles';
-import * as Model from '../models';
+import { View } from 'components/view';
+import { Text } from 'components/text';
+import { Semester } from './semester';
+import { FloatingActionButton } from 'components/floating-action-button';
+import { Button } from 'components/button';
+import { Toolbox } from './toolbox';
+import { ActionableText } from 'components/actionable-text';
+import { Modal } from 'components/modal';
+import { Checkbox } from 'components/checkbox';
+import * as styles from 'styles';
+import * as Model from 'models';
 import styled from 'styled-components';
+import { PlanOptions } from 'models';
 
 const Container = styled(View)`
   flex-direction: row;
@@ -92,18 +91,33 @@ const actions = {
   },
 };
 
-export class Timeline extends Model.store.connect({
-  initialState: {
-    sliderWidth: 0,
-    sliderLeft: 0,
-    scheduleModelOpen: false,
-  },
-}) {
+export interface TimelineProps {
+  semesters: Model.Semester[];
+  onCreateNewSemester: () => void;
+  onGeneratePlan: (planOptions: PlanOptions) => void;
+}
+
+export interface TimelineState {
+  sliderWidth: number;
+  sliderLeft: number;
+  scheduleModelOpen: boolean;
+}
+
+export class Timeline extends React.Component<TimelineProps, TimelineState> {
+  constructor(props: TimelineProps) {
+    super(props);
+    this.state = {
+      sliderWidth: 0,
+      sliderLeft: 0,
+      scheduleModelOpen: false,
+    };
+  }
+
   semesterContainerRef: HTMLElement | null | undefined;
 
   handleActions = (action: keyof typeof actions) => {
     if (action === 'newSemester') {
-      this.setStore(store => store.updatePlan(plan => plan.createNewSemester()));
+      this.props.onCreateNewSemester();
     }
   };
 
@@ -138,24 +152,19 @@ export class Timeline extends Model.store.connect({
     ) as HTMLInputElement;
 
     const creditHourCap = parseInt(creditHourCapElement.value, 10);
-    const considerSummerClasses = considerSummerClassesElement.checked;
+    const includeSummerCourses = considerSummerClassesElement.checked;
     const considerHistoricalData = considerHistoricalDataElement.checked;
 
-    this.setStore(store => {
-      const newPlan = store.user.degree.generatePlan({
-        considerHistoricalData,
-        creditHourCap,
-        includeSummerCourses: considerSummerClasses,
-        startFromSeason: 'Winter',
-        startFromYear: 2018,
-      });
-      return store.updatePlan(() => newPlan);
+    this.props.onGeneratePlan({
+      considerHistoricalData,
+      creditHourCap,
+      includeSummerCourses,
+      startFromSeason: 'Winter',
+      startFromYear: 2018,
     });
   };
 
   render() {
-    const semestersSorted = this.store.user.plan.semesterMap.valueSeq().sortBy(s => s.position);
-
     return (
       <Container>
         <Content>
@@ -179,10 +188,12 @@ export class Timeline extends Model.store.connect({
             </HeaderRight>
           </Header>
           <SemestersContainer className="semesters-container">
-            {semestersSorted.map(semester => <Semester key={semester.id} semester={semester} />)}
+            {this.props.semesters.map(semester => (
+              <Semester key={semester.id} semester={semester} />
+            ))}
           </SemestersContainer>
           <Navigator>
-            {semestersSorted.map(semester => (
+            {this.props.semesters.map(semester => (
               <NavigationLabel
                 key={semester.id}
                 onClick={() => this.handleNavigationClick(semester)}

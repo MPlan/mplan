@@ -1,11 +1,11 @@
 import * as React from 'react';
-import * as Model from '../models';
-import { View } from './view';
-import { Text } from './text';
+import * as Model from 'models';
+import { View } from 'components/view';
+import { Text } from 'components/text';
 import styled from 'styled-components';
-import * as styles from '../styles';
-import { DropdownMenu } from './dropdown-menu';
-import { RightClickMenu } from './right-click-menu';
+import * as styles from 'styles';
+import { DropdownMenu } from 'components/dropdown-menu';
+import { RightClickMenu } from 'components/right-click-menu';
 
 const Container = styled(View)`
   padding: ${styles.space(-1)} ${styles.space(0)};

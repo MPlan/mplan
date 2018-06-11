@@ -1,14 +1,14 @@
 import * as React from 'react';
-import * as Model from '../models';
-import { View } from './view';
-import { Text } from './text';
-import { SemesterCourse } from './semester-course';
+import * as Model from 'models';
+import { View } from 'components/view';
+import { Text } from 'components/text';
+import { SemesterCourse } from '../semester-course';
 import styled from 'styled-components';
-import * as styles from '../styles';
-import { Dropzone, SortChange } from './dropzone';
-import { DropdownMenu } from './dropdown-menu';
-import { RightClickMenu } from './right-click-menu';
-import { ActionableText } from './actionable-text';
+import * as styles from 'styles';
+import { Dropzone, SortChange } from 'components/dropzone';
+import { DropdownMenu } from 'components/dropdown-menu';
+import { RightClickMenu } from 'components/right-click-menu';
+import { ActionableText } from 'components/actionable-text';
 
 const Container = styled(View)`
   width: 16rem;
@@ -81,10 +81,6 @@ const Circle = styled.div`
   box-shadow: ${styles.boxShadow(1)};
 `;
 
-export interface SemesterProps {
-  semester: Model.Semester;
-}
-
 const actions = {
   add: {
     text: 'Add course',
@@ -102,56 +98,19 @@ const actions = {
   },
 };
 
-export class Semester extends Model.store.connect({
-  propsExample: (undefined as any) as SemesterProps,
-}) {
-  handleOnChangeSort = (e: SortChange) => {
-    const { fromDropzoneId, toDropzoneId, newIndex, oldIndex } = e;
-    this.setStore(store =>
-      store.updatePlan(plan => {
-        const semester = plan.semesterMap.get(fromDropzoneId);
-        if (fromDropzoneId === 'unplaced-courses') {
-          const course = plan.unplacedCourses()[oldIndex];
-          return plan.updateSemester(toDropzoneId, semester => {
-            const newCourses = semester._courseIds.insert(newIndex, course.catalogId);
-            return semester.set('_courseIds', newCourses);
-          });
-        }
-        if (!semester) {
-          return plan;
-        }
-        const course = semester._courseIds.get(oldIndex);
-        if (!course) {
-          console.warn('course was not found when sorting');
-          return plan;
-        }
-        return plan
-          .updateSemester(fromDropzoneId, semester => {
-            const newCourses = semester._courseIds.filter((_, index) => index !== oldIndex);
-            return semester.set('_courseIds', newCourses);
-          })
-          .updateSemester(toDropzoneId, semester => {
-            const newCourses = semester._courseIds.insert(newIndex, course);
-            return semester.set('_courseIds', newCourses);
-          });
-      }),
-    );
-  };
+export interface SemesterProps {
+  semester: Model.Semester;
+  onSortEnd: (e: SortChange) => void;
+  onDeleteCourse: (course: Model.Course) => void;
+}
 
-  handleDeleteCourse(course: Model.Course) {
-    this.setStore(store =>
-      store.updatePlan(plan =>
-        plan.updateSemester(this.props.semester.id, semester => semester.deleteCourse(course)),
-      ),
-    );
-  }
-
+export class Semester extends React.Component<SemesterProps, {}> {
   renderCourse = (course: Model.Course) => {
     return (
       <SemesterCourse
         key={course.id}
         course={course}
-        onDeleteCourse={() => this.handleDeleteCourse(course)}
+        onDeleteCourse={() => this.props.onDeleteCourse(course)}
       />
     );
   };
@@ -185,7 +144,7 @@ export class Semester extends Model.store.connect({
               id={semester.id}
               elements={courses}
               getKey={course => course.id}
-              onChangeSort={this.handleOnChangeSort}
+              onChangeSort={this.props.onSortEnd}
               render={this.renderCourse}
             />
             <AddCourse small onClick={() => {}}>

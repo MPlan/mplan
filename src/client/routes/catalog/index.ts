@@ -10,7 +10,6 @@ const container = Model.store.connect(Catalog)({
   scopeDefiner,
   mapScopeToProps: ({ store, scope: _scope, sendUpdate, ownProps }) => {
     const scope = _scope as ReturnType<typeof scopeDefiner>;
-    const catalogUi = store.catalogUi;
     return {
       searchResults: scope.searchResults,
       onSearch: query => sendUpdate(store => store.catalogUi.search(query).updateStore(store)),

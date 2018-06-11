@@ -23,6 +23,11 @@ export class User
   get root(): App {
     return pointer.store.current();
   }
+
+  updateStore = (store: App) => {
+    return store.set('user', this);
+  };
+
   updateDegree(updater: (degree: Degree) => Degree) {
     return this.update('degree', updater);
   }

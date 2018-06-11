@@ -1,5 +1,4 @@
 import * as Immutable from 'immutable';
-import { Equatable } from './store';
 import { ObjectID as _ObjectId } from 'bson';
 
 export function ObjectId(id?: string | number | _ObjectId) {
@@ -116,8 +115,8 @@ export function define<T>(rawRecordDefault: T, _dontConvertKeys?: string[]) {
 
   class RecordClass extends RecordBaseClass {
     getOrCalculate<V>(name: string, calculate: () => V): V;
-    getOrCalculate<V>(name: string, dependencies: Equatable[], calculate: () => V): V;
-    getOrCalculate<V>(name: string, a: Equatable[] | (() => V), b?: () => V) {
+    getOrCalculate<V>(name: string, dependencies: any[], calculate: () => V): V;
+    getOrCalculate<V>(name: string, a: any[] | (() => V), b?: () => V) {
       const calculate = typeof a === 'function' ? a : b;
       if (!calculate) throw new Error('Calculate was not function');
       return calculate();

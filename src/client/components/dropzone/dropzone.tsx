@@ -1,8 +1,8 @@
 import * as React from 'react';
-import * as Model from '../models';
+import * as Model from 'models';
 import styled from 'styled-components';
-import { View } from './view';
-import { Draggable } from './draggable';
+import { View } from 'components/view';
+import { Draggable } from 'components/draggable';
 import { oneLine } from 'common-tags';
 import { Subject } from 'rxjs/Subject';
 import { throttleTime } from 'rxjs/operators';
@@ -32,26 +32,47 @@ export interface SortChange {
 export interface DropzoneProps<T> {
   id: string;
   elements: T[];
+  selectedDraggableId: string;
+  selectedDropzoneId: string;
+  startingDropzoneId: string;
+  closestElementId: string;
+  startingIndex: number;
   getKey: (t: T) => string;
   render: (t: T) => JSX.Element;
   onChangeSort: (sortChange: SortChange) => void;
+  onDragStart: (
+    params: {
+      startingDropzoneId: string;
+      startingIndex: number;
+    },
+  ) => void;
+  onDragOver: (
+    params: {
+      closestElementId: string;
+      selectedDropzoneId: string;
+      aboveMidpoint: boolean;
+    },
+  ) => void;
 }
 
-export class Dropzone extends Model.store.connect({
-  scope: store => store.ui.draggables,
-  descope: (store, draggables: Model.Draggables) =>
-    store.updateUi(ui => ui.set('draggables', draggables)),
-  propsExample: (undefined as any) as DropzoneProps<Model.Course>,
-  initialState: {
-    dropzoneActive: false,
-  },
-}) {
+export interface DropzoneState {
+  dropzoneActive: boolean;
+}
+
+export class Dropzone<T> extends React.Component<DropzoneProps<T>, DropzoneState> {
   lastDragOverTime = 0;
   mounted = false;
   dragOver$ = new Subject<{ clientY: number; clientX: number }>();
   dropzoneActivePoll$ = Observable.interval(100);
   dropzoneActivePollSubscription: Subscription | undefined;
   dragOverSubscription: Subscription | undefined;
+
+  constructor(props: DropzoneProps<T>) {
+    super(props);
+    this.state = {
+      dropzoneActive: false,
+    };
+  }
 
   componentDidMount() {
     this.mounted = true;
@@ -68,7 +89,6 @@ export class Dropzone extends Model.store.connect({
 
   componentWillUnmount() {
     this.mounted = false;
-    super.componentWillUnmount();
     if (this.dragOverSubscription) {
       this.dragOverSubscription.unsubscribe();
     }
@@ -84,7 +104,7 @@ export class Dropzone extends Model.store.connect({
     const draggables = Array.from(
       document.querySelectorAll(oneLine`
           .dropzone-${this.props.id}
-          .draggable:not(.draggable-${this.store.selectedDraggableId})
+          .draggable:not(.draggable-${this.props.selectedDraggableId})
           .drag
         `),
     )
@@ -124,12 +144,11 @@ export class Dropzone extends Model.store.connect({
 
     if (!closestElementId) return;
 
-    this.setStore(store =>
-      store
-        .set('closestElementId', closestElementId)
-        .set('selectedDropzoneId', this.props.id)
-        .set('aboveMidpoint', aboveMidpoint),
-    );
+    this.props.onDragOver({
+      closestElementId,
+      selectedDropzoneId: this.props.id,
+      aboveMidpoint,
+    });
   };
 
   handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
@@ -140,9 +159,10 @@ export class Dropzone extends Model.store.connect({
     const startingIndex = this.props.elements.findIndex(
       element => this.props.getKey(element) === id,
     );
-    this.setStore(store =>
-      store.set('startingDropzoneId', this.props.id).set('startingIndex', startingIndex),
-    );
+    this.props.onDragStart({
+      startingDropzoneId: this.props.id,
+      startingIndex,
+    });
   };
 
   handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -153,15 +173,15 @@ export class Dropzone extends Model.store.connect({
   };
 
   calculateNewIndex(closestElementIndex: number) {
-    if (this.store.selectedDropzoneId === this.store.startingDropzoneId) {
-      if (this.store.startingIndex < closestElementIndex) {
+    if (this.props.selectedDropzoneId === this.props.startingDropzoneId) {
+      if (this.props.startingIndex < closestElementIndex) {
         return closestElementIndex;
       } else {
         return closestElementIndex + 1;
       }
     }
 
-    if (this.store.selectedDropzoneId !== this.store.startingDropzoneId) {
+    if (this.props.selectedDropzoneId !== this.props.startingDropzoneId) {
       return closestElementIndex + 1;
     }
 
@@ -171,10 +191,10 @@ export class Dropzone extends Model.store.connect({
 
   handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-    const fromDropzoneId = this.store.startingDropzoneId;
-    const toDropzoneId = this.store.selectedDropzoneId;
-    const oldIndex = this.store.startingIndex;
-    const closestElementId = this.store.closestElementId;
+    const fromDropzoneId = this.props.startingDropzoneId;
+    const toDropzoneId = this.props.selectedDropzoneId;
+    const oldIndex = this.props.startingIndex;
+    const closestElementId = this.props.closestElementId;
     const closestElementIdIndex = this.props.elements.findIndex(
       element => this.props.getKey(element) === closestElementId,
     );
@@ -194,7 +214,7 @@ export class Dropzone extends Model.store.connect({
 
   handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
     e.dataTransfer.dropEffect = 'move';
-  }
+  };
 
   render() {
     return (

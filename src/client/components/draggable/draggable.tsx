@@ -1,10 +1,10 @@
 import * as React from 'react';
-import * as Model from '../models';
+import * as Model from 'models';
 import styled from 'styled-components';
-import { View } from './view';
-import { Text } from './text';
+import { View } from 'components/view';
+import { Text } from 'components/text';
 import * as uuid from 'uuid/v4';
-import * as styles from '../styles';
+import * as styles from 'styles';
 
 const Container = styled(View)`
   position: relative;
@@ -71,35 +71,44 @@ export interface DraggableProps {
   elementIndex: number;
   dropzoneActive: boolean;
   children?: JSX.Element;
+  dragging: boolean;
+  selectedDraggableId: string;
+  closestElementId: string;
+  height: number;
+  onDragStart: (
+    params: {
+      selectedDraggableId: string;
+      selectedElementId: string;
+      height: number;
+    },
+  ) => void;
+  onDragEnd: () => void;
 }
 
-export class Draggable extends Model.store.connect({
-  scope: store => store.ui.draggables,
-  descope: (store: Model.App, draggables: Model.Draggables) =>
-    store.updateUi(ui => ui.set('draggables', draggables)),
-  propsExample: (undefined as any) as DraggableProps,
-  initialState: {
-    childMounted: false,
-  },
-}) {
+export interface DraggableState {
+  childMounted: boolean;
+}
+
+export class Draggable extends React.Component<DraggableProps, DraggableState> {
   draggableId = uuid();
   childWrapperRef = React.createRef<HTMLElement>();
   containerRef = React.createRef<HTMLElement>();
 
-  componentDidMount() {}
-
-  componentWillUnmount() {
-    super.componentWillUnmount();
+  constructor(props: DraggableProps) {
+    super(props);
+    this.state = {
+      childMounted: false,
+    };
   }
 
   get draggingCurrent() {
-    return this.store.dragging && this.store.selectedDraggableId === this.draggableId;
+    return this.props.dragging && this.props.selectedDraggableId === this.draggableId;
   }
 
   get spacer() {
     if (!this.props.dropzoneActive) return false;
-    if (!this.store.dragging) return false;
-    if (this.store.closestElementId !== this.props.id) return false;
+    if (!this.props.dragging) return false;
+    if (this.props.closestElementId !== this.props.id) return false;
     return true;
   }
 
@@ -109,17 +118,11 @@ export class Draggable extends Model.store.connect({
     const childWrapperRef = this.childWrapperRef.current;
     const childHeight = childWrapperRef && childWrapperRef.getBoundingClientRect().height;
 
-    this.setStore(store =>
-      store
-        .set('dragging', true)
-        .set('selectedDraggableId', this.draggableId)
-        .set('selectedElementId', this.props.id)
-        .set('height', childHeight || 0),
-    );
-  };
-
-  handleDragEnd = () => {
-    this.setStore(store => store.set('dragging', false));
+    this.props.onDragStart({
+      selectedDraggableId: this.draggableId,
+      selectedElementId: this.props.id,
+      height: childHeight || 0,
+    });
   };
 
   getChildBoundingRect() {
@@ -144,15 +147,15 @@ export class Draggable extends Model.store.connect({
           className={[
             'drag',
             `drag-id-${this.props.id}`,
-            this.store.dragging ? 'drag-mode' : '',
+            this.props.dragging ? 'drag-mode' : '',
           ].join(' ')}
           innerRef={this.childWrapperRef}
           onDragStart={this.handleDragStart}
-          onDragEnd={this.handleDragEnd}
+          onDragEnd={this.props.onDragEnd}
         >
           {this.props.children}
         </ChildWrapper>
-        <Spacer style={{ height: this.spacer ? this.store.height : 0 }}>Incoming!</Spacer>
+        <Spacer style={{ height: this.spacer ? this.props.height : 0 }}>Incoming!</Spacer>
       </Container>
     );
   }

@@ -15,6 +15,11 @@ export class Plan extends Record.define({
   get root(): App {
     return pointer.store.current();
   }
+
+  updateStore = (store: App) => {
+    return store.update('user', user => user.set('plan', this));
+  };
+
   updateSemester(id: string, updater: (semester: Semester) => Semester) {
     return this.update('semesterMap', map => map.update(id, updater));
   }
@@ -103,6 +108,13 @@ export class Plan extends Record.define({
 
     Plan.warningsNotOfferedDuringSeason.set(hash, allWarningsFlattened);
     return allWarningsFlattened;
+  }
+
+  semesters() {
+    return this.semesterMap
+      .valueSeq()
+      .sortBy(semester => semester.position)
+      .toArray();
   }
 
   // TODO:

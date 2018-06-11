@@ -10,9 +10,12 @@
     "baseUrl": "./src",
     "paths": {
       "styles": ["client/styles"],
-      "components": ["client/components"],
-      "models": ["models"],
-      "utilities": ["utilities"]
+      "styles/*": ["client/styles/*"],
+      "components/*": ["client/components/*"],
+      "routes/*": ["client/routes/*"],
+      "models/*": ["models/*"],
+      "utilities/*": ["utilities/*"],
+      "recordize": ["recordize/*"]
     }
   }
 }

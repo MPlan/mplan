@@ -25,10 +25,12 @@ const webpackConfig = {
   resolve: {
     extensions: ['.tsx', '.ts', '.js', '.jsx', '.css'],
     alias: {
+      recordize: path.resolve(__dirname, './src/recordize'),
       styles: path.resolve(__dirname, './src/client/styles'),
       models: path.resolve(__dirname, './src/models'),
       utilities: path.resolve(__dirname, './src/utilities'),
       components: path.resolve(__dirname, './src/client/components'),
+      routes: path.resolve(__dirname, './src/client/routes'),
     },
   },
   devtool: 'source-map',

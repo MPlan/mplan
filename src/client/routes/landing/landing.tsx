@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { View, Text, Button, Fa } from '../components';
-import { Auth } from '../auth';
+import { View, Text, Button, Fa } from 'components';
+import { Auth } from '../../auth';
 import styled from 'styled-components';
-import * as styles from '../styles';
+import * as styles from 'styles';
 
 function onButtonClick() {
   Auth.login();
@@ -48,21 +48,17 @@ export function Landing() {
         </Header>
         <ElevatorPitch>
           <Text large>
-            MPlan is your personalized degree completion planning tool made with
-            &nbsp;
-            <Fa icon="heart" />&nbsp;for students by students. Never delay your
-            graduation again.
+            MPlan is your personalized degree completion planning tool made with &nbsp;
+            <Fa icon="heart" />&nbsp;for students by students. Never delay your graduation again.
           </Text>
         </ElevatorPitch>
         <Description>
           <Text>
-            MPlan is currently under construction. Anything presented here is a
-            very early pre-production, pre-alpha preview and may not represent
-            the current state of the application. There are no privacy
-            guarantees at this time (though there will be in the future). Email
-            Rico Kahler{' '}
-            <a href="mailto:rakahler@umich.edu">rakahler@umich.edu</a> if you
-            have any questions.
+            MPlan is currently under construction. Anything presented here is a very early
+            pre-production, pre-alpha preview and may not represent the current state of the
+            application. There are no privacy guarantees at this time (though there will be in the
+            future). Email Rico Kahler <a href="mailto:rakahler@umich.edu">rakahler@umich.edu</a> if
+            you have any questions.
           </Text>
         </Description>
       </LandingContent>
