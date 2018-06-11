@@ -1,13 +1,13 @@
 import * as React from 'react';
-import * as Model from '../models';
+import * as Model from 'models';
 import * as Immutable from 'immutable';
-import * as styles from '../styles';
+import * as styles from 'styles';
 import styled from 'styled-components';
-import { View } from './view';
-import { Text } from './text';
-import { CourseSearchItem } from './course-search-item';
-import { Button } from './button';
-import { Fa } from './fa';
+import { View } from 'components/view';
+import { Text } from 'components/text';
+import { CourseSearchItem } from 'components/course-search-item';
+import { Button } from 'components/button';
+import { Fa } from 'components/fa';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
 import { debounceTime } from 'rxjs/operators';
@@ -63,48 +63,52 @@ const ButtonRow = styled(View)`
 `;
 
 export interface CourseSearchProps {
+  searchResults: Model.SearchResults;
   currentCourses: Model.Course[];
   onChangeCourses: (courses: Model.Course[]) => void;
   onCancel: () => void;
+  onSearch: (query: string) => void;
 }
 
-export class CourseSearch extends Model.store.connect({
-  scope: store => store.catalog,
-  descope: store => store,
-  initialState: {
-    searchResults: {
-      count: 0,
-      results: Immutable.Seq.Indexed(),
-    } as Model.SearchResults,
-    currentCourses: [] as Model.Course[],
-  },
-  propsExample: (undefined as any) as CourseSearchProps,
-}) {
+export interface CourseSearchState {
+  searchResults: Model.SearchResults;
+  currentCourses: Model.Course[];
+}
+
+export class CourseSearch extends React.Component<CourseSearchProps, CourseSearchState> {
   input$ = new Subject<string>();
   subscription: Subscription | undefined;
   htmlForId = uuid();
 
+  constructor(props: CourseSearchProps) {
+    super(props);
+    this.state = {
+      searchResults: Immutable.Seq([]),
+      currentCourses: [],
+    };
+  }
+
   componentDidMount() {
-    this.subscription = this.input$.pipe(debounceTime(INPUT_DEBOUNCE_TIME)).subscribe(input => {
-      const searchResults = this.store.search(input);
-      this.setState(previousState => ({
-        ...previousState,
-        searchResults,
-      }));
-    });
+    this.subscription = this.input$
+      .pipe(debounceTime(INPUT_DEBOUNCE_TIME))
+      .subscribe(this.props.onSearch);
   }
-  componentWillReceiveProps(nextProps: CourseSearchProps) {
-    this.setState(previousState => ({
+
+  static getDerivedStateFromProps(nextProps: CourseSearchProps, previousState: CourseSearchState) {
+    return {
       ...previousState,
-      currentCourses: nextProps.currentCourses,
-    }));
+      currentCourse: nextProps.currentCourses,
+    };
   }
+
   componentWillUnmount() {
     this.subscription && this.subscription.unsubscribe();
   }
+
   handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
   };
+
   handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.currentTarget.value;
     this.input$.next(value);
@@ -116,6 +120,7 @@ export class CourseSearch extends Model.store.connect({
       currentCourses: [...previousState.currentCourses, courseToAdd],
     }));
   }
+
   handleDeleteClick(courseToDelete: Model.Course) {
     this.setState(previousState => ({
       ...previousState,
@@ -131,9 +136,9 @@ export class CourseSearch extends Model.store.connect({
 
   render() {
     const takeAway = 20;
-    const top = this.state.searchResults.results.take(takeAway);
+    const top = this.state.searchResults.take(takeAway);
     const totalCount = this.state.searchResults.count;
-    const count = this.state.searchResults.count - top.count();
+    const count = this.props.searchResults.count() - top.count();
     return (
       <Container>
         <Split>

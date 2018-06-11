@@ -1,13 +1,10 @@
 import * as React from 'react';
 import * as Model from 'models';
-import {
-  View,
-  Text,
-  SequenceCourse,
-  courseIdClassName,
-  ActionableText,
-  FloatingActionButton,
-} from 'components';
+import { View } from 'components/view';
+import { Text } from 'components/text';
+import { SequenceCourse, courseIdClassName } from 'components/sequence-course';
+import { ActionableText } from 'components/actionable-text';
+import { FloatingActionButton } from 'components/floating-action-button';
 import styled from 'styled-components';
 import * as styles from 'styles';
 import { flatten, createClassName, wait } from 'utilities/utilities';

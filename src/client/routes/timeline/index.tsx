@@ -24,4 +24,4 @@ const container = Model.store.connect(Timeline)({
   },
 });
 
-export { container as Catalog };
+export { container as Timeline };

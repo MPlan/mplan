@@ -1,4 +1,4 @@
-import * as Record from 'recordize';
+import * as Record from '../recordize';
 import * as Immutable from 'immutable';
 import { App } from './app';
 import { pointer } from './pointer';

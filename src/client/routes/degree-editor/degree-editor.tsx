@@ -1,14 +1,13 @@
 import * as React from 'react';
 import * as Model from 'models';
-import {
-  View,
-  Text,
-  FloatingActionButton,
-  DegreeItem,
-  Fa,
-  DegreeItemSidebar,
-  MasteredDegreeDetail,
-} from 'components';
+import { View } from 'components/view';
+import { Text } from 'components/text';
+import { ActionableText } from 'components/actionable-text';
+import { FloatingActionButton } from 'components/floating-action-button';
+import { Fa } from 'components/fa';
+import { DegreeItem } from 'components/degree-item';
+import { DegreeItemSidebar } from 'components/degree-item-sidebar';
+import { MasteredDegreeDetail } from 'components/mastered-degree-detail';
 import { Route, RouteComponentProps, NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 import * as styles from 'styles';

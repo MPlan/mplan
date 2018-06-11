@@ -1,7 +1,9 @@
 import * as React from 'react';
 import * as Model from 'models';
 import styled from 'styled-components';
-import { View, Text, CatalogCourse } from 'components';
+import { View } from 'components/view';
+import { Text } from 'components/text';
+import { CatalogCourse } from 'components/catalog-course';
 import * as styles from 'styles';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';

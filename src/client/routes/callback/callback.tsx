@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { View, Text } from 'components';
+import { View } from 'components/view';
+import { Text } from 'components/text';
 import { Auth } from '../../auth';
 import { history } from '../../app';
 import styled from 'styled-components';

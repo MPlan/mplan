@@ -1,14 +1,12 @@
 import * as React from 'react';
 import * as Model from 'models';
-import {
-  View,
-  Text,
-  ActionableText,
-  FloatingActionButton,
-  DegreeGroup,
-  Modal,
-  SearchResultCourse,
-} from 'components';
+import { View } from 'components/view';
+import { Text } from 'components/text';
+import { ActionableText } from 'components/actionable-text';
+import { FloatingActionButton } from 'components/floating-action-button';
+import { DegreeGroup } from 'components/degree-group';
+import { Modal } from 'components/modal';
+import { SearchResultCourse } from 'components/search-result-course';
 import styled from 'styled-components';
 import * as styles from 'styles';
 import { Subject } from 'rxjs/Subject';

@@ -1,5 +1,8 @@
 import * as React from 'react';
-import { View, Text, Button, Fa } from 'components';
+import { View } from 'components/view';
+import { Text } from 'components/text';
+import { Fa } from 'components/fa';
+import { Button } from 'components/button';
 import { Auth } from '../../auth';
 import styled from 'styled-components';
 import * as styles from 'styles';

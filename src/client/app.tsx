@@ -1,6 +1,10 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { View, Text, Fa, Nav, Loading } from './components';
+import { View } from 'components/view';
+import { Text } from 'components/text';
+import { Fa } from 'components/fa';
+import { Nav } from 'components/nav';
+import { Loading } from 'components/loading';
 import { Router, Switch, Route, Redirect } from 'react-router';
 import { Routes } from './routes';
 import * as styles from './styles';
@@ -68,48 +72,53 @@ function handleShowHideToolbox() {
   Model.store.sendUpdate(store => store.updateUi(ui => ui.update('showToolbox', show => !show)));
 }
 
-export class AuthenticatedRoute extends Model.store.connect({
-  scope: store => store.ui,
-  descope: (store, ui: Model.Ui) => store.set('ui', ui),
-}) {
-  render() {
-    return !this.store.loaded ? (
-      <Loading />
-    ) : (
-      <AuthenticatedRouteContainer>
-        <Header>
-          <View>
-            <Brand large strong>
-              MPlan
-            </Brand>
-          </View>
+export function _AuthenticatedRoute(props: { loaded: boolean }) {
+  return !props.loaded ? (
+    <Loading />
+  ) : (
+    <AuthenticatedRouteContainer>
+      <Header>
+        <View>
+          <Brand large strong>
+            MPlan
+          </Brand>
+        </View>
 
-          <HeaderContent>
-            <User>
-              <Fa icon="user" size="2x" />
-              <UserName>{Auth.userDisplayName() || ''}</UserName>
-            </User>
-            <ShowHideToolbox onClick={handleShowHideToolbox}>
-              <Fa icon="columns" size="2x" />
-            </ShowHideToolbox>
-          </HeaderContent>
-        </Header>
+        <HeaderContent>
+          <User>
+            <Fa icon="user" size="2x" />
+            <UserName>{Auth.userDisplayName() || ''}</UserName>
+          </User>
+          <ShowHideToolbox onClick={handleShowHideToolbox}>
+            <Fa icon="columns" size="2x" />
+          </ShowHideToolbox>
+        </HeaderContent>
+      </Header>
 
-        <Body>
-          <Nav />
-          <Content>
-            <Switch>
-              {Routes.map(route => (
-                <Route key={route.path} path={route.path} component={route.component} />
-              ))}
-              <Redirect from="/" to={Routes[0].path} />
-            </Switch>
-          </Content>
-        </Body>
-      </AuthenticatedRouteContainer>
-    );
-  }
+      <Body>
+        <Nav />
+        <Content>
+          <Switch>
+            {Routes.map(route => (
+              <Route key={route.path} path={route.path} component={route.component} />
+            ))}
+            <Redirect from="/" to={Routes[0].path} />
+          </Switch>
+        </Content>
+      </Body>
+    </AuthenticatedRouteContainer>
+  );
 }
+
+const AuthenticatedRoute = Model.store.connect(_AuthenticatedRoute)({
+  scopeDefiner: store => store.ui,
+  mapScopeToProps: ({ scope: _scope }) => {
+    const scope = _scope as { loaded: boolean };
+    return {
+      loaded: scope.loaded,
+    };
+  },
+});
 
 function renderLanding() {
   if (Auth.loggedIn()) {
@@ -138,22 +147,16 @@ const AppContent = styled<AppContentProps>(View)`
   overflow: hidden;
 `;
 
-export class App extends Model.store.connect({
-  scope: store => store.ui.draggables,
-  descope: (store, draggables: Model.Draggables) =>
-    store.updateUi(ui => ui.set('draggables', draggables)),
-}) {
-  render() {
-    return (
-      <AppContent>
-        <Router history={history}>
-          <Switch>
-            <Route path="/callback" component={Callback} />
-            <Route path="/login" render={renderLanding} />
-            <Route render={renderApp} />
-          </Switch>
-        </Router>
-      </AppContent>
-    );
-  }
+export function App() {
+  return (
+    <AppContent>
+      <Router history={history}>
+        <Switch>
+          <Route path="/callback" component={Callback} />
+          <Route path="/login" render={renderLanding} />
+          <Route render={renderApp} />
+        </Switch>
+      </Router>
+    </AppContent>
+  );
 }
