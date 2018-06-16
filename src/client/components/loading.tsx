@@ -50,11 +50,11 @@ export class Loading extends React.Component<{}, { dots: number }> {
 
   async componentDidMount() {
     while (this.dotsMoving) {
-      await wait(200);
       this.setState(previousState => ({
         ...previousState,
         dots: (previousState.dots + 1) % 3,
       }));
+      await wait(200);
     }
   }
 
