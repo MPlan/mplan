@@ -20,6 +20,7 @@ interface ConnectionOptions<
     dispatch: (updater: (store: Store) => Store) => void,
     ownProps: OwnProps,
   ) => PropsFromDispatch;
+  _debugName?: string;
 }
 
 interface ComponentTuple<Store, Scope> {
@@ -146,7 +147,8 @@ export function createStore<Store extends Immutable.Record<any>>(initialStore: S
       return class ConnectedComponent extends React.PureComponent<OwnProps, {}> {
         currentScope: Scope | undefined;
         componentDidMount() {
-          console.log(`Component "${Component.constructor.name}" mounted`);
+          connectionOptions._debugName &&
+            console.log(`Component "${connectionOptions._debugName}" mounted`);
           const { scopeTo } = connectionOptions;
           const scope = scopeTo(currentStore);
           const hashCode = scope.hashCode();
@@ -158,22 +160,22 @@ export function createStore<Store extends Immutable.Record<any>>(initialStore: S
               scopeTo: scopeTo,
             };
             componentGroups.set(hashCode, new Set().add(newGroup));
-            return;
+          } else {
+            const matchingGroup = findMatchingGroup(componentGroup, scope);
+            if (!matchingGroup) {
+              // hash collision
+              componentGroup.add({
+                connectedComponents: new Set<ComponentWithScope<Scope>>().add(this),
+                scopeTo,
+                currentScope: scope,
+              });
+              return;
+            } else {
+              // no collision; same scope
+              matchingGroup.connectedComponents.add(this);
+            }
           }
-
-          const matchingGroup = findMatchingGroup(componentGroup, scope);
-          if (!matchingGroup) {
-            // hash collision
-            componentGroup.add({
-              connectedComponents: new Set<ComponentWithScope<Scope>>().add(this),
-              scopeTo,
-              currentScope: scope,
-            });
-            return;
-          }
-
-          // no collision; same scope
-          matchingGroup.connectedComponents.add(this);
+          sendUpdate(store => store);
         }
 
         componentWillUnmount() {
@@ -209,7 +211,10 @@ export function createStore<Store extends Immutable.Record<any>>(initialStore: S
         }
         render() {
           const componentProps = this.componentProps();
-          if (!componentProps) return null;
+          if (!componentProps) {
+            console.log('connected component rendered null');
+            return null;
+          }
           return <Component {...componentProps} />;
         }
       };

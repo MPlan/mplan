@@ -5,7 +5,7 @@ import { Text } from 'components/text';
 import { Fa } from 'components/fa';
 import { Nav } from 'components/nav';
 import { Loading } from 'components/loading';
-import { Router, Switch, Route, Redirect } from 'react-router';
+import { Router, Switch, Route, Redirect, RouteComponentProps } from 'react-router';
 import { Routes } from './routes';
 import * as styles from './styles';
 import { Auth } from './auth';
@@ -72,7 +72,8 @@ function handleShowHideToolbox() {
   Model.store.sendUpdate(store => store.updateUi(ui => ui.update('showToolbox', show => !show)));
 }
 
-export function _AuthenticatedRoute(props: { loaded: boolean }) {
+export function _AuthenticatedRoute(props: RouteComponentProps<any> & { loaded: boolean }) {
+  console.log('render auth route');
   return !props.loaded ? (
     <Loading />
   ) : (
@@ -113,7 +114,11 @@ export function _AuthenticatedRoute(props: { loaded: boolean }) {
 const AuthenticatedRoute = Model.store.connect({
   scopeTo: store => store.ui,
   mapDispatchToProps: () => ({}),
-  mapStateToProps: (scope: Model.Ui) => ({ loaded: scope.loaded }),
+  mapStateToProps: (scope: Model.Ui, ownProps: RouteComponentProps<any>) => ({
+    ...ownProps,
+    loaded: scope.loaded,
+  }),
+  _debugName: 'auth route',
 })(_AuthenticatedRoute);
 
 function renderLanding() {
@@ -123,9 +128,9 @@ function renderLanding() {
   return <Landing />;
 }
 
-function renderApp() {
+function renderApp(props: RouteComponentProps<any>) {
   if (Auth.loggedIn()) {
-    return <AuthenticatedRoute />;
+    return <AuthenticatedRoute {...props} />;
   }
   return <Redirect to="/login" />;
 }
