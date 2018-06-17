@@ -6,16 +6,15 @@ const scopeDefiner = (store: Model.App) => ({
   degree: store.user.degree,
 });
 
-const container = Model.store.connect(Sequence)({
-  scopeDefiner,
-  mapScopeToProps: ({ store, scope: _scope, sendUpdate, ownProps }) => {
-    const scope = _scope as ReturnType<typeof scopeDefiner>;
-    const catalogUi = store.catalogUi;
+const container = Model.store.connect({
+  scopeTo: store => store,
+  mapStateToProps: (scope: Model.App) => {
     return {
       catalog: scope.catalog,
-      degree: scope.degree,
+      degree: scope.user.degree,
     };
   },
-});
+  mapDispatchToProps: () => ({}),
+})(Sequence);
 
 export { container as Sequence };

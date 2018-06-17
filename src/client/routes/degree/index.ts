@@ -8,37 +8,39 @@ const scopeDefiner = (store: Model.App) => ({
   currentDegreeGroup: store.degreePage.currentDegreeGroup,
 });
 
-const container = Model.store.connect(Degree)({
-  scopeDefiner,
-  mapScopeToProps: ({ scope: _scope, sendUpdate, ownProps }) => {
-    const scope = _scope as ReturnType<typeof scopeDefiner>;
+const container = Model.store.connect({
+  scopeTo: store => store,
+  mapStateToProps: (scope: Model.App) => {
     return {
-      degree: scope.degree,
-      courseSearchResults: scope.courseSearchResults,
+      degree: scope.user.degree,
+      courseSearchResults: scope.degreePage.searchResults,
       masteredDegrees: scope.masteredDegrees
         .valueSeq()
         .sortBy(degree => degree.name)
         .toArray(),
-      currentDegreeGroup: scope.currentDegreeGroup,
-
-      onAddCourseClick: degreeGroup => {
-        sendUpdate(store => store.degreePage.setCurrentDegreeGroup(degreeGroup).updateStore(store));
+      currentDegreeGroup: scope.degreePage.currentDegreeGroup,
+    };
+  },
+  mapDispatchToProps: dispatch => {
+    return {
+      onAddCourseClick: (degreeGroup: Model.DegreeGroup) => {
+        dispatch(store => store.degreePage.setCurrentDegreeGroup(degreeGroup).updateStore(store));
       },
 
-      onDegreeGroupDelete: degreeGroup => {
-        sendUpdate(store => store.user.degree.deleteDegreeGroup(degreeGroup).updateStore(store));
+      onDegreeGroupDelete: (degreeGroup: Model.DegreeGroup) => {
+        dispatch(store => store.user.degree.deleteDegreeGroup(degreeGroup).updateStore(store));
       },
 
-      onDegreeGroupNameChange: (degreeGroup, newName) => {
-        sendUpdate(store =>
+      onDegreeGroupNameChange: (degreeGroup: Model.DegreeGroup, newName: string) => {
+        dispatch(store =>
           store.user.degree
             .updateDegreeGroup(degreeGroup, degreeGroup => degreeGroup.set('name', newName))
             .updateStore(store),
         );
       },
 
-      onDeleteCourse: (degreeGroup, course) => {
-        sendUpdate(store =>
+      onDeleteCourse: (degreeGroup: Model.DegreeGroup, course: string | Model.Course) => {
+        dispatch(store =>
           store.user.degree
             .updateDegreeGroup(degreeGroup, degreeGroup => degreeGroup.deleteCourse(course))
             .updateStore(store),
@@ -46,7 +48,7 @@ const container = Model.store.connect(Degree)({
       },
 
       onAddCourseModalClose: () => {
-        sendUpdate(store =>
+        dispatch(store =>
           store.degreePage
             .clearSearch()
             .set('currentDegreeGroup', undefined)
@@ -55,11 +57,11 @@ const container = Model.store.connect(Degree)({
       },
 
       onAddDegreeGroup: () => {
-        sendUpdate(store => store.user.degree.addNewDegreeGroup().updateStore(store));
+        dispatch(store => store.user.degree.addNewDegreeGroup().updateStore(store));
       },
 
-      onChangeMajor: majorId => {
-        sendUpdate(store => {
+      onChangeMajor: (majorId: string) => {
+        dispatch(store => {
           const major = store.masteredDegrees.get(majorId);
           if (!major) {
             console.warn('could not find major');
@@ -82,19 +84,19 @@ const container = Model.store.connect(Degree)({
         });
       },
 
-      onDegreeGroupAddCourse: (degreeGroup, course) => {
-        sendUpdate(store =>
+      onDegreeGroupAddCourse: (degreeGroup: Model.DegreeGroup, course: string | Model.Course) => {
+        dispatch(store =>
           store.user.degree
             .updateDegreeGroup(degreeGroup, degreeGroup => degreeGroup.addCourse(course))
             .updateStore(store),
         );
       },
 
-      onSearchCourse: query => {
-        sendUpdate(store => store.degreePage.search(query).updateStore(store));
+      onSearchCourse: (query: string) => {
+        dispatch(store => store.degreePage.search(query).updateStore(store));
       },
     };
   },
-});
+})(Degree);
 
 export { container as Degree };

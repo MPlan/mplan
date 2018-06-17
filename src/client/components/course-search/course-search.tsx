@@ -75,7 +75,7 @@ export interface CourseSearchState {
   currentCourses: Model.Course[];
 }
 
-export class CourseSearch extends React.Component<CourseSearchProps, CourseSearchState> {
+export class CourseSearch extends React.PureComponent<CourseSearchProps, CourseSearchState> {
   input$ = new Subject<string>();
   subscription: Subscription | undefined;
   htmlForId = uuid();

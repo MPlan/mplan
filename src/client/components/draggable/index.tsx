@@ -2,31 +2,37 @@ import * as React from 'react';
 import * as Model from 'models';
 import { Draggable, DraggableProps } from './draggable';
 
-export interface DraggableContainerProps<T> {
+export interface DraggableContainerProps {
   dropzoneActive: boolean;
   elementIndex: number;
   id: string;
 }
 
-const scopeDefiner = (store: Model.App) => ({
-  draggables: store.ui.draggables,
-});
-
-const Container = (Model.store.connect(Draggable)({
-  scopeDefiner,
-  mapScopeToProps: ({ store, scope: _scope, sendUpdate, ownProps: _ownProps }) => {
-    const scope = _scope as ReturnType<typeof scopeDefiner>;
-    const ownProps = _ownProps as DraggableContainerProps<any>;
+const container = Model.store.connect({
+  scopeTo: store => store.ui.draggables,
+  mapStateToProps: (scope: Model.Draggables, ownProps: DraggableContainerProps) => {
     return {
-      dragging: scope.draggables.dragging,
-      closestElementId: scope.draggables.closestElementId,
+      dragging: scope.dragging,
+      closestElementId: scope.closestElementId,
       dropzoneActive: ownProps.dropzoneActive,
       elementIndex: ownProps.elementIndex,
       id: ownProps.id,
-      selectedDraggableId: scope.draggables.selectedDraggableId,
-      height: scope.draggables.height,
-      onDragStart: ({ height, selectedDraggableId, selectedElementId }) => {
-        sendUpdate(store =>
+      selectedDraggableId: scope.selectedDraggableId,
+      height: scope.height,
+    };
+  },
+  mapDispatchToProps: dispatch => {
+    return {
+      onDragStart: ({
+        height,
+        selectedDraggableId,
+        selectedElementId,
+      }: {
+        height: number;
+        selectedDraggableId: string;
+        selectedElementId: string;
+      }) => {
+        dispatch(store =>
           store.ui.draggables
             .set('dragging', true)
             .set('selectedDraggableId', selectedDraggableId)
@@ -36,15 +42,10 @@ const Container = (Model.store.connect(Draggable)({
         );
       },
       onDragEnd: () => {
-        sendUpdate(store => store.ui.draggables.set('dragging', false).updateStore(store));
+        dispatch(store => store.ui.draggables.set('dragging', false).updateStore(store));
       },
-
     };
   },
-}) as any) as React.ComponentType<DraggableContainerProps<any>>;
+})(Draggable);
 
-function DraggableWrapper<T>(props: DraggableContainerProps<T>) {
-  return <Container {...props} />;
-}
-
-export { DraggableWrapper as Draggable };
+export { container as Draggable };

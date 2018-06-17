@@ -23,3 +23,4 @@ export * from './semester';
 export * from './ui';
 export * from './user';
 export * from './store';
+export * from './catalog-ui';

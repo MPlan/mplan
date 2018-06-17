@@ -5,23 +5,26 @@ const scopeDefiner = (store: Model.App) => ({
   plan: store.user.plan,
 });
 
-const container = Model.store.connect(Timeline)({
-  scopeDefiner,
-  mapScopeToProps: ({ store, scope: _scope, sendUpdate, ownProps }) => {
-    const scope = _scope as ReturnType<typeof scopeDefiner>;
+const container = Model.store.connect({
+  scopeTo: store => store.user.plan,
+  mapStateToProps: (scope: Model.Plan) => {
+    return {
+      semesters: scope.semesters(),
+    };
+  },
+  mapDispatchToProps: sendUpdate => {
     return {
       onCreateNewSemester: () => {
         sendUpdate(store => store.user.plan.createNewSemester().updateStore(store));
       },
-      onGeneratePlan: planOptions => {
+      onGeneratePlan: (planOptions: Model.PlanOptions) => {
         sendUpdate(store => {
           const plan = store.user.degree.generatePlan(planOptions);
           return store.user.set('plan', plan).updateStore(store);
         });
       },
-      semesters: scope.plan.semesters(),
     };
   },
-});
+})(Timeline);
 
 export { container as Timeline };

@@ -1,4 +1,5 @@
 import * as Model from 'models';
+import * as Immutable from 'immutable';
 import { DegreeEditor, DegreeEditorProps } from './degree-editor';
 import { RouteComponentProps } from 'react-router-dom';
 
@@ -8,25 +9,33 @@ const scopeDefiner = (store: Model.App) => ({
 
 export interface DegreeEditorContainerProps extends RouteComponentProps<{}> {}
 
-const container = Model.store.connect(DegreeEditor)({
-  scopeDefiner,
-  mapScopeToProps: ({ store, scope: _scope, sendUpdate, ownProps: _ownProps }) => {
-    const ownProps = _ownProps as DegreeEditorContainerProps;
-    const scope = _scope as ReturnType<typeof scopeDefiner>;
+const container = Model.store.connect({
+  scopeTo: store => store.masteredDegrees,
+  mapStateToProps: (
+    scope: Immutable.Map<string, Model.MasteredDegree>,
+    ownProps: DegreeEditorContainerProps,
+  ) => {
     return {
       ...ownProps,
-      masteredDegrees: scope.masteredDegrees
+      masteredDegrees: scope
         .valueSeq()
         .sortBy(masteredDegree => masteredDegree.name)
         .toArray(),
+    };
+  },
+  mapDispatchToProps: dispatch => {
+    return {
       onCreateMasteredDegree: () => {
-        sendUpdate(store => store.createMasteredDegree());
+        dispatch(store => store.createMasteredDegree());
       },
-      onCreateMasteredDegreeGroup: masteredDegree => {
-        sendUpdate(store => masteredDegree.createNewGroup().updateStore(store));
+      onCreateMasteredDegreeGroup: (masteredDegree: Model.MasteredDegree) => {
+        dispatch(store => masteredDegree.createNewGroup().updateStore(store));
       },
-      onMasteredDegreeUpdate: (masteredDegree, update) => {
-        sendUpdate(store => {
+      onMasteredDegreeUpdate: (
+        masteredDegree: Model.MasteredDegree,
+        update: (degree: Model.MasteredDegree) => Model.MasteredDegree,
+      ) => {
+        dispatch(store => {
           const thisMasteredDegree = store.masteredDegrees.get(masteredDegree.id);
           if (!thisMasteredDegree) {
             console.warn(`mastered degree with id "${masteredDegree.id}" not found`);
@@ -39,6 +48,6 @@ const container = Model.store.connect(DegreeEditor)({
       },
     };
   },
-});
+})(DegreeEditor);
 
 export { container as DegreeEditor };

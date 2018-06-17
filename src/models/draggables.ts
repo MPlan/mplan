@@ -11,8 +11,9 @@ export class Draggables extends Record.define({
   dragging: false,
   height: 0,
   closestElementId: '',
+  
 }) {
-  updateStore = (store: App) => {
+  updateStore (store: App) {
     return store.update('ui', ui => ui.set('draggables', this));
   };
 }

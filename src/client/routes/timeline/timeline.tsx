@@ -11,7 +11,6 @@ import { Checkbox } from 'components/checkbox';
 import * as styles from 'styles';
 import * as Model from 'models';
 import styled from 'styled-components';
-import { PlanOptions } from 'models';
 
 const Container = styled(View)`
   flex-direction: row;
@@ -94,7 +93,7 @@ const actions = {
 export interface TimelineProps {
   semesters: Model.Semester[];
   onCreateNewSemester: () => void;
-  onGeneratePlan: (planOptions: PlanOptions) => void;
+  onGeneratePlan: (planOptions: Model.PlanOptions) => void;
 }
 
 export interface TimelineState {

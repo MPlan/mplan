@@ -1,5 +1,6 @@
 import * as Model from 'models';
 import { Semester, SemesterProps } from './semester';
+import { SortChange } from 'components/dropzone';
 
 const scopeDefiner = (store: Model.App) => ({});
 
@@ -7,23 +8,24 @@ export interface SemesterContainerProps {
   semester: Model.Semester;
 }
 
-const container = (Model.store.connect(Semester)({
-  scopeDefiner,
-  mapScopeToProps: ({ store, scope: _scope, sendUpdate, ownProps: _ownProps }) => {
-    const ownProps = _ownProps as SemesterContainerProps;
-    const scope = _scope as ReturnType<typeof scopeDefiner>;
-    const catalogUi = store.catalogUi;
+const container = Model.store.connect({
+  scopeTo: store => store,
+  mapStateToProps: (_: any, ownProps: SemesterContainerProps) => {
     return {
       semester: ownProps.semester,
-      onDeleteCourse: course => {
-        sendUpdate(store =>
+    };
+  },
+  mapDispatchToProps: (dispatch, ownProps: SemesterContainerProps) => {
+    return {
+      onDeleteCourse: (course: Model.Course) => {
+        dispatch(store =>
           store.updatePlan(plan =>
             plan.updateSemester(ownProps.semester.id, semester => semester.deleteCourse(course)),
           ),
         );
       },
-      onSortEnd: ({ fromDropzoneId, newIndex, oldIndex, toDropzoneId }) => {
-        sendUpdate(store =>
+      onSortEnd: ({ fromDropzoneId, newIndex, oldIndex, toDropzoneId }: SortChange) => {
+        dispatch(store =>
           store.updatePlan(plan => {
             const semester = plan.semesterMap.get(fromDropzoneId);
             if (fromDropzoneId === 'unplaced-courses') {
@@ -55,6 +57,6 @@ const container = (Model.store.connect(Semester)({
       },
     };
   },
-}) as any) as React.ComponentType<SemesterContainerProps>;
+})(Semester);
 
 export { container as Semester };

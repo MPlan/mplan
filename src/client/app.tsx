@@ -110,15 +110,11 @@ export function _AuthenticatedRoute(props: { loaded: boolean }) {
   );
 }
 
-const AuthenticatedRoute = Model.store.connect(_AuthenticatedRoute)({
-  scopeDefiner: store => store.ui,
-  mapScopeToProps: ({ scope: _scope }) => {
-    const scope = _scope as { loaded: boolean };
-    return {
-      loaded: scope.loaded,
-    };
-  },
-});
+const AuthenticatedRoute = Model.store.connect({
+  scopeTo: store => store.ui,
+  mapDispatchToProps: () => ({}),
+  mapStateToProps: (scope: Model.Ui) => ({ loaded: scope.loaded }),
+})(_AuthenticatedRoute);
 
 function renderLanding() {
   if (Auth.loggedIn()) {

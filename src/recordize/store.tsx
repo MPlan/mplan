@@ -7,13 +7,19 @@ interface Hashable {
   equals(other?: Hashable | {}): boolean;
 }
 
-interface ConnectionOptions<Store, Scope extends Hashable, OwnProps, ComponentProps> {
+interface ConnectionOptions<
+  Store,
+  Scope extends Hashable,
+  OwnProps,
+  PropsFromState,
+  PropsFromDispatch
+> {
   scopeTo: (store: Store) => Scope;
-  mapStateToProps: (scope: Scope, ownProps: OwnProps) => Partial<ComponentProps>;
+  mapStateToProps: (scope: Scope, ownProps: OwnProps) => PropsFromState;
   mapDispatchToProps: (
-    dispatch: (updater: (store: Store) => Store) => Promise<Store>,
+    dispatch: (updater: (store: Store) => Store) => void,
     ownProps: OwnProps,
-  ) => Partial<ComponentProps>;
+  ) => PropsFromDispatch;
 }
 
 interface ComponentTuple<Store, Scope> {
@@ -64,7 +70,7 @@ export function createStore<Store extends Immutable.Record<any>>(initialStore: S
   const subscriptions = new Set<(store: Store) => void>();
   const componentGroups = new Map<number, Set<ComponentGroup<Store, Hashable>>>();
 
-  async function sendUpdate(update: (previousStore: Store) => Store) {
+  function sendUpdate(update: (previousStore: Store) => Store) {
     const previousStore = currentStore;
     currentStore = update(previousStore);
 
@@ -74,7 +80,7 @@ export function createStore<Store extends Immutable.Record<any>>(initialStore: S
       for (const componentGroup of hashMatches) {
         const { scopeTo, connectedComponents } = componentGroup;
         const previousScope = scopeTo(previousStore);
-        const currentScope = scopeTo(previousStore);
+        const currentScope = scopeTo(currentStore);
         if (previousScope.equals(currentScope)) continue;
 
         for (const component of connectedComponents) {
@@ -112,8 +118,6 @@ export function createStore<Store extends Immutable.Record<any>>(initialStore: S
       }
       newComponentGroupMatches.add(componentGroup);
     }
-
-    return currentStore;
   }
 
   function subscribe(update: (store: Store) => void) {
@@ -133,14 +137,12 @@ export function createStore<Store extends Immutable.Record<any>>(initialStore: S
     return currentStore;
   }
 
-  function connect<
-    Scope extends Hashable,
-    OwnProps extends { forwardedRef?: any },
-    ComponentProps,
-    Ref = {}
-  >(connectionOptions: ConnectionOptions<Store, Scope, OwnProps, ComponentProps>) {
+  function connect<Scope extends Hashable, OwnProps, PropsFromState, PropsFromDispatch>(
+    connectionOptions: ConnectionOptions<Store, Scope, OwnProps, PropsFromState, PropsFromDispatch>,
+  ) {
+    type ComponentProps = PropsFromState & PropsFromDispatch;
     return (Component: React.ComponentType<ComponentProps>) => {
-      class ConnectedComponent extends React.Component<OwnProps, {}> {
+      return class ConnectedComponent extends React.Component<OwnProps, {}> {
         currentScope: Scope | undefined;
         componentDidMount() {
           const { scopeTo } = connectionOptions;
@@ -208,10 +210,11 @@ export function createStore<Store extends Immutable.Record<any>>(initialStore: S
           if (!componentProps) return null;
           return <Component {...componentProps} />;
         }
-      }
-      return React.forwardRef<Ref, OwnProps>((props, ref) => (
-        <ConnectedComponent {...props} forwardedRef={ref} />
-      ));
+      };
+      // TODO:
+      // return React.forwardRef<Ref, OwnProps & { forwardedRef?: any }>((props, ref) => (
+      //   <ConnectedComponent {...props} forwardedRef={ref} />
+      // ));
     };
   }
 

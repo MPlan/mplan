@@ -14,24 +14,34 @@ const scopeDefiner = (store: Model.App) => ({
   draggables: store.ui.draggables,
 });
 
-const Container = (Model.store.connect(Dropzone)({
-  scopeDefiner,
-  mapScopeToProps: ({ store, scope: _scope, sendUpdate, ownProps: _ownProps }) => {
-    const scope = _scope as ReturnType<typeof scopeDefiner>;
-    const ownProps = _ownProps as DropzoneContainerProps<any>;
+const Container = Model.store.connect({
+  scopeTo: store => store.ui.draggables,
+  mapStateToProps: (scope: Model.Draggables, ownProps: DropzoneContainerProps<any>) => {
     return {
-      closestElementId: scope.draggables.closestElementId,
+      closestElementId: scope.closestElementId,
       elements: ownProps.elements,
       getKey: ownProps.getKey,
       id: ownProps.id,
       render: ownProps.render,
-      selectedDraggableId: scope.draggables.selectedDraggableId,
-      selectedDropzoneId: scope.draggables.selectedDropzoneId,
-      startingDropzoneId: scope.draggables.startingDropzoneId,
-      startingIndex: scope.draggables.startingIndex,
+      selectedDraggableId: scope.selectedDraggableId,
+      selectedDropzoneId: scope.selectedDropzoneId,
+      startingDropzoneId: scope.startingDropzoneId,
+      startingIndex: scope.startingIndex,
       onChangeSort: ownProps.onChangeSort,
-      onDragOver: ({ aboveMidpoint, closestElementId, selectedDropzoneId }) => {
-        sendUpdate(store =>
+    };
+  },
+  mapDispatchToProps: dispatch => {
+    return {
+      onDragOver: ({
+        aboveMidpoint,
+        closestElementId,
+        selectedDropzoneId,
+      }: {
+        aboveMidpoint: boolean;
+        closestElementId: string;
+        selectedDropzoneId: string;
+      }) => {
+        dispatch(store =>
           store.ui.draggables
             .set('closestElementId', closestElementId)
             .set('selectedDropzoneId', selectedDropzoneId)
@@ -39,8 +49,14 @@ const Container = (Model.store.connect(Dropzone)({
             .updateStore(store),
         );
       },
-      onDragStart: ({ startingDropzoneId, startingIndex }) => {
-        sendUpdate(store =>
+      onDragStart: ({
+        startingDropzoneId,
+        startingIndex,
+      }: {
+        startingDropzoneId: string;
+        startingIndex: number;
+      }) => {
+        dispatch(store =>
           store.ui.draggables
             .set('startingDropzoneId', startingDropzoneId)
             .set('startingIndex', startingIndex)
@@ -49,7 +65,7 @@ const Container = (Model.store.connect(Dropzone)({
       },
     };
   },
-}) as any) as React.ComponentType<DropzoneContainerProps<any>>;
+})(Dropzone);
 
 function DropzoneWrapper<T>(props: DropzoneContainerProps<T>) {
   return <Container {...props} />;

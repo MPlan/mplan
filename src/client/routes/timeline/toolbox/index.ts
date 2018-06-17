@@ -1,20 +1,24 @@
 import * as Model from 'models';
 import { Toolbox } from './toolbox';
+import { SortChange } from 'components/dropzone';
 
 const scopeDefiner = (store: Model.App) => ({
   plan: store.user.plan,
   ui: store.ui,
 });
 
-const container = Model.store.connect(Toolbox)({
-  scopeDefiner,
-  mapScopeToProps: ({ scope: _scope, sendUpdate }) => {
-    const scope = _scope as ReturnType<typeof scopeDefiner>;
+const container = Model.store.connect({
+  scopeTo: store => store,
+  mapStateToProps: (scope: Model.App) => {
     return {
-      plan: scope.plan,
+      plan: scope.user.plan,
       showToolbox: scope.ui.showToolbox,
-      onChangeSort: ({ fromDropzoneId, oldIndex }) => {
-        sendUpdate(store =>
+    };
+  },
+  mapDispatchToProps: dispatch => {
+    return {
+      onChangeSort: ({ fromDropzoneId, oldIndex }: SortChange) => {
+        dispatch(store =>
           store.updatePlan(plan => {
             const semester = plan.semesterMap.get(fromDropzoneId);
             if (fromDropzoneId === 'unplaced-courses') {
@@ -32,6 +36,6 @@ const container = Model.store.connect(Toolbox)({
       },
     };
   },
-});
+})(Toolbox);
 
 export { container as Toolbox };
