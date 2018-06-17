@@ -24,9 +24,9 @@ export class User
     return pointer.store.current();
   }
 
-  updateStore = (store: App) => {
-    return store.set('user', this);
-  };
+  static updateStore(store: App, newThis: User) {
+    return store.set('user', newThis);
+  }
 
   updateDegree(updater: (degree: Degree) => Degree) {
     return this.update('degree', updater);

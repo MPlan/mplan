@@ -41,13 +41,14 @@ const Container = Model.store.connect({
         closestElementId: string;
         selectedDropzoneId: string;
       }) => {
-        dispatch(store =>
-          store.ui.draggables
+        dispatch(store => {
+          const nextDraggables = store.ui.draggables
             .set('closestElementId', closestElementId)
             .set('selectedDropzoneId', selectedDropzoneId)
-            .set('aboveMidpoint', aboveMidpoint)
-            .updateStore(store),
-        );
+            .set('aboveMidpoint', aboveMidpoint);
+
+          return Model.Draggables.updateStore(store, nextDraggables);
+        });
       },
       onDragStart: ({
         startingDropzoneId,
@@ -56,12 +57,12 @@ const Container = Model.store.connect({
         startingDropzoneId: string;
         startingIndex: number;
       }) => {
-        dispatch(store =>
-          store.ui.draggables
+        dispatch(store => {
+          const nextDraggables = store.ui.draggables
             .set('startingDropzoneId', startingDropzoneId)
-            .set('startingIndex', startingIndex)
-            .updateStore(store),
-        );
+            .set('startingIndex', startingIndex);
+          return Model.Draggables.updateStore(store, nextDraggables);
+        });
       },
     };
   },

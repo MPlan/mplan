@@ -16,16 +16,16 @@ export class MasteredDegree extends Record.define({
     return pointer.store.current();
   }
 
-  updateStore = (store: App) => {
+  static updateStore(store: App, newThis: MasteredDegree) {
     return store.update('masteredDegrees', masteredDegrees => {
-      const thisMasteredDegree = masteredDegrees.get(this.id);
+      const thisMasteredDegree = masteredDegrees.get(newThis.id);
       if (!thisMasteredDegree) {
-        console.warn(`could nto find mastered degree with id "${this.id}"`);
+        console.warn(`could nto find mastered degree with id "${newThis.id}"`);
         return masteredDegrees;
       }
-      return masteredDegrees.set(thisMasteredDegree.id, this);
+      return masteredDegrees.set(thisMasteredDegree.id, newThis);
     });
-  };
+  }
 
   get id() {
     return this._id.toHexString();

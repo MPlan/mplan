@@ -12,9 +12,9 @@ export class CatalogUi extends Record.define({
     return pointer.store.current();
   }
 
-  updateStore = (store: App) => {
-    return store.set('catalogUi', this);
-  };
+  static updateStore(store: App, newThis: CatalogUi) {
+    return store.set('catalogUi', newThis);
+  }
 
   search(query: string) {
     const searchResults = this.root.catalog.search(query);

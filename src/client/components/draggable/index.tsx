@@ -32,17 +32,21 @@ const container = Model.store.connect({
         selectedDraggableId: string;
         selectedElementId: string;
       }) => {
-        dispatch(store =>
-          store.ui.draggables
+        dispatch(store => {
+          const nextDraggables = store.ui.draggables
             .set('dragging', true)
             .set('selectedDraggableId', selectedDraggableId)
             .set('selectedElementId', selectedElementId)
-            .set('height', height)
-            .updateStore(store),
-        );
+            .set('height', height);
+
+          return Model.Draggables.updateStore(store, nextDraggables);
+        });
       },
       onDragEnd: () => {
-        dispatch(store => store.ui.draggables.set('dragging', false).updateStore(store));
+        dispatch(store => {
+          const nextDraggables = store.ui.draggables.set('dragging', false);
+          return Model.Draggables.updateStore(store, nextDraggables);
+        });
       },
     };
   },

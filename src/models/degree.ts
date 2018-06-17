@@ -120,9 +120,9 @@ export class Degree extends Record.define({
     return pointer.store.current();
   }
 
-  updateStore = (store: App) => {
-    return store.update('user', user => user.set('degree', this));
-  };
+  static updateStore(store: App, newThis: Degree) {
+    return store.update('user', user => user.set('degree', newThis));
+  }
 
   masteredDegree() {
     const masteredDegree = this.root.masteredDegrees.get(this.masteredDegreeId);

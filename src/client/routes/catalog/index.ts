@@ -17,7 +17,10 @@ const container = Model.store.connect({
   mapDispatchToProps: dispatch => {
     return {
       onSearch: (query: string) =>
-        dispatch(store => store.catalogUi.search(query).updateStore(store)),
+        dispatch(store => {
+          const nextCatalogUi = store.catalogUi.search(query);
+          return Model.CatalogUi.updateStore(store, nextCatalogUi);
+        }),
     };
   },
 })(Catalog);

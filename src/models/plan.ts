@@ -16,9 +16,9 @@ export class Plan extends Record.define({
     return pointer.store.current();
   }
 
-  updateStore = (store: App) => {
-    return store.update('user', user => user.set('plan', this));
-  };
+  static updateStore(store: App, newThis: Plan) {
+    return store.update('user', user => user.set('plan', newThis));
+  }
 
   updateSemester(id: string, updater: (semester: Semester) => Semester) {
     return this.update('semesterMap', map => map.update(id, updater));

@@ -14,9 +14,9 @@ export class DegreePage extends Record.define({
     return pointer.store.current();
   }
 
-  updateStore = (store: App) => {
-    return store.set('degreePage', this);
-  };
+  static updateStore(store: App, newThis: DegreePage) {
+    return store.set('degreePage', newThis);
+  }
 
   search(query: string) {
     const searchResults = this.root.catalog.search(query);

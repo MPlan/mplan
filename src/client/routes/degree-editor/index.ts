@@ -29,7 +29,10 @@ const container = Model.store.connect({
         dispatch(store => store.createMasteredDegree());
       },
       onCreateMasteredDegreeGroup: (masteredDegree: Model.MasteredDegree) => {
-        dispatch(store => masteredDegree.createNewGroup().updateStore(store));
+        dispatch(store => {
+          const next = masteredDegree.createNewGroup();
+          return Model.MasteredDegree.updateStore(store, next);
+        });
       },
       onMasteredDegreeUpdate: (
         masteredDegree: Model.MasteredDegree,

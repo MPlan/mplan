@@ -15,12 +15,15 @@ const container = Model.store.connect({
   mapDispatchToProps: sendUpdate => {
     return {
       onCreateNewSemester: () => {
-        sendUpdate(store => store.user.plan.createNewSemester().updateStore(store));
+        sendUpdate(store => {
+          const next = store.user.plan.createNewSemester();
+          return Model.Plan.updateStore(store, next);
+        });
       },
       onGeneratePlan: (planOptions: Model.PlanOptions) => {
         sendUpdate(store => {
-          const plan = store.user.degree.generatePlan(planOptions);
-          return store.user.set('plan', plan).updateStore(store);
+          const next = store.user.degree.generatePlan(planOptions);
+          return Model.Plan.updateStore(store, next);
         });
       },
     };
