@@ -109,7 +109,7 @@ export interface SequenceState {
   graphWrapperHeight: number;
 }
 
-export class Sequence extends React.Component<SequenceProps, SequenceState> {
+export class Sequence extends React.PureComponent<SequenceProps, SequenceState> {
   constructor(props: SequenceProps) {
     super(props);
     this.state = {

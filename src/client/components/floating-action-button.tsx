@@ -146,7 +146,7 @@ interface FloatingActionButtonState {
   itemMouseDown: boolean;
 }
 
-export class FloatingActionButton<T extends { [P in keyof T]: MenuItem }> extends React.Component<
+export class FloatingActionButton<T extends { [P in keyof T]: MenuItem }> extends React.PureComponent<
   FloatingActionButtonProps<T>,
   FloatingActionButtonState
 > {

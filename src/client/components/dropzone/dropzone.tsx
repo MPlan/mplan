@@ -59,7 +59,7 @@ export interface DropzoneState {
   dropzoneActive: boolean;
 }
 
-export class Dropzone<T> extends React.Component<DropzoneProps<T>, DropzoneState> {
+export class Dropzone<T> extends React.PureComponent<DropzoneProps<T>, DropzoneState> {
   lastDragOverTime = 0;
   mounted = false;
   dragOver$ = new Subject<{ clientY: number; clientX: number }>();

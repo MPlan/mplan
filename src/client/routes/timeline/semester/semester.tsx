@@ -104,7 +104,7 @@ export interface SemesterProps {
   onDeleteCourse: (course: Model.Course) => void;
 }
 
-export class Semester extends React.Component<SemesterProps, {}> {
+export class Semester extends React.PureComponent<SemesterProps, {}> {
   renderCourse = (course: Model.Course) => {
     return (
       <SemesterCourse

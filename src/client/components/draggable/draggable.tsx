@@ -22,7 +22,7 @@ const ChildWrapperContainer = styled.div`
     opacity: 0;
   }
 `;
-class ChildWrapper extends React.Component<
+class ChildWrapper extends React.PureComponent<
   React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> & {
     innerRef: any;
     dragging: boolean;
@@ -89,7 +89,7 @@ export interface DraggableState {
   childMounted: boolean;
 }
 
-export class Draggable extends React.Component<DraggableProps, DraggableState> {
+export class Draggable extends React.PureComponent<DraggableProps, DraggableState> {
   draggableId = uuid();
   childWrapperRef = React.createRef<HTMLElement>();
   containerRef = React.createRef<HTMLElement>();

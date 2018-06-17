@@ -113,7 +113,7 @@ export interface DegreeState {
   majorModalOpen: boolean;
 }
 
-export class Degree extends React.Component<DegreeProps, DegreeState> {
+export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
   readonly searchInput$ = new Subject<string>();
   searchInputSubscription: Subscription | undefined;
 

@@ -35,7 +35,7 @@ const LoadingDots = styled(View)`
   min-width: 3rem;
 `;
 
-export class Loading extends React.Component<{}, { dots: number }> {
+export class Loading extends React.PureComponent<{}, { dots: number }> {
   state = {
     dots: 0,
   };

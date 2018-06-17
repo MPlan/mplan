@@ -34,7 +34,7 @@ export interface EditableCourseListState {
   courseSearchOpen: boolean;
 }
 
-export class EditableCourseList extends React.Component<
+export class EditableCourseList extends React.PureComponent<
   EditableCourseListProps,
   EditableCourseListState
 > {

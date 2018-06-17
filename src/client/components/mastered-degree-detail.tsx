@@ -94,7 +94,7 @@ export interface MasteredDegreeDetailProps {
   onDegreeUpdate: (update: (degree: Model.MasteredDegree) => Model.MasteredDegree) => void;
 }
 
-export class MasteredDegreeDetail extends React.Component<
+export class MasteredDegreeDetail extends React.PureComponent<
   MasteredDegreeDetailProps,
   MasteredDegreeDetailState
 > {

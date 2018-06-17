@@ -74,7 +74,7 @@ export interface CatalogProps {
 
 interface CatalogState {}
 
-export class Catalog extends React.Component<CatalogProps> {
+export class Catalog extends React.PureComponent<CatalogProps> {
   searchInput$ = new Subject<string>();
   subscription: Subscription | undefined;
 

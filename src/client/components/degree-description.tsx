@@ -52,7 +52,7 @@ export interface DegreeDescriptionProps {
   onDescriptionChange: (html: string) => void;
 }
 
-export class DegreeDescription extends React.Component<
+export class DegreeDescription extends React.PureComponent<
   DegreeDescriptionProps,
   DegreeDescriptionState
 > {

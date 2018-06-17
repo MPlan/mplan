@@ -23,11 +23,11 @@ interface ConnectionOptions<
 }
 
 interface ComponentTuple<Store, Scope> {
-  setState: TypeIn<React.Component<any, Scope>, 'setState'>;
+  setState: TypeIn<React.PureComponent<any, Scope>, 'setState'>;
   scopeDefiner: (store: Store) => Scope;
 }
 
-interface ComponentWithScope<Scope> extends React.Component<any, any> {
+interface ComponentWithScope<Scope> extends React.PureComponent<any, any> {
   currentScope: Scope | undefined;
 }
 
@@ -81,11 +81,12 @@ export function createStore<Store extends Immutable.Record<any>>(initialStore: S
         const { scopeTo, connectedComponents } = componentGroup;
         const previousScope = scopeTo(previousStore);
         const currentScope = scopeTo(currentStore);
-        if (previousScope.equals(currentScope)) continue;
+        // if (previousScope.equals(currentScope)) continue;
 
         for (const component of connectedComponents) {
           component.currentScope = currentScope;
           component.forceUpdate();
+          console.log('update');
         }
 
         mutations.push({
@@ -142,9 +143,10 @@ export function createStore<Store extends Immutable.Record<any>>(initialStore: S
   ) {
     type ComponentProps = PropsFromState & PropsFromDispatch;
     return (Component: React.ComponentType<ComponentProps>) => {
-      return class ConnectedComponent extends React.Component<OwnProps, {}> {
+      return class ConnectedComponent extends React.PureComponent<OwnProps, {}> {
         currentScope: Scope | undefined;
         componentDidMount() {
+          console.log(`Component "${Component.constructor.name}" mounted`);
           const { scopeTo } = connectionOptions;
           const scope = scopeTo(currentStore);
           const hashCode = scope.hashCode();

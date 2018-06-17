@@ -23,7 +23,7 @@ export interface CheckboxProps extends React.HTMLProps<HTMLInputElement> {
   innerRef?: React.Ref<any>;
 }
 
-export class Checkbox extends React.Component<CheckboxProps, {}> {
+export class Checkbox extends React.PureComponent<CheckboxProps, {}> {
   labelId = `label-${uuid()}`;
   render() {
     const { label, ref, innerRef, ...restOfProps } = this.props;

@@ -99,7 +99,7 @@ const groupActions = {
   delete: { text: 'Delete group', icon: 'trash', color: styles.red },
 };
 
-export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupState> {
+export class DegreeGroup extends React.PureComponent<DegreeGroupProps, DegreeGroupState> {
   inputRef = React.createRef<HTMLInputElement>();
   constructor(props: DegreeGroupProps) {
     super(props);

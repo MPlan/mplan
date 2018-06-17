@@ -65,7 +65,7 @@ interface DegreeCreditHoursState {
   value: string;
 }
 
-export class DegreeCreditHours extends React.Component<
+export class DegreeCreditHours extends React.PureComponent<
   DegreeCreditHoursProps,
   DegreeCreditHoursState
 > {

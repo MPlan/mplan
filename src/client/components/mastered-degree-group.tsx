@@ -134,7 +134,7 @@ interface MasteredDegreeGroupState {
   areYouSureModal: boolean;
 }
 
-export class MasteredDegreeGroup extends React.Component<
+export class MasteredDegreeGroup extends React.PureComponent<
   MasteredDegreeGroupProps,
   MasteredDegreeGroupState
 > {

@@ -102,7 +102,7 @@ export interface TimelineState {
   scheduleModelOpen: boolean;
 }
 
-export class Timeline extends React.Component<TimelineProps, TimelineState> {
+export class Timeline extends React.PureComponent<TimelineProps, TimelineState> {
   constructor(props: TimelineProps) {
     super(props);
     this.state = {

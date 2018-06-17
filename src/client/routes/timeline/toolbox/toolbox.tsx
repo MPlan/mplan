@@ -41,7 +41,7 @@ export interface ToolboxState {
   warningsOpen: boolean;
 }
 
-export class Toolbox extends React.Component<ToolboxProps, ToolboxState> {
+export class Toolbox extends React.PureComponent<ToolboxProps, ToolboxState> {
   constructor(props: ToolboxProps) {
     super(props);
     this.state = {

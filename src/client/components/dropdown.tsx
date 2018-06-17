@@ -65,7 +65,7 @@ export interface DropdownState<T extends { [P in keyof T]: MenuItem }> {
   spaceDown: boolean;
 }
 
-export class Dropdown<T extends { [P in keyof T]: MenuItem }> extends React.Component<
+export class Dropdown<T extends { [P in keyof T]: MenuItem }> extends React.PureComponent<
   DropdownProps<T>,
   DropdownState<T>
 > {

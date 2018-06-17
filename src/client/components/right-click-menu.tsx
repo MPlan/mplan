@@ -46,7 +46,7 @@ function findClosestRightClickParent(
 type InitialState = typeof initialState;
 export interface RightClickMenuState extends InitialState {}
 
-export class RightClickMenu<T extends { [P in keyof T]: MenuItem }> extends React.Component<
+export class RightClickMenu<T extends { [P in keyof T]: MenuItem }> extends React.PureComponent<
   RightClickMenuProps<T>,
   RightClickMenuState
 > {
