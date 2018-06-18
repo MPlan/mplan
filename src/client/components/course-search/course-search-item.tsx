@@ -1,10 +1,10 @@
 import * as React from 'react';
-import * as Model from '../models';
+import * as Model from 'models';
 import styled from 'styled-components';
-import * as styles from '../styles';
-import { View } from './view';
-import { Text } from './text';
-import { Fa } from './fa';
+import * as styles from 'styles';
+import { View } from 'components/view';
+import { Text } from 'components/text';
+import { Fa } from 'components/fa';
 
 const Container = styled(View)`
   flex-direction: row;

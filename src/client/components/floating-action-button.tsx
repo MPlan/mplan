@@ -254,7 +254,7 @@ export class FloatingActionButton<T extends { [P in keyof T]: MenuItem }> extend
             })
             .map(({ action, text, icon, color }) => (
               <Item
-                key={action}
+                key={action.toString()}
                 tabIndex={0}
                 onClick={() => {
                   this.handleMenuClick(action);

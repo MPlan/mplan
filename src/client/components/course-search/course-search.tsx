@@ -5,7 +5,7 @@ import * as styles from 'styles';
 import styled from 'styled-components';
 import { View } from 'components/view';
 import { Text } from 'components/text';
-import { CourseSearchItem } from 'components/course-search-item';
+import { CourseSearchItem } from './course-search-item';
 import { Button } from 'components/button';
 import { Fa } from 'components/fa';
 import { Subject } from 'rxjs/Subject';

@@ -234,7 +234,7 @@ export class Dropdown<T extends { [P in keyof T]: MenuItem }> extends React.Pure
             .map(({ action, text, icon, color }) => {
               return (
                 <Item
-                  key={action}
+                  key={action.toString()}
                   tabIndex={0}
                   onClick={() => this.handleAction(action)}
                   onMouseEnter={() => this.handleActionFocus(action)}
