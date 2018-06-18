@@ -170,3 +170,34 @@ export function encode(obj: { [key: string]: string }) {
     })
     .join('&');
 }
+
+export function shallowEqual(a: any, b: any) {
+  if (a === b) return true;
+  const aKeys = Object.keys(a);
+  const bKeys = Object.keys(b);
+  if (aKeys.length !== bKeys.length) return false;
+
+  for (const key of aKeys) {
+    const subA = a[key];
+    const subB = b[key];
+    if (subA !== subB) return false;
+  }
+  return true;
+}
+
+export function shallowEqualIgnoringFunctions(a: any, b: any) {
+  if (a === b) return true;
+  const aKeys = Object.keys(a);
+  const bKeys = Object.keys(b);
+
+  if (aKeys.length !== bKeys.length) return false;
+
+  for (const key of aKeys) {
+    const subA = a[key];
+    const subB = b[key];
+
+    if (typeof subA === 'function' && typeof subB === 'function') continue;
+    if (subA !== subB) return false;
+  }
+  return true;
+}

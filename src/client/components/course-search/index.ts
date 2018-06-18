@@ -14,13 +14,14 @@ const container = Model.store.connect({
     return {
       currentCourses: ownProps.currentCourses,
       searchResults: scope.searchResults,
-    };
-  },
-  mapDispatchToProps: (dispatch, ownProps: CourseSearchContainerProps) => {
-    return {
-      onSearch: (query: string) => {},
       onCancel: ownProps.onCancel,
       onChangeCourses: ownProps.onChangeCourses,
+    };
+  },
+  mapDispatchToProps: dispatch => {
+    return {
+      // TODO
+      onSearch: (query: string) => {},
     };
   },
 })(CourseSearch);

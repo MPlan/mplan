@@ -8,7 +8,7 @@ import { DegreeGroupCourse } from './degree-group-course';
 import * as styles from '../styles';
 import { DropdownMenu } from './dropdown-menu';
 import { RightClickMenu } from './right-click-menu';
-import { wait } from 'utilities/utilities';
+import { wait, shallowEqualIgnoringFunctions } from 'utilities/utilities';
 import { activateOnEdit, selectTextFromInputRef } from 'utilities/refs';
 
 const Container = styled(View)`
@@ -99,7 +99,7 @@ const groupActions = {
   delete: { text: 'Delete group', icon: 'trash', color: styles.red },
 };
 
-export class DegreeGroup extends React.PureComponent<DegreeGroupProps, DegreeGroupState> {
+export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupState> {
   inputRef = React.createRef<HTMLInputElement>();
   constructor(props: DegreeGroupProps) {
     super(props);
@@ -115,6 +115,12 @@ export class DegreeGroup extends React.PureComponent<DegreeGroupProps, DegreeGro
       editingNow: this.state.editingName,
       onEditChange: () => selectTextFromInputRef(this.inputRef),
     });
+  }
+
+  shouldComponentUpdate(nextProps: DegreeGroupProps, nextState: DegreeGroupState) {
+    if (!shallowEqualIgnoringFunctions(this.state, nextState)) return true;
+    if (!shallowEqualIgnoringFunctions(this.props, nextProps)) return true;
+    return false;
   }
 
   nameInputElement: HTMLInputElement | undefined;

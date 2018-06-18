@@ -1,6 +1,7 @@
 import * as Immutable from 'immutable';
 import * as React from 'react';
 import { TypeIn } from 'utilities/typings';
+import { shallowEqual } from 'utilities/utilities';
 
 interface Hashable {
   hashCode(): number;
@@ -28,24 +29,6 @@ interface ComponentTuple<Store, Scope> {
   scopeDefiner: (store: Store) => Scope;
 }
 
-interface ComponentWithScope<Scope> extends React.PureComponent<any, any> {
-  currentScope: Scope | undefined;
-}
-
-function shallowIsEqual(a: any, b: any) {
-  if (a === b) return true;
-  const aKeys = Object.keys(a);
-  const bKeys = Object.keys(b);
-  if (aKeys.length !== bKeys.length) return false;
-
-  for (const key of aKeys) {
-    const subA = a[key];
-    const subB = b[key];
-    if (subA !== subB) return false;
-  }
-  return true;
-}
-
 interface Mutation<Store, Scope extends Hashable> {
   hashToDelete: number;
   hashToSet: number;
@@ -56,7 +39,7 @@ interface Mutation<Store, Scope extends Hashable> {
 interface ComponentGroup<Store, Scope extends Hashable> {
   currentScope: Scope;
   scopeTo: (store: Store) => Scope;
-  connectedComponents: Set<ComponentWithScope<any>>;
+  connectedComponents: Set<React.Component<any, any>>;
 }
 
 function findMatchingGroup(hashMatches: Set<ComponentGroup<any, Hashable>>, scope: Hashable) {
@@ -82,10 +65,9 @@ export function createStore<Store extends Immutable.Record<any>>(initialStore: S
         const { scopeTo, connectedComponents } = componentGroup;
         const previousScope = scopeTo(previousStore);
         const currentScope = scopeTo(currentStore);
-        // if (previousScope.equals(currentScope)) continue;
+        if (previousScope.equals(currentScope)) continue;
 
         for (const component of connectedComponents) {
-          component.currentScope = currentScope;
           component.forceUpdate();
           console.log('update');
         }
@@ -143,9 +125,31 @@ export function createStore<Store extends Immutable.Record<any>>(initialStore: S
     connectionOptions: ConnectionOptions<Store, Scope, OwnProps, PropsFromState, PropsFromDispatch>,
   ) {
     type ComponentProps = PropsFromState & PropsFromDispatch;
+
+    interface ConnectedComponentState {
+      savedProps: OwnProps;
+    }
+
     return (Component: React.ComponentType<ComponentProps>) => {
-      return class ConnectedComponent extends React.PureComponent<OwnProps, {}> {
-        currentScope: Scope | undefined;
+      return class ConnectedComponent extends React.PureComponent<
+        OwnProps,
+        ConnectedComponentState
+      > {
+        static getDerivedStateFromProps(
+          nextProps: OwnProps,
+          previousState: ConnectedComponentState,
+        ) {
+          if (shallowEqual(nextProps, previousState.savedProps)) return previousState;
+          return { savedProps: nextProps };
+        }
+
+        constructor(props: OwnProps) {
+          super(props);
+          this.state = {
+            savedProps: props,
+          };
+        }
+
         componentDidMount() {
           connectionOptions._debugName &&
             console.log(`Component "${connectionOptions._debugName}" mounted`);
@@ -165,7 +169,7 @@ export function createStore<Store extends Immutable.Record<any>>(initialStore: S
             if (!matchingGroup) {
               // hash collision
               componentGroup.add({
-                connectedComponents: new Set<ComponentWithScope<Scope>>().add(this),
+                connectedComponents: new Set<React.Component<any>>().add(this),
                 scopeTo,
                 currentScope: scope,
               });
@@ -200,21 +204,42 @@ export function createStore<Store extends Immutable.Record<any>>(initialStore: S
           componentGroups.delete(hashCode);
         }
 
-        componentProps() {
-          // current scope will be re-assigned on every update before this method is called
-          if (!this.currentScope) return undefined;
-          const { mapDispatchToProps, mapStateToProps } = connectionOptions;
-          const dispatchProps = mapDispatchToProps(sendUpdate, this.props);
-          const stateProps = mapStateToProps(this.currentScope, this.props);
+        previousProps = undefined as any;
+        previousScope = undefined as any;
+        previousComponentProps = undefined as any;
 
-          return Object.assign({}, stateProps, dispatchProps);
+        // inputs: sendUpdate, props, scope
+        // outputs: combined stateProps, dispatchProps
+        componentProps() {
+          const { mapDispatchToProps, mapStateToProps, scopeTo } = connectionOptions;
+          const scope = scopeTo(currentStore);
+          const props = this.state.savedProps;
+          if (this.previousScope === scope && this.previousProps === props) {
+            console.log('return prev');
+            return this.previousComponentProps;
+          } else {
+            if (this.previousScope !== scope) {
+              console.log("previous scope didn't equal");
+            }
+            if (this.previousProps !== props) {
+              console.log("previous props didn't equal");
+            }
+          }
+
+          const dispatchProps = mapDispatchToProps(sendUpdate, this.state.savedProps);
+          const stateProps = mapStateToProps(scope, this.state.savedProps);
+
+          const componentProps = Object.assign({}, stateProps, dispatchProps);
+
+          this.previousProps = props;
+          this.previousScope = scope;
+          this.previousComponentProps = componentProps;
+
+          return componentProps;
         }
+
         render() {
           const componentProps = this.componentProps();
-          if (!componentProps) {
-            console.log('connected component rendered null');
-            return null;
-          }
           return <Component {...componentProps} />;
         }
       };

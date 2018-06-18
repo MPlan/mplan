@@ -7,6 +7,8 @@ import { DropdownMenu } from './dropdown-menu';
 import styled from 'styled-components';
 import * as styles from '../styles';
 import { RightClickMenu } from './right-click-menu';
+import { render } from 'react-dom';
+import { shallowEqualIgnoringFunctions } from 'utilities/utilities';
 
 const Container = styled(View)`
   flex-direction: row;
@@ -58,48 +60,52 @@ const actions = {
   delete: { text: 'Delete course', icon: 'trash', color: styles.red },
 };
 
-export function DegreeGroupCourse({
-  course,
-  onChange,
-  onDelete,
-  onRearrange,
-}: DegreeGroupCourseProps) {
-  function handleActions(action: keyof typeof actions) {
+export class DegreeGroupCourse extends React.Component<DegreeGroupCourseProps, {}> {
+  handleActions = (action: keyof typeof actions) => {
     if (action === 'delete') {
-      onDelete();
+      this.props.onDelete();
     } else if (action === 'rearrange') {
-      onRearrange();
+      this.props.onRearrange();
     }
+  };
+
+  shouldComponentUpdate(nextProps: DegreeGroupCourseProps) {
+    if (!shallowEqualIgnoringFunctions(nextProps, this.props)) return true;
+    return false;
   }
 
-  const menuHeader = course instanceof Model.Course ? course.simpleName : course;
+  render() {
+    const { course } = this.props;
 
-  if (typeof course === 'string') {
+    const menuHeader = course instanceof Model.Course ? course.simpleName : course;
+
+    if (typeof course === 'string') {
+      return (
+        <RightClickMenu header={menuHeader} actions={actions} onAction={this.handleActions}>
+          <Container>
+            <NonCourseName>{course}</NonCourseName>
+            <Checkbox type="checkbox" onChange={this.props.onChange} />
+          </Container>
+        </RightClickMenu>
+      );
+    }
+
     return (
-      <RightClickMenu header={menuHeader} actions={actions} onAction={handleActions}>
+      <RightClickMenu header={menuHeader} actions={actions} onAction={this.handleActions}>
         <Container>
-          <NonCourseName>{course}</NonCourseName>
-          <Checkbox type="checkbox" onChange={onChange} />
+          <NameAndCredits>
+            <SimpleNameAndCredits>
+              <SimpleName>{course.simpleName}</SimpleName>
+              <Credits>{course.creditsString}</Credits>
+            </SimpleNameAndCredits>
+            <FullName>{course.name}</FullName>
+          </NameAndCredits>
+          <CheckboxContainer>
+            <Checkbox type="checkbox" onChange={this.props.onChange} />
+          </CheckboxContainer>
+          <DropdownMenu header={menuHeader} actions={actions} onAction={this.handleActions} />
         </Container>
       </RightClickMenu>
     );
   }
-
-  return (
-    <RightClickMenu header={menuHeader} actions={actions} onAction={handleActions}>
-      <Container>
-        <NameAndCredits>
-          <SimpleNameAndCredits>
-            <SimpleName>{course.simpleName}</SimpleName>
-            <Credits>{course.creditsString}</Credits>
-          </SimpleNameAndCredits>
-          <FullName>{course.name}</FullName>
-        </NameAndCredits>
-        <CheckboxContainer>
-          <Checkbox type="checkbox" onChange={onChange} />
-        </CheckboxContainer>
-        <DropdownMenu header={menuHeader} actions={actions} onAction={handleActions} />
-      </Container>
-    </RightClickMenu>
-  );
 }
