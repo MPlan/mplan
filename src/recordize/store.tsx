@@ -69,7 +69,6 @@ export function createStore<Store extends Immutable.Record<any>>(initialStore: S
 
         for (const component of connectedComponents) {
           component.forceUpdate();
-          console.log('update');
         }
 
         mutations.push({
@@ -101,6 +100,10 @@ export function createStore<Store extends Immutable.Record<any>>(initialStore: S
         continue;
       }
       newComponentGroupMatches.add(componentGroup);
+    }
+
+    for (const subscription of subscriptions) {
+      subscription(currentStore);
     }
   }
 
@@ -151,8 +154,6 @@ export function createStore<Store extends Immutable.Record<any>>(initialStore: S
         }
 
         componentDidMount() {
-          connectionOptions._debugName &&
-            console.log(`Component "${connectionOptions._debugName}" mounted`);
           const { scopeTo } = connectionOptions;
           const scope = scopeTo(currentStore);
           const hashCode = scope.hashCode();
@@ -215,15 +216,7 @@ export function createStore<Store extends Immutable.Record<any>>(initialStore: S
           const scope = scopeTo(currentStore);
           const props = this.state.savedProps;
           if (this.previousScope === scope && this.previousProps === props) {
-            console.log('return prev');
             return this.previousComponentProps;
-          } else {
-            if (this.previousScope !== scope) {
-              console.log("previous scope didn't equal");
-            }
-            if (this.previousProps !== props) {
-              console.log("previous props didn't equal");
-            }
           }
 
           const dispatchProps = mapDispatchToProps(sendUpdate, this.state.savedProps);

@@ -73,7 +73,6 @@ function handleShowHideToolbox() {
 }
 
 export function _AuthenticatedRoute(props: RouteComponentProps<any> & { loaded: boolean }) {
-  console.log('render auth route');
   return !props.loaded ? (
     <Loading />
   ) : (
