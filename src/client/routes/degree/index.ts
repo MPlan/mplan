@@ -6,7 +6,6 @@ const container = Model.store.connect({
   mapStateToProps: (scope: Model.App) => {
     return {
       degree: scope.user.degree,
-      courseSearchResults: [] as any[],
       masteredDegrees: scope.masteredDegrees
         .valueSeq()
         .sortBy(degree => degree.name)

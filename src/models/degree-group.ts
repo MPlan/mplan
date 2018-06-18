@@ -35,7 +35,10 @@ export class DegreeGroup extends Record.define({
   courses() {
     const catalog = this.root.catalog;
     return this.getOrCalculate('courses', [catalog, this], () => {
-      return this._courseIds.map(id => catalog.courseMap.get(id) || id);
+      return this._courseIds
+        .map(id => catalog.courseMap.get(id))
+        .filter(x => !!x)
+        .map(x => x!);
     });
   }
 }

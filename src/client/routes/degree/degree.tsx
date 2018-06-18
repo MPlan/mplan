@@ -6,12 +6,12 @@ import { ActionableText } from 'components/actionable-text';
 import { FloatingActionButton } from 'components/floating-action-button';
 import { DegreeGroup } from 'components/degree-group';
 import { Modal } from 'components/modal';
-import { SearchResultCourse } from 'components/search-result-course';
 import styled from 'styled-components';
 import * as styles from 'styles';
 import { Subject } from 'rxjs/Subject';
 import { debounceTime } from 'rxjs/operators';
 import { Subscription } from 'rxjs/Subscription';
+import { CourseSearch } from 'components/course-search';
 
 const Container = styled(View)`
   padding: ${styles.space(1)};
@@ -59,19 +59,6 @@ const DegreeGroupContainer = styled(View)`
   flex-direction: row;
   margin-right: -${styles.space(2)};
 `;
-const CourseSearchForm = styled.form`
-  display: flex;
-  flex-direction: column;
-`;
-const CourseInput = styled.input`
-  font-family: ${styles.fontFamily};
-  padding: ${styles.space(-1)};
-`;
-const SearchForACourse = styled(Text)`
-  color: ${styles.textLight};
-  margin-bottom: ${styles.space(-1)};
-`;
-const SearchResults = styled(View)``;
 const FormMajor = styled.form`
   display: flex;
   flex-direction: column;
@@ -92,7 +79,6 @@ const fabActions = {
 
 export interface DegreeProps {
   degree: Model.Degree;
-  courseSearchResults: any[];
   masteredDegrees: Model.MasteredDegree[];
   currentDegreeGroup: Model.DegreeGroup | undefined;
 
@@ -208,33 +194,13 @@ export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
           ))}
         </DegreeGroupContainer>
         <FloatingActionButton message="Add…" actions={fabActions} onAction={this.handleFab} />
-        <Modal
-          open={!!this.props.currentDegreeGroup}
-          title={`Adding courses to ${currentDegreeGroup ? currentDegreeGroup.name : ''}`}
-          size="medium"
-          onBlurCancel={this.props.onAddCourseModalClose}
-        >
-          <CourseSearchForm onSubmit={this.handleCourseSearchSubmit}>
-            <SearchForACourse>Search for a course...</SearchForACourse>
-            <CourseInput
-              type="search"
-              placeholder="e.g. MATH 115"
-              onChange={this.handleCourseSearchChange}
-            />
-          </CourseSearchForm>
-          <SearchResults>
-            {this.props.courseSearchResults.map(result => (
-              <SearchResultCourse
-                key={result.id}
-                course={result}
-                onAddCourse={() => {
-                  if (!this.props.currentDegreeGroup) return;
-                  this.props.onDegreeGroupAddCourse(this.props.currentDegreeGroup, result);
-                }}
-              />
-            ))}
-          </SearchResults>
-        </Modal>
+        <CourseSearch
+          title={`Editing courses for ${currentDegreeGroup ? currentDegreeGroup.name : ''}`}
+          open={!!currentDegreeGroup}
+          defaultCourses={currentDegreeGroup ? currentDegreeGroup.courses().toArray() : []}
+          onCancel={this.props.onAddCourseModalClose}
+          onSaveCourses={() => {}}
+        />
         <Modal
           title="Pick a major!"
           open={this.state.majorModalOpen}

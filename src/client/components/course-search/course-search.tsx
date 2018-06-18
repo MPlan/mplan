@@ -12,6 +12,7 @@ import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
 import { debounceTime } from 'rxjs/operators';
 import * as uuid from 'uuid/v4';
+import { Modal } from 'components/modal';
 
 const INPUT_DEBOUNCE_TIME = 250;
 
@@ -66,12 +67,15 @@ export interface CourseSearchProps {
   defaultCourses: Model.Course[];
   searchResults: Model.Course[];
   totalMatches: number;
+  title: string;
+  open: boolean;
   onSaveCourses: (course: Model.Course[]) => void;
   onCancel: () => void;
   onSearch: (query: string) => void;
 }
 
 export interface CourseSearchState {
+  open: boolean;
   currentCourses: Model.Course[];
 }
 
@@ -83,8 +87,24 @@ export class CourseSearch extends React.PureComponent<CourseSearchProps, CourseS
   constructor(props: CourseSearchProps) {
     super(props);
     this.state = {
+      open: props.open,
       currentCourses: props.defaultCourses,
     };
+  }
+
+  static getDerivedStateFromProps(nextProps: CourseSearchProps, previousState: CourseSearchProps) {
+    const nextState = { ...previousState, open: nextProps.open };
+    const wasClosedBefore = !previousState.open;
+    const isOpenNow = nextProps.open;
+
+    if (wasClosedBefore && isOpenNow) {
+      return {
+        ...nextState,
+        currentCourses: nextProps.defaultCourses,
+      };
+    }
+
+    return nextState;
   }
 
   componentDidMount() {
@@ -128,60 +148,62 @@ export class CourseSearch extends React.PureComponent<CourseSearchProps, CourseS
 
   render() {
     return (
-      <Container>
-        <Split>
-          <SearchHalf>
-            <Form>
-              <SearchLabel htmlFor={this.htmlForId}>Search for a course...</SearchLabel>
-              <Search
-                id={this.htmlForId}
-                onChange={this.handleSearchChange}
-                placeholder="e.g. MATH 115 or Operating systems"
-              />
-            </Form>
-            <SearchResults>
-              {this.props.searchResults.map(course => (
-                <CourseSearchItem
-                  key={course.id}
-                  course={course}
-                  onClick={() => this.handleAddClick(course)}
+      <Modal title={this.props.title} open={this.state.open} onBlurCancel={this.props.onCancel}>
+        <Container>
+          <Split>
+            <SearchHalf>
+              <Form>
+                <SearchLabel htmlFor={this.htmlForId}>Search for a course...</SearchLabel>
+                <Search
+                  id={this.htmlForId}
+                  onChange={this.handleSearchChange}
+                  placeholder="e.g. MATH 115 or Operating systems"
                 />
-              ))}
-            </SearchResults>
-            <Count>
-              {this.props.searchResults.length !== this.props.totalMatches
-                ? `Showing first ${this.props.searchResults.length} results of ${
-                    this.props.totalMatches
-                  }. Refine your search to see more.`
-                : `${this.props.searchResults.length} results.`}
-            </Count>
-          </SearchHalf>
+              </Form>
+              <SearchResults>
+                {this.props.searchResults.map(course => (
+                  <CourseSearchItem
+                    key={course.id}
+                    course={course}
+                    onClick={() => this.handleAddClick(course)}
+                  />
+                ))}
+              </SearchResults>
+              <Count>
+                {this.props.searchResults.length !== this.props.totalMatches
+                  ? `Showing first ${this.props.searchResults.length} results of ${
+                      this.props.totalMatches
+                    }. Refine your search to see more.`
+                  : `${this.props.searchResults.length} results.`}
+              </Count>
+            </SearchHalf>
 
-          <CurrentList>
-            <CurrentListLabel>Current courses:</CurrentListLabel>
-            <SearchResults>
-              {this.state.currentCourses.map(course => (
-                <CourseSearchItem
-                  key={course.id}
-                  course={course}
-                  delete
-                  onClick={() => this.handleDeleteClick(course)}
-                />
-              ))}
-            </SearchResults>
-          </CurrentList>
-        </Split>
-        <ButtonRow>
-          <Button onClick={this.props.onCancel}>
-            <Fa icon="times" />
-            <Text style={{ marginLeft: styles.space(-1) }}>Cancel</Text>
-          </Button>
-          <Button onClick={this.handleSaveClick}>
-            <Fa icon="check" />
-            <Text style={{ marginLeft: styles.space(-1) }}>Save</Text>
-          </Button>
-        </ButtonRow>
-      </Container>
+            <CurrentList>
+              <CurrentListLabel>Current courses:</CurrentListLabel>
+              <SearchResults>
+                {this.state.currentCourses.map(course => (
+                  <CourseSearchItem
+                    key={course.id}
+                    course={course}
+                    delete
+                    onClick={() => this.handleDeleteClick(course)}
+                  />
+                ))}
+              </SearchResults>
+            </CurrentList>
+          </Split>
+          <ButtonRow>
+            <Button onClick={this.props.onCancel}>
+              <Fa icon="times" />
+              <Text style={{ marginLeft: styles.space(-1) }}>Cancel</Text>
+            </Button>
+            <Button onClick={this.handleSaveClick}>
+              <Fa icon="check" />
+              <Text style={{ marginLeft: styles.space(-1) }}>Save</Text>
+            </Button>
+          </ButtonRow>
+        </Container>
+      </Modal>
     );
   }
 }

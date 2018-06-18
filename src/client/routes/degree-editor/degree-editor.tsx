@@ -2,7 +2,6 @@ import * as React from 'react';
 import * as Model from 'models';
 import { View } from 'components/view';
 import { Text } from 'components/text';
-import { ActionableText } from 'components/actionable-text';
 import { FloatingActionButton } from 'components/floating-action-button';
 import { Fa } from 'components/fa';
 import { DegreeItem } from 'components/degree-item';

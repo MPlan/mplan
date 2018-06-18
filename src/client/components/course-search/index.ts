@@ -3,6 +3,8 @@ import * as Model from 'models';
 import { CourseSearch } from './course-search';
 
 interface CourseSearchContainerProps {
+  title: string;
+  open: boolean;
   defaultCourses: Model.Course[];
   onSaveCourses: (courses: Model.Course[]) => void;
   onCancel: () => void;
@@ -12,6 +14,8 @@ const container = Model.store.connect({
   scopeTo: store => store.search,
   mapStateToProps: (scope: Model.Search, ownProps: CourseSearchContainerProps) => {
     return {
+      title: ownProps.title,
+      open: ownProps.open,
       defaultCourses: ownProps.defaultCourses,
       searchResults: scope.searchResults,
       totalMatches: scope.totalMatches,

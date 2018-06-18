@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import { View } from './view';
 import { Text } from './text';
 import { Button } from './button';
-import { Modal } from './modal';
 import { Fa } from './fa';
 import { CourseSearch } from './course-search';
 
@@ -62,7 +61,7 @@ export class EditableCourseList extends React.PureComponent<
   handleChangeCourses = (courses: Model.Course[]) => {
     this.props.onChangeCourses(courses);
     this.handleModalBlur();
-  }
+  };
 
   render() {
     return (
@@ -79,17 +78,13 @@ export class EditableCourseList extends React.PureComponent<
           <Fa icon="pencil" />
           <Text style={{ marginLeft: styles.space(-1) }}>Edit</Text>
         </Button>
-        <Modal
+        <CourseSearch
           title="Course search"
           open={this.state.courseSearchOpen}
-          onBlurCancel={this.handleModalBlur}
-        >
-          <CourseSearch
-            defaultCourses={this.props.currentCourses}
-            onSaveCourses={this.handleChangeCourses}
-            onCancel={this.handleModalBlur}
-          />
-        </Modal>
+          defaultCourses={this.props.currentCourses}
+          onSaveCourses={this.handleChangeCourses}
+          onCancel={this.handleModalBlur}
+        />
       </Container>
     );
   }
