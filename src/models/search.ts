@@ -16,6 +16,10 @@ export class Search extends Record.define({
     return store.set('search', newThis);
   }
 
+  clearSearch() {
+    return this.set('searchResults', []).set('totalMatches', 0);
+  }
+
   search(query: string, take: number) {
     const results = this.root.catalog.search(query);
     const totalMatches = results.count();

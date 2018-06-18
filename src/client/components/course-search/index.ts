@@ -14,18 +14,30 @@ const container = Model.store.connect({
     return {
       defaultCourses: ownProps.defaultCourses,
       searchResults: scope.searchResults,
-      totalMatches: 0,
-      onCancel: ownProps.onCancel,
-      onSaveCourses: ownProps.onSaveCourses,
+      totalMatches: scope.totalMatches,
     };
   },
-  mapDispatchToProps: dispatch => {
+  mapDispatchToProps: (dispatch, ownProps: CourseSearchContainerProps) => {
     return {
       onSearch: (query: string) => {
         dispatch(store => {
           const next = store.search.search(query, 20);
           return Model.Search.updateStore(store, next);
         });
+      },
+      onCancel: () => {
+        dispatch(store => {
+          const next = store.search.clearSearch();
+          return Model.Search.updateStore(store, next);
+        });
+        ownProps.onCancel();
+      },
+      onSaveCourses: (courses: Model.Course[]) => {
+        dispatch(store => {
+          const next = store.search.clearSearch();
+          return Model.Search.updateStore(store, next);
+        });
+        ownProps.onSaveCourses(courses);
       },
     };
   },
