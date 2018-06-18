@@ -1,19 +1,12 @@
 import * as Model from 'models';
 import { Degree, DegreeProps } from './degree';
 
-const scopeDefiner = (store: Model.App) => ({
-  degree: store.user.degree,
-  courseSearchResults: store.degreePage.searchResults,
-  masteredDegrees: store.masteredDegrees,
-  currentDegreeGroup: store.degreePage.currentDegreeGroup,
-});
-
 const container = Model.store.connect({
   scopeTo: store => store,
   mapStateToProps: (scope: Model.App) => {
     return {
       degree: scope.user.degree,
-      courseSearchResults: scope.degreePage.searchResults,
+      courseSearchResults: [] as any[],
       masteredDegrees: scope.masteredDegrees
         .valueSeq()
         .sortBy(degree => degree.name)

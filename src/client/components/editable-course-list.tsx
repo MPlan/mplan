@@ -85,8 +85,8 @@ export class EditableCourseList extends React.PureComponent<
           onBlurCancel={this.handleModalBlur}
         >
           <CourseSearch
-            currentCourses={this.props.currentCourses}
-            onChangeCourses={this.handleChangeCourses}
+            defaultCourses={this.props.currentCourses}
+            onSaveCourses={this.handleChangeCourses}
             onCancel={this.handleModalBlur}
           />
         </Modal>

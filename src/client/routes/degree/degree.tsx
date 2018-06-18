@@ -92,7 +92,7 @@ const fabActions = {
 
 export interface DegreeProps {
   degree: Model.Degree;
-  courseSearchResults: Model.SearchResults;
+  courseSearchResults: any[];
   masteredDegrees: Model.MasteredDegree[];
   currentDegreeGroup: Model.DegreeGroup | undefined;
 
@@ -109,6 +109,7 @@ export interface DegreeProps {
 
   onChangeMajor: (majorId: string) => void;
 }
+
 export interface DegreeState {
   majorModalOpen: boolean;
 }

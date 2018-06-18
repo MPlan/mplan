@@ -3,9 +3,6 @@ import * as Record from '../recordize';
 import { Course } from './course';
 import { pointer } from './pointer';
 import { App } from './app';
-import { TypeIn } from 'utilities/typings';
-
-export type SearchResults = ReturnType<TypeIn<Catalog, 'search'>>;
 
 export class Catalog extends Record.define({
   courseMap: Record.MapOf(Course),

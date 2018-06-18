@@ -68,7 +68,7 @@ const Card = styled(View)`
 `;
 
 export interface CatalogProps {
-  searchResults: Model.SearchResults;
+  searchResults: any[];
   onSearch: (query: string) => void;
 }
 
@@ -115,11 +115,7 @@ export class Catalog extends React.PureComponent<CatalogProps> {
               onChange={this.handleSearchInput}
             />
           </Form>
-          <Card>
-            {this.props.searchResults
-              .take(100)
-              .map(course => <CatalogCourse key={course.id} course={course} />)}
-          </Card>
+          <Card>todo</Card>
         </Content>
       </Container>
     );

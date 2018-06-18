@@ -25,3 +25,4 @@ export * from './user';
 export * from './store';
 export * from './catalog-ui';
 export * from './degree-page';
+export * from './search';

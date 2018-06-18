@@ -3,25 +3,30 @@ import * as Model from 'models';
 import { CourseSearch } from './course-search';
 
 interface CourseSearchContainerProps {
-  currentCourses: Model.Course[];
-  onChangeCourses: (courses: Model.Course[]) => void;
+  defaultCourses: Model.Course[];
+  onSaveCourses: (courses: Model.Course[]) => void;
   onCancel: () => void;
 }
 
 const container = Model.store.connect({
-  scopeTo: store => store.catalogUi,
-  mapStateToProps: (scope: Model.CatalogUi, ownProps: CourseSearchContainerProps) => {
+  scopeTo: store => store.search,
+  mapStateToProps: (scope: Model.Search, ownProps: CourseSearchContainerProps) => {
     return {
-      currentCourses: ownProps.currentCourses,
+      defaultCourses: ownProps.defaultCourses,
       searchResults: scope.searchResults,
+      totalMatches: 0,
       onCancel: ownProps.onCancel,
-      onChangeCourses: ownProps.onChangeCourses,
+      onSaveCourses: ownProps.onSaveCourses,
     };
   },
   mapDispatchToProps: dispatch => {
     return {
-      // TODO
-      onSearch: (query: string) => {},
+      onSearch: (query: string) => {
+        dispatch(store => {
+          const next = store.search.search(query, 20);
+          return Model.Search.updateStore(store, next);
+        });
+      },
     };
   },
 })(CourseSearch);

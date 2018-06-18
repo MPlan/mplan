@@ -63,15 +63,15 @@ const ButtonRow = styled(View)`
 `;
 
 export interface CourseSearchProps {
-  searchResults: Model.SearchResults;
-  currentCourses: Model.Course[];
-  onChangeCourses: (courses: Model.Course[]) => void;
+  defaultCourses: Model.Course[];
+  searchResults: Model.Course[];
+  totalMatches: number;
+  onSaveCourses: (course: Model.Course[]) => void;
   onCancel: () => void;
   onSearch: (query: string) => void;
 }
 
 export interface CourseSearchState {
-  searchResults: Model.SearchResults;
   currentCourses: Model.Course[];
 }
 
@@ -83,8 +83,7 @@ export class CourseSearch extends React.PureComponent<CourseSearchProps, CourseS
   constructor(props: CourseSearchProps) {
     super(props);
     this.state = {
-      searchResults: Immutable.Seq([]),
-      currentCourses: [],
+      currentCourses: props.defaultCourses,
     };
   }
 
@@ -92,13 +91,6 @@ export class CourseSearch extends React.PureComponent<CourseSearchProps, CourseS
     this.subscription = this.input$
       .pipe(debounceTime(INPUT_DEBOUNCE_TIME))
       .subscribe(this.props.onSearch);
-  }
-
-  static getDerivedStateFromProps(nextProps: CourseSearchProps, previousState: CourseSearchState) {
-    return {
-      ...previousState,
-      currentCourse: nextProps.currentCourses,
-    };
   }
 
   componentWillUnmount() {
@@ -109,36 +101,32 @@ export class CourseSearch extends React.PureComponent<CourseSearchProps, CourseS
     e.preventDefault();
   };
 
-  handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.currentTarget.value;
     this.input$.next(value);
   };
 
-  handleAddClick(courseToAdd: Model.Course) {
+  handleAddClick = (courseToAdd: Model.Course) => {
     this.setState(previousState => ({
       ...previousState,
       currentCourses: [...previousState.currentCourses, courseToAdd],
     }));
-  }
+  };
 
-  handleDeleteClick(courseToDelete: Model.Course) {
+  handleDeleteClick = (courseToDelete: Model.Course) => {
     this.setState(previousState => ({
       ...previousState,
       currentCourses: previousState.currentCourses.filter(
         course => course.id !== courseToDelete.id,
       ),
     }));
-  }
+  };
 
   handleSaveClick = () => {
-    this.props.onChangeCourses([...this.state.currentCourses]);
+    this.props.onSaveCourses([...this.state.currentCourses]);
   };
 
   render() {
-    const takeAway = 20;
-    const top = this.state.searchResults.take(takeAway);
-    const totalCount = this.state.searchResults.count;
-    const count = this.props.searchResults.count() - top.count();
     return (
       <Container>
         <Split>
@@ -147,12 +135,12 @@ export class CourseSearch extends React.PureComponent<CourseSearchProps, CourseS
               <SearchLabel htmlFor={this.htmlForId}>Search for a course...</SearchLabel>
               <Search
                 id={this.htmlForId}
-                onChange={this.handleChange}
+                onChange={this.handleSearchChange}
                 placeholder="e.g. MATH 115 or Operating systems"
               />
             </Form>
             <SearchResults>
-              {top.map(course => (
+              {this.props.searchResults.map(course => (
                 <CourseSearchItem
                   key={course.id}
                   course={course}
@@ -161,9 +149,11 @@ export class CourseSearch extends React.PureComponent<CourseSearchProps, CourseS
               ))}
             </SearchResults>
             <Count>
-              {count > 0
-                ? `Showing first ${takeAway} results of ${totalCount}. Refine your search to see more.`
-                : `${totalCount} results.`}
+              {this.props.searchResults.length !== this.props.totalMatches
+                ? `Showing first ${this.props.searchResults.length} results of ${
+                    this.props.totalMatches
+                  }. Refine your search to see more.`
+                : `${this.props.searchResults.length} results.`}
             </Count>
           </SearchHalf>
 
