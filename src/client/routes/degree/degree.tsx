@@ -8,9 +8,6 @@ import { DegreeGroup } from 'components/degree-group';
 import { Modal } from 'components/modal';
 import styled from 'styled-components';
 import * as styles from 'styles';
-import { Subject } from 'rxjs/Subject';
-import { debounceTime } from 'rxjs/operators';
-import { Subscription } from 'rxjs/Subscription';
 import { CourseSearch } from 'components/course-search';
 
 const Container = styled(View)`
@@ -84,13 +81,12 @@ export interface DegreeProps {
 
   onAddCourseClick: (degreeGroup: Model.DegreeGroup) => void;
   onAddCourseModalClose: () => void;
-
+  onDegreeGroupCoursesChange: (degreeGroup: Model.DegreeGroup, newCourse: Model.Course[]) => void;
   onDeleteCourse: (degreeGroup: Model.DegreeGroup, course: string | Model.Course) => void;
+
   onDegreeGroupDelete: (degreeGroup: Model.DegreeGroup) => void;
   onDegreeGroupNameChange: (degreeGroup: Model.DegreeGroup, newName: string) => void;
   onDegreeGroupAddCourse: (degreeGroup: Model.DegreeGroup, course: string | Model.Course) => void;
-
-  onSearchCourse: (query: string) => void;
   onAddDegreeGroup: () => void;
 
   onChangeMajor: (majorId: string) => void;
@@ -101,24 +97,9 @@ export interface DegreeState {
 }
 
 export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
-  readonly searchInput$ = new Subject<string>();
-  searchInputSubscription: Subscription | undefined;
-
   state = {
     majorModalOpen: false,
   };
-
-  componentDidMount() {
-    this.searchInputSubscription = this.searchInput$
-      .pipe(debounceTime(50))
-      .subscribe(this.props.onSearchCourse);
-  }
-
-  componentWillUnmount() {
-    if (this.searchInputSubscription) {
-      this.searchInputSubscription.unsubscribe();
-    }
-  }
 
   handleFab = (action: keyof typeof fabActions) => {
     if (action === 'group') {
@@ -128,10 +109,6 @@ export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
 
   handleCourseSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-  };
-
-  handleCourseSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.searchInput$.next(e.currentTarget.value);
   };
 
   handleChangeDegree = () => {
@@ -154,6 +131,13 @@ export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
     const majorId = selectElement.value;
     if (!majorId) return;
     this.props.onChangeMajor(majorId);
+  };
+
+  handleSaveCourses = (courses: Model.Course[]) => {
+    const currentDegreeGroup = this.props.currentDegreeGroup;
+    if (!currentDegreeGroup) return;
+    this.props.onDegreeGroupCoursesChange(currentDegreeGroup, courses);
+    this.props.onAddCourseModalClose();
   };
 
   render() {
@@ -199,7 +183,7 @@ export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
           open={!!currentDegreeGroup}
           defaultCourses={currentDegreeGroup ? currentDegreeGroup.courses().toArray() : []}
           onCancel={this.props.onAddCourseModalClose}
-          onSaveCourses={() => {}}
+          onSaveCourses={this.handleSaveCourses}
         />
         <Modal
           title="Pick a major!"

@@ -271,8 +271,15 @@ export class Degree extends Record.define({
 
   updateDegreeGroup(group: DegreeGroup, update: (group: DegreeGroup) => DegreeGroup) {
     return this.update('degreeGroups', groups => {
-      const index = groups.findIndex(g => g === group);
+      const index = groups.findIndex(g => g.id === group.id);
       return groups.update(index, update);
+    });
+  }
+
+  setDegreeGroup(group: DegreeGroup) {
+    return this.update('degreeGroups', groups => {
+      const index = groups.findIndex(g => g.id === group.id);
+      return groups.set(index, group);
     });
   }
 }

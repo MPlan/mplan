@@ -18,6 +18,13 @@ export class DegreeGroup extends Record.define({
   get id() {
     return this._id.toHexString();
   }
+
+  static updateStore(store: App, newThis: DegreeGroup) {
+    return store.update('user', user =>
+      user.update('degree', degree => degree.setDegreeGroup(newThis)),
+    );
+  }
+
   addCourse(course: string | Course) {
     if (this._courseIds.contains(course instanceof Course ? course.catalogId : course)) return this;
     return this.update('_courseIds', courseIds =>

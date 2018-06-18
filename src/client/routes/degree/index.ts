@@ -38,6 +38,53 @@ const container = Model.store.connect({
         });
       },
 
+      onDegreeGroupCoursesChange: (degreeGroup: Model.DegreeGroup, newCourses: Model.Course[]) => {
+        dispatch(store => {
+          const currentCourses = degreeGroup.courses().toArray();
+
+          const currentCourseLookup = currentCourses.reduce(
+            (acc, next) => {
+              acc[next.id] = true;
+              return acc;
+            },
+            {} as { [id: string]: true },
+          );
+          const nextCourseLookup = newCourses.reduce(
+            (acc, next) => {
+              acc[next.id] = true;
+              return acc;
+            },
+            {} as { [id: string]: true },
+          );
+
+          const coursesToAdd = newCourses.reduce(
+            (acc, next) => {
+              if (!currentCourseLookup[next.id]) acc.push(next);
+              return acc;
+            },
+            [] as Model.Course[],
+          );
+          const coursesToDelete = currentCourses.reduce(
+            (acc, next) => {
+              if (!nextCourseLookup[next.id]) acc.push(next);
+              return acc;
+            },
+            [] as Model.Course[],
+          );
+
+          const degreeGroupWithNewCourses = coursesToAdd.reduce(
+            (degreeGroup, next) => degreeGroup.addCourse(next),
+            degreeGroup,
+          );
+          const nextDegreeGroup = coursesToDelete.reduce(
+            (degreeGroup, next) => degreeGroup.deleteCourse(next),
+            degreeGroupWithNewCourses,
+          );
+
+          return Model.DegreeGroup.updateStore(store, nextDegreeGroup);
+        });
+      },
+
       onDeleteCourse: (degreeGroup: Model.DegreeGroup, course: string | Model.Course) => {
         dispatch(store => {
           const next = store.user.degree.updateDegreeGroup(degreeGroup, degreeGroup =>
@@ -92,13 +139,6 @@ const container = Model.store.connect({
           );
 
           return Model.Degree.updateStore(store, next);
-        });
-      },
-
-      onSearchCourse: (query: string) => {
-        dispatch(store => {
-          const next = store.degreePage.search(query);
-          return Model.DegreePage.updateStore(store, next);
         });
       },
     };
