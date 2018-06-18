@@ -110,7 +110,7 @@ export async function syncCourseDetails(
   termCode: string,
   subjectCode: string,
   courseNumber: string,
-  ...scheduleTypes: string[],
+  ...scheduleTypes: string[]
 ) {
   const courseFromUmconnect = await fetchCourseDetail(termCode, subjectCode, courseNumber);
 
@@ -148,7 +148,7 @@ export async function syncSchedules(
   termCode: string,
   subjectCode: string,
   courseNumber: string,
-  ...scheduleTypes: string[],
+  ...scheduleTypes: string[]
 ) {
   const schedules = flatten(await sequentially(
     scheduleTypes,
