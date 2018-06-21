@@ -86,6 +86,7 @@ export interface DegreeGroupProps {
   onAddCourse: () => void;
   onDeleteCourse: (course: string | Model.Course) => void;
   onDeleteGroup: () => void;
+  onCourseCompletedToggle: (course: string | Model.Course) => void;
 }
 
 interface DegreeGroupState {
@@ -179,8 +180,7 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
       0,
     );
     const creditHoursMax = courses.reduce(
-      (creditHoursMax, next) =>
-        next instanceof Model.Course ? next.credits || next.creditHours || 0 : 0,
+      (creditHoursMax, next) => (next instanceof Model.Course ? next.credits || next.creditHours || 0 : 0),
       0,
     );
 
@@ -188,11 +188,7 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
 
     return (
       <Container>
-        <RightClickMenu
-          header={menuHeader}
-          actions={groupActions}
-          onAction={this.handleGroupAction}
-        >
+        <RightClickMenu header={menuHeader} actions={groupActions} onAction={this.handleGroupAction}>
           <Header>
             <NameAndCredits>
               {this.state.editingName ? (
@@ -214,11 +210,7 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
                   ? `${creditHoursMin}`
                   : `${creditHoursMin} - ${creditHoursMax}`}&nbsp;credits
               </Credits>
-              <DropdownMenu
-                header={menuHeader}
-                actions={groupActions}
-                onAction={this.handleGroupAction}
-              />
+              <DropdownMenu header={menuHeader} actions={groupActions} onAction={this.handleGroupAction} />
             </NameAndCredits>
             <Description>{degreeGroup.description}</Description>
           </Header>
@@ -230,9 +222,12 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
             <Courses>
               {courses.map(course => (
                 <DegreeGroupCourse
+                  completed={degreeGroup.completedCourseIds.includes(
+                    course instanceof Model.Course ? course.id : course,
+                  )}
                   key={course instanceof Model.Course ? course.id : course}
                   course={course}
-                  onChange={() => {}}
+                  onChange={() => this.props.onCourseCompletedToggle(course)}
                   onRearrange={() => {}}
                   onDelete={() => this.props.onDeleteCourse(course)}
                 />

@@ -87,6 +87,7 @@ export interface DegreeProps {
   onDegreeGroupDelete: (degreeGroup: Model.DegreeGroup) => void;
   onDegreeGroupNameChange: (degreeGroup: Model.DegreeGroup, newName: string) => void;
   onDegreeGroupAddCourse: (degreeGroup: Model.DegreeGroup, course: string | Model.Course) => void;
+  onCourseCompletedToggle: (degreeGroup: Model.DegreeGroup, course: string | Model.Course) => void;
   onAddDegreeGroup: () => void;
 
   onChangeMajor: (majorId: string) => void;
@@ -150,9 +151,8 @@ export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
           <HeaderMain>
             <Major>{masteredDegree && masteredDegree.name}</Major>
             <Disclaimer>
-              <Underline>Disclaimer:</Underline> This page is <Underline>not</Underline> a degree
-              audit and should not be treated like one.{' '}
-              <ActionableText>Click here for more info.</ActionableText>
+              <Underline>Disclaimer:</Underline> This page is <Underline>not</Underline> a degree audit and should not
+              be treated like one. <ActionableText>Click here for more info.</ActionableText>
             </Disclaimer>
           </HeaderMain>
           <HeaderRight>
@@ -160,9 +160,7 @@ export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
               {degree.completedCredits()}/{degree.totalCredits()} credits
             </Credits>
             <Percentage>{degree.percentComplete().toFixed(2)}% complete</Percentage>
-            <ActionableText onClick={this.handleChangeDegree}>
-              Click here to change degree!
-            </ActionableText>
+            <ActionableText onClick={this.handleChangeDegree}>Click here to change degree!</ActionableText>
           </HeaderRight>
         </Header>
         <DegreeGroupContainer>
@@ -174,6 +172,7 @@ export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
               onAddCourse={() => this.props.onAddCourseClick(group)}
               onDeleteCourse={course => this.props.onDeleteCourse(group, course)}
               onDeleteGroup={() => this.props.onDegreeGroupDelete(group)}
+              onCourseCompletedToggle={course => this.props.onCourseCompletedToggle(group, course)}
             />
           ))}
         </DegreeGroupContainer>
@@ -185,11 +184,7 @@ export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
           onCancel={this.props.onAddCourseModalClose}
           onSaveCourses={this.handleSaveCourses}
         />
-        <Modal
-          title="Pick a major!"
-          open={this.state.majorModalOpen}
-          onBlurCancel={this.handleMajorBlur}
-        >
+        <Modal title="Pick a major!" open={this.state.majorModalOpen} onBlurCancel={this.handleMajorBlur}>
           <FormMajor onSubmit={this.handleMajorSubmit}>
             <select className="select-major">
               {this.props.masteredDegrees.map(degree => (

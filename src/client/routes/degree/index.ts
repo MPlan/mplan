@@ -141,6 +141,13 @@ const container = Model.store.connect({
           return Model.Degree.updateStore(store, next);
         });
       },
+
+      onCourseCompletedToggle: (degreeGroup: Model.DegreeGroup, course: string | Model.Course) => {
+        dispatch(store => {
+          const next = degreeGroup.toggleCourseCompletion(course);
+          return Model.DegreeGroup.updateStore(store, next);
+        })
+      }
     };
   },
 })(Degree);

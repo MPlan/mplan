@@ -7,7 +7,6 @@ import { DropdownMenu } from './dropdown-menu';
 import styled from 'styled-components';
 import * as styles from '../styles';
 import { RightClickMenu } from './right-click-menu';
-import { render } from 'react-dom';
 import { shallowEqualIgnoringFunctions } from 'utilities/utilities';
 
 const Container = styled(View)`
@@ -48,6 +47,7 @@ const Checkbox = styled.input`
 `;
 
 export interface DegreeGroupCourseProps {
+  completed: boolean;
   course: string | Model.Course;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onRearrange: () => void;
@@ -75,7 +75,7 @@ export class DegreeGroupCourse extends React.Component<DegreeGroupCourseProps, {
   }
 
   render() {
-    const { course } = this.props;
+    const { course, completed } = this.props;
 
     const menuHeader = course instanceof Model.Course ? course.simpleName : course;
 
@@ -101,7 +101,7 @@ export class DegreeGroupCourse extends React.Component<DegreeGroupCourseProps, {
             <FullName>{course.name}</FullName>
           </NameAndCredits>
           <CheckboxContainer>
-            <Checkbox type="checkbox" onChange={this.props.onChange} />
+            <Checkbox checked={completed} type="checkbox" onChange={this.props.onChange} />
           </CheckboxContainer>
           <DropdownMenu header={menuHeader} actions={actions} onAction={this.handleActions} />
         </Container>
