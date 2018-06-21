@@ -159,13 +159,15 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
 
   get groupActions() {
     const renameAction = this.props.degreeGroup.renameable()
-      ? { rename: { text: 'Rename', icon: 'pencil' } }
+      ? {
+          rename: { text: 'Rename', icon: 'pencil' },
+          delete: { text: 'Delete group', icon: 'trash', color: styles.red },
+        }
       : {};
     return {
-      rearrange: { text: 'Rearrange', icon: 'bars' },
-      ...renameAction,
+      rearrange: { text: 'Reorder groups', icon: 'bars' },
       add: { text: 'Add course', icon: 'plus', color: styles.blue },
-      delete: { text: 'Delete group', icon: 'trash', color: styles.red },
+      ...renameAction,
     } as { [key: string]: { text: any; icon: any; color?: any } };
   }
 
