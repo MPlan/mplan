@@ -24,12 +24,12 @@ const LoadingText = styled(Text)`
   font-size: ${styles.space(2)};
   font-weight: ${styles.bold};
   flex-direction: row;
-  color: ${styles.textLight};
+  color: ${styles.grayLight};
 `;
 const LoadingSubText = styled(Text)`
   margin-top: ${styles.space(-1)};
   font-size: ${styles.space(1)};
-  color: ${styles.textLight};
+  color: ${styles.grayLight};
 `;
 const LoadingDots = styled(View)`
   min-width: 3rem;
@@ -66,7 +66,7 @@ export class Loading extends React.PureComponent<{}, { dots: number }> {
     return (
       <Container>
         <Box>
-          <Fa icon="spinner" pulse size="5x" color={styles.textLight} />
+          <Fa icon="spinner" pulse size="5x" color={styles.grayLight} />
           <Row>
             <LoadingText>Loading</LoadingText>
             <LoadingDots>

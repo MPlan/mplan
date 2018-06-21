@@ -48,7 +48,6 @@ const Credits = styled(Text)`
 `;
 const RequiredCredits = styled(Text)`
   font-weight: bold;
-  margin-bottom: ${styles.space(-1)};
   cursor: pointer;
   &:hover {
     text-decoration: underline;
@@ -56,6 +55,7 @@ const RequiredCredits = styled(Text)`
 `;
 const Percentage = styled(Text)`
   color: ${styles.textLight};
+  margin-bottom: ${styles.space(-1)};
 `;
 const DegreeGroupContainer = styled(View)`
   flex: 1;
@@ -110,6 +110,7 @@ export interface DegreeState {
   majorModalOpen: boolean;
   activeDegree: Model.DegreeGroup | undefined;
   requiredCreditsModalOpen: boolean;
+  disclaimerModalOpen: boolean;
 }
 
 export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
@@ -119,6 +120,7 @@ export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
       majorModalOpen: false,
       activeDegree: undefined,
       requiredCreditsModalOpen: false,
+      disclaimerModalOpen: false,
     };
   }
 
@@ -189,6 +191,20 @@ export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
     }));
   };
 
+  handleDisclaimerClick = () => {
+    this.setState(previousState => ({
+      ...previousState,
+      disclaimerModalOpen: true,
+    }));
+  };
+
+  handleDisclaimerModalBlur = () => {
+    this.setState(previousState => ({
+      ...previousState,
+      disclaimerModalOpen: false,
+    }));
+  };
+
   get activeDegreeTitle() {
     const activeDegree = this.state.activeDegree;
     if (!activeDegree) return '';
@@ -210,7 +226,7 @@ export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
         <Header>
           <HeaderMain>
             <Major>{masteredDegree && masteredDegree.name}</Major>
-            <Disclaimer>
+            <Disclaimer onClick={this.handleDisclaimerClick}>
               <Underline>Disclaimer:</Underline> This page is <Underline>not</Underline> a degree
               audit and should not be treated like one.{' '}
               <ActionableText>Click here for more info.</ActionableText>
@@ -220,6 +236,7 @@ export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
             <Credits>
               {degree.completedCredits()}/{degree.totalCredits()} credits
             </Credits>
+            <Percentage>{degree.percentComplete()} complete</Percentage>
             <RequiredCredits
               onClick={this.handleCreditsRequiredClick}
               color={
@@ -230,7 +247,6 @@ export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
             >
               {degree.masteredDegree().minimumCredits} credits required
             </RequiredCredits>
-            <Percentage>{degree.percentComplete()} complete</Percentage>
             <ActionableText onClick={this.handleChangeDegree}>
               Click here to change degree!
             </ActionableText>
@@ -283,6 +299,7 @@ export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
           title={this.activeDegreeTitle}
           open={!!this.state.activeDegree}
           onBlurCancel={this.handleDegreeGroupModalBlur}
+          size="medium"
         >
           <DescriptionNonEdit dangerouslySetInnerHTML={{ __html: this.activeDegreeDescription }} />
         </Modal>
@@ -307,6 +324,31 @@ export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
               courses. In this case, you'll have to add courses that group so your total credit hour
               count equals or exceeds the required minimum credits for this degree.
             </Text>
+          </p>
+        </Modal>
+        <Modal
+          title="Disclaimer"
+          open={this.state.disclaimerModalOpen}
+          onBlurCancel={this.handleDisclaimerModalBlur}
+          size="medium"
+        >
+          <p>
+            <Text>
+              Though MPlan has <em>some</em> degree validation abilities, it is <strong>NOT</strong>{' '}
+              a degree audit and should not be treated as one. Furthermore, MPlan is{' '}
+              <strong>NOT</strong> a replacement other degree audits tools such as
+              DegreeWorks&trade;.
+            </Text>
+          </p>
+
+          <p>
+            <Text>
+              Please use this tool with cation and ask your advisor if you have any questions.
+            </Text>
+          </p>
+
+          <p>
+            <Text>Thank you and enjoy!</Text>
           </p>
         </Modal>
       </Container>

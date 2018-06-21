@@ -51,7 +51,7 @@ export class App extends Record.define({
         new MasteredDegree({
           _id: id,
           name: 'New degree',
-          descriptionHtml: 'Default description. Please change!',
+          descriptionHtml: 'No description provided.',
           minimumCredits: 120,
           published: false,
         }),

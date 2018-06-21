@@ -37,7 +37,7 @@ export class MasteredDegree extends Record.define({
         new MasteredDegreeGroup({
           _id: ObjectId(),
           name: 'New degree group',
-          descriptionHtml: 'Default description. Please change!',
+          descriptionHtml: 'No description provided.',
           creditMaximum: 6,
           creditMinimum: 6,
         }),
