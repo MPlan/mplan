@@ -166,7 +166,7 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
       : {};
     return {
       rearrange: { text: 'Reorder groups', icon: 'bars' },
-      add: { text: 'Add course', icon: 'plus', color: styles.blue },
+      add: { text: 'Edit courses', icon: 'edit', color: styles.blue },
       ...renameAction,
     } as { [key: string]: { text: any; icon: any; color?: any } };
   }

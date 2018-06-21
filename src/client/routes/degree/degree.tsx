@@ -219,7 +219,7 @@ export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
         </DegreeGroupContainer>
         <FloatingActionButton message="Add…" actions={fabActions} onAction={this.handleFab} />
         <CourseSearch
-          title={`Editing courses for ${currentDegreeGroup ? currentDegreeGroup.customName : ''}`}
+          title={`Editing courses for ${currentDegreeGroup ? currentDegreeGroup.name : ''}`}
           open={!!currentDegreeGroup}
           defaultCourses={currentDegreeGroup ? currentDegreeGroup.courses().toArray() : []}
           onCancel={this.props.onAddCourseModalClose}
