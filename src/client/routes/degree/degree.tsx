@@ -45,7 +45,14 @@ const Credits = styled(Text)`
   color: ${styles.textLight};
   font-weight: ${styles.bold};
   font-size: ${styles.space(1)};
+`;
+const RequiredCredits = styled(Text)`
+  font-weight: bold;
   margin-bottom: ${styles.space(-1)};
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
 `;
 const Percentage = styled(Text)`
   color: ${styles.textLight};
@@ -102,6 +109,7 @@ export interface DegreeProps {
 export interface DegreeState {
   majorModalOpen: boolean;
   activeDegree: Model.DegreeGroup | undefined;
+  requiredCreditsModalOpen: boolean;
 }
 
 export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
@@ -110,6 +118,7 @@ export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
     this.state = {
       majorModalOpen: false,
       activeDegree: undefined,
+      requiredCreditsModalOpen: false,
     };
   }
 
@@ -166,6 +175,20 @@ export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
     }));
   };
 
+  handleCreditsRequiredClick = () => {
+    this.setState(previousState => ({
+      ...previousState,
+      requiredCreditsModalOpen: true,
+    }));
+  };
+
+  handleCreditsRequiredBlur = () => {
+    this.setState(previousState => ({
+      ...previousState,
+      requiredCreditsModalOpen: false,
+    }));
+  };
+
   get activeDegreeTitle() {
     const activeDegree = this.state.activeDegree;
     if (!activeDegree) return '';
@@ -197,6 +220,16 @@ export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
             <Credits>
               {degree.completedCredits()}/{degree.totalCredits()} credits
             </Credits>
+            <RequiredCredits
+              onClick={this.handleCreditsRequiredClick}
+              color={
+                degree.totalCredits() < degree.masteredDegree().minimumCredits
+                  ? styles.danger
+                  : styles.info
+              }
+            >
+              {degree.masteredDegree().minimumCredits} credits required
+            </RequiredCredits>
             <Percentage>{degree.percentComplete()} complete</Percentage>
             <ActionableText onClick={this.handleChangeDegree}>
               Click here to change degree!
@@ -252,6 +285,29 @@ export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
           onBlurCancel={this.handleDegreeGroupModalBlur}
         >
           <DescriptionNonEdit dangerouslySetInnerHTML={{ __html: this.activeDegreeDescription }} />
+        </Modal>
+        <Modal
+          title="About Required Credits"
+          open={this.state.requiredCreditsModalOpen}
+          onBlurCancel={this.handleCreditsRequiredBlur}
+          size="medium"
+        >
+          <p>
+            <Text>
+              This degree requires you to have at least{' '}
+              <strong>{degree.masteredDegree().minimumCredits}</strong> credits in order to
+              graduate. When you first enroll in a degree program, you may have to add courses to to
+              this worksheet to reach this requirement.
+            </Text>
+          </p>
+
+          <p>
+            <Text>
+              For example, your advisor may have created an "Electives" group with no default
+              courses. In this case, you'll have to add courses that group so your total credit hour
+              count equals or exceeds the required minimum credits for this degree.
+            </Text>
+          </p>
         </Modal>
       </Container>
     );

@@ -44,9 +44,9 @@ const Card = styled<CardProps>(View)`
   box-shadow: ${styles.boxShadow(1)};
   max-width: 100vw;
   ${props => {
-    if (props.size === 'small') return 'min-width: 20rem;';
-    if (props.size === 'medium') return 'min-width: 30rem;';
-    if (props.size === 'large') return 'min-width: 50rem;';
+    if (props.size === 'small') return 'width: 20rem;';
+    if (props.size === 'medium') return 'width: 30rem;';
+    if (props.size === 'large') return 'width: 50rem;';
     return '';
   }};
   overflow: auto;
