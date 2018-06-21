@@ -223,11 +223,20 @@ export class Degree extends Record.define({
   }
 
   completedCredits(): number {
-    return 0;
+    return this.degreeGroups.reduce((completedCredits, group) => {
+      const courses = group.courses();
+      const completedCourses = group.completedCourseIds
+        .map(id => courses.find(course => course.id === id)!)
+        .filter(x => x);
+      const nextCredits = completedCourses
+        .map(course => course.credits || course.creditHours || 0)
+        .reduce((sum, next) => sum + next, 0);
+      return completedCredits + nextCredits;
+    }, 0);
   }
 
   percentComplete() {
-    return this.completedCredits() / this.totalCredits();
+    return (this.completedCredits() * 100 / this.totalCredits()).toFixed(2) + '%';
   }
 
   generatePlan(planOptions: PlanOptions) {

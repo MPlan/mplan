@@ -159,7 +159,7 @@ export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
             <Credits>
               {degree.completedCredits()}/{degree.totalCredits()} credits
             </Credits>
-            <Percentage>{degree.percentComplete().toFixed(2)}% complete</Percentage>
+            <Percentage>{degree.percentComplete()} complete</Percentage>
             <ActionableText onClick={this.handleChangeDegree}>Click here to change degree!</ActionableText>
           </HeaderRight>
         </Header>
