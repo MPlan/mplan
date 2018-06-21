@@ -1,9 +1,5 @@
 import * as Model from 'models';
-import { Timeline, TimelineProps } from './timeline';
-
-const scopeDefiner = (store: Model.App) => ({
-  plan: store.user.plan,
-});
+import { Timeline } from './timeline';
 
 const container = Model.store.connect({
   scopeTo: store => store.user.plan,

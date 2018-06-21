@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as Model from 'models';
-import { Dropzone, DropzoneProps, SortChange } from './dropzone';
+import { Dropzone, SortChange } from './dropzone';
 
 export interface DropzoneContainerProps<T> {
   id: string;
@@ -9,10 +9,6 @@ export interface DropzoneContainerProps<T> {
   render: (t: T) => JSX.Element;
   onChangeSort: (e: SortChange) => void;
 }
-
-const scopeDefiner = (store: Model.App) => ({
-  draggables: store.ui.draggables,
-});
 
 const Container = Model.store.connect({
   scopeTo: store => store.ui.draggables,

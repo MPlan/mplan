@@ -6,6 +6,7 @@ export interface DraggableContainerProps {
   dropzoneActive: boolean;
   elementIndex: number;
   id: string;
+  children?: JSX.Element;
 }
 
 const container = Model.store.connect({
@@ -19,6 +20,7 @@ const container = Model.store.connect({
       id: ownProps.id,
       selectedDraggableId: scope.selectedDraggableId,
       height: scope.height,
+      children: ownProps.children,
     };
   },
   mapDispatchToProps: dispatch => {

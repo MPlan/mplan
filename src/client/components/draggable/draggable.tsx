@@ -22,6 +22,7 @@ const ChildWrapperContainer = styled.div`
     opacity: 0;
   }
 `;
+
 class ChildWrapper extends React.PureComponent<
   React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> & {
     innerRef: any;
@@ -67,10 +68,10 @@ const Spacer = styled(Text)`
 `;
 
 export interface DraggableProps {
+  children: JSX.Element | undefined;
   id: string;
   elementIndex: number;
   dropzoneActive: boolean;
-  children?: JSX.Element;
   dragging: boolean;
   selectedDraggableId: string;
   closestElementId: string;
