@@ -237,9 +237,7 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
             {degreeGroup.customGroup ? (
               <Description>Custom Group</Description>
             ) : (
-              <ActionableText onClick={this.handleNameClick}>
-                Click here for description.
-              </ActionableText>
+              <ActionableText onClick={this.handleNameClick}>More info</ActionableText>
             )}
           </Header>
           <Card>

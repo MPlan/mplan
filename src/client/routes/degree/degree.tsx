@@ -296,7 +296,7 @@ export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
             <Text>
               This degree requires you to have at least{' '}
               <strong>{degree.masteredDegree().minimumCredits}</strong> credits in order to
-              graduate. When you first enroll in a degree program, you may have to add courses to to
+              graduate. When you first enroll in a degree program, you may have to add courses to
               this worksheet to reach this requirement.
             </Text>
           </p>
