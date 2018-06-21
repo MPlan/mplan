@@ -5,6 +5,7 @@ import { Ui } from './ui';
 import { Degree } from './degree';
 import { Plan } from './plan';
 import { MasteredDegree } from './mastered-degree';
+import { MasteredDegreeGroup } from './mastered-degree-group';
 import { pointer } from './pointer';
 import { CatalogUi } from './catalog-ui';
 import { DegreePage } from './degree-page';
@@ -20,6 +21,8 @@ export class App extends Record.define({
   degreePage: new DegreePage(),
   search: new Search(),
 }) {
+  static masteredDegreeGroupsMemo = new WeakMap<any, any>();
+
   get root(): App {
     return pointer.store.current();
   }
@@ -54,5 +57,29 @@ export class App extends Record.define({
         }),
       ),
     );
+  }
+
+  getMasteredDegreeGroup(masteredDegreeGroupId: string) {
+    const lookup = this.masteredDegreeGroupLookup();
+    return lookup[masteredDegreeGroupId] as MasteredDegreeGroup | undefined;
+  }
+
+  masteredDegreeGroupLookup(): { [key: string]: MasteredDegreeGroup } {
+    if (App.masteredDegreeGroupsMemo.has(this.masteredDegrees)) {
+      return App.masteredDegreeGroupsMemo.get(this.masteredDegrees);
+    }
+
+    const lookup = this.masteredDegrees.reduce(
+      (lookup, next) => {
+        return next.masteredDegreeGroups.reduce((lookup, group) => {
+          lookup[group.id] = group;
+          return lookup;
+        }, lookup);
+      },
+      {} as { [key: string]: MasteredDegreeGroup },
+    );
+    
+    App.masteredDegreeGroupsMemo.set(this.masteredDegrees, lookup);
+    return lookup;
   }
 }

@@ -264,8 +264,8 @@ export class Degree extends Record.define({
     return this.addDegreeGroup(
       new DegreeGroup({
         _id: ObjectId(),
-        name: 'New Degree Group',
-        description: 'Custom group',
+        customName: 'New Degree Group',
+        customDescription: 'Custom group',
       }),
     );
   }

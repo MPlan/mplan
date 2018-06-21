@@ -20,9 +20,6 @@ const Container = styled(View)`
 const Header = styled(View)`
   margin-bottom: ${styles.space(0)};
   color: ${styles.textLight};
-  & ${Text} {
-    color: ${styles.textLight};
-  }
 `;
 const NameAndCredits = styled(View)`
   flex-direction: row;
@@ -38,6 +35,7 @@ const Name = styled<NameProps>(Text as any)`
   &:hover {
     ${props => (props.editable ? 'text-decoration: underline;' : '')};
   }
+  color: ${styles.textLight};
 `;
 const NameForm = styled.form`
   margin-right: auto;
@@ -53,8 +51,11 @@ const NameInput = styled.input`
 `;
 const Credits = styled(Text)`
   margin-right: ${styles.space(-1)};
+  color: ${styles.textLight};
 `;
-const Description = styled(Text)``;
+const Description = styled(Text)`
+  color: ${styles.textLight};
+`;
 const Card = styled(View)`
   background-color: ${styles.white};
   padding: ${styles.space(0)};
@@ -87,18 +88,12 @@ export interface DegreeGroupProps {
   onDeleteCourse: (course: string | Model.Course) => void;
   onDeleteGroup: () => void;
   onCourseCompletedToggle: (course: string | Model.Course) => void;
+  onHeaderClick: () => void;
 }
 
 interface DegreeGroupState {
   editingName: boolean;
 }
-
-const groupActions = {
-  rearrange: { text: 'Rearrange', icon: 'bars' },
-  rename: { text: 'Rename', icon: 'pencil' },
-  add: { text: 'Add course', icon: 'plus', color: styles.blue },
-  delete: { text: 'Delete group', icon: 'trash', color: styles.red },
-};
 
 export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupState> {
   inputRef = React.createRef<HTMLInputElement>();
@@ -126,16 +121,20 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
 
   nameInputElement: HTMLInputElement | undefined;
 
-  handleRename = async () => {
-    this.setState(previousState => ({
-      ...previousState,
-      editingName: true,
-    }));
-    await wait(0);
-    if (!this.nameInputElement) return;
+  handleNameClick = async () => {
+    if (this.props.degreeGroup.renameable()) {
+      this.setState(previousState => ({
+        ...previousState,
+        editingName: true,
+      }));
+      await wait(0);
+      if (!this.nameInputElement) return;
 
-    this.nameInputElement.focus();
-    this.nameInputElement.select();
+      this.nameInputElement.focus();
+      this.nameInputElement.select();
+    } else {
+      this.props.onHeaderClick();
+    }
   };
 
   handleNameSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -158,12 +157,24 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
     }));
   };
 
-  handleGroupAction = (action: keyof typeof groupActions) => {
+  get groupActions() {
+    const renameAction = this.props.degreeGroup.renameable()
+      ? { rename: { text: 'Rename', icon: 'pencil' } }
+      : {};
+    return {
+      rearrange: { text: 'Rearrange', icon: 'bars' },
+      ...renameAction,
+      add: { text: 'Add course', icon: 'plus', color: styles.blue },
+      delete: { text: 'Delete group', icon: 'trash', color: styles.red },
+    } as { [key: string]: { text: any; icon: any; color?: any } };
+  }
+
+  handleGroupAction = (action: any) => {
     if (action === 'delete') {
       this.props.onDeleteGroup();
     }
     if (action === 'rename') {
-      this.handleRename();
+      this.handleNameClick();
     }
     if (action === 'add') {
       this.props.onAddCourse();
@@ -173,14 +184,15 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
   render() {
     const { degreeGroup } = this.props;
     const courses = degreeGroup.courses();
-    // TODO: fix logic here
     const creditHoursMin = courses.reduce(
       (creditHoursMin, next) =>
-        next instanceof Model.Course ? next.creditsMin || next.creditHoursMin || 0 : creditHoursMin,
+        (next instanceof Model.Course ? next.creditsMin || next.creditHoursMin || 0 : 0) +
+        creditHoursMin,
       0,
     );
     const creditHoursMax = courses.reduce(
-      (creditHoursMax, next) => (next instanceof Model.Course ? next.credits || next.creditHours || 0 : 0),
+      (creditHoursMax, next) =>
+        (next instanceof Model.Course ? next.credits || next.creditHours || 0 : 0) + creditHoursMax,
       0,
     );
 
@@ -188,7 +200,11 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
 
     return (
       <Container>
-        <RightClickMenu header={menuHeader} actions={groupActions} onAction={this.handleGroupAction}>
+        <RightClickMenu
+          header={menuHeader}
+          actions={this.groupActions}
+          onAction={this.handleGroupAction}
+        >
           <Header>
             <NameAndCredits>
               {this.state.editingName ? (
@@ -201,7 +217,7 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
                   />
                 </NameForm>
               ) : (
-                <Name onClick={this.handleRename} editable={true}>
+                <Name onClick={this.handleNameClick} editable={true}>
                   {degreeGroup.name}
                 </Name>
               )}
@@ -210,9 +226,19 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
                   ? `${creditHoursMin}`
                   : `${creditHoursMin} - ${creditHoursMax}`}&nbsp;credits
               </Credits>
-              <DropdownMenu header={menuHeader} actions={groupActions} onAction={this.handleGroupAction} />
+              <DropdownMenu
+                header={menuHeader}
+                actions={this.groupActions}
+                onAction={this.handleGroupAction}
+              />
             </NameAndCredits>
-            <Description>{degreeGroup.description}</Description>
+            {degreeGroup.customGroup ? (
+              <Description>Custom Group</Description>
+            ) : (
+              <ActionableText onClick={this.handleNameClick}>
+                Click here for description.
+              </ActionableText>
+            )}
           </Header>
           <Card>
             <CardHeaders>

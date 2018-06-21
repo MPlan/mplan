@@ -60,6 +60,12 @@ const FormMajor = styled.form`
   display: flex;
   flex-direction: column;
 `;
+const DescriptionNonEdit = styled(View)`
+  &,
+  & * {
+    font-family: ${styles.fontFamily};
+  }
+`;
 
 const fabActions = {
   group: {
@@ -95,12 +101,17 @@ export interface DegreeProps {
 
 export interface DegreeState {
   majorModalOpen: boolean;
+  activeDegree: Model.DegreeGroup | undefined;
 }
 
 export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
-  state = {
-    majorModalOpen: false,
-  };
+  constructor(props: DegreeProps) {
+    super(props);
+    this.state = {
+      majorModalOpen: false,
+      activeDegree: undefined,
+    };
+  }
 
   handleFab = (action: keyof typeof fabActions) => {
     if (action === 'group') {
@@ -141,6 +152,32 @@ export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
     this.props.onAddCourseModalClose();
   };
 
+  handleDegreeGroupHeaderClick(group: Model.DegreeGroup) {
+    this.setState(previousState => ({
+      ...previousState,
+      activeDegree: group,
+    }));
+  }
+
+  handleDegreeGroupModalBlur = () => {
+    this.setState(previousState => ({
+      ...previousState,
+      activeDegree: undefined,
+    }));
+  };
+
+  get activeDegreeTitle() {
+    const activeDegree = this.state.activeDegree;
+    if (!activeDegree) return '';
+    return activeDegree.name;
+  }
+
+  get activeDegreeDescription() {
+    const activeDegree = this.state.activeDegree;
+    if (!activeDegree) return '';
+    return activeDegree.descriptionHtml;
+  }
+
   render() {
     const currentDegreeGroup = this.props.currentDegreeGroup;
     const degree = this.props.degree;
@@ -151,8 +188,9 @@ export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
           <HeaderMain>
             <Major>{masteredDegree && masteredDegree.name}</Major>
             <Disclaimer>
-              <Underline>Disclaimer:</Underline> This page is <Underline>not</Underline> a degree audit and should not
-              be treated like one. <ActionableText>Click here for more info.</ActionableText>
+              <Underline>Disclaimer:</Underline> This page is <Underline>not</Underline> a degree
+              audit and should not be treated like one.{' '}
+              <ActionableText>Click here for more info.</ActionableText>
             </Disclaimer>
           </HeaderMain>
           <HeaderRight>
@@ -160,7 +198,9 @@ export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
               {degree.completedCredits()}/{degree.totalCredits()} credits
             </Credits>
             <Percentage>{degree.percentComplete()} complete</Percentage>
-            <ActionableText onClick={this.handleChangeDegree}>Click here to change degree!</ActionableText>
+            <ActionableText onClick={this.handleChangeDegree}>
+              Click here to change degree!
+            </ActionableText>
           </HeaderRight>
         </Header>
         <DegreeGroupContainer>
@@ -173,18 +213,23 @@ export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
               onDeleteCourse={course => this.props.onDeleteCourse(group, course)}
               onDeleteGroup={() => this.props.onDegreeGroupDelete(group)}
               onCourseCompletedToggle={course => this.props.onCourseCompletedToggle(group, course)}
+              onHeaderClick={() => this.handleDegreeGroupHeaderClick(group)}
             />
           ))}
         </DegreeGroupContainer>
         <FloatingActionButton message="Add…" actions={fabActions} onAction={this.handleFab} />
         <CourseSearch
-          title={`Editing courses for ${currentDegreeGroup ? currentDegreeGroup.name : ''}`}
+          title={`Editing courses for ${currentDegreeGroup ? currentDegreeGroup.customName : ''}`}
           open={!!currentDegreeGroup}
           defaultCourses={currentDegreeGroup ? currentDegreeGroup.courses().toArray() : []}
           onCancel={this.props.onAddCourseModalClose}
           onSaveCourses={this.handleSaveCourses}
         />
-        <Modal title="Pick a major!" open={this.state.majorModalOpen} onBlurCancel={this.handleMajorBlur}>
+        <Modal
+          title="Pick a major!"
+          open={this.state.majorModalOpen}
+          onBlurCancel={this.handleMajorBlur}
+        >
           <FormMajor onSubmit={this.handleMajorSubmit}>
             <select className="select-major">
               {this.props.masteredDegrees.map(degree => (
@@ -200,6 +245,13 @@ export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
               <button type="submit">select major</button>
             </div>
           </FormMajor>
+        </Modal>
+        <Modal
+          title={this.activeDegreeTitle}
+          open={!!this.state.activeDegree}
+          onBlurCancel={this.handleDegreeGroupModalBlur}
+        >
+          <DescriptionNonEdit dangerouslySetInnerHTML={{ __html: this.activeDegreeDescription }} />
         </Modal>
       </Container>
     );

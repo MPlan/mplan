@@ -32,7 +32,7 @@ const container = Model.store.connect({
       onDegreeGroupNameChange: (degreeGroup: Model.DegreeGroup, newName: string) => {
         dispatch(store => {
           const next = store.user.degree.updateDegreeGroup(degreeGroup, degreeGroup =>
-            degreeGroup.set('name', newName),
+            degreeGroup.set('customName', newName),
           );
           return Model.Degree.updateStore(store, next);
         });
@@ -121,7 +121,8 @@ const container = Model.store.connect({
               return degree.set('masteredDegreeId', majorId).addDegreeGroup(
                 new Model.DegreeGroup({
                   _id: Model.ObjectId(),
-                  name: masteredDegreeGroup.name,
+                  customName: 'Pre-made Group',
+                  masteredDegreeGroupId: masteredDegreeGroup.id,
                   _courseIds: masteredDegreeGroup.defaultIds,
                 }),
               );
