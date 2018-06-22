@@ -1,5 +1,6 @@
 import * as Model from 'models';
-import { Degree, DegreeProps } from './degree';
+import { Degree } from './degree';
+import { SortEnd } from 'react-sortable-hoc';
 
 const container = Model.store.connect({
   scopeTo: store => store,
@@ -147,8 +148,15 @@ const container = Model.store.connect({
         dispatch(store => {
           const next = degreeGroup.toggleCourseCompletion(course);
           return Model.DegreeGroup.updateStore(store, next);
-        })
-      }
+        });
+      },
+
+      onDegreeGroupCoursesReorder: (degreeGroup: Model.DegreeGroup, sortEnd: SortEnd) => {
+        dispatch(store => {
+          const next = degreeGroup.reorderCourses(sortEnd.oldIndex, sortEnd.newIndex);
+          return Model.DegreeGroup.updateStore(store, next);
+        });
+      },
     };
   },
 })(Degree);

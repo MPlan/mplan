@@ -89,4 +89,13 @@ export class DegreeGroup extends Record.define({
     }
     return this.update('completedCourseIds', completedCourseIds => completedCourseIds.push(id));
   }
+
+  reorderCourses(oldIndex: number, newIndex: number) {
+    const item = this._courseIds.get(oldIndex);
+    if (!item) return this;
+    const courseIdsWithout = this._courseIds.filter((_, index) => index !== oldIndex);
+    const newCourseIds = courseIdsWithout.insert(newIndex, item);
+
+    return this.set('_courseIds', newCourseIds);
+  }
 }
