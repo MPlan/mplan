@@ -5,7 +5,7 @@ export const Button = styled.button`
   color: ${styles.text};
   padding: ${styles.space(-1)} ${styles.space(0)};
   text-transform: uppercase;
-  background-color: transparent;
+  background-color: ${styles.whiteTer};
   border: none;
   outline: none;
   transition: all 200ms;
@@ -21,10 +21,10 @@ export const Button = styled.button`
   &:hover,
   &:focus {
     color: ${styles.textStrong} !important;
-    background-color: ${styles.whiteTer};
+    background-color: ${styles.grayLighter};
   }
   &:active {
     color: ${styles.textStrong} !important;
-    background-color: ${styles.grayLighter};
+    background-color: ${styles.grayLight};
   }
 `;
