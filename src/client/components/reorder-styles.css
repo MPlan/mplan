@@ -1,0 +1,12 @@
+.sortable-helper {
+  z-index: 1000;
+  box-shadow: 0 0.2rem 1.3rem 0 rgba(12, 0, 51, 0.2);
+  background-color: white;
+  cursor: -webkit-grabbing;
+  cursor: grabbing;
+}
+
+.sortable-helper:active {
+  cursor: -webkit-grabbing;
+  cursor: grabbing;
+}

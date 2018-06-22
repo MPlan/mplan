@@ -9,6 +9,8 @@ import { Modal } from 'components/modal';
 import styled from 'styled-components';
 import * as styles from 'styles';
 import { CourseSearch } from 'components/course-search';
+import { Reorder } from 'components/reorder';
+import { ReorderCourse } from './components/reorder-course';
 
 const Container = styled(View)`
   padding: ${styles.space(1)};
@@ -111,6 +113,7 @@ export interface DegreeState {
   activeDegree: Model.DegreeGroup | undefined;
   requiredCreditsModalOpen: boolean;
   disclaimerModalOpen: boolean;
+  activeReorderGroup: Model.DegreeGroup | undefined;
 }
 
 export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
@@ -121,8 +124,41 @@ export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
       activeDegree: undefined,
       requiredCreditsModalOpen: false,
       disclaimerModalOpen: false,
+      activeReorderGroup: undefined,
     };
   }
+
+  get activeDegreeTitle() {
+    const activeDegree = this.state.activeDegree;
+    if (!activeDegree) return '';
+    return activeDegree.name;
+  }
+
+  get activeDegreeDescription() {
+    const activeDegree = this.state.activeDegree;
+    if (!activeDegree) return '';
+    return activeDegree.descriptionHtml;
+  }
+
+  get reorderingCourses() {
+    return !!this.state.activeReorderGroup;
+  }
+
+  get reorderCoursesTitle() {
+    const activeDegree = this.state.activeReorderGroup;
+    if (!activeDegree) return '';
+    return `Reordering ${activeDegree.name}...`;
+  }
+
+  get activeReorderCourses() {
+    const activeReorderGroup = this.state.activeReorderGroup;
+    if (!activeReorderGroup) return [];
+    return activeReorderGroup.courses().toArray();
+  }
+
+  renderReorderCourse = (course: Model.Course) => {
+    return <ReorderCourse course={course} />;
+  };
 
   handleFab = (action: keyof typeof fabActions) => {
     if (action === 'group') {
@@ -205,17 +241,19 @@ export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
     }));
   };
 
-  get activeDegreeTitle() {
-    const activeDegree = this.state.activeDegree;
-    if (!activeDegree) return '';
-    return activeDegree.name;
+  handleReorderStart(degreeGroup: Model.DegreeGroup) {
+    this.setState(previousState => ({
+      ...previousState,
+      activeReorderGroup: degreeGroup,
+    }));
   }
 
-  get activeDegreeDescription() {
-    const activeDegree = this.state.activeDegree;
-    if (!activeDegree) return '';
-    return activeDegree.descriptionHtml;
-  }
+  handleReorderCoursesClose = () => {
+    this.setState(previousState => ({
+      ...previousState,
+      activeReorderGroup: undefined,
+    }));
+  };
 
   render() {
     const currentDegreeGroup = this.props.currentDegreeGroup;
@@ -263,6 +301,7 @@ export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
               onDeleteGroup={() => this.props.onDegreeGroupDelete(group)}
               onCourseCompletedToggle={course => this.props.onCourseCompletedToggle(group, course)}
               onHeaderClick={() => this.handleDegreeGroupHeaderClick(group)}
+              onReorderCoursesStart={() => this.handleReorderStart(group)}
             />
           ))}
         </DegreeGroupContainer>
@@ -351,6 +390,14 @@ export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
             <Text>Thank you and enjoy!</Text>
           </p>
         </Modal>
+        <Reorder
+          title={this.reorderCoursesTitle}
+          open={this.reorderingCourses}
+          elements={this.activeReorderCourses}
+          render={this.renderReorderCourse}
+          onClose={this.handleReorderCoursesClose}
+          onReorder={() => {}}
+        />
       </Container>
     );
   }

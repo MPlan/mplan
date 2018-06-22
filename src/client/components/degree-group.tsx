@@ -89,6 +89,7 @@ export interface DegreeGroupProps {
   onDeleteGroup: () => void;
   onCourseCompletedToggle: (course: string | Model.Course) => void;
   onHeaderClick: () => void;
+  onReorderCoursesStart: () => void;
 }
 
 interface DegreeGroupState {
@@ -174,11 +175,9 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
   handleGroupAction = (action: any) => {
     if (action === 'delete') {
       this.props.onDeleteGroup();
-    }
-    if (action === 'rename') {
+    } else if (action === 'rename') {
       this.handleNameClick();
-    }
-    if (action === 'add') {
+    } else if (action === 'add') {
       this.props.onAddCourse();
     }
   };
@@ -254,7 +253,7 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
                   key={course instanceof Model.Course ? course.id : course}
                   course={course}
                   onChange={() => this.props.onCourseCompletedToggle(course)}
-                  onRearrange={() => {}}
+                  onRearrange={() => this.props.onReorderCoursesStart()}
                   onDelete={() => this.props.onDeleteCourse(course)}
                 />
               ))}

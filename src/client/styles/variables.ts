@@ -26,6 +26,10 @@ export const base = 1;
 export const phi = 1.618;
 export const borderWidth = `${0.09}rem`;
 
+// SHADOWS
+export const grabbableShadow = '0 0.1rem 1rem 0 rgba(12, 0, 51, 0.15)';
+export const grabbableShadowActive = '0 0.2rem 1.3rem 0 rgba(12, 0, 51, 0.2)';
+
 // FONTS
 export const fontFamily = oneLine`
   -apple-system,
