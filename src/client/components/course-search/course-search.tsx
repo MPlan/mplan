@@ -61,6 +61,9 @@ const ButtonRow = styled(View)`
   flex-direction: row;
   justify-content: flex-end;
   flex-shrink: 0;
+  & ${Button} {
+    margin-left: ${styles.space(0)};
+  }
 `;
 
 export interface CourseSearchProps {
@@ -152,7 +155,7 @@ export class CourseSearch extends React.PureComponent<CourseSearchProps, CourseS
         <Container>
           <Split>
             <SearchHalf>
-              <Form>
+              <Form onSubmit={this.handleSubmit}>
                 <SearchLabel htmlFor={this.htmlForId}>Search for a course...</SearchLabel>
                 <Search
                   id={this.htmlForId}

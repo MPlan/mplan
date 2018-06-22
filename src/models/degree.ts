@@ -7,6 +7,7 @@ import { DegreeGroup } from './degree-group';
 import { Plan } from './plan';
 import { pointer } from './pointer';
 import { App } from './app';
+import { SortEnd } from 'react-sortable-hoc';
 
 export function printSchedule(schedule: Immutable.List<Immutable.Set<Course>>) {
   const totalCourses = schedule.reduce((total, semester) => total + semester.count(), 0);
@@ -236,7 +237,7 @@ export class Degree extends Record.define({
   }
 
   percentComplete() {
-    return (this.completedCredits() * 100 / this.totalCredits()).toFixed(2) + '%';
+    return ((this.completedCredits() * 100) / this.totalCredits()).toFixed(2) + '%';
   }
 
   generatePlan(planOptions: PlanOptions) {
@@ -289,6 +290,16 @@ export class Degree extends Record.define({
     return this.update('degreeGroups', groups => {
       const index = groups.findIndex(g => g.id === group.id);
       return groups.set(index, group);
+    });
+  }
+
+  reorderDegreeGroups({ oldIndex, newIndex }: SortEnd) {
+    const degreeGroup = this.degreeGroups.get(oldIndex);
+    if (!degreeGroup) return this;
+    return this.update('degreeGroups', degreeGroups => {
+      const degreeGroupsWithoutOld = degreeGroups.filter((_, index) => index !== oldIndex);
+      const degreeGroupWithNew = degreeGroupsWithoutOld.insert(newIndex, degreeGroup);
+      return degreeGroupWithNew;
     });
   }
 }

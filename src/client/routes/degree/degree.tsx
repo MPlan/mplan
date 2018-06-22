@@ -11,6 +11,7 @@ import * as styles from 'styles';
 import { CourseSearch } from 'components/course-search';
 import { Reorder } from 'components/reorder';
 import { ReorderCourse } from './components/reorder-course';
+import { ReorderDegreeGroup } from './components/reorder-degree-group';
 import { SortEnd } from 'react-sortable-hoc';
 
 const Container = styled(View)`
@@ -107,6 +108,7 @@ export interface DegreeProps {
   onAddDegreeGroup: () => void;
   onDegreeGroupCoursesReorder: (degreeGroup: Model.DegreeGroup, sortEnd: SortEnd) => void;
 
+  onDegreeGroupsReorder: (sortEnd: SortEnd) => void;
   onChangeMajor: (majorId: string) => void;
 }
 
@@ -116,6 +118,7 @@ export interface DegreeState {
   requiredCreditsModalOpen: boolean;
   disclaimerModalOpen: boolean;
   activeReorderGroupId: string | undefined;
+  reorderingGroups: boolean;
 }
 
 export class Degree extends React.Component<DegreeProps, DegreeState> {
@@ -127,6 +130,7 @@ export class Degree extends React.Component<DegreeProps, DegreeState> {
       requiredCreditsModalOpen: false,
       disclaimerModalOpen: false,
       activeReorderGroupId: undefined,
+      reorderingGroups: false,
     };
   }
 
@@ -166,6 +170,10 @@ export class Degree extends React.Component<DegreeProps, DegreeState> {
 
   renderReorderCourse = (course: Model.Course) => {
     return <ReorderCourse course={course} />;
+  };
+
+  renderReorderGroups = (degreeGroup: Model.DegreeGroup) => {
+    return <ReorderDegreeGroup degreeGroup={degreeGroup} />;
   };
 
   handleFab = (action: keyof typeof fabActions) => {
@@ -269,6 +277,20 @@ export class Degree extends React.Component<DegreeProps, DegreeState> {
     this.props.onDegreeGroupCoursesReorder(activeReorderGroup, e);
   };
 
+  handleGroupsReorderStart = () => {
+    this.setState(previousState => ({
+      ...previousState,
+      reorderingGroups: true,
+    }));
+  };
+
+  handleGroupsReorderClose = () => {
+    this.setState(previousState => ({
+      ...previousState,
+      reorderingGroups: false,
+    }));
+  };
+
   render() {
     const currentDegreeGroup = this.props.currentDegreeGroup;
     const degree = this.props.degree;
@@ -316,6 +338,7 @@ export class Degree extends React.Component<DegreeProps, DegreeState> {
               onCourseCompletedToggle={course => this.props.onCourseCompletedToggle(group, course)}
               onHeaderClick={() => this.handleDegreeGroupHeaderClick(group)}
               onReorderCoursesStart={() => this.handleReorderStart(group)}
+              onReorderGroupsStart={this.handleGroupsReorderStart}
             />
           ))}
         </DegreeGroupContainer>
@@ -411,6 +434,14 @@ export class Degree extends React.Component<DegreeProps, DegreeState> {
           render={this.renderReorderCourse}
           onClose={this.handleReorderCoursesClose}
           onReorder={this.handleCoursesReorder}
+        />
+        <Reorder
+          title="Reordering Degree Groups..."
+          open={this.state.reorderingGroups}
+          elements={this.props.degree.degreeGroups.toArray()}
+          render={this.renderReorderGroups}
+          onClose={this.handleGroupsReorderClose}
+          onReorder={this.props.onDegreeGroupsReorder}
         />
       </Container>
     );

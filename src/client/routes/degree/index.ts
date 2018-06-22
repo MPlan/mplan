@@ -157,6 +157,13 @@ const container = Model.store.connect({
           return Model.DegreeGroup.updateStore(store, next);
         });
       },
+
+      onDegreeGroupsReorder: (sortEnd: SortEnd) => {
+        dispatch(store => {
+          const next = store.user.degree.reorderDegreeGroups(sortEnd);
+          return Model.Degree.updateStore(store, next);
+        });
+      },
     };
   },
 })(Degree);

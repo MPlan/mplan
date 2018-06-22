@@ -90,6 +90,7 @@ export interface DegreeGroupProps {
   onCourseCompletedToggle: (course: string | Model.Course) => void;
   onHeaderClick: () => void;
   onReorderCoursesStart: () => void;
+  onReorderGroupsStart: () => void;
 }
 
 interface DegreeGroupState {
@@ -179,6 +180,8 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
       this.handleNameClick();
     } else if (action === 'add') {
       this.props.onAddCourse();
+    } else if (action === 'rearrange') {
+      this.props.onReorderGroupsStart();
     }
   };
 

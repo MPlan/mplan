@@ -9,12 +9,14 @@ import { Button } from 'components/button';
 
 const ListContainer = styled(View)`
   margin-bottom: ${styles.space(0)};
+  overflow: auto;
 `;
 const ButtonRow = styled(View)`
   flex-direction: row;
   justify-content: flex-end;
 `;
 const ItemWrapper = styled(View)`
+  flex: 0 0 auto;
   &:hover {
     box-shadow: ${styles.grabbableShadow};
     z-index: 100;
