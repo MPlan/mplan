@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as Model from 'models';
 import { View } from 'components/view';
 import { Text } from 'components/text';
+import { Page } from 'components/page';
 import { SequenceCourse, courseIdClassName } from 'components/sequence-course';
 import { ActionableText } from 'components/actionable-text';
 import { FloatingActionButton } from 'components/floating-action-button';
@@ -33,54 +34,31 @@ const GraphContainer = styled(View)`
     padding-right: 5rem;
   }
   position: relative;
-  overflow: auto;
   flex: 1;
   align-items: flex-start;
+  padding-bottom: ${styles.space(1)};
 `;
-
 const Level = styled(View)`
   margin-left: 5rem;
   min-width: 13rem;
   width: 13rem;
 `;
-
 const LevelCard = styled(View)`
   flex: 1;
-
   & > * {
     flex-shrink: 0;
     margin-top: auto;
     margin-bottom: ${styles.space(2)};
   }
-
   & > *:last-child {
     margin-bottom: auto;
   }
 `;
-
 const LevelHeader = styled(View)`
   margin: ${styles.space(0)};
   justify-content: flex-end;
   min-height: 4rem;
 `;
-
-const Header = styled(View)`
-  padding: ${styles.space(1)};
-  flex-direction: row;
-`;
-
-const HeaderMain = styled(View)`
-  flex: 1;
-  max-width: 50rem;
-`;
-
-const HeaderRight = styled(View)``;
-
-const SequenceContainer = styled(View)`
-  flex: 1;
-  overflow: auto;
-`;
-
 const SvgArrowContainer = styled(View)`
   position: absolute;
   top: 0;
@@ -89,7 +67,6 @@ const SvgArrowContainer = styled(View)`
   right: 0;
   z-index: -10;
 `;
-
 const GraphWrapper = styled(View)`
   flex-direction: row;
   position: relative;
@@ -368,36 +345,46 @@ export class Sequence extends React.PureComponent<SequenceProps, SequenceState> 
     return true;
   }
 
+  renderSubtitle = () => {
+    return (
+      <Text color={styles.textLight}>
+        This page includes every course and their prerequisites from the degree page.
+        <br /> Use this page to see what classes you have to take first.{' '}
+        <ActionableText>Click here for more info.</ActionableText>
+      </Text>
+    );
+  };
+
+  renderTitleLeft = () => {
+    return (
+      <View>
+        <label>
+          <Text>Compact mode?&nbsp;</Text>
+          <input
+            type="checkbox"
+            defaultChecked={this.state.compactMode}
+            onChange={this.handleCompactModeToggle}
+          />
+        </label>
+      </View>
+    );
+  };
+
   render() {
     const graphWidth = this.state.graphWrapperWidth;
     const graphHeight = this.state.graphWrapperHeight;
     const masteredDegree = this.props.degree.masteredDegree();
-    const masteredDegreeName = (masteredDegree && masteredDegree.name) || '';
     return (
-      <SequenceContainer onMouseMove={this.reflowTrigger}>
-        <Header>
-          <HeaderMain>
-            <Text strong extraLarge color={styles.textLight}>
-              {masteredDegreeName} Sequence
-            </Text>
-            <Text color={styles.textLight}>
-              This page includes every course and their prerequisites from the degree page. Use this
-              page to see what classes you have to take first.{' '}
-              <ActionableText>Click here for more info.</ActionableText>
-            </Text>
-          </HeaderMain>
-          <HeaderRight>
-            <label>
-              <Text>Compact mode?&nbsp;</Text>
-              <input
-                type="checkbox"
-                defaultChecked={this.state.compactMode}
-                onChange={this.handleCompactModeToggle}
-              />
-            </label>
-          </HeaderRight>
-        </Header>
-        <GraphContainer className="graph-container" onScroll={this.reflowTrigger}>
+      <Page
+        title={`${masteredDegree.name} Sequence`}
+        renderSubtitle={this.renderSubtitle}
+        renderTitleLeft={this.renderTitleLeft}
+      >
+        <GraphContainer
+          className="graph-container"
+          onScroll={this.reflowTrigger}
+          onMouseMove={this.reflowTrigger}
+        >
           <GraphWrapper className="graph-wrapper" innerRef={this.graphWrapperRef}>
             {this.props.degree.levels().map((level, levelIndex) => (
               <Level
@@ -498,7 +485,7 @@ export class Sequence extends React.PureComponent<SequenceProps, SequenceState> 
             },
           }}
         />
-      </SequenceContainer>
+      </Page>
     );
   }
 }

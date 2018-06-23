@@ -15,14 +15,15 @@ const TitleRow = styled(View)`
 `;
 const TitleContainer = styled(View)`
   flex: 1 1 auto;
+  margin-right: auto;
+  max-width: 50rem;
 `;
-const TitleLeftContainer = styled(View)``;
+const TitleLeftContainer = styled(View)`
+  margin-left: ${styles.space(1)};
+`;
 const Title = styled(Text)`
   font-size: ${styles.space(2)};
   font-weight: ${styles.bold};
-  color: ${styles.textLight};
-`;
-const Subtitle = styled(Text)`
   color: ${styles.textLight};
 `;
 const Body = styled(View)`
