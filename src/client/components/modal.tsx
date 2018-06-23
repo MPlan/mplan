@@ -40,7 +40,6 @@ interface CardProps extends ViewProps {
 }
 const Card = styled<CardProps>(View)`
   background-color: ${styles.white};
-  padding: ${styles.space(1)};
   box-shadow: ${styles.boxShadow(1)};
   max-width: 100vw;
   ${props => {
@@ -52,16 +51,24 @@ const Card = styled<CardProps>(View)`
   overflow: auto;
 `;
 const Title = styled(Text)`
+  margin-top: ${styles.space(1)};
+  padding: 0 ${styles.space(1)};
   font-size: ${styles.space(1)};
   font-weight: ${styles.bold};
-  margin-bottom: ${styles.space(-1)};
 `;
-const Body = styled(View)``;
+interface BodyProps extends ViewProps {
+  noPadding?: boolean;
+}
+const Body = styled<BodyProps>(View)`
+  ${props => (props.noPadding ? '' : `padding: 0 ${styles.space(1)}`)};
+  margin-bottom: ${styles.space(1)};
+`;
 
 interface ModalProps {
   open: boolean;
   title: string;
   size?: 'small' | 'medium' | 'large';
+  noPadding?: boolean;
   children?: any;
   onBlurCancel?: () => void;
 }
@@ -89,7 +96,7 @@ export class Modal extends React.PureComponent<ModalProps, {}> {
         <Content>
           <Card size={this.props.size}>
             <Title>{this.props.title}</Title>
-            <Body>{this.props.children}</Body>
+            <Body noPadding={this.props.noPadding}>{this.props.children}</Body>
           </Card>
         </Content>
       </Container>

@@ -10,10 +10,12 @@ import { Button } from 'components/button';
 const ListContainer = styled(View)`
   margin-bottom: ${styles.space(0)};
   overflow: auto;
+  padding: 0 ${styles.space(1)};
 `;
 const ButtonRow = styled(View)`
   flex-direction: row;
   justify-content: flex-end;
+  padding: 0 ${styles.space(1)};
 `;
 const ItemWrapper = styled(View)`
   flex: 0 0 auto;
@@ -63,6 +65,7 @@ export class Reorder<T> extends React.PureComponent<ReorderProps<T>> {
         title={this.props.title}
         open={this.props.open}
         onBlurCancel={this.props.onClose}
+        noPadding
       >
         <SortableList
           helperClass="sortable-helper"
