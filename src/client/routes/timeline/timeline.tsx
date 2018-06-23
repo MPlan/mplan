@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { View } from 'components/view';
 import { Text } from 'components/text';
+import { Page } from 'components/page';
 import { Semester } from './semester';
 import { FloatingActionButton } from 'components/floating-action-button';
 import { Button } from 'components/button';
@@ -21,15 +22,6 @@ const Content = styled(View)`
   position: relative;
   overflow: auto;
 `;
-const Header = styled(View)`
-  flex-direction: row;
-  margin-bottom: ${styles.space(1)};
-  margin: ${styles.space(1)};
-`;
-const HeaderMain = styled(View)`
-  flex: 1;
-`;
-const HeaderRight = styled(View)``;
 const SemestersContainer = styled(View)`
   flex: 1;
   flex-direction: row;
@@ -58,6 +50,7 @@ const Navigator = styled.div`
   justify-content: space-around;
   align-items: flex-end;
   position: relative;
+  flex: 0 0 auto;
 `;
 const NavigationLabel = styled(Text)`
   display: flex;
@@ -163,45 +156,54 @@ export class Timeline extends React.PureComponent<TimelineProps, TimelineState> 
     });
   };
 
+  renderSubtitle = () => {
+    return <Text color={styles.textLight}>Create your MPlan here.</Text>;
+  };
+
+  renderTitleLeft = () => {
+    return (
+      <View>
+        <Text strong color={styles.textLight}>
+          Expected Graduation:
+        </Text>
+        <Text strong large color={styles.textLight}>
+          April 2018
+        </Text>
+        <ActionableText onClick={this.handleGenerateClick}>Generate schedule...</ActionableText>
+      </View>
+    );
+  };
+
   render() {
     return (
       <Container>
         <Content>
-          <Header>
-            <HeaderMain>
-              <Text strong extraLarge color={styles.textLight}>
-                Timeline
-              </Text>
-              <Text color={styles.textLight}>Create your MPlan here.</Text>
-            </HeaderMain>
-            <HeaderRight>
-              <Text strong color={styles.textLight}>
-                Expected Graduation:
-              </Text>
-              <Text strong large color={styles.textLight}>
-                April 2018
-              </Text>
-              <ActionableText onClick={this.handleGenerateClick}>
-                Generate schedule...
-              </ActionableText>
-            </HeaderRight>
-          </Header>
-          <SemestersContainer className="semesters-container">
-            {this.props.semesters.map(semester => (
-              <Semester key={semester.id} semester={semester} />
-            ))}
-          </SemestersContainer>
-          <Navigator>
-            {this.props.semesters.map(semester => (
-              <NavigationLabel
-                key={semester.id}
-                onClick={() => this.handleNavigationClick(semester)}
-              >
-                {semester.shortName}
-              </NavigationLabel>
-            ))}
-          </Navigator>
-          <FloatingActionButton actions={actions} message="Add..." onAction={this.handleActions} />
+          <Page
+            title="Timeline"
+            renderSubtitle={this.renderSubtitle}
+            renderTitleLeft={this.renderTitleLeft}
+          >
+            <SemestersContainer className="semesters-container">
+              {this.props.semesters.map(semester => (
+                <Semester key={semester.id} semester={semester} />
+              ))}
+            </SemestersContainer>
+            <Navigator>
+              {this.props.semesters.map(semester => (
+                <NavigationLabel
+                  key={semester.id}
+                  onClick={() => this.handleNavigationClick(semester)}
+                >
+                  {semester.shortName}
+                </NavigationLabel>
+              ))}
+            </Navigator>
+            <FloatingActionButton
+              actions={actions}
+              message="Add..."
+              onAction={this.handleActions}
+            />
+          </Page>
         </Content>
         <Toolbox />
         <Modal
