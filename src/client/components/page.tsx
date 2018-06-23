@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import * as styles from 'styles';
-import { View } from 'components/view';
+import { View, ViewProps } from 'components/view';
 import { Text } from 'components/text';
 
 const Container = styled(View)`
@@ -26,8 +26,12 @@ const Title = styled(Text)`
   font-weight: ${styles.bold};
   color: ${styles.textLight};
 `;
-const Body = styled(View)`
+interface BodyProps extends ViewProps {
+  addPadding?: boolean;
+}
+const Body = styled<BodyProps>(View)`
   flex: 1 1 auto;
+  ${props => (props.addPadding ? `padding: 0 ${styles.space(1)};` : '')};
 `;
 
 interface PageProps {
@@ -35,6 +39,7 @@ interface PageProps {
   renderSubtitle?: React.ComponentType<any>;
   renderTitleLeft?: React.ComponentType<any>;
   children?: any;
+  addPadding?: boolean;
 }
 
 export class Page extends React.PureComponent<PageProps, any> {
@@ -54,7 +59,7 @@ export class Page extends React.PureComponent<PageProps, any> {
             </TitleLeftContainer>
           )}
         </TitleRow>
-        <Body>{this.props.children}</Body>
+        <Body addPadding={this.props.addPadding}>{this.props.children}</Body>
       </Container>
     );
   }
