@@ -6,7 +6,7 @@ import { Fa } from 'components/fa';
 import { Nav } from 'components/nav';
 import { Loading } from 'components/loading';
 import { Router, Switch, Route, Redirect, RouteComponentProps } from 'react-router';
-import { Routes } from './routes';
+import { Routes, BottomRoutes } from './routes';
 import * as styles from './styles';
 import { Auth } from './auth';
 import { Landing } from './routes/landing';
@@ -100,6 +100,9 @@ export function _AuthenticatedRoute(props: RouteComponentProps<any> & { loaded: 
         <Content>
           <Switch>
             {Routes.map(route => (
+              <Route key={route.path} path={route.path} component={route.component} />
+            ))}
+            {BottomRoutes.map(route => (
               <Route key={route.path} path={route.path} component={route.component} />
             ))}
             <Redirect from="/" to={Routes[0].path} />
