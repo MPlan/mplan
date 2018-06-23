@@ -17,9 +17,18 @@ export class Settings extends React.PureComponent<SettingsProps, SettingsState> 
       </View>
     );
   };
+
+  renderSubtitle = () => {
+    return <Text>Change settings here</Text>;
+  };
+
   render() {
     return (
-      <Page title="Settings" subtitle="Change settings here" renderTitleLeft={this.renderTitleLeft}>
+      <Page
+        title="Settings"
+        renderSubtitle={this.renderSubtitle}
+        renderTitleLeft={this.renderTitleLeft}
+      >
         <View>
           <Text extraLarge>Something</Text>
         </View>

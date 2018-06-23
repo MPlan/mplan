@@ -31,7 +31,7 @@ const Body = styled(View)`
 
 interface PageProps {
   title: string;
-  subtitle: string;
+  renderSubtitle?: React.ComponentType<any>;
   renderTitleLeft?: React.ComponentType<any>;
   children?: any;
 }
@@ -39,12 +39,13 @@ interface PageProps {
 export class Page extends React.PureComponent<PageProps, any> {
   render() {
     const TitleLeft = this.props.renderTitleLeft;
+    const Subtitle = this.props.renderSubtitle;
     return (
       <Container>
         <TitleRow>
           <TitleContainer>
             <Title>{this.props.title}</Title>
-            <Subtitle>{this.props.subtitle}</Subtitle>
+            {Subtitle && <Subtitle />}
           </TitleContainer>
           {TitleLeft && (
             <TitleLeftContainer>

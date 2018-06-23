@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as Model from 'models';
 import { View } from 'components/view';
 import { Text } from 'components/text';
+import { Page } from 'components/page';
 import { ActionableText } from 'components/actionable-text';
 import { FloatingActionButton } from 'components/floating-action-button';
 import { DegreeGroup } from 'components/degree-group';
@@ -16,27 +17,7 @@ import { SortEnd } from 'react-sortable-hoc';
 
 const Container = styled(View)`
   padding: ${styles.space(1)};
-  overflow-x: hidden;
-  overflow-y: auto;
-  flex: 1;
-`;
-const Header = styled(View)`
-  flex-direction: row;
-  align-items: baseline;
-  margin-bottom: ${styles.space(1)};
-  flex-shrink: 0;
-`;
-const HeaderMain = styled(View)`
-  flex: 1;
-`;
-const HeaderRight = styled(View)`
-  align-items: flex-end;
-`;
-const Major = styled(Text)`
-  font-size: ${styles.space(2)};
-  font-weight: ${styles.bold};
-  color: ${styles.textLight};
-  margin-bottom: ${styles.space(-1)};
+  flex: 1 1 auto;
 `;
 const Disclaimer = styled(Text)`
   color: ${styles.textLight};
@@ -291,159 +272,175 @@ export class Degree extends React.Component<DegreeProps, DegreeState> {
     }));
   };
 
+  renderSubtitle = () => {
+    return (
+      <Disclaimer onClick={this.handleDisclaimerClick}>
+        <Underline>Disclaimer:</Underline> This page is <Underline>not</Underline> a degree audit
+        and should not be treated like one.{' '}
+        <ActionableText>Click here for more info.</ActionableText>
+      </Disclaimer>
+    );
+  };
+
+  renderTitleLeft = () => {
+    const degree = this.props.degree;
+    return (
+      <View>
+        <Credits>
+          {degree.completedCredits()}/{degree.totalCredits()} credits
+        </Credits>
+        <Percentage>{degree.percentComplete()} complete</Percentage>
+        <RequiredCredits
+          onClick={this.handleCreditsRequiredClick}
+          color={
+            degree.totalCredits() < degree.masteredDegree().minimumCredits
+              ? styles.danger
+              : styles.info
+          }
+        >
+          {degree.masteredDegree().minimumCredits} credits required
+        </RequiredCredits>
+        <ActionableText onClick={this.handleChangeDegree}>
+          Click here to change degree!
+        </ActionableText>
+      </View>
+    );
+  };
+
   render() {
     const currentDegreeGroup = this.props.currentDegreeGroup;
     const degree = this.props.degree;
     const masteredDegree = degree.masteredDegree();
     return (
-      <Container>
-        <Header>
-          <HeaderMain>
-            <Major>{masteredDegree && masteredDegree.name}</Major>
-            <Disclaimer onClick={this.handleDisclaimerClick}>
-              <Underline>Disclaimer:</Underline> This page is <Underline>not</Underline> a degree
-              audit and should not be treated like one.{' '}
-              <ActionableText>Click here for more info.</ActionableText>
-            </Disclaimer>
-          </HeaderMain>
-          <HeaderRight>
-            <Credits>
-              {degree.completedCredits()}/{degree.totalCredits()} credits
-            </Credits>
-            <Percentage>{degree.percentComplete()} complete</Percentage>
-            <RequiredCredits
-              onClick={this.handleCreditsRequiredClick}
-              color={
-                degree.totalCredits() < degree.masteredDegree().minimumCredits
-                  ? styles.danger
-                  : styles.info
-              }
-            >
-              {degree.masteredDegree().minimumCredits} credits required
-            </RequiredCredits>
-            <ActionableText onClick={this.handleChangeDegree}>
-              Click here to change degree!
-            </ActionableText>
-          </HeaderRight>
-        </Header>
-        <DegreeGroupContainer>
-          {degree.degreeGroups.map(group => (
-            <DegreeGroup
-              key={group.id}
-              degreeGroup={group}
-              onNameChange={newName => this.props.onDegreeGroupNameChange(group, newName)}
-              onAddCourse={() => this.props.onAddCourseClick(group)}
-              onDeleteCourse={course => this.props.onDeleteCourse(group, course)}
-              onDeleteGroup={() => this.props.onDegreeGroupDelete(group)}
-              onCourseCompletedToggle={course => this.props.onCourseCompletedToggle(group, course)}
-              onHeaderClick={() => this.handleDegreeGroupHeaderClick(group)}
-              onReorderCoursesStart={() => this.handleReorderStart(group)}
-              onReorderGroupsStart={this.handleGroupsReorderStart}
+      <Page
+        title={degree.name}
+        renderSubtitle={this.renderSubtitle}
+        renderTitleLeft={this.renderTitleLeft}
+      >
+        <Container>
+          <DegreeGroupContainer>
+            {degree.degreeGroups.map(group => (
+              <DegreeGroup
+                key={group.id}
+                degreeGroup={group}
+                onNameChange={newName => this.props.onDegreeGroupNameChange(group, newName)}
+                onAddCourse={() => this.props.onAddCourseClick(group)}
+                onDeleteCourse={course => this.props.onDeleteCourse(group, course)}
+                onDeleteGroup={() => this.props.onDegreeGroupDelete(group)}
+                onCourseCompletedToggle={course =>
+                  this.props.onCourseCompletedToggle(group, course)
+                }
+                onHeaderClick={() => this.handleDegreeGroupHeaderClick(group)}
+                onReorderCoursesStart={() => this.handleReorderStart(group)}
+                onReorderGroupsStart={this.handleGroupsReorderStart}
+              />
+            ))}
+          </DegreeGroupContainer>
+          <FloatingActionButton message="Add…" actions={fabActions} onAction={this.handleFab} />
+          <CourseSearch
+            title={`Editing courses for ${currentDegreeGroup ? currentDegreeGroup.name : ''}`}
+            open={!!currentDegreeGroup}
+            defaultCourses={currentDegreeGroup ? currentDegreeGroup.courses().toArray() : []}
+            onCancel={this.props.onAddCourseModalClose}
+            onSaveCourses={this.handleSaveCourses}
+          />
+          <Modal
+            title="Pick a major!"
+            open={this.state.majorModalOpen}
+            onBlurCancel={this.handleMajorBlur}
+          >
+            <FormMajor onSubmit={this.handleMajorSubmit}>
+              <select className="select-major">
+                {this.props.masteredDegrees.map(degree => (
+                  <option key={degree.id} value={degree.id}>
+                    {degree.name}
+                  </option>
+                ))}
+              </select>
+              <div>
+                <button type="button" onClick={this.handleMajorBlur}>
+                  cancel
+                </button>
+                <button type="submit">select major</button>
+              </div>
+            </FormMajor>
+          </Modal>
+          <Modal
+            title={this.activeDegreeTitle}
+            open={!!this.state.activeDegree}
+            onBlurCancel={this.handleDegreeGroupModalBlur}
+            size="medium"
+          >
+            <DescriptionNonEdit
+              dangerouslySetInnerHTML={{ __html: this.activeDegreeDescription }}
             />
-          ))}
-        </DegreeGroupContainer>
-        <FloatingActionButton message="Add…" actions={fabActions} onAction={this.handleFab} />
-        <CourseSearch
-          title={`Editing courses for ${currentDegreeGroup ? currentDegreeGroup.name : ''}`}
-          open={!!currentDegreeGroup}
-          defaultCourses={currentDegreeGroup ? currentDegreeGroup.courses().toArray() : []}
-          onCancel={this.props.onAddCourseModalClose}
-          onSaveCourses={this.handleSaveCourses}
-        />
-        <Modal
-          title="Pick a major!"
-          open={this.state.majorModalOpen}
-          onBlurCancel={this.handleMajorBlur}
-        >
-          <FormMajor onSubmit={this.handleMajorSubmit}>
-            <select className="select-major">
-              {this.props.masteredDegrees.map(degree => (
-                <option key={degree.id} value={degree.id}>
-                  {degree.name}
-                </option>
-              ))}
-            </select>
-            <div>
-              <button type="button" onClick={this.handleMajorBlur}>
-                cancel
-              </button>
-              <button type="submit">select major</button>
-            </div>
-          </FormMajor>
-        </Modal>
-        <Modal
-          title={this.activeDegreeTitle}
-          open={!!this.state.activeDegree}
-          onBlurCancel={this.handleDegreeGroupModalBlur}
-          size="medium"
-        >
-          <DescriptionNonEdit dangerouslySetInnerHTML={{ __html: this.activeDegreeDescription }} />
-        </Modal>
-        <Modal
-          title="About Required Credits"
-          open={this.state.requiredCreditsModalOpen}
-          onBlurCancel={this.handleCreditsRequiredBlur}
-          size="medium"
-        >
-          <p>
-            <Text>
-              This degree requires you to have at least{' '}
-              <strong>{degree.masteredDegree().minimumCredits}</strong> credits in order to
-              graduate. When you first enroll in a degree program, you may have to add courses to
-              this worksheet to reach this requirement.
-            </Text>
-          </p>
+          </Modal>
+          <Modal
+            title="About Required Credits"
+            open={this.state.requiredCreditsModalOpen}
+            onBlurCancel={this.handleCreditsRequiredBlur}
+            size="medium"
+          >
+            <p>
+              <Text>
+                This degree requires you to have at least{' '}
+                <strong>{degree.masteredDegree().minimumCredits}</strong> credits in order to
+                graduate. When you first enroll in a degree program, you may have to add courses to
+                this worksheet to reach this requirement.
+              </Text>
+            </p>
 
-          <p>
-            <Text>
-              For example, your advisor may have created an "Electives" group with no default
-              courses. In this case, you'll have to add courses that group so your total credit hour
-              count equals or exceeds the required minimum credits for this degree.
-            </Text>
-          </p>
-        </Modal>
-        <Modal
-          title="Disclaimer"
-          open={this.state.disclaimerModalOpen}
-          onBlurCancel={this.handleDisclaimerModalBlur}
-          size="medium"
-        >
-          <p>
-            <Text>
-              Though MPlan has <em>some</em> degree validation abilities, it is <strong>NOT</strong>{' '}
-              a degree audit and should not be treated as one. Furthermore, MPlan is{' '}
-              <strong>NOT</strong> a replacement other degree audits tools such as
-              DegreeWorks&trade;.
-            </Text>
-          </p>
+            <p>
+              <Text>
+                For example, your advisor may have created an "Electives" group with no default
+                courses. In this case, you'll have to add courses that group so your total credit
+                hour count equals or exceeds the required minimum credits for this degree.
+              </Text>
+            </p>
+          </Modal>
+          <Modal
+            title="Disclaimer"
+            open={this.state.disclaimerModalOpen}
+            onBlurCancel={this.handleDisclaimerModalBlur}
+            size="medium"
+          >
+            <p>
+              <Text>
+                Though MPlan has <em>some</em> degree validation abilities, it is{' '}
+                <strong>NOT</strong> a degree audit and should not be treated as one. Furthermore,
+                MPlan is <strong>NOT</strong> a replacement other degree audits tools such as
+                DegreeWorks&trade;.
+              </Text>
+            </p>
 
-          <p>
-            <Text>
-              Please use this tool with cation and ask your advisor if you have any questions.
-            </Text>
-          </p>
+            <p>
+              <Text>
+                Please use this tool with cation and ask your advisor if you have any questions.
+              </Text>
+            </p>
 
-          <p>
-            <Text>Thank you and enjoy!</Text>
-          </p>
-        </Modal>
-        <Reorder
-          title={this.reorderCoursesTitle}
-          open={this.reorderingCourses}
-          elements={this.activeReorderCourses}
-          render={this.renderReorderCourse}
-          onClose={this.handleReorderCoursesClose}
-          onReorder={this.handleCoursesReorder}
-        />
-        <Reorder
-          title="Reordering Degree Groups..."
-          open={this.state.reorderingGroups}
-          elements={this.props.degree.degreeGroups.toArray()}
-          render={this.renderReorderGroups}
-          onClose={this.handleGroupsReorderClose}
-          onReorder={this.props.onDegreeGroupsReorder}
-        />
-      </Container>
+            <p>
+              <Text>Thank you and enjoy!</Text>
+            </p>
+          </Modal>
+          <Reorder
+            title={this.reorderCoursesTitle}
+            open={this.reorderingCourses}
+            elements={this.activeReorderCourses}
+            render={this.renderReorderCourse}
+            onClose={this.handleReorderCoursesClose}
+            onReorder={this.handleCoursesReorder}
+          />
+          <Reorder
+            title="Reordering Degree Groups..."
+            open={this.state.reorderingGroups}
+            elements={this.props.degree.degreeGroups.toArray()}
+            render={this.renderReorderGroups}
+            onClose={this.handleGroupsReorderClose}
+            onReorder={this.props.onDegreeGroupsReorder}
+          />
+        </Container>
+      </Page>
     );
   }
 }

@@ -124,6 +124,10 @@ export class Degree extends Record.define({
   static updateStore(store: App, newThis: Degree) {
     return store.update('user', user => user.set('degree', newThis));
   }
+  
+  get name() {
+    return this.masteredDegree().name || '';
+  }
 
   masteredDegree() {
     const masteredDegree = this.root.masteredDegrees.get(this.masteredDegreeId);
