@@ -119,7 +119,11 @@ async function fetchUser() {
   });
   if (response.status !== 200) {
     console.log('returning empty user');
-    return new Record.User().set('username', uniqueName);
+    return new Record.User({
+      _id: Record.ObjectId(),
+      username: uniqueName,
+      registerDate: Date.now(),
+    });
   }
   const user = Record.User.fromJS(await response.json());
   return user;
