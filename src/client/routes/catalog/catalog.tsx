@@ -8,7 +8,8 @@ import { Course } from './course';
 import * as styles from 'styles';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
-import { debounceTime } from 'rxjs/operators';
+import { Loading } from 'components/loading';
+import { debounceTime, tap } from 'rxjs/operators';
 
 const INPUT_DEBOUNCE_TIME = 250;
 
@@ -37,7 +38,6 @@ const SearchRow = styled(View)`
 `;
 const BigSearch = styled.input`
   flex: 1 1 auto;
-  padding: ${styles.space(0)};
   font-size: ${styles.space(2)};
   font-family: ${styles.fontFamily};
   font-weight: ${styles.bold};
@@ -53,10 +53,29 @@ const ClearSearch = styled(ActionableText)`
 const InfoRow = styled(View)`
   border-bottom: solid 1px ${styles.grayLighter};
   flex: 0 0 auto;
+  min-height: ${styles.space(0)};
 `;
 const Scrollable = styled(View)`
   flex: 1 1 auto;
   overflow: auto;
+`;
+const CenterMessage = styled(View)`
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+`;
+const Message = styled(Text)`
+  font-size: ${styles.space(2)};
+  font-weight: ${styles.bold};
+  color: ${styles.grayLight};
+  max-width: 20rem;
+  text-align: center;
+`;
+const MessageSub = styled(Text)`
+  font-size: ${styles.space(1)};
+  color: ${styles.grayLight};
+  max-width: 22rem;
+  text-align: center;
 `;
 const Header = styled(Text)`
   font-size: ${styles.space(1)};
@@ -78,6 +97,7 @@ interface CatalogState {
 export class Catalog extends React.PureComponent<CatalogProps, CatalogState> {
   search$ = new Subject<string>();
   searchSubscription: Subscription | undefined;
+  searching = false;
 
   constructor(props: CatalogProps) {
     super(props);
@@ -88,7 +108,15 @@ export class Catalog extends React.PureComponent<CatalogProps, CatalogState> {
 
   componentDidMount() {
     this.searchSubscription = this.search$
-      .pipe(debounceTime(INPUT_DEBOUNCE_TIME))
+      .pipe(
+        tap(() => {
+          this.searching = true;
+        }),
+        debounceTime(INPUT_DEBOUNCE_TIME),
+        tap(() => {
+          this.searching = false;
+        }),
+      )
       .subscribe(this.props.onSearch);
   }
 
@@ -96,6 +124,14 @@ export class Catalog extends React.PureComponent<CatalogProps, CatalogState> {
     if (this.searchSubscription) {
       this.searchSubscription.unsubscribe();
     }
+  }
+
+  get noSearch() {
+    return this.props.totalMatches <= 0 && this.state.searchValue === '';
+  }
+
+  get noResults() {
+    return this.props.totalMatches <= 0 && this.state.searchValue !== '' && !this.searching;
   }
 
   handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -130,16 +166,34 @@ export class Catalog extends React.PureComponent<CatalogProps, CatalogState> {
             <ClearSearch onClick={this.handleClearSearch}>Clear Search</ClearSearch>
           </SearchRow>
           <InfoRow>
-            <Text light>{this.props.totalMatches} results</Text>
+            {this.props.totalMatches ? <Text light>{this.props.totalMatches} results</Text> : null}
           </InfoRow>
           <Scrollable>
-            {this.props.searchResults.map(course => <Course key={course.id} course={course} />)}
-            <Text light>
-              Showing {this.props.searchResults.length} of {this.props.totalMatches} results.{' '}
-              {this.props.searchResults.length !== this.props.totalMatches
-                ? 'Refine your search to see more.'
-                : ''}
-            </Text>
+            {this.noSearch ? (
+              <CenterMessage>
+                <Message>Nothing here yet.</Message>
+                <MessageSub>
+                  Search for a course above and your results will display here.
+                </MessageSub>
+              </CenterMessage>
+            ) : this.noResults ? (
+              <CenterMessage>
+                <Message>Oh no!</Message>
+                <MessageSub>We couldn't find anything for "{this.state.searchValue}"</MessageSub>
+              </CenterMessage>
+            ) : this.searching ? (
+              <Loading />
+            ) : (
+              <React.Fragment>
+                {this.props.searchResults.map(course => <Course key={course.id} course={course} />)}
+                <Text light>
+                  Showing {this.props.searchResults.length} of {this.props.totalMatches} results.{' '}
+                  {this.props.searchResults.length !== this.props.totalMatches
+                    ? 'Refine your search to see more.'
+                    : ''}
+                </Text>
+              </React.Fragment>
+            )}
           </Scrollable>
         </Body>
       </Container>
