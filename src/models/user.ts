@@ -16,6 +16,7 @@ export class User
     lastLoginDate: 0,
     lastUpdateDate: 0,
     lastTermCode: '',
+    chosenDegree: false,
     plan: new Plan(),
     degree: new Degree(),
   })
@@ -34,6 +35,10 @@ export class User
 
   updatePlan(updater: (plan: Plan) => Plan) {
     return this.update('plan', updater);
+  }
+
+  resetDegree() {
+    return this.set('degree', new Degree()).set('chosenDegree', false);
   }
 
   // TODO

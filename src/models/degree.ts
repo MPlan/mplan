@@ -8,6 +8,14 @@ import { Plan } from './plan';
 import { pointer } from './pointer';
 import { App } from './app';
 import { SortEnd } from 'react-sortable-hoc';
+import { MasteredDegree } from './mastered-degree';
+
+const emptyDegreeId = '5b2f1c7d2889270190a73af8'
+const emptyDegree = new MasteredDegree({
+  name: 'Custom Degree',
+  descriptionHtml: 'Custom Degree',
+  _id: ObjectId(emptyDegreeId),
+});
 
 export function printSchedule(schedule: Immutable.List<Immutable.Set<Course>>) {
   const totalCourses = schedule.reduce((total, semester) => total + semester.count(), 0);
@@ -110,7 +118,7 @@ export function generatePlans(degree: Degree, options: PlanOptions) {
 }
 
 export class Degree extends Record.define({
-  masteredDegreeId: '',
+  masteredDegreeId: emptyDegreeId,
   degreeGroups: Record.ListOf(DegreeGroup),
 }) {
   static preferredCoursesMemo = new Map<any, any>();
@@ -124,15 +132,14 @@ export class Degree extends Record.define({
   static updateStore(store: App, newThis: Degree) {
     return store.update('user', user => user.set('degree', newThis));
   }
-  
+
   get name() {
     return this.masteredDegree().name || '';
   }
 
   masteredDegree() {
     const masteredDegree = this.root.masteredDegrees.get(this.masteredDegreeId);
-    if (!masteredDegree)
-      throw new Error(`could not find mastered degree with id: "${this.masteredDegreeId}"`);
+    if (!masteredDegree) return emptyDegree;
     return masteredDegree;
   }
 

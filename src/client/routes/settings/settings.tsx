@@ -39,6 +39,7 @@ interface SettingsProps {
   lastLoginDate: number;
   lastUpdateDate: number;
   degreeName: string;
+  onResetDegree: () => void;
 }
 
 export class Settings extends React.PureComponent<SettingsProps, {}> {
@@ -144,7 +145,7 @@ export class Settings extends React.PureComponent<SettingsProps, {}> {
           `}
           confirmText="Yes, reset it"
           cancelText="No, don't reset it"
-          onConfirm={() => {}}
+          onConfirm={this.props.onResetDegree}
         />
       </Page>
     );
