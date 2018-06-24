@@ -20,13 +20,13 @@ const SimpleNameAndCredits = styled(View)`
 `;
 const SimpleName = styled(Text)`
   font-weight: bold;
+  min-width: 5rem;
+  margin-right: ${styles.space(-1)};
 `;
 const NonCourseName = styled(Text)`
   margin-right: auto;
 `;
-const Credits = styled(Text)`
-  margin-left: 2rem;
-`;
+const Credits = styled(Text)``;
 const NameAndCredits = styled(View)`
   flex: 1;
 `;

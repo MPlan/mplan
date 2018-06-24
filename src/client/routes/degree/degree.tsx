@@ -46,7 +46,6 @@ const DegreeGroupContainer = styled(View)`
   flex: 1;
   flex-wrap: wrap;
   flex-direction: row;
-  margin-right: -${styles.space(2)};
 `;
 const FormMajor = styled.form`
   display: flex;
@@ -316,8 +315,8 @@ export class Degree extends React.Component<DegreeProps, DegreeState> {
         title={degree.name}
         renderSubtitle={this.renderSubtitle}
         renderTitleLeft={this.renderTitleLeft}
+        addPadding
       >
-        <Container>
           <DegreeGroupContainer>
             {degree.degreeGroups.map(group => (
               <DegreeGroup
@@ -393,7 +392,7 @@ export class Degree extends React.Component<DegreeProps, DegreeState> {
             <p>
               <Text>
                 For example, your advisor may have created an "Electives" group with no default
-                courses. In this case, you'll have to add courses that group so your total credit
+                courses. In this case, you'll have to add courses to that group so your total credit
                 hour count equals or exceeds the required minimum credits for this degree.
               </Text>
             </p>
@@ -408,14 +407,14 @@ export class Degree extends React.Component<DegreeProps, DegreeState> {
               <Text>
                 Though MPlan has <em>some</em> degree validation abilities, it is{' '}
                 <strong>NOT</strong> a degree audit and should not be treated as one. Furthermore,
-                MPlan is <strong>NOT</strong> a replacement other degree audits tools such as
+                MPlan is <strong>NOT</strong> a replacement for other degree audit tools such as
                 DegreeWorks&trade;.
               </Text>
             </p>
 
             <p>
               <Text>
-                Please use this tool with cation and ask your advisor if you have any questions.
+                Please use this tool with caution and ask your advisor if you have any questions.
               </Text>
             </p>
 
@@ -439,7 +438,6 @@ export class Degree extends React.Component<DegreeProps, DegreeState> {
             onClose={this.handleGroupsReorderClose}
             onReorder={this.props.onDegreeGroupsReorder}
           />
-        </Container>
       </Page>
     );
   }

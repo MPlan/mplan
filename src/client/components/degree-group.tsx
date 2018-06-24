@@ -12,8 +12,8 @@ import { wait, shallowEqualIgnoringFunctions } from 'utilities/utilities';
 import { activateOnEdit, selectTextFromInputRef } from 'utilities/refs';
 
 const Container = styled(View)`
-  max-width: 25rem;
-  width: 25rem;
+  max-width: 24rem;
+  width: 24rem;
   margin-right: ${styles.space(2)};
   margin-bottom: ${styles.space(2)};
 `;

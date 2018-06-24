@@ -5,7 +5,7 @@ import { store } from '../../models/store';
 export { store };
 import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs/Observer';
-import { map, distinct, debounceTime, share } from 'rxjs/operators';
+import { map, distinct, debounceTime, share, distinctUntilChanged } from 'rxjs/operators';
 import { Auth } from '../auth';
 
 export * from '../../models';
@@ -17,7 +17,10 @@ const user$ = Observable.create((observer: Observer<Record.App>) => {
 }).pipe(
   share(),
   map((store: Record.App) => store.user),
-  distinct(),
+  distinctUntilChanged((a: Record.User, b: Record.User) => {
+    // ignores the last update date
+    return a.set('lastUpdateDate', 0).equals(b.set('lastUpdateDate', 0));
+  }),
 ) as Observable<Record.User>;
 
 user$.pipe(debounceTime(300)).subscribe(user => {
@@ -34,6 +37,10 @@ user$.pipe(debounceTime(3000)).subscribe(async user => {
       'Content-Type': 'application/json',
     }),
     body: JSON.stringify(user.toJS()),
+  });
+  Record.store.sendUpdate(store => {
+    const next = store.user.set('lastUpdateDate', Date.now());
+    return Record.User.updateStore(store, next);
   });
   console.log('finished sending');
 });
