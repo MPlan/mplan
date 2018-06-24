@@ -55,6 +55,7 @@ const Title = styled(Text)`
   padding: 0 ${styles.space(1)};
   font-size: ${styles.space(1)};
   font-weight: ${styles.bold};
+  margin-bottom: ${styles.space(-1)};
 `;
 interface BodyProps extends ViewProps {
   noPadding?: boolean;

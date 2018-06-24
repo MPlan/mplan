@@ -173,6 +173,8 @@ export function encode(obj: { [key: string]: string }) {
 
 export function shallowEqual(a: any, b: any) {
   if (a === b) return true;
+  if (!a) return false;
+  if (!b) return false;
   const aKeys = Object.keys(a);
   const bKeys = Object.keys(b);
   if (aKeys.length !== bKeys.length) return false;
@@ -187,6 +189,8 @@ export function shallowEqual(a: any, b: any) {
 
 export function shallowEqualIgnoringFunctions(a: any, b: any) {
   if (a === b) return true;
+  if (!a) return false;
+  if (!b) return false;
   const aKeys = Object.keys(a);
   const bKeys = Object.keys(b);
 

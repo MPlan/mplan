@@ -1,5 +1,6 @@
 import styled from 'styled-components';
-import * as styles from '../styles';
+import * as styles from 'styles';
+import { darken } from 'polished';
 
 export const Button = styled.button`
   color: ${styles.text};
@@ -26,5 +27,24 @@ export const Button = styled.button`
   &:active {
     color: ${styles.textStrong} !important;
     background-color: ${styles.grayLight};
+  }
+`;
+
+export const DangerButton = styled(Button)`
+  color: ${styles.whiteTer};
+  background-color: ${styles.danger};
+  & * {
+    color: ${styles.whiteTer} !important;
+  }
+
+  &:hover,
+  &:focus {
+    color: ${styles.white} !important;
+    background-color: ${darken(0.15, styles.danger)};
+  }
+
+  &:active {
+    color: ${styles.white} !important;
+    background-color: ${darken(0.2, styles.danger)};
   }
 `;

@@ -6,10 +6,15 @@ import { Fa } from 'components/fa';
 import { Text } from 'components/text';
 import { Page } from 'components/page';
 import { Button } from 'components/button';
+import { createAreYouSure } from 'components/are-you-sure';
 import { Block } from './block';
 import { KeyValue } from './key-value';
 import { Auth } from '../../auth';
 import * as moment from 'moment';
+import { oneLine } from 'common-tags';
+import * as download from 'downloadjs';
+
+const AreYouSure = createAreYouSure();
 
 const Row = styled(View)`
   flex-direction: row;
@@ -17,7 +22,7 @@ const Row = styled(View)`
 const SignOut = styled(Fa)`
   margin-right: ${styles.space(-1)};
 `;
-const ResetDegree = styled(Text)`
+const Description = styled(Text)`
   margin-bottom: ${styles.space(-1)};
 `;
 const Disclaimer = styled(Text)`
@@ -26,7 +31,7 @@ const Disclaimer = styled(Text)`
 `;
 const Divider = styled(View)`
   border-bottom: solid 1px ${styles.grayLighter};
-  margin-bottom: ${styles.space(-1)};
+  margin: ${styles.space(-1)} 0;
 `;
 
 interface SettingsProps {
@@ -45,13 +50,34 @@ export class Settings extends React.PureComponent<SettingsProps, {}> {
     Auth.logout();
   };
 
+  handleDownloadUser = async () => {
+    const token = await Auth.token();
+    const response = await fetch(`/api/users/${Auth.username()}`, {
+      headers: new Headers({
+        Authorization: `Bearer ${token}`,
+      }),
+    });
+    const blob = await response.blob();
+    download(blob, `${Auth.username()}.json`);
+  };
+
+  handleDownloadCatalog = async () => {
+    const token = await Auth.token();
+    const response = await fetch(`/api/catalog`, {
+      headers: new Headers({
+        Authorization: `Bearer ${token}`,
+      }),
+    });
+    const blob = await response.blob();
+    download(blob, 'catalog.json');
+  };
+
   render() {
     return (
       <Page title="Settings" renderSubtitle={this.renderSubtitle} addPadding>
         <Block title="User Info">
           <KeyValue title="Username" value={Auth.userDisplayName()} />
           <KeyValue title="Register Date" value={moment(this.props.registerDate).calendar()} />
-          <KeyValue title="Last Login Date" value={moment(this.props.lastLoginDate).calendar()} />
           <KeyValue title="Last Update Date" value={moment(this.props.lastUpdateDate).calendar()} />
         </Block>
         <Block title="Logout of MPlan">
@@ -64,15 +90,39 @@ export class Settings extends React.PureComponent<SettingsProps, {}> {
         <Block title="Degree Settings">
           <KeyValue title="Current Degree Program" value={this.props.degreeName} />
           <Divider />
-          <ResetDegree>If you wish to change your degree, you may reset it. </ResetDegree>
+          <Description>If you wish to change your degree, you may reset it. </Description>
           <Disclaimer>
             Resetting your degree will remove all courses from the degree worksheet. This action
             cannot be undone.
           </Disclaimer>
           <Row>
-            <Button>Reset Degree</Button>
+            <AreYouSure.Button>Reset Degree</AreYouSure.Button>
           </Row>
         </Block>
+        <Block title="Download Data">
+          <Description>
+            You can download all your user data to a single <code>.json</code> file. This file will
+            include all the data we have on you.
+          </Description>
+          <Row>
+            <Button onClick={this.handleDownloadUser}>Download User Data</Button>
+          </Row>
+          <Divider />
+          <Description>You can also download a copy of catalog this system uses.</Description>
+          <Row>
+            <Button onClick={this.handleDownloadCatalog}>Download Catalog</Button>
+          </Row>
+        </Block>
+        <AreYouSure.Modal
+          title="Are you sure you want to reset your degree?"
+          description={oneLine`
+            Resetting your degree will remove all courses from the degree worksheet and sequence
+            page. This action cannot be undone.
+          `}
+          confirmText="Yes, reset it"
+          cancelText="No, don't reset it"
+          onConfirm={() => {}}
+        />
       </Page>
     );
   }

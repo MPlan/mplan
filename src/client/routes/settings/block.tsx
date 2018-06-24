@@ -8,6 +8,7 @@ import { Text } from 'components/text';
 const Container = styled(View)`
   margin-bottom: ${styles.space(0)};
   max-width: 30rem;
+  flex: 0 0 auto;
 `;
 const Title = styled(Text)`
   color: ${styles.textLight};
