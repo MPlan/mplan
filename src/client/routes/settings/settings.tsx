@@ -72,6 +72,17 @@ export class Settings extends React.PureComponent<SettingsProps, {}> {
     download(blob, 'catalog.json');
   };
 
+  handleDownloadDegrees = async () => {
+    const token = await Auth.token();
+    const response = await fetch(`/api/degrees`, {
+      headers: new Headers({
+        Authorization: `Bearer ${token}`,
+      }),
+    });
+    const blob = await response.blob();
+    download(blob, 'degrees.json');
+  };
+
   render() {
     return (
       <Page title="Settings" renderSubtitle={this.renderSubtitle} addPadding>
@@ -108,9 +119,21 @@ export class Settings extends React.PureComponent<SettingsProps, {}> {
             <Button onClick={this.handleDownloadUser}>Download User Data</Button>
           </Row>
           <Divider />
-          <Description>You can also download a copy of catalog this system uses.</Description>
+          <Description>
+            You can also download a copy of catalog this system uses. This catalog contains all the
+            course data we have available in the system including historical course offerings.
+          </Description>
           <Row>
             <Button onClick={this.handleDownloadCatalog}>Download Catalog</Button>
+          </Row>
+          <Divider />
+          <Description>
+            You may also need a copy of the mastered degree programs created in this system by your
+            system administrators/university advisors. You can join this data with your user data to
+            get the names and validation for mastered degree.
+          </Description>
+          <Row>
+            <Button onClick={this.handleDownloadDegrees}>Download Mastered Degrees</Button>
           </Row>
         </Block>
         <AreYouSure.Modal
