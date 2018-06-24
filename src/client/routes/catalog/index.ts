@@ -3,19 +3,21 @@ import * as Record from 'recordize/record';
 import { Catalog, CatalogProps } from './catalog';
 
 const container = Model.store.connect({
-  scopeTo: store => store,
-  mapStateToProps: (scope: Model.App) => {
+  scopeTo: store => store.search,
+  mapStateToProps: (search: Model.Search) => {
     return {
-      searchResults: [] as any[],
+      searchResults: search.searchResults,
+      totalMatches: search.totalMatches,
     };
   },
   mapDispatchToProps: dispatch => {
     return {
-      onSearch: (query: string) =>
+      onSearch: (query: string) => {
         dispatch(store => {
-          const nextCatalogUi = store.catalogUi.search(query);
-          return Model.CatalogUi.updateStore(store, nextCatalogUi);
-        }),
+          const next = store.search.search(query, 50);
+          return Model.Search.updateStore(store, next);
+        });
+      },
     };
   },
 })(Catalog);

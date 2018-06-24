@@ -3,7 +3,8 @@ import * as Model from 'models';
 import styled from 'styled-components';
 import { View } from 'components/view';
 import { Text } from 'components/text';
-import { CatalogCourse } from 'components/catalog-course';
+import { ActionableText } from 'components/actionable-text';
+import { Course } from './course';
 import * as styles from 'styles';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
@@ -12,111 +13,135 @@ import { debounceTime } from 'rxjs/operators';
 const INPUT_DEBOUNCE_TIME = 250;
 
 const Container = styled(View)`
+  flex: 1 1 auto;
+  overflow: auto;
   flex-direction: row;
-  flex: 1;
 `;
-const Sidebar = styled(View)`
-  width: 16rem;
-  box-shadow: ${styles.boxShadow(0)};
+const Aside = styled(View)`
+  flex: 0 0 auto;
   background-color: ${styles.white};
-`;
-const SidebarHeader = styled(Text)`
-  font-size: ${styles.space(1)};
-  font-weight: ${styles.bold};
+  box-shadow: ${styles.boxShadow(0)};
+  min-width: 15rem;
   padding: ${styles.space(0)};
-  color: ${styles.textLight};
 `;
-const Content = styled(View)`
-  width: 50rem;
+const Body = styled(View)`
+  flex: 1 1 auto;
+  padding: ${styles.space(1)};
+  max-width: 60rem;
   margin: 0 auto;
-  & > * {
-    flex-shrink: 0;
-  }
 `;
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
+const SearchRow = styled(View)`
+  flex-direction: row;
+  align-items: flex-end;
+  flex: 0 0 auto;
 `;
-const SearchInput = styled.input`
-  font-family: ${styles.fontFamily};
+const BigSearch = styled.input`
+  flex: 1 1 auto;
   padding: ${styles.space(0)};
-  font-size: ${styles.space(1)};
+  font-size: ${styles.space(2)};
+  font-family: ${styles.fontFamily};
+  font-weight: ${styles.bold};
+  color: ${styles.textLight};
+  background-color: transparent;
   border: none;
   outline: none;
-  box-shadow: ${styles.boxShadow(0)};
-  margin-bottom: ${styles.space(1)};
 `;
-const SearchLabel = styled(Text)`
-  margin-bottom: ${styles.space(-1)};
-`;
-const CatalogHeader = styled(Text)`
-  margin-top: ${styles.space(0)};
+const ClearSearch = styled(ActionableText)`
   color: ${styles.textLight};
-  font-weight: ${styles.bold};
-  font-size: ${styles.space(2)};
-  margin-bottom: ${styles.space(0)};
+  margin-left: ${styles.space(0)};
 `;
-const Card = styled(View)`
-  flex: 1;
-  background-color: ${styles.white};
-  padding: ${styles.space(0)};
-  box-shadow: ${styles.boxShadow(0)};
+const InfoRow = styled(View)`
+  border-bottom: solid 1px ${styles.grayLighter};
+  flex: 0 0 auto;
+`;
+const Scrollable = styled(View)`
+  flex: 1 1 auto;
   overflow: auto;
-  & > * {
-    flex-shrink: 0;
-  }
+`;
+const Header = styled(Text)`
+  font-size: ${styles.space(1)};
+  font-weight: ${styles.bold};
+  margin-bottom: ${styles.space(-1)};
+  color: ${styles.textLight};
 `;
 
 export interface CatalogProps {
-  searchResults: any[];
   onSearch: (query: string) => void;
+  searchResults: Model.Course[];
+  totalMatches: number;
 }
 
-interface CatalogState {}
+interface CatalogState {
+  searchValue: string;
+}
 
-export class Catalog extends React.PureComponent<CatalogProps> {
-  searchInput$ = new Subject<string>();
-  subscription: Subscription | undefined;
+export class Catalog extends React.PureComponent<CatalogProps, CatalogState> {
+  search$ = new Subject<string>();
+  searchSubscription: Subscription | undefined;
+
+  constructor(props: CatalogProps) {
+    super(props);
+    this.state = {
+      searchValue: '',
+    };
+  }
 
   componentDidMount() {
-    this.subscription = this.searchInput$
+    this.searchSubscription = this.search$
       .pipe(debounceTime(INPUT_DEBOUNCE_TIME))
       .subscribe(this.props.onSearch);
   }
 
   componentWillUnmount() {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
+    if (this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
     }
   }
 
-  handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
+    const value = e.currentTarget.value;
+    this.setState(previousState => ({
+      ...previousState,
+      searchValue: value,
+    }));
+    this.search$.next(value);
   };
 
-  handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.currentTarget.value;
-    this.searchInput$.next(value);
+  handleClearSearch = () => {
+    this.props.onSearch('');
+    this.setState(previousState => ({
+      ...previousState,
+      searchValue: '',
+    }));
   };
 
   render() {
     return (
       <Container>
-        <Sidebar>
-          <SidebarHeader>Filters</SidebarHeader>
-        </Sidebar>
-        <Content>
-          <CatalogHeader>Catalog</CatalogHeader>
-          <Form onSubmit={this.handleSearchSubmit}>
-            <SearchLabel>Search for a course or use the filters on the left.</SearchLabel>
-            <SearchInput
-              type="text"
-              placeholder="e.g. MATH 115"
-              onChange={this.handleSearchInput}
+        <Body>
+          <SearchRow>
+            <BigSearch
+              type="search"
+              placeholder="Search for a course..."
+              value={this.state.searchValue}
+              onChange={this.handleSearch}
             />
-          </Form>
-          <Card>todo</Card>
-        </Content>
+            <ClearSearch onClick={this.handleClearSearch}>Clear Search</ClearSearch>
+          </SearchRow>
+          <InfoRow>
+            <Text light>{this.props.totalMatches} results</Text>
+          </InfoRow>
+          <Scrollable>
+            {this.props.searchResults.map(course => <Course key={course.id} course={course} />)}
+            <Text light>
+              Showing {this.props.searchResults.length} of {this.props.totalMatches} results.{' '}
+              {this.props.searchResults.length !== this.props.totalMatches
+                ? 'Refine your search to see more.'
+                : ''}
+            </Text>
+          </Scrollable>
+        </Body>
       </Container>
     );
   }
