@@ -16,6 +16,7 @@ const Container = styled(View)`
 `;
 const Summary = styled(View)`
   min-width: 12rem;
+  margin-right: ${styles.space(0)};
 `;
 const SimpleName = styled(Text)`
   font-weight: bold;

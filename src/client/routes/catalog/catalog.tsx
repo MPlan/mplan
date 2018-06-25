@@ -41,6 +41,7 @@ const BigSearch = styled.input`
   font-size: ${styles.space(2)};
   font-family: ${styles.fontFamily};
   font-weight: ${styles.bold};
+  margin-bottom: ${styles.space(-1)};
   color: ${styles.textLight};
   background-color: transparent;
   border: none;
@@ -166,7 +167,7 @@ export class Catalog extends React.PureComponent<CatalogProps, CatalogState> {
             <ClearSearch onClick={this.handleClearSearch}>Clear Search</ClearSearch>
           </SearchRow>
           <InfoRow>
-            {this.props.totalMatches ? <Text light>{this.props.totalMatches} results</Text> : null}
+            {!this.searching && !this.noSearch ? <Text light>{this.props.totalMatches} results</Text> : null}
           </InfoRow>
           <Scrollable>
             {this.noSearch ? (
