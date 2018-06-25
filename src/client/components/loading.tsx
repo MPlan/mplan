@@ -27,7 +27,6 @@ const LoadingText = styled(Text)`
   color: ${styles.grayLight};
 `;
 const LoadingSubText = styled(Text)`
-  margin-top: ${styles.space(-1)};
   font-size: ${styles.space(1)};
   color: ${styles.grayLight};
 `;

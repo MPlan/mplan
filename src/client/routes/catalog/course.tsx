@@ -75,6 +75,7 @@ export class Course extends React.PureComponent<CourseProps, CourseState> {
     const min = _min || _max;
     const max = _max || _min;
 
+    if (max === undefined) return '';
     if (min !== max) return `${min} - ${max} credit hours`;
     return `${max} credit hours`;
   }
