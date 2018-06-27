@@ -31,6 +31,7 @@ const Description = styled(View)``;
 
 interface CourseProps {
   course: Model.Course;
+  onClick: () => void;
 }
 interface CourseState {
   showMore: boolean;
@@ -97,7 +98,7 @@ export class Course extends React.PureComponent<CourseProps, CourseState> {
   render() {
     const { course } = this.props;
     return (
-      <Container>
+      <Container onClick={this.props.onClick}>
         <Summary>
           <SimpleName>{course.simpleName}</SimpleName>
           <FullName>{course.name}</FullName>
