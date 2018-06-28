@@ -6,6 +6,7 @@ import { Section } from './section';
 import { Catalog } from './catalog';
 import { pointer } from './pointer';
 import { App } from './app';
+import { flatten } from 'lodash';
 
 export function allCombinations(
   listsOfLists: Array<Immutable.Set<Immutable.Set<string | Course>>>,
@@ -116,6 +117,18 @@ export class Course
     return `${this.subjectCode} ${this.courseNumber}`;
   }
 
+  get creditHoursString() {
+    const _min = this.creditHoursMin;
+    const _max = this.creditHours;
+
+    const min = _min || _max;
+    const max = _max || _min;
+
+    if (max === undefined) return '';
+    if (min !== max) return `${min} - ${max} credit hours`;
+    return `${max} credit hours`;
+  }
+
   get creditsString() {
     const max = this.credits || this.creditHours || 0;
     const min = this.creditsMin || this.creditHoursMin || max;
@@ -137,6 +150,46 @@ export class Course
   static criticalMemo = new Map<any, any>();
   static priorityMemo = new Map<any, any>();
   static prerequisitesSatisfiedMemo = new Map<any, any>();
+  static taughtByMemo = new Map<any, any>();
+
+  historicallyTaughtBy(): string[] {
+    if (Course.taughtByMemo.has(this)) {
+      return Course.taughtByMemo.get(this);
+    }
+    const summerProfessors = flatten(
+      this.summerSections
+        .valueSeq()
+        .map(section => section.instructors)
+        .toArray(),
+    );
+
+    const winterProfessors = flatten(
+      this.winterSections
+        .valueSeq()
+        .map(section => section.instructors)
+        .toArray(),
+    );
+
+    const fallProfessors = flatten(
+      this.fallSections
+        .valueSeq()
+        .map(section => section.instructors)
+        .toArray(),
+    );
+
+    const professors = Object.keys(
+      [...summerProfessors, ...winterProfessors, ...fallProfessors].reduce(
+        (acc, professor) => {
+          acc[professor] = true;
+          return acc;
+        },
+        {} as { [key: string]: true },
+      ),
+    );
+
+    Course.taughtByMemo.set(this, professors);
+    return professors;
+  }
 
   priority(): number {
     const degree = this.root.user.degree;

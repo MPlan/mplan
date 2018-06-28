@@ -4,16 +4,40 @@ import styled from 'styled-components';
 import * as styles from 'styles';
 import { View } from 'components/view';
 import { Text } from 'components/text';
-import { Page } from 'components/page';
 import { Button } from 'components/button';
 import { Fa } from 'components/fa';
 import { history } from '../../app';
 
-const Container = styled(View)``;
+const Container = styled(View)`
+  margin: auto;
+  padding: ${styles.space(1)};
+  max-width: 30rem;
+`;
 const Row = styled(View)`
   flex-direction: row;
+  margin-bottom: ${styles.space(0)};
 `;
 const Icon = styled(Fa)`
+  margin-right: ${styles.space(-1)};
+`;
+const Header = styled(View)`
+  flex: 0 0 auto;
+  margin-bottom: ${styles.space(0)};
+`;
+const Title = styled(Text)`
+  flex: 0 0 auto;
+  color: ${styles.textLight};
+  font-weight: bold;
+  font-size: ${styles.space(3)};
+`;
+const FullName = styled(Text)`
+  flex: 0 0 auto;
+  color: ${styles.textLight};
+  font-weight: ${styles.bold};
+  font-size: ${styles.space(2)};
+`;
+const Key = styled(Text)`
+  font-weight: bold;
   margin-right: ${styles.space(-1)};
 `;
 
@@ -29,19 +53,33 @@ class CourseDetail extends React.PureComponent<CourseDetailProps, CourseDetailSt
   renderSubtitle = () => {
     const { course } = this.props;
     if (!course) return null;
-    return <Text>Course details for {course.name}</Text>;
+    return <Text color={styles.textLight}>Course details for {course.name}</Text>;
   };
   render() {
     const { course } = this.props;
     if (!course) return null;
     return (
-      <Page title={course.simpleName} renderSubtitle={this.renderSubtitle}>
+      <Container>
+        <Header>
+          <Title>{course.simpleName}</Title>
+          <FullName>{course.name}</FullName>
+        </Header>
+        <Row>
+          <Text>{course.creditHoursString}</Text>
+        </Row>
         <Row>
           <Button onClick={this.handleBackClick}>
             <Icon icon="arrowLeft" />Back
           </Button>
         </Row>
-      </Page>
+        <Row>
+          <Text>{course.description}</Text>
+        </Row>
+        <Row>
+          <Key>Previous instructors:</Key>
+          <Text>{course.historicallyTaughtBy().join(', ')}</Text>
+        </Row>
+      </Container>
     );
   }
 }

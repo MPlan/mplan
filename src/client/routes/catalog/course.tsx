@@ -68,19 +68,6 @@ export class Course extends React.PureComponent<CourseProps, CourseState> {
     return this.description !== this.shortDescription && this.state.showMore;
   }
 
-  get creditHours() {
-    const { course } = this.props;
-    const _min = course.creditHoursMin;
-    const _max = course.creditHours;
-
-    const min = _min || _max;
-    const max = _max || _min;
-
-    if (max === undefined) return '';
-    if (min !== max) return `${min} - ${max} credit hours`;
-    return `${max} credit hours`;
-  }
-
   handleShowMore = () => {
     this.setState(previousState => ({
       ...previousState,
@@ -102,7 +89,7 @@ export class Course extends React.PureComponent<CourseProps, CourseState> {
         <Summary>
           <SimpleName>{course.simpleName}</SimpleName>
           <FullName>{course.name}</FullName>
-          <CreditHours>{this.creditHours}</CreditHours>
+          <CreditHours>{course.creditHoursString}</CreditHours>
         </Summary>
         <Description>
           <Text>{this.activeDescription}</Text>
