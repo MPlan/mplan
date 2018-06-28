@@ -21,7 +21,6 @@ export async function getPublicKeyFromJwk() {
   return pem;
 }
 
-/** middleware that checks the auth using JWTs taken directly from auth0's docs */
 export async function checkJwts(req: Request, res: Response, next: NextFunction) {
   if (process.env.NODE_ENV !== 'production') {
     req.user = {
