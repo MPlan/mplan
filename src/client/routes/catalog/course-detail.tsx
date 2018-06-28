@@ -11,7 +11,7 @@ import { history } from '../../app';
 const Container = styled(View)`
   margin: auto;
   padding: ${styles.space(1)};
-  max-width: 30rem;
+  max-width: 40rem;
 `;
 const Row = styled(View)`
   flex-direction: row;
