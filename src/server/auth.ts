@@ -44,6 +44,7 @@ auth.post('/token', async (req, res) => {
       access_token: tokenResponse.access_token
     });
   } catch (e) {
+    console.error(e);
     res.status(HttpStatus.INTERNAL_SERVER_ERROR);
     res.send('Could not exchange code for token');
   }
