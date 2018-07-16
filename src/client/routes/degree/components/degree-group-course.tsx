@@ -1,12 +1,12 @@
 import * as React from 'react';
-import * as Model from '../models';
-import { View } from './view';
-import { Text } from './text';
-import { ActionableText } from './actionable-text';
-import { DropdownMenu } from './dropdown-menu';
+import * as Model from 'models';
+import { View } from 'components/view';
+import { Text } from 'components/text';
+import { ActionableText } from 'components/actionable-text';
+import { DropdownMenu } from 'components/dropdown-menu';
 import styled from 'styled-components';
-import * as styles from '../styles';
-import { RightClickMenu } from './right-click-menu';
+import * as styles from 'styles';
+import { RightClickMenu } from 'components/right-click-menu';
 import { shallowEqualIgnoringFunctions } from 'utilities/utilities';
 
 const Container = styled(View)`

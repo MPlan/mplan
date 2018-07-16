@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import * as styles from '../styles';
-import { Text } from './';
+import { Text } from './text';
 
 export const ActionableText = styled(Text)`
   font-family: ${styles.fontFamily};

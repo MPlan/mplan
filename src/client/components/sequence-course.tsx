@@ -1,7 +1,8 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { ActionableText } from './actionable-text';
-import { View, Text } from './';
+import { View } from './view';
+import { Text } from './text';
 import * as Model from '../models';
 import * as styles from '../styles';
 import { createClassName } from '../../utilities/utilities';

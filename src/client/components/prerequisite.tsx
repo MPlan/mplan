@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as Model from '../../models/models';
-import { View, Text } from '../components';
+import { View } from './view';
+import { Text } from './text';
 import styled from 'styled-components';
 import * as styles from '../styles';
 
@@ -8,16 +9,13 @@ export interface PrerequisiteProps {
   prerequisite: Model.Prerequisite;
 }
 
-const PrerequisiteContainer = styled(View)`
-`;
+const PrerequisiteContainer = styled(View)``;
 
 const OperandsContainer = styled(View)`
   margin-left: ${styles.space(-1)};
 `;
 
-export function Prerequisite({
-  prerequisite
-}: PrerequisiteProps): JSX.Element | null {
+export function Prerequisite({ prerequisite }: PrerequisiteProps): JSX.Element | null {
   if (prerequisite === undefined) {
     return null;
   }
@@ -43,9 +41,7 @@ export function Prerequisite({
     <PrerequisiteContainer>
       <Text small>{logicGate}</Text>
       <OperandsContainer>
-        {prerequisite.o.map((p, i) => (
-          <Prerequisite key={i} prerequisite={p} />
-        ))}
+        {prerequisite.o.map((p, i) => <Prerequisite key={i} prerequisite={p} />)}
       </OperandsContainer>
     </PrerequisiteContainer>
   );

@@ -1,5 +1,7 @@
 import * as React from 'react';
-import { View, Text, Fa } from './';
+import { View } from './view';
+import { Text } from './text';
+import { Fa } from './fa';
 import * as styles from '../styles';
 import { Routes, BottomRoutes } from '../routes';
 import { NavLink } from 'react-router-dom';

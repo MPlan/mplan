@@ -2,7 +2,8 @@ import * as React from 'react';
 import * as Model from '../models';
 import styled from 'styled-components';
 import * as styles from '../styles';
-import { View, Text } from './';
+import { View } from './view';
+import { Text } from './text';
 import { Prerequisite } from './prerequisite';
 
 const CourseContainer = styled(View)`
