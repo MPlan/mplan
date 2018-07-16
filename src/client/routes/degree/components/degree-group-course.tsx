@@ -1,12 +1,14 @@
 import * as React from 'react';
 import * as Model from 'models';
+import * as styles from 'styles';
+import styled from 'styled-components';
+
 import { View } from 'components/view';
 import { Text } from 'components/text';
 import { ActionableText } from 'components/actionable-text';
 import { DropdownMenu } from 'components/dropdown-menu';
-import styled from 'styled-components';
-import * as styles from 'styles';
 import { RightClickMenu } from 'components/right-click-menu';
+
 import { shallowEqualIgnoringFunctions } from 'utilities/utilities';
 
 const Container = styled(View)`

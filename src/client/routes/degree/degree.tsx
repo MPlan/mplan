@@ -1,13 +1,14 @@
 import * as React from 'react';
 import * as Model from 'models';
+import * as styles from 'styles';
+import styled from 'styled-components';
+
 import { View } from 'components/view';
 import { Text } from 'components/text';
 import { Page } from 'components/page';
 import { ActionableText } from 'components/actionable-text';
 import { FloatingActionButton } from 'components/floating-action-button';
 import { Modal } from 'components/modal';
-import styled from 'styled-components';
-import * as styles from 'styles';
 import { CourseSearch } from 'components/course-search';
 import { Reorder } from 'components/reorder';
 
@@ -16,10 +17,6 @@ import { ReorderDegreeGroup } from './components/reorder-degree-group';
 import { DegreeGroup } from './components/degree-group';
 import { SortEnd } from 'react-sortable-hoc';
 
-const Container = styled(View)`
-  padding: ${styles.space(1)};
-  flex: 1 1 auto;
-`;
 const Disclaimer = styled(Text)`
   color: ${styles.textLight};
 `;

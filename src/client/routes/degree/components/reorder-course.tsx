@@ -1,7 +1,8 @@
 import * as React from 'react';
 import * as Model from 'models';
-import styled from 'styled-components';
 import * as styles from 'styles';
+import styled from 'styled-components';
+
 import { View } from 'components/view';
 import { Text } from 'components/text';
 

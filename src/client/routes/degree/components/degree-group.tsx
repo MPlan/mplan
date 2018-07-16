@@ -1,13 +1,16 @@
 import * as React from 'react';
 import * as Model from 'models';
+import * as styles from 'styles';
+import styled from 'styled-components';
+
 import { View, ViewProps } from 'components/view';
 import { Text } from 'components/text';
 import { ActionableText } from 'components/actionable-text';
-import styled from 'styled-components';
-import { DegreeGroupCourse } from './degree-group-course';
-import * as styles from 'styles';
 import { DropdownMenu } from 'components/dropdown-menu';
 import { RightClickMenu } from 'components/right-click-menu';
+
+import { DegreeGroupCourse } from './degree-group-course';
+
 import { wait, shallowEqualIgnoringFunctions } from 'utilities/utilities';
 import { activateOnEdit, selectTextFromInputRef } from 'utilities/refs';
 
