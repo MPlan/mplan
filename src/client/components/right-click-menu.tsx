@@ -1,33 +1,11 @@
 import * as React from 'react';
+import * as ReactDom from 'react-dom';
+import styled from 'styled-components';
+
+import { View } from './view';
 import { Dropdown } from './dropdown';
 import { MenuItem } from './menu-item';
-import styled from 'styled-components';
-import { View } from './view';
-
-const Container = styled(View)`
-  position: relative;
-  flex: 1;
-`;
-
-const DropdownContainer = styled(View)`
-  position: relative;
-  width: 12rem;
-`;
-
-export interface RightClickMenuProps<T extends { [P in keyof T]: MenuItem }> {
-  actions: T;
-  onAction: (action: keyof T) => void;
-  header: string;
-  children: any;
-}
-
-const initialState = {
-  open: false,
-  x: 0,
-  y: 0,
-  lastX: 0,
-  lastY: 0,
-};
+import { ClickAwayListener } from './click-away-listener';
 
 function moved(point0: { y: number; x: number }, point1: { y: number; x: number }) {
   if (point0.y !== point1.y) return true;
@@ -35,63 +13,77 @@ function moved(point0: { y: number; x: number }, point1: { y: number; x: number 
   return false;
 }
 
-function findClosestRightClickParent(
-  element: HTMLElement | undefined | null,
-): HTMLElement | undefined | null {
-  if (!element) return element;
-  if (element.classList.contains('right-click-menu')) return element;
-  return findClosestRightClickParent(element.parentElement);
+const Container = styled(View)`
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+`;
+const DropdownContainer = styled(View)`
+  position: absolute;
+  width: 12rem;
+`;
+
+export interface RightClickMenuProps<T extends { [P in keyof T]: MenuItem }> {
+  actions: T;
+  onAction: (action: keyof T) => void;
+  header: string;
+  render: (onContextMenu: (e: React.MouseEvent<any>) => void) => JSX.Element;
 }
 
-type InitialState = typeof initialState;
-export interface RightClickMenuState extends InitialState {}
+interface RightClickMenuState {
+  open: boolean;
+  x: number;
+  y: number;
+  lastX: number;
+  lastY: number;
+}
 
 export class RightClickMenu<T extends { [P in keyof T]: MenuItem }> extends React.PureComponent<
   RightClickMenuProps<T>,
   RightClickMenuState
 > {
-  containerRef = React.createRef<HTMLElement>();
+  overlayElement = document.createElement('div');
 
   constructor(props: RightClickMenuProps<T>) {
     super(props);
 
-    this.state = initialState;
+    this.state = {
+      open: false,
+      x: 0,
+      y: 0,
+      lastX: 0,
+      lastY: 0,
+    };
   }
 
   componentDidMount() {
-    document.addEventListener('click', this.handleClick);
-    document.addEventListener('contextmenu', this.handleClick);
+    // document.addEventListener('contextmenu', this.handleClick);
+
+    document.body.appendChild(this.overlayElement);
   }
 
   componentWillUnmount() {
-    document.removeEventListener('click', this.handleClick);
-    document.removeEventListener('contextmenu', this.handleClick);
+    // document.removeEventListener('contextmenu', this.handleClick);
+
+    document.body.removeChild(this.overlayElement);
   }
 
-  nestedRightClickMenuCount() {
-    const containerRef = this.containerRef.current;
-    if (!containerRef) return Number.POSITIVE_INFINITY;
-    return containerRef.querySelectorAll('.right-click-menu').length;
-  }
-
-  handleContextMenu = async (e: React.MouseEvent<HTMLDivElement>) => {
+  handleContextMenu = async (e: React.MouseEvent<HTMLElement>) => {
+    console.log('context menu');
     e.preventDefault();
-    const containerRect = e.currentTarget.getBoundingClientRect();
+    // const closestRightClickParent = findClosestRightClickParent(e.target as HTMLElement);
+    // if (closestRightClickParent !== this.containerRef.current) {
+    //   this.setState(previousState => ({
+    //     ...previousState,
+    //     open: false,
+    //   }));
+    //   return;
+    // }
 
-    const closestRightClickParent = findClosestRightClickParent(e.target as HTMLElement);
-    if (closestRightClickParent !== this.containerRef.current) {
-      this.setState(previousState => ({
-        ...previousState,
-        open: false,
-      }));
-      return;
-    }
-
-    const clientX = e.clientX;
-    const clientY = e.clientY;
-
-    const y = clientY - containerRect.top;
-    const x = clientX - containerRect.left;
+    const x = e.clientX;
+    const y = e.clientY;
 
     this.setState(previousState => {
       const newPoint = { y, x };
@@ -116,27 +108,6 @@ export class RightClickMenu<T extends { [P in keyof T]: MenuItem }> extends Reac
     });
   };
 
-  handleClick = (e: MouseEvent) => {
-    const containerRef = this.containerRef.current;
-    if (!containerRef) {
-      this.closeMenu();
-      return;
-    }
-    const eventTarget = e.target as HTMLElement | null | undefined;
-    if (!eventTarget) {
-      this.closeMenu();
-      return;
-    }
-    if (containerRef.contains(eventTarget)) {
-      if (e.button !== 2) {
-        this.closeMenu();
-        return;
-      }
-      return;
-    }
-    this.closeMenu();
-  };
-
   closeMenu() {
     this.setState(previousState => ({
       ...previousState,
@@ -153,22 +124,25 @@ export class RightClickMenu<T extends { [P in keyof T]: MenuItem }> extends Reac
 
   render() {
     return (
-      <Container
-        className="right-click-menu"
-        onContextMenu={this.handleContextMenu}
-        innerRef={this.containerRef}
-      >
-        <DropdownContainer style={{ top: this.state.y, left: this.state.x }}>
-          <Dropdown
-            header={this.props.header}
-            actions={this.props.actions}
-            onAction={this.props.onAction}
-            open={this.state.open}
-            onBlur={this.handleDropdownBlur}
-          />
-        </DropdownContainer>
-        {this.props.children}
-      </Container>
+      <React.Fragment>
+        {ReactDom.createPortal(
+          <Container onContextMenu={this.handleDropdownBlur} style={{ display: this.state.open ? 'block' : 'none' }}>
+            <ClickAwayListener onClickAway={this.handleDropdownBlur}>
+              <DropdownContainer style={{ top: this.state.y, left: this.state.x }}>
+                <Dropdown
+                  header={this.props.header}
+                  actions={this.props.actions}
+                  onAction={this.props.onAction}
+                  open={this.state.open}
+                  onBlur={this.handleDropdownBlur}
+                />
+              </DropdownContainer>
+            </ClickAwayListener>
+          </Container>,
+          this.overlayElement,
+        )}
+        {this.props.render(this.handleContextMenu)}
+      </React.Fragment>
     );
   }
 }

@@ -361,6 +361,34 @@ export class MasteredDegreeGroup extends React.PureComponent<
     }));
   };
 
+  renderRightClickMenu = (onContextMenu: (e: React.MouseEvent<any>) => void) => {
+    const { masteredDegreeGroup } = this.props;
+
+    return (
+      <HeaderRow onContextMenu={onContextMenu}>
+        {/*if*/ this.state.editingName ? (
+          <NameForm onSubmit={this.handleNameSubmit}>
+            <NameInput
+              className="name-input"
+              type="text"
+              innerRef={this.nameInputRef}
+              onBlur={this.handleNameBlur}
+              defaultValue={masteredDegreeGroup.name}
+            />
+          </NameForm>
+        ) : (
+          <Header onClick={this.handleNameClick}>{masteredDegreeGroup.name}</Header>
+        )}
+
+        <DropdownMenu
+          header={masteredDegreeGroup.name}
+          actions={headingActions}
+          onAction={this.handleHeadingActions}
+        />
+      </HeaderRow>
+    );
+  };
+
   render() {
     const { masteredDegreeGroup } = this.props;
     return (
@@ -369,29 +397,8 @@ export class MasteredDegreeGroup extends React.PureComponent<
           header={masteredDegreeGroup.name}
           actions={headingActions}
           onAction={this.handleHeadingActions}
-        >
-          <HeaderRow>
-            {/*if*/ this.state.editingName ? (
-              <NameForm onSubmit={this.handleNameSubmit}>
-                <NameInput
-                  className="name-input"
-                  type="text"
-                  innerRef={this.nameInputRef}
-                  onBlur={this.handleNameBlur}
-                  defaultValue={masteredDegreeGroup.name}
-                />
-              </NameForm>
-            ) : (
-              <Header onClick={this.handleNameClick}>{masteredDegreeGroup.name}</Header>
-            )}
-
-            <DropdownMenu
-              header={masteredDegreeGroup.name}
-              actions={headingActions}
-              onAction={this.handleHeadingActions}
-            />
-          </HeaderRow>
-        </RightClickMenu>
+          render={this.renderRightClickMenu}
+        />
         <Card>
           <Row>
             <Text style={{ fontWeight: 'bold' }}>Description</Text>

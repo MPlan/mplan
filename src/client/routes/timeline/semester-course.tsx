@@ -52,17 +52,8 @@ export interface SemesterCourseProps {
   onDeleteCourse?: () => void;
 }
 
-export function SemesterCourse(props: SemesterCourseProps) {
-  const { course, onDeleteCourse } = props;
-  const criticalLevel = course.criticalLevel();
-
-  function handleAction(action: string) {
-    if (action === 'delete') {
-      onDeleteCourse && onDeleteCourse();
-    }
-  }
-
-  const actions = onDeleteCourse
+export class SemesterCourse extends React.PureComponent<SemesterCourseProps, {}> {
+  actions = this.props.onDeleteCourse
     ? {
         view: { text: 'View in catalog', icon: 'chevronRight', color: styles.blue },
         delete: { text: 'Delete course', icon: 'trash', color: styles.red },
@@ -71,9 +62,18 @@ export function SemesterCourse(props: SemesterCourseProps) {
         view: { text: 'View in catalog', icon: 'chevronRight', color: styles.blue },
       };
 
-  return (
-    <RightClickMenu header={course.simpleName} actions={actions} onAction={handleAction}>
-      <Container>
+  handleAction = (action: string) => {
+    if (action === 'delete') {
+      this.props.onDeleteCourse && this.props.onDeleteCourse();
+    }
+  };
+
+  renderRightClickMenu = (onContextMenu: (e: React.MouseEvent<any>) => void) => {
+    const { course } = this.props;
+    const criticalLevel = course.criticalLevel();
+
+    return (
+      <Container onContextMenu={onContextMenu}>
         <Body>
           <Row>
             <SimpleName>{course.simpleName}</SimpleName>
@@ -84,8 +84,23 @@ export function SemesterCourse(props: SemesterCourseProps) {
           <FullName>{course.name}</FullName>
           <CriticalLevel small>Critical level: {criticalLevel}</CriticalLevel>
         </Body>
-        <DropdownMenu header={course.simpleName} actions={actions} onAction={handleAction} />
+        <DropdownMenu
+          header={course.simpleName}
+          actions={this.actions}
+          onAction={this.handleAction}
+        />
       </Container>
-    </RightClickMenu>
-  );
+    );
+  };
+
+  render() {
+    return (
+      <RightClickMenu
+        header={this.props.course.simpleName}
+        actions={this.actions}
+        onAction={this.handleAction}
+        render={this.renderRightClickMenu}
+      />
+    );
+  }
 }

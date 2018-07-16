@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as Immutable from 'immutable';
 import * as Model from 'models';
 import * as styles from 'styles';
 import styled from 'styled-components';
@@ -13,6 +14,7 @@ import { DegreeGroupCourse } from './degree-group-course';
 
 import { wait, shallowEqualIgnoringFunctions } from 'utilities/utilities';
 import { activateOnEdit, selectTextFromInputRef } from 'utilities/refs';
+import { createGetOrCalculate } from 'utilities/get-or-calculate';
 
 const Container = styled(View)`
   max-width: 24rem;
@@ -188,90 +190,120 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
     }
   };
 
-  render() {
+  renderRightClickMenu = (onContextMenu: (e: React.MouseEvent<any>) => void) => {
     const { degreeGroup } = this.props;
-    const courses = degreeGroup.courses();
-    const creditHoursMin = courses.reduce(
-      (creditHoursMin, next) =>
-        (next instanceof Model.Course ? next.creditsMin || next.creditHoursMin || 0 : 0) +
-        creditHoursMin,
-      0,
-    );
-    const creditHoursMax = courses.reduce(
-      (creditHoursMax, next) =>
-        (next instanceof Model.Course ? next.credits || next.creditHours || 0 : 0) + creditHoursMax,
-      0,
-    );
-
-    const menuHeader = this.props.degreeGroup.name;
 
     return (
-      <Container>
-        <RightClickMenu
-          header={menuHeader}
-          actions={this.groupActions}
-          onAction={this.handleGroupAction}
-        >
-          <Header>
-            <NameAndCredits>
-              {this.state.editingName ? (
-                <NameForm onSubmit={this.handleNameSubmit}>
-                  <NameInput
-                    innerRef={this.inputRef}
-                    onChange={this.handleNameChange}
-                    onBlur={this.handleNameBlur}
-                    defaultValue={degreeGroup.name}
-                  />
-                </NameForm>
-              ) : (
-                <Name onClick={this.handleNameClick} editable={true}>
-                  {degreeGroup.name}
-                </Name>
-              )}
-              <Credits>
-                {/*if*/ creditHoursMin === creditHoursMax
-                  ? `${creditHoursMin}`
-                  : `${creditHoursMin} - ${creditHoursMax}`}&nbsp;credits
-              </Credits>
-              <DropdownMenu
-                header={menuHeader}
-                actions={this.groupActions}
-                onAction={this.handleGroupAction}
-              />
-            </NameAndCredits>
-            {degreeGroup.customGroup ? (
-              <Description>Custom Group</Description>
-            ) : (
-              <ActionableText onClick={this.handleNameClick}>More info</ActionableText>
-            )}
-          </Header>
-          <Card>
-            <CardHeaders>
-              <NameHeader>Course name</NameHeader>
-              <CompletedHeader>Completed ?</CompletedHeader>
-            </CardHeaders>
-            <Courses>
-              {courses.map(course => (
-                <DegreeGroupCourse
-                  completed={degreeGroup.completedCourseIds.includes(
-                    course instanceof Model.Course ? course.id : course,
-                  )}
-                  key={course instanceof Model.Course ? course.id : course}
-                  course={course}
-                  onChange={() => this.props.onCourseCompletedToggle(course)}
-                  onRearrange={() => this.props.onReorderCoursesStart()}
-                  onDelete={() => this.props.onDeleteCourse(course)}
+      <Container onContextMenu={onContextMenu}>
+        <Header>
+          <NameAndCredits>
+            {this.state.editingName ? (
+              <NameForm onSubmit={this.handleNameSubmit}>
+                <NameInput
+                  innerRef={this.inputRef}
+                  onChange={this.handleNameChange}
+                  onBlur={this.handleNameBlur}
+                  defaultValue={degreeGroup.name}
                 />
-              ))}
-            </Courses>
-            <AddCourseContainer>
-              <ActionableText small onClick={this.props.onAddCourse}>
-                Add course to this group...
-              </ActionableText>
-            </AddCourseContainer>
-          </Card>
-        </RightClickMenu>
+              </NameForm>
+            ) : (
+              <Name onClick={this.handleNameClick} editable={true}>
+                {degreeGroup.name}
+              </Name>
+            )}
+            <Credits>
+              {/*if*/ this.creditHoursMin === this.creditHoursMax
+                ? `${this.creditHoursMin}`
+                : `${this.creditHoursMin} - ${this.creditHoursMax}`}&nbsp;credits
+            </Credits>
+            <DropdownMenu
+              header={this.menuHeader}
+              actions={this.groupActions}
+              onAction={this.handleGroupAction}
+            />
+          </NameAndCredits>
+          {degreeGroup.customGroup ? (
+            <Description>Custom Group</Description>
+          ) : (
+            <ActionableText onClick={this.handleNameClick}>More info</ActionableText>
+          )}
+        </Header>
+        <Card>
+          <CardHeaders>
+            <NameHeader>Course name</NameHeader>
+            <CompletedHeader>Completed ?</CompletedHeader>
+          </CardHeaders>
+          <Courses>
+            {this.degreeCourses.map(course => (
+              <DegreeGroupCourse
+                completed={degreeGroup.completedCourseIds.includes(
+                  course instanceof Model.Course ? course.id : course,
+                )}
+                key={course instanceof Model.Course ? course.id : course}
+                course={course}
+                onChange={() => this.props.onCourseCompletedToggle(course)}
+                onRearrange={() => this.props.onReorderCoursesStart()}
+                onDelete={() => this.props.onDeleteCourse(course)}
+              />
+            ))}
+          </Courses>
+          <AddCourseContainer>
+            <ActionableText small onClick={this.props.onAddCourse}>
+              Add course to this group...
+            </ActionableText>
+          </AddCourseContainer>
+        </Card>
       </Container>
+    );
+  };
+
+  private _getOrCalculateDegreeCourses = createGetOrCalculate((degreeGroup: Model.DegreeGroup) => {
+    return degreeGroup.courses();
+  });
+  get degreeCourses() {
+    return this._getOrCalculateDegreeCourses(this.props.degreeGroup);
+  }
+
+  private _getOrCalculateCreditHoursMin = createGetOrCalculate(
+    (courses: Immutable.List<Model.Course>) => {
+      return courses.reduce(
+        (creditHoursMin, next) =>
+          (next instanceof Model.Course ? next.creditsMin || next.creditHoursMin || 0 : 0) +
+          creditHoursMin,
+        0,
+      );
+    },
+  );
+  get creditHoursMin() {
+    return this._getOrCalculateCreditHoursMin(this.degreeCourses);
+  }
+
+  private _getOrCalculateCreditHoursMax = createGetOrCalculate(
+    (courses: Immutable.List<Model.Course>) => {
+      return courses.reduce(
+        (creditHoursMax, next) =>
+          (next instanceof Model.Course ? next.credits || next.creditHours || 0 : 0) +
+          creditHoursMax,
+        0,
+      );
+    },
+  );
+  get creditHoursMax() {
+    return this._getOrCalculateCreditHoursMax(this.degreeCourses);
+  }
+
+  get menuHeader() {
+    return this.props.degreeGroup.name;
+  }
+
+  render() {
+    return (
+      <RightClickMenu
+        header={this.menuHeader}
+        actions={this.groupActions}
+        onAction={this.handleGroupAction}
+        render={this.renderRightClickMenu}
+      />
     );
   }
 }

@@ -117,46 +117,56 @@ export class Semester extends React.PureComponent<SemesterProps, {}> {
 
   handleAction = (_: keyof typeof actions) => {};
 
-  render() {
+  renderRightClickMenu = (onContextMenu: (e: React.MouseEvent<any>) => void) => {
     const { semester } = this.props;
     const courses = semester.courseArray();
     const totalCredits = semester.totalCredits();
+
     return (
-      <RightClickMenu header={semester.name} actions={actions} onAction={this.handleAction}>
-        <Container className={`semester-${semester.id}`}>
-          <Header>
-            <View>
-              <SemesterName>{semester.name}</SemesterName>
-              <Row>
-                <Count>
-                  {semester.courseCount} {semester.courseCount === 1 ? 'course' : 'courses'}
-                </Count>
-                <Count>&nbsp;|&nbsp;</Count>
-                <Count>
-                  {totalCredits} {totalCredits === 1 ? 'credit' : 'credits'}
-                </Count>
-              </Row>
-            </View>
-            <DropdownMenu header={semester.name} actions={actions} onAction={this.handleAction} />
-          </Header>
-          <Card>
-            <Dropzone
-              id={semester.id}
-              elements={courses}
-              getKey={course => course.id}
-              onChangeSort={this.props.onSortEnd}
-              render={this.renderCourse}
-            />
-            <AddCourse small onClick={() => {}}>
-              Add course to this semester...
-            </AddCourse>
-          </Card>
-          <Marker>
-            <Circle />
-            <VerticalLine />
-          </Marker>
-        </Container>
-      </RightClickMenu>
+      <Container onContextMenu={onContextMenu} className={`semester-${semester.id}`}>
+        <Header>
+          <View>
+            <SemesterName>{semester.name}</SemesterName>
+            <Row>
+              <Count>
+                {semester.courseCount} {semester.courseCount === 1 ? 'course' : 'courses'}
+              </Count>
+              <Count>&nbsp;|&nbsp;</Count>
+              <Count>
+                {totalCredits} {totalCredits === 1 ? 'credit' : 'credits'}
+              </Count>
+            </Row>
+          </View>
+          <DropdownMenu header={semester.name} actions={actions} onAction={this.handleAction} />
+        </Header>
+        <Card>
+          <Dropzone
+            id={semester.id}
+            elements={courses}
+            getKey={course => course.id}
+            onChangeSort={this.props.onSortEnd}
+            render={this.renderCourse}
+          />
+          <AddCourse small onClick={() => {}}>
+            Add course to this semester...
+          </AddCourse>
+        </Card>
+        <Marker>
+          <Circle />
+          <VerticalLine />
+        </Marker>
+      </Container>
+    );
+  };
+
+  render() {
+    return (
+      <RightClickMenu
+        header={this.props.semester.name}
+        actions={actions}
+        onAction={this.handleAction}
+        render={this.renderRightClickMenu}
+      />
     );
   }
 }
