@@ -1,9 +1,11 @@
 import * as React from 'react';
 import * as Model from 'models';
+import * as styles from 'styles';
+import styled from 'styled-components';
+import { history } from 'client/history';
+
 import { View } from 'components/view';
 import { Text } from 'components/text';
-import styled from 'styled-components';
-import * as styles from 'styles';
 import { DropdownMenu } from 'components/dropdown-menu';
 import { RightClickMenu, RightClickProps } from 'components/right-click-menu';
 
@@ -63,8 +65,11 @@ export class SemesterCourse extends React.PureComponent<SemesterCourseProps, {}>
       };
 
   handleAction = (action: string) => {
+    const { course } = this.props;
     if (action === 'delete') {
       this.props.onDeleteCourse && this.props.onDeleteCourse();
+    } else if (action === 'view') {
+      history.push(`/catalog/${course.subjectCode}/${course.courseNumber}`);
     }
   };
 

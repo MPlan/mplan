@@ -1,18 +1,19 @@
 import * as React from 'react';
 import * as Model from 'models';
-import { View } from 'components/view';
-import { Text } from 'components/text';
-import { Page } from 'components/page';
-import { SequenceCourse, courseIdClassName } from 'components/sequence-course';
-import { ActionableText } from 'components/actionable-text';
-import { FloatingActionButton } from 'components/floating-action-button';
-import styled from 'styled-components';
-import * as styles from 'styles';
-import { flatten, createClassName, wait } from 'utilities/utilities';
 import * as Immutable from 'immutable';
+import * as styles from 'styles';
+import styled from 'styled-components';
 import { Subject } from 'rxjs/Subject';
 import { debounceTime } from 'rxjs/operators';
 import { oneLine } from 'common-tags';
+import { flatten, createClassName, wait } from 'utilities/utilities';
+
+import { View } from 'components/view';
+import { Text } from 'components/text';
+import { Page } from 'components/page';
+import { SequenceCourse, courseIdClassName } from './components/course';
+import { ActionableText } from 'components/actionable-text';
+import { FloatingActionButton } from 'components/floating-action-button';
 
 interface Point {
   y: number;

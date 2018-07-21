@@ -70,7 +70,7 @@ class CourseDetail extends React.PureComponent<CourseDetailProps, CourseDetailSt
         </Row>
         <Row>
           <Button onClick={this.handleBackClick}>
-            <Icon icon="arrowLeft" />Back
+            <Icon icon="arrowLeft" />Catalog
           </Button>
         </Row>
         <Row>

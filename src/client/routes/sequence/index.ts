@@ -1,10 +1,5 @@
 import * as Model from 'models';
-import { Sequence, SequenceProps } from './sequence';
-
-const scopeDefiner = (store: Model.App) => ({
-  catalog: store.catalog,
-  degree: store.user.degree,
-});
+import { Sequence } from './sequence';
 
 const container = Model.store.connect({
   scopeTo: store => store,
