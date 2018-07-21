@@ -88,17 +88,14 @@ export class RightClickMenu<T extends { [P in keyof T]: MenuItem }> extends Reac
   }
 
   componentDidMount() {
-    // document.addEventListener('contextmenu', this.handleClick);
     document.body.appendChild(this.overlayElement);
   }
 
   componentWillUnmount() {
-    // document.removeEventListener('contextmenu', this.handleClick);
     document.body.removeChild(this.overlayElement);
   }
 
   handleContextMenu = async (e: React.MouseEvent<HTMLElement>) => {
-    console.log('context menu');
     const container = this.containerRef.current;
     if (!container) return;
 
