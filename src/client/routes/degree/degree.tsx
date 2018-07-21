@@ -101,6 +101,7 @@ export interface DegreeState {
 export class Degree extends React.Component<DegreeProps, DegreeState> {
   disclaimer = createInfoModal();
   aboutRequiredCredits = createInfoModal();
+  degreeGroupDescription = createInfoModal();
 
   constructor(props: DegreeProps) {
     super(props);
@@ -198,6 +199,7 @@ export class Degree extends React.Component<DegreeProps, DegreeState> {
       ...previousState,
       activeDegree: group,
     }));
+    this.degreeGroupDescription.open();
   }
 
   handleDegreeGroupModalBlur = () => {
@@ -281,6 +283,7 @@ export class Degree extends React.Component<DegreeProps, DegreeState> {
     const degree = this.props.degree;
     const DisclaimerModal = this.disclaimer.Modal;
     const AboutRequiredCreditsModal = this.aboutRequiredCredits.Modal;
+    const DegreeGroupDescriptionModal = this.degreeGroupDescription.Modal;
 
     return (
       <Page
@@ -335,14 +338,9 @@ export class Degree extends React.Component<DegreeProps, DegreeState> {
           </FormMajor>
         </Modal>
 
-        <Modal
-          title={this.activeDegreeTitle}
-          open={!!this.state.activeDegree}
-          onBlurCancel={this.handleDegreeGroupModalBlur}
-          size="medium"
-        >
+        <DegreeGroupDescriptionModal title={this.activeDegreeTitle}>
           <DescriptionNonEdit dangerouslySetInnerHTML={{ __html: this.activeDegreeDescription }} />
-        </Modal>
+        </DegreeGroupDescriptionModal>
 
         <AboutRequiredCreditsModal title="About Required Credits">
           <p>
