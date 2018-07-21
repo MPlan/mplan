@@ -56,11 +56,6 @@ const LevelCard = styled(View)`
     margin-bottom: auto;
   }
 `;
-// const LevelHeader = styled(View)`
-  // margin: ${styles.space(0)};
-  // justify-content: flex-end;
-  // min-height: 4rem;
-// `;
 const SvgArrowContainer = styled(View)`
   position: absolute;
   top: 0;

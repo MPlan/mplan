@@ -65,7 +65,7 @@ const Body = styled<BodyProps>(View)`
   margin-bottom: ${styles.space(1)};
 `;
 
-interface ModalProps {
+export interface ModalProps {
   open: boolean;
   title: string;
   size?: 'small' | 'medium' | 'large';

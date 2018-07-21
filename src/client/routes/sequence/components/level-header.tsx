@@ -1,11 +1,10 @@
 import * as React from 'react';
 import * as styles from 'styles';
 import styled from 'styled-components';
-import { oneLine } from 'common-tags';
 
 import { View } from 'components/view';
 import { Text } from 'components/text';
-import { Modal } from 'components/modal';
+import { createInfoModal } from 'components/info-modal';
 
 const Container = styled(View)`
   margin: ${styles.space(-1)};
@@ -25,12 +24,12 @@ const Spacer = styled.div`
 interface LevelHeaderProps {
   level: number;
 }
-
 interface LevelHeaderState {
   modalOpen: boolean;
 }
 
 export class LevelHeader extends React.PureComponent<LevelHeaderProps, LevelHeaderState> {
+  info = createInfoModal();
   constructor(props: LevelHeaderProps) {
     super(props);
     this.state = {
@@ -39,10 +38,7 @@ export class LevelHeader extends React.PureComponent<LevelHeaderProps, LevelHead
   }
 
   handleModalOpen = () => {
-    this.setState(previousState => ({
-      ...previousState,
-      modalOpen: true,
-    }));
+    this.info.open();
   };
 
   handleModalClose = () => {
@@ -55,15 +51,11 @@ export class LevelHeader extends React.PureComponent<LevelHeaderProps, LevelHead
   render() {
     const { level } = this.props;
     const title = `Level ${level}`;
+    const InfoModal = this.info.Modal;
     return (
       <Container>
         <Title onClick={this.handleModalOpen}>{title}</Title>
-        <Modal
-          title={title}
-          open={this.state.modalOpen}
-          size="medium"
-          onBlurCancel={this.handleModalClose}
-        >
+        <InfoModal title={title}>
           {/*if*/ level <= 0 ? (
             <View>
               <Text>These courses have been found to have no prerequisites!</Text>
@@ -92,7 +84,7 @@ export class LevelHeader extends React.PureComponent<LevelHeaderProps, LevelHead
               <Text>If you have any questions, contact your advisor.</Text>
             </View>
           )}
-        </Modal>
+        </InfoModal>
       </Container>
     );
   }

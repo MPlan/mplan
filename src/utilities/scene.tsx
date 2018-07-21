@@ -64,5 +64,5 @@ export function createScene<T>(initialState: T) {
       };
   }
 
-  return { connect };
+  return { connect, setScene };
 }
