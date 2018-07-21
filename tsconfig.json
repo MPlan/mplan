@@ -15,7 +15,9 @@
       "routes/*": ["client/routes/*"],
       "models/*": ["models/*"],
       "utilities/*": ["utilities/*"],
-      "recordize": ["recordize/*"]
+      "recordize": ["recordize/*"],
+      "client/*": ["client/*"],
+      "server/*": ["server/*"]
     }
   }
 }

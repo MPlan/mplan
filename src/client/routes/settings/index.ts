@@ -1,6 +1,8 @@
 import * as Model from 'models';
+import { history } from 'client/history';
+
 import { Settings } from './settings';
-import { history } from '../../app';
+
 const container = Model.store.connect({
   scopeTo: store => store.user,
   mapStateToProps: (user: Model.User) => {

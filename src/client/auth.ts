@@ -1,4 +1,4 @@
-import { history } from './app';
+import { history } from 'client/history';
 import * as jwtDecode from 'jwt-decode';
 import { encode } from '../utilities/utilities';
 import { AccessTokenPayload } from '../models/token';
@@ -97,14 +97,14 @@ async function fetchToken(code: string) {
 
 async function token() {
   if (process.env.NODE_ENV !== 'production') return 'fake_token';
-  
+
   while (!loggedIn()) {
     await wait(500);
   }
 
   const token = localStorage.getItem('accessToken');
   if (!token) throw new Error('Could not get token after log in');
-  
+
   return token;
 }
 

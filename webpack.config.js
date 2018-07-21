@@ -31,6 +31,8 @@ const webpackConfig = {
       utilities: path.resolve(__dirname, './src/utilities'),
       components: path.resolve(__dirname, './src/client/components'),
       routes: path.resolve(__dirname, './src/client/routes'),
+      client: path.resolve(__dirname, './src/client'),
+      server: path.resolve(__dirname, './src/server'),
     },
   },
   devtool: 'source-map',

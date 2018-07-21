@@ -1,20 +1,20 @@
 import * as React from 'react';
+import * as Model from './models';
+import * as styles from './styles';
 import styled from 'styled-components';
+import { Router, Switch, Route, Redirect, RouteComponentProps } from 'react-router';
+import { history } from './history';
+import { Auth } from './auth';
+
 import { View } from 'components/view';
 import { Text } from 'components/text';
 import { Fa } from 'components/fa';
 import { Nav } from 'components/nav';
 import { Loading } from 'components/loading';
-import { Router, Switch, Route, Redirect, RouteComponentProps } from 'react-router';
+
 import { Routes, BottomRoutes } from './routes';
-import * as styles from './styles';
-import { Auth } from './auth';
 import { Landing } from './routes/landing';
 import { Callback } from './routes/callback';
-import * as Model from './models';
-
-import createBrowserHistory from 'history/createBrowserHistory';
-export const history = createBrowserHistory();
 
 const AuthenticatedRouteContainer = styled(View)`
   flex: 1;

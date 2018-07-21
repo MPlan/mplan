@@ -1,9 +1,10 @@
 import * as React from 'react';
+import styled from 'styled-components';
+import { Auth } from 'client/auth';
+import { history } from 'client/history';
+
 import { View } from 'components/view';
 import { Text } from 'components/text';
-import { Auth } from '../../auth';
-import { history } from '../../app';
-import styled from 'styled-components';
 
 const CallbackContainer = styled(View)`
   flex: 1;

@@ -2,14 +2,14 @@ import * as React from 'react';
 import * as Model from 'models';
 import * as styles from 'styles';
 import styled from 'styled-components';
+import { history } from 'client/history';
+import { shallowEqualIgnoringFunctions } from 'utilities/utilities';
 
 import { View } from 'components/view';
 import { Text } from 'components/text';
 import { ActionableText } from 'components/actionable-text';
 import { DropdownMenu } from 'components/dropdown-menu';
 import { RightClickMenu, RightClickProps } from 'components/right-click-menu';
-
-import { shallowEqualIgnoringFunctions } from 'utilities/utilities';
 
 const Container = styled(View)`
   flex-direction: row;
@@ -67,11 +67,16 @@ export class DegreeGroupCourse extends React.Component<DegreeGroupCourseProps, {
     const { course } = this.props;
     return course instanceof Model.Course ? course.simpleName : course;
   }
+
   handleActions = (action: keyof typeof actions) => {
+    const { course } = this.props;
     if (action === 'delete') {
       this.props.onDelete();
     } else if (action === 'rearrange') {
       this.props.onRearrange();
+    } else if (action === 'view') {
+      if (!(course instanceof Model.Course)) return;
+      history.push(`/catalog/${course.subjectCode}/${course.courseNumber}`);
     }
   };
 

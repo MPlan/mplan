@@ -12,7 +12,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { Loading } from 'components/loading';
 import { debounceTime, tap } from 'rxjs/operators';
 import { Route, RouteComponentProps } from 'react-router';
-import { history } from '../../app';
+import { history } from 'client/history';
 
 const INPUT_DEBOUNCE_TIME = 250;
 

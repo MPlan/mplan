@@ -2,11 +2,12 @@ import * as React from 'react';
 import * as Model from 'models';
 import styled from 'styled-components';
 import * as styles from 'styles';
+import { history } from 'client/history';
+
 import { View } from 'components/view';
 import { Text } from 'components/text';
 import { Button } from 'components/button';
 import { Fa } from 'components/fa';
-import { history } from '../../app';
 
 const Container = styled(View)`
   margin: auto;
