@@ -11,6 +11,7 @@ import { FloatingActionButton } from 'components/floating-action-button';
 import { Modal } from 'components/modal';
 import { CourseSearch } from 'components/course-search';
 import { Reorder } from 'components/reorder';
+import { createInfoModal } from 'components/info-modal';
 
 import { ReorderCourse } from './components/reorder-course';
 import { ReorderDegreeGroup } from './components/reorder-degree-group';
@@ -93,20 +94,19 @@ export interface DegreeProps {
 export interface DegreeState {
   majorModalOpen: boolean;
   activeDegree: Model.DegreeGroup | undefined;
-  requiredCreditsModalOpen: boolean;
-  disclaimerModalOpen: boolean;
   activeReorderGroupId: string | undefined;
   reorderingGroups: boolean;
 }
 
 export class Degree extends React.Component<DegreeProps, DegreeState> {
+  disclaimer = createInfoModal();
+  aboutRequiredCredits = createInfoModal();
+
   constructor(props: DegreeProps) {
     super(props);
     this.state = {
       majorModalOpen: false,
       activeDegree: undefined,
-      requiredCreditsModalOpen: false,
-      disclaimerModalOpen: false,
       activeReorderGroupId: undefined,
       reorderingGroups: false,
     };
@@ -207,34 +207,6 @@ export class Degree extends React.Component<DegreeProps, DegreeState> {
     }));
   };
 
-  handleCreditsRequiredClick = () => {
-    this.setState(previousState => ({
-      ...previousState,
-      requiredCreditsModalOpen: true,
-    }));
-  };
-
-  handleCreditsRequiredBlur = () => {
-    this.setState(previousState => ({
-      ...previousState,
-      requiredCreditsModalOpen: false,
-    }));
-  };
-
-  handleDisclaimerClick = () => {
-    this.setState(previousState => ({
-      ...previousState,
-      disclaimerModalOpen: true,
-    }));
-  };
-
-  handleDisclaimerModalBlur = () => {
-    this.setState(previousState => ({
-      ...previousState,
-      disclaimerModalOpen: false,
-    }));
-  };
-
   handleReorderStart(degreeGroup: Model.DegreeGroup) {
     this.setState(previousState => ({
       ...previousState,
@@ -271,10 +243,10 @@ export class Degree extends React.Component<DegreeProps, DegreeState> {
 
   renderSubtitle = () => {
     return (
-      <Disclaimer onClick={this.handleDisclaimerClick}>
+      <Disclaimer>
         <Underline>Disclaimer:</Underline> This page is <Underline>not</Underline> a degree audit
         and should not be treated like one.{' '}
-        <ActionableText>Click here for more info.</ActionableText>
+        <ActionableText onClick={this.disclaimer.open}>Click here for more info.</ActionableText>
       </Disclaimer>
     );
   };
@@ -288,7 +260,7 @@ export class Degree extends React.Component<DegreeProps, DegreeState> {
         </Credits>
         <Percentage>{degree.percentComplete()} complete</Percentage>
         <RequiredCredits
-          onClick={this.handleCreditsRequiredClick}
+          onClick={this.aboutRequiredCredits.open}
           color={
             degree.totalCredits() < degree.masteredDegree().minimumCredits
               ? styles.danger
@@ -307,7 +279,9 @@ export class Degree extends React.Component<DegreeProps, DegreeState> {
   render() {
     const currentDegreeGroup = this.props.currentDegreeGroup;
     const degree = this.props.degree;
-    const masteredDegree = degree.masteredDegree();
+    const DisclaimerModal = this.disclaimer.Modal;
+    const AboutRequiredCreditsModal = this.aboutRequiredCredits.Modal;
+
     return (
       <Page
         title={degree.name}
@@ -360,6 +334,7 @@ export class Degree extends React.Component<DegreeProps, DegreeState> {
             </div>
           </FormMajor>
         </Modal>
+
         <Modal
           title={this.activeDegreeTitle}
           open={!!this.state.activeDegree}
@@ -368,12 +343,8 @@ export class Degree extends React.Component<DegreeProps, DegreeState> {
         >
           <DescriptionNonEdit dangerouslySetInnerHTML={{ __html: this.activeDegreeDescription }} />
         </Modal>
-        <Modal
-          title="About Required Credits"
-          open={this.state.requiredCreditsModalOpen}
-          onBlurCancel={this.handleCreditsRequiredBlur}
-          size="medium"
-        >
+
+        <AboutRequiredCreditsModal title="About Required Credits">
           <p>
             <Text>
               This degree requires you to have at least{' '}
@@ -390,13 +361,9 @@ export class Degree extends React.Component<DegreeProps, DegreeState> {
               hour count equals or exceeds the required minimum credits for this degree.
             </Text>
           </p>
-        </Modal>
-        <Modal
-          title="Disclaimer"
-          open={this.state.disclaimerModalOpen}
-          onBlurCancel={this.handleDisclaimerModalBlur}
-          size="medium"
-        >
+        </AboutRequiredCreditsModal>
+
+        <DisclaimerModal title="Disclaimer">
           <p>
             <Text>
               Though MPlan has <em>some</em> degree validation abilities, it is <strong>NOT</strong>{' '}
@@ -415,7 +382,8 @@ export class Degree extends React.Component<DegreeProps, DegreeState> {
           <p>
             <Text>Thank you and enjoy!</Text>
           </p>
-        </Modal>
+        </DisclaimerModal>
+
         <Reorder
           title={this.reorderCoursesTitle}
           open={this.reorderingCourses}
