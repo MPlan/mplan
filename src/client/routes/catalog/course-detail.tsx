@@ -7,6 +7,7 @@ import { history } from 'client/history';
 import { View } from 'components/view';
 import { Text } from 'components/text';
 import { Button } from 'components/button';
+import { PreferredPrerequisite } from 'components/preferred-prerequisite';
 import { Fa } from 'components/fa';
 
 const Container = styled(View)`
@@ -79,6 +80,10 @@ class CourseDetail extends React.PureComponent<CourseDetailProps, CourseDetailSt
         <Row>
           <Key>Previous instructors:</Key>
           <Text>{course.historicallyTaughtBy().join(', ')}</Text>
+        </Row>
+        <Row>
+          <Key>Preferred prerequisites:</Key>
+          <PreferredPrerequisite course={course} />
         </Row>
       </Container>
     );
