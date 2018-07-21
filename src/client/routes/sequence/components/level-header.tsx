@@ -10,8 +10,7 @@ const Container = styled(View)`
   margin: ${styles.space(-1)};
 `;
 const Title = styled(Text)`
-  color: ${styles.textLight};
-  font-weight: bold;
+  color: ${styles.link};
   cursor: pointer;
   &:hover {
     text-decoration: underline;
