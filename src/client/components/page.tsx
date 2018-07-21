@@ -36,6 +36,7 @@ const Body = styled<BodyProps>(View)`
 
 interface PageProps {
   title: string;
+  // TODO: these should just be nodes
   renderSubtitle?: React.ComponentType<any>;
   renderTitleLeft?: React.ComponentType<any>;
   children?: any;
