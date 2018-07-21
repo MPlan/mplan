@@ -49,12 +49,12 @@ const Body = styled(View)`
   flex: 1;
 `;
 
-export interface SemesterCourseProps {
+export interface CourseProps {
   course: Model.Course;
   onDeleteCourse?: () => void;
 }
 
-export class SemesterCourse extends React.PureComponent<SemesterCourseProps, {}> {
+export class Course extends React.PureComponent<CourseProps, {}> {
   actions = this.props.onDeleteCourse
     ? {
         view: { text: 'View in catalog', icon: 'chevronRight', color: styles.blue },

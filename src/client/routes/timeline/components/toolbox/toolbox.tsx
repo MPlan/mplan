@@ -5,8 +5,8 @@ import styled from 'styled-components';
 import { View } from 'components/view';
 import { Text } from 'components/text';
 import { Accordion } from 'components/accordion';
-import { SemesterCourse } from 'routes/timeline/semester-course';
 import { Dropzone, SortChange } from 'components/dropzone';
+import { Course } from '../course';
 
 const Container = styled(View)`
   box-shadow: ${styles.boxShadow(0)};
@@ -67,7 +67,7 @@ export class Toolbox extends React.PureComponent<ToolboxProps, ToolboxState> {
   handleDeleteCourse(_: Model.Course) {}
 
   renderCourse = (course: Model.Course) => {
-    return <SemesterCourse key={course.id} course={course} />;
+    return <Course key={course.id} course={course} />;
   };
 
   render() {

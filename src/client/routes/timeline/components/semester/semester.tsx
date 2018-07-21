@@ -11,7 +11,7 @@ import { DropdownMenu } from 'components/dropdown-menu';
 import { RightClickMenu, RightClickProps } from 'components/right-click-menu';
 import { ActionableText } from 'components/actionable-text';
 
-import { SemesterCourse } from '../semester-course';
+import { Course } from '../course';
 
 const Container = styled(View)`
   width: 16rem;
@@ -20,7 +20,7 @@ const Container = styled(View)`
   margin-right: ${styles.space(2)};
   flex: 1;
   position: relative;
-  .semesters-container > :not(:last-child) &::after {
+  &::after {
     content: ' ';
     width: calc(100% + ${styles.space(2)} + ${styles.space(-1)});
     height: ${styles.space(-1)};
@@ -110,7 +110,7 @@ export interface SemesterProps {
 export class Semester extends React.PureComponent<SemesterProps, {}> {
   renderCourse = (course: Model.Course) => {
     return (
-      <SemesterCourse
+      <Course
         key={course.id}
         course={course}
         onDeleteCourse={() => this.props.onDeleteCourse(course)}

@@ -1,17 +1,19 @@
 import * as React from 'react';
+import * as Model from 'models';
+import * as styles from 'styles';
+import styled from 'styled-components';
+
 import { View } from 'components/view';
 import { Text } from 'components/text';
 import { Page } from 'components/page';
-import { Semester } from './semester';
 import { FloatingActionButton } from 'components/floating-action-button';
 import { Button } from 'components/button';
-import { Toolbox } from './toolbox';
 import { ActionableText } from 'components/actionable-text';
 import { Modal } from 'components/modal';
 import { Checkbox } from 'components/checkbox';
-import * as styles from 'styles';
-import * as Model from 'models';
-import styled from 'styled-components';
+
+import { Toolbox } from './components/toolbox';
+import { Semester } from './components/semester';
 
 const Container = styled(View)`
   flex-direction: row;

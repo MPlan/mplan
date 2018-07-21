@@ -1,8 +1,6 @@
 import * as Model from 'models';
-import { Semester, SemesterProps } from './semester';
+import { Semester } from './semester';
 import { SortChange } from 'components/dropzone';
-
-const scopeDefiner = (store: Model.App) => ({});
 
 export interface SemesterContainerProps {
   semester: Model.Semester;
