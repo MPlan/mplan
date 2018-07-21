@@ -40,7 +40,7 @@ interface RightClickMenuState {
   lastY: number;
 }
 
-export class RightClickMenu<T extends { [P in keyof T]: MenuItem }> extends React.PureComponent<
+export class RightClickMenu<T extends { [P in keyof T]: MenuItem }> extends React.Component<
   RightClickMenuProps<T>,
   RightClickMenuState
 > {
