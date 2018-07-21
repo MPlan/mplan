@@ -36,7 +36,7 @@ const Container = styled(View)`
   height: 100vh;
   top: 0;
   left: 0;
-  z-index: 11;
+  z-index: 100;
 `;
 const Backdrop = styled(View)`
   position: fixed;
@@ -50,6 +50,7 @@ const Backdrop = styled(View)`
 const DropdownContainer = styled(View)`
   position: absolute;
   width: 12rem;
+  z-index: 101;
 `;
 
 export interface RightClickMenuProps<T extends { [P in keyof T]: MenuItem }> {
@@ -165,6 +166,7 @@ export class RightClickMenu<T extends { [P in keyof T]: MenuItem }> extends Reac
             onContextMenu={this.handleDropdownBlur}
             style={{ display: this.state.open ? 'block' : 'none' }}
           >
+            <Backdrop onClick={this.handleDropdownBlur} onContextMenu={this.handleDropdownBlur} />
             <ClickAwayListener onClickAway={this.handleDropdownBlur}>
               <DropdownContainer style={{ top: this.state.y, left: this.state.x }}>
                 <Dropdown
@@ -176,7 +178,6 @@ export class RightClickMenu<T extends { [P in keyof T]: MenuItem }> extends Reac
                 />
               </DropdownContainer>
             </ClickAwayListener>
-            <Backdrop />
           </Container>,
           this.overlayElement,
         )}
