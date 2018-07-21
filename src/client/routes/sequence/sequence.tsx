@@ -11,9 +11,10 @@ import { flatten, createClassName, wait } from 'utilities/utilities';
 import { View } from 'components/view';
 import { Text } from 'components/text';
 import { Page } from 'components/page';
-import { SequenceCourse, courseIdClassName } from './components/course';
 import { ActionableText } from 'components/actionable-text';
 import { FloatingActionButton } from 'components/floating-action-button';
+import { Course, courseIdClassName } from './components/course';
+import { LevelHeader } from './components/level-header';
 
 interface Point {
   y: number;
@@ -41,8 +42,8 @@ const GraphContainer = styled(View)`
 `;
 const Level = styled(View)`
   margin-left: 5rem;
-  min-width: 13rem;
-  width: 13rem;
+  min-width: 5rem;
+  width: 5rem;
 `;
 const LevelCard = styled(View)`
   flex: 1;
@@ -55,11 +56,11 @@ const LevelCard = styled(View)`
     margin-bottom: auto;
   }
 `;
-const LevelHeader = styled(View)`
-  margin: ${styles.space(0)};
-  justify-content: flex-end;
-  min-height: 4rem;
-`;
+// const LevelHeader = styled(View)`
+  // margin: ${styles.space(0)};
+  // justify-content: flex-end;
+  // min-height: 4rem;
+// `;
 const SvgArrowContainer = styled(View)`
   position: absolute;
   top: 0;
@@ -81,7 +82,6 @@ export interface SequenceProps {
 export interface SequenceState {
   mouseOverCourse: string | Model.Course | undefined;
   selectedCourse: string | Model.Course | undefined;
-  compactMode: boolean;
   edges: Edge[];
   graphWrapperWidth: number;
   graphWrapperHeight: number;
@@ -93,7 +93,6 @@ export class Sequence extends React.PureComponent<SequenceProps, SequenceState> 
     this.state = {
       mouseOverCourse: undefined,
       selectedCourse: undefined,
-      compactMode: true,
       edges: [],
       graphWrapperWidth: 1000,
       graphWrapperHeight: 1000,
@@ -141,16 +140,6 @@ export class Sequence extends React.PureComponent<SequenceProps, SequenceState> 
       };
     });
   }
-
-  handleCompactModeToggle = async () => {
-    this.setState(previousState => ({
-      ...previousState,
-      compactMode: !previousState.compactMode,
-    }));
-
-    await wait(500);
-    this.reflowArrows();
-  };
 
   handleCourseMouseOver(course: string | Model.Course) {
     this.setState(previousState => ({
@@ -356,31 +345,12 @@ export class Sequence extends React.PureComponent<SequenceProps, SequenceState> 
     );
   };
 
-  renderTitleLeft = () => {
-    return (
-      <View>
-        <label>
-          <Text>Compact mode?&nbsp;</Text>
-          <input
-            type="checkbox"
-            defaultChecked={this.state.compactMode}
-            onChange={this.handleCompactModeToggle}
-          />
-        </label>
-      </View>
-    );
-  };
-
   render() {
     const graphWidth = this.state.graphWrapperWidth;
     const graphHeight = this.state.graphWrapperHeight;
     const masteredDegree = this.props.degree.masteredDegree();
     return (
-      <Page
-        title={`${masteredDegree.name} Sequence`}
-        renderSubtitle={this.renderSubtitle}
-        renderTitleLeft={this.renderTitleLeft}
-      >
+      <Page title={`${masteredDegree.name} Sequence`} renderSubtitle={this.renderSubtitle}>
         <GraphContainer
           className="graph-container"
           onScroll={this.reflowTrigger}
@@ -388,36 +358,13 @@ export class Sequence extends React.PureComponent<SequenceProps, SequenceState> 
         >
           <GraphWrapper className="graph-wrapper" innerRef={this.graphWrapperRef}>
             {this.props.degree.levels().map((level, levelIndex) => (
-              <Level
-                key={levelIndex}
-                style={{
-                  width: this.state.compactMode ? '5rem' : '13rem',
-                  minWidth: this.state.compactMode ? '5rem' : '13rem',
-                }}
-              >
-                {/*if*/ !this.state.compactMode ? (
-                  <LevelHeader>
-                    <Text large strong color={styles.textLight}>
-                      Level {levelIndex + 1}
-                    </Text>
-                    {/*if*/ levelIndex <= 0 ? (
-                      <Text small color={styles.textLight}>
-                        These classes have been found to have no prerequisites.
-                      </Text>
-                    ) : (
-                      <Text small color={styles.textLight}>
-                        You need to have taken at least {levelIndex}{' '}
-                        {levelIndex > 1 ? 'semesters' : 'semester'} before taking any classes in
-                        this level.
-                      </Text>
-                    )}
-                  </LevelHeader>
-                ) : null}
+              <Level key={levelIndex}>
+                <LevelHeader level={levelIndex} />
                 <LevelCard>
                   {level
                     .sortBy(course => (course instanceof Model.Course ? course.simpleName : course))
                     .map(course => (
-                      <SequenceCourse
+                      <Course
                         key={/*if*/ course instanceof Model.Course ? course.id : course}
                         course={course}
                         onMouseOver={() => this.handleCourseMouseOver(course)}
@@ -426,7 +373,6 @@ export class Sequence extends React.PureComponent<SequenceProps, SequenceState> 
                         onFocus={() => this.handleCourseFocus(course)}
                         focused={this.courseFocused(course)}
                         highlighted={this.courseHighlighted(course)}
-                        compactMode={this.state.compactMode}
                         dimmed={this.courseDimmed(course)}
                       />
                     ))}
@@ -437,7 +383,7 @@ export class Sequence extends React.PureComponent<SequenceProps, SequenceState> 
               <svg
                 width={'100%'}
                 height={'100%'}
-                style={{ marginLeft: this.state.compactMode ? '12.3rem' : '18rem' }}
+                style={{ marginLeft: '12.3rem' }}
                 viewBox={`0 0 ${graphWidth} ${graphHeight}`}
                 preserveAspectRatio="none"
               >
