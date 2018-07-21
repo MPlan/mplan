@@ -8,7 +8,7 @@ import { View, ViewProps } from 'components/view';
 import { Text } from 'components/text';
 import { ActionableText } from 'components/actionable-text';
 import { DropdownMenu } from 'components/dropdown-menu';
-import { RightClickMenu } from 'components/right-click-menu';
+import { RightClickMenu, RightClickProps } from 'components/right-click-menu';
 
 import { DegreeGroupCourse } from './degree-group-course';
 
@@ -190,11 +190,11 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
     }
   };
 
-  renderRightClickMenu = (onContextMenu: (e: React.MouseEvent<any>) => void) => {
+  renderRightClickMenu = (rightClickProps: RightClickProps) => {
     const { degreeGroup } = this.props;
 
     return (
-      <Container onContextMenu={onContextMenu}>
+      <Container onContextMenu={rightClickProps.onContextMenu}>
         <Header>
           <NameAndCredits>
             {this.state.editingName ? (

@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import * as styles from 'styles';
 import { Dropzone, SortChange } from 'components/dropzone';
 import { DropdownMenu } from 'components/dropdown-menu';
-import { RightClickMenu } from 'components/right-click-menu';
+import { RightClickMenu, RightClickProps } from 'components/right-click-menu';
 import { ActionableText } from 'components/actionable-text';
 
 const Container = styled(View)`
@@ -117,13 +117,16 @@ export class Semester extends React.PureComponent<SemesterProps, {}> {
 
   handleAction = (_: keyof typeof actions) => {};
 
-  renderRightClickMenu = (onContextMenu: (e: React.MouseEvent<any>) => void) => {
+  renderRightClickMenu = (rightClickProps: RightClickProps) => {
     const { semester } = this.props;
     const courses = semester.courseArray();
     const totalCredits = semester.totalCredits();
 
     return (
-      <Container onContextMenu={onContextMenu} className={`semester-${semester.id}`}>
+      <Container
+        onContextMenu={rightClickProps.onContextMenu}
+        className={`semester-${semester.id}`}
+      >
         <Header>
           <View>
             <SemesterName>{semester.name}</SemesterName>

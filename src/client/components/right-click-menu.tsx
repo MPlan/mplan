@@ -7,6 +7,10 @@ import { Dropdown } from './dropdown';
 import { MenuItem } from './menu-item';
 import { ClickAwayListener } from './click-away-listener';
 
+export interface RightClickProps {
+  onContextMenu: (e: React.MouseEvent<any>) => void;
+}
+
 function moved(point0: { y: number; x: number }, point1: { y: number; x: number }) {
   if (point0.y !== point1.y) return true;
   if (point0.x !== point1.x) return true;
@@ -29,7 +33,7 @@ export interface RightClickMenuProps<T extends { [P in keyof T]: MenuItem }> {
   actions: T;
   onAction: (action: keyof T) => void;
   header: string;
-  render: (onContextMenu: (e: React.MouseEvent<any>) => void) => JSX.Element;
+  render: (props: RightClickProps) => JSX.Element;
 }
 
 interface RightClickMenuState {
@@ -60,13 +64,11 @@ export class RightClickMenu<T extends { [P in keyof T]: MenuItem }> extends Reac
 
   componentDidMount() {
     // document.addEventListener('contextmenu', this.handleClick);
-
     document.body.appendChild(this.overlayElement);
   }
 
   componentWillUnmount() {
     // document.removeEventListener('contextmenu', this.handleClick);
-
     document.body.removeChild(this.overlayElement);
   }
 
@@ -126,7 +128,10 @@ export class RightClickMenu<T extends { [P in keyof T]: MenuItem }> extends Reac
     return (
       <React.Fragment>
         {ReactDom.createPortal(
-          <Container onContextMenu={this.handleDropdownBlur} style={{ display: this.state.open ? 'block' : 'none' }}>
+          <Container
+            onContextMenu={this.handleDropdownBlur}
+            style={{ display: this.state.open ? 'block' : 'none' }}
+          >
             <ClickAwayListener onClickAway={this.handleDropdownBlur}>
               <DropdownContainer style={{ top: this.state.y, left: this.state.x }}>
                 <Dropdown
@@ -141,7 +146,7 @@ export class RightClickMenu<T extends { [P in keyof T]: MenuItem }> extends Reac
           </Container>,
           this.overlayElement,
         )}
-        {this.props.render(this.handleContextMenu)}
+        {this.props.render({ onContextMenu: this.handleContextMenu })}
       </React.Fragment>
     );
   }

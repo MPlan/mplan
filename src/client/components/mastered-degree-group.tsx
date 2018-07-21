@@ -3,14 +3,16 @@ import * as Model from '../models';
 import * as Immutable from 'immutable';
 import styled from 'styled-components';
 import * as styles from 'styles';
+
 import { View } from './view';
 import { Text } from './text';
 import { DropdownMenu } from './dropdown-menu';
-import { RightClickMenu } from './right-click-menu';
+import { RightClickMenu, RightClickProps } from './right-click-menu';
 import { Button } from './button';
 import { Fa } from './fa';
 import { EditableCourseList } from './editable-course-list';
 import { Modal } from './modal';
+
 import { activateOnEdit, selectTextFromInputRef } from 'utilities/refs';
 const RichTextEditor = require('react-rte').default;
 
@@ -361,11 +363,11 @@ export class MasteredDegreeGroup extends React.PureComponent<
     }));
   };
 
-  renderRightClickMenu = (onContextMenu: (e: React.MouseEvent<any>) => void) => {
+  renderRightClickMenu = (rightClickProps: RightClickProps) => {
     const { masteredDegreeGroup } = this.props;
 
     return (
-      <HeaderRow onContextMenu={onContextMenu}>
+      <HeaderRow onContextMenu={rightClickProps.onContextMenu}>
         {/*if*/ this.state.editingName ? (
           <NameForm onSubmit={this.handleNameSubmit}>
             <NameInput

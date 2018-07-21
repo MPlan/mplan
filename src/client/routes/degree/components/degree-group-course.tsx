@@ -7,7 +7,7 @@ import { View } from 'components/view';
 import { Text } from 'components/text';
 import { ActionableText } from 'components/actionable-text';
 import { DropdownMenu } from 'components/dropdown-menu';
-import { RightClickMenu } from 'components/right-click-menu';
+import { RightClickMenu, RightClickProps } from 'components/right-click-menu';
 
 import { shallowEqualIgnoringFunctions } from 'utilities/utilities';
 
@@ -80,24 +80,24 @@ export class DegreeGroupCourse extends React.Component<DegreeGroupCourseProps, {
     return false;
   }
 
-  renderRightClickMenuString = (onContextMenu: (e: React.MouseEvent<any>) => void) => {
+  renderRightClickMenuString = (rightClickProps: RightClickProps) => {
     const { course } = this.props;
     if (course !== 'string') throw new Error('course should have been a string');
 
     return (
-      <Container onContextMenu={onContextMenu}>
+      <Container onContextMenu={rightClickProps.onContextMenu}>
         <NonCourseName>{course}</NonCourseName>
         <Checkbox type="checkbox" onChange={this.props.onChange} />
       </Container>
     );
   };
 
-  renderRightClickMenuCourse = (onContextMenu: (e: React.MouseEvent<any>) => void) => {
+  renderRightClickMenuCourse = (rightClickProps: RightClickProps) => {
     const { course, completed } = this.props;
     if (!(course instanceof Model.Course)) throw new Error('course should have been a course');
 
     return (
-      <Container onContextMenu={onContextMenu}>
+      <Container onContextMenu={rightClickProps.onContextMenu}>
         <NameAndCredits>
           <SimpleNameAndCredits>
             <SimpleName>{course.simpleName}</SimpleName>

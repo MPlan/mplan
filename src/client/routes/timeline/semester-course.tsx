@@ -5,7 +5,7 @@ import { Text } from 'components/text';
 import styled from 'styled-components';
 import * as styles from 'styles';
 import { DropdownMenu } from 'components/dropdown-menu';
-import { RightClickMenu } from 'components/right-click-menu';
+import { RightClickMenu, RightClickProps } from 'components/right-click-menu';
 
 const Container = styled(View)`
   padding: ${styles.space(-1)} ${styles.space(0)};
@@ -68,12 +68,12 @@ export class SemesterCourse extends React.PureComponent<SemesterCourseProps, {}>
     }
   };
 
-  renderRightClickMenu = (onContextMenu: (e: React.MouseEvent<any>) => void) => {
+  renderRightClickMenu = (rightClickProps: RightClickProps) => {
     const { course } = this.props;
     const criticalLevel = course.criticalLevel();
 
     return (
-      <Container onContextMenu={onContextMenu}>
+      <Container onContextMenu={rightClickProps.onContextMenu}>
         <Body>
           <Row>
             <SimpleName>{course.simpleName}</SimpleName>
