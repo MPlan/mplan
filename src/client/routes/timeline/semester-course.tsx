@@ -73,7 +73,7 @@ export class SemesterCourse extends React.PureComponent<SemesterCourseProps, {}>
     const criticalLevel = course.criticalLevel();
 
     return (
-      <Container onContextMenu={rightClickProps.onContextMenu}>
+      <Container {...rightClickProps}>
         <Body>
           <Row>
             <SimpleName>{course.simpleName}</SimpleName>

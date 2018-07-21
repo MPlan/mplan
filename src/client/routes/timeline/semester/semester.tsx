@@ -1,14 +1,17 @@
 import * as React from 'react';
 import * as Model from 'models';
+import * as styles from 'styles';
+import styled from 'styled-components';
+import classNames from 'classnames';
+
 import { View } from 'components/view';
 import { Text } from 'components/text';
-import { SemesterCourse } from '../semester-course';
-import styled from 'styled-components';
-import * as styles from 'styles';
 import { Dropzone, SortChange } from 'components/dropzone';
 import { DropdownMenu } from 'components/dropdown-menu';
 import { RightClickMenu, RightClickProps } from 'components/right-click-menu';
 import { ActionableText } from 'components/actionable-text';
+
+import { SemesterCourse } from '../semester-course';
 
 const Container = styled(View)`
   width: 16rem;
@@ -124,8 +127,8 @@ export class Semester extends React.PureComponent<SemesterProps, {}> {
 
     return (
       <Container
-        onContextMenu={rightClickProps.onContextMenu}
-        className={`semester-${semester.id}`}
+        {...rightClickProps}
+        className={classNames(`semester-${semester.id}`, rightClickProps.className)}
       >
         <Header>
           <View>

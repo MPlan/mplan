@@ -194,7 +194,7 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
     const { degreeGroup } = this.props;
 
     return (
-      <Container onContextMenu={rightClickProps.onContextMenu}>
+      <Container {...rightClickProps}>
         <Header>
           <NameAndCredits>
             {this.state.editingName ? (

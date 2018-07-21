@@ -7,8 +7,12 @@ import { Dropdown } from './dropdown';
 import { MenuItem } from './menu-item';
 import { ClickAwayListener } from './click-away-listener';
 
+const rightClickMenuClassName = 'right-click-menu';
+
 export interface RightClickProps {
+  className: string;
   onContextMenu: (e: React.MouseEvent<any>) => void;
+  innerRef: React.RefObject<HTMLElement>;
 }
 
 function moved(point0: { y: number; x: number }, point1: { y: number; x: number }) {
@@ -17,12 +21,31 @@ function moved(point0: { y: number; x: number }, point1: { y: number; x: number 
   return false;
 }
 
+function findClosestRightClickParent(
+  element: HTMLElement | undefined | null,
+  containerElement: HTMLElement,
+): HTMLElement | undefined | null {
+  if (!element) return element;
+  if (element.classList.contains(rightClickMenuClassName)) return element;
+  return findClosestRightClickParent(element.parentElement, containerElement);
+}
+
 const Container = styled(View)`
   position: fixed;
   width: 100vw;
   height: 100vh;
   top: 0;
   left: 0;
+  z-index: 11;
+`;
+const Backdrop = styled(View)`
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  background-color: black;
+  opacity: 0.1;
 `;
 const DropdownContainer = styled(View)`
   position: absolute;
@@ -49,6 +72,7 @@ export class RightClickMenu<T extends { [P in keyof T]: MenuItem }> extends Reac
   RightClickMenuState
 > {
   overlayElement = document.createElement('div');
+  containerRef = React.createRef<HTMLElement>();
 
   constructor(props: RightClickMenuProps<T>) {
     super(props);
@@ -74,15 +98,18 @@ export class RightClickMenu<T extends { [P in keyof T]: MenuItem }> extends Reac
 
   handleContextMenu = async (e: React.MouseEvent<HTMLElement>) => {
     console.log('context menu');
+    const container = this.containerRef.current;
+    if (!container) return;
+
     e.preventDefault();
-    // const closestRightClickParent = findClosestRightClickParent(e.target as HTMLElement);
-    // if (closestRightClickParent !== this.containerRef.current) {
-    //   this.setState(previousState => ({
-    //     ...previousState,
-    //     open: false,
-    //   }));
-    //   return;
-    // }
+    const closestRightClickParent = findClosestRightClickParent(e.target as HTMLElement, container);
+    if (closestRightClickParent !== this.containerRef.current) {
+      this.setState(previousState => ({
+        ...previousState,
+        open: false,
+      }));
+      return;
+    }
 
     const x = e.clientX;
     const y = e.clientY;
@@ -124,6 +151,12 @@ export class RightClickMenu<T extends { [P in keyof T]: MenuItem }> extends Reac
     }));
   };
 
+  rightClickProps = {
+    className: rightClickMenuClassName,
+    onContextMenu: this.handleContextMenu,
+    innerRef: this.containerRef,
+  };
+
   render() {
     return (
       <React.Fragment>
@@ -143,10 +176,11 @@ export class RightClickMenu<T extends { [P in keyof T]: MenuItem }> extends Reac
                 />
               </DropdownContainer>
             </ClickAwayListener>
+            <Backdrop />
           </Container>,
           this.overlayElement,
         )}
-        {this.props.render({ onContextMenu: this.handleContextMenu })}
+        {this.props.render(this.rightClickProps)}
       </React.Fragment>
     );
   }

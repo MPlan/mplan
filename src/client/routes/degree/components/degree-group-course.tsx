@@ -85,7 +85,7 @@ export class DegreeGroupCourse extends React.Component<DegreeGroupCourseProps, {
     if (course !== 'string') throw new Error('course should have been a string');
 
     return (
-      <Container onContextMenu={rightClickProps.onContextMenu}>
+      <Container {...rightClickProps}>
         <NonCourseName>{course}</NonCourseName>
         <Checkbox type="checkbox" onChange={this.props.onChange} />
       </Container>
@@ -97,7 +97,7 @@ export class DegreeGroupCourse extends React.Component<DegreeGroupCourseProps, {
     if (!(course instanceof Model.Course)) throw new Error('course should have been a course');
 
     return (
-      <Container onContextMenu={rightClickProps.onContextMenu}>
+      <Container {...rightClickProps}>
         <NameAndCredits>
           <SimpleNameAndCredits>
             <SimpleName>{course.simpleName}</SimpleName>

@@ -367,7 +367,7 @@ export class MasteredDegreeGroup extends React.PureComponent<
     const { masteredDegreeGroup } = this.props;
 
     return (
-      <HeaderRow onContextMenu={rightClickProps.onContextMenu}>
+      <HeaderRow {...rightClickProps}>
         {/*if*/ this.state.editingName ? (
           <NameForm onSubmit={this.handleNameSubmit}>
             <NameInput
