@@ -1,6 +1,30 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`parseRestrictionsBlock parses restrictions and returns an array of them 1`] = `
+exports[`parseRestrictionsBlock parses restrictions for CHEM and returns an array of them 1`] = `
+Array [
+  Array [
+    "Cannot enroll if Major is Chemistry (Instructional), Microbiology, Biochemistry, Chemistry (ACS Certified), Biological Sciences",
+  ],
+  Array [
+    "Cannot enroll if Class is Graduate",
+  ],
+  Array [
+    "Can enroll if Class is Junior or Senior",
+  ],
+  Array [
+    "Can enroll if Class is Junior or Senior or Graduate",
+  ],
+  Array [
+    "Can enroll if Class is Senior",
+  ],
+  Array [
+    "Can enroll if Class is Junior or Senior or Graduate",
+    "Cannot enroll if Major is Chemistry (Instructional), Chemistry (ACS Certified)",
+  ],
+]
+`;
+
+exports[`parseRestrictionsBlock parses restrictions for CIS and returns an array of them 1`] = `
 Array [
   Array [
     "Can enroll if Program is",
@@ -82,6 +106,121 @@ Array [
   ],
   Array [
     "Can enroll if Class is Senior",
+  ],
+]
+`;
+
+exports[`parseRestrictionsBlock parses restrictions for ME and returns an array of them 1`] = `
+Array [
+  Array [
+    "Can enroll if Major is Engineering, Bioengineering, Industrial & Systems Engin, Manufacturing Engineering, Electrical Engineering, Mechanical Engineering",
+  ],
+  Array [
+    "Can enroll if College is Engineering and Computer Science",
+  ],
+  Array [
+    "Can enroll if Class is Junior or Senior or Graduate",
+  ],
+  Array [
+    "Can enroll if Class is Sophomore or Junior or Senior",
+    "Can enroll if College is Engineering and Computer Science",
+  ],
+  Array [
+    "Can enroll if Level is Undergraduate",
+    "Can enroll if Major is Mechanical Engineering",
+  ],
+  Array [
+    "Can enroll if Level is Undergraduate",
+    "Can enroll if Major is Mechanical Engineering",
+  ],
+  Array [
+    "Can enroll if Class is Sophomore or Junior or Senior",
+    "Can enroll if Level is Undergraduate",
+    "Can enroll if College is Engineering and Computer Science",
+  ],
+  Array [
+    "Can enroll if Class is Sophomore or Junior or Senior",
+    "Can enroll if Major is Mechanical Engineering",
+  ],
+  Array [
+    "Can enroll if Class is Sophomore or Junior or Senior",
+    "Can enroll if College is Engineering and Computer Science",
+  ],
+  Array [
+    "Can enroll if Class is Junior or Senior or Graduate",
+  ],
+  Array [
+    "Can enroll if Class is Junior or Senior",
+    "Can enroll if Level is Undergraduate",
+    "Can enroll if College is Engineering and Computer Science",
+  ],
+  Array [
+    "Can enroll if Class is Junior or Senior",
+    "Can enroll if Level is Undergraduate",
+    "Can enroll if College is Engineering and Computer Science",
+  ],
+  Array [
+    "Cannot enroll if Class is Freshman",
+    "Can enroll if College is Engineering and Computer Science",
+  ],
+  Array [
+    "Can enroll if Class is Senior",
+    "Can enroll if College is Engineering and Computer Science",
+  ],
+  Array [
+    "Can enroll if Class is Junior or Senior",
+    "Can enroll if Level is Undergraduate",
+    "Can enroll if College is Engineering and Computer Science",
+  ],
+  Array [
+    "Can enroll if Class is Junior or Senior",
+    "Can enroll if Level is Undergraduate",
+    "Can enroll if College is Engineering and Computer Science",
+  ],
+  Array [
+    "Can enroll if Class is Senior",
+    "Can enroll if Major is Mechanical Engineering",
+  ],
+  Array [
+    "Can enroll if Class is Senior",
+    "Can enroll if College is Engineering and Computer Science",
+  ],
+  Array [
+    "Can enroll if Class is Junior or Senior",
+    "Can enroll if College is Engineering and Computer Science",
+    "Can enroll if Major is Mechanical Engineering",
+  ],
+  Array [
+    "Can enroll if Class is Junior or Senior",
+    "Can enroll if Major is Mechanical Engineering",
+  ],
+  Array [
+    "Can enroll if Class is Junior or Senior",
+    "Can enroll if Major is Bioengineering, Mechanical Engineering",
+  ],
+  Array [
+    "Cannot enroll if Class is Freshman or Sophomore",
+    "Can enroll if College is Engineering and Computer Science",
+  ],
+  Array [
+    "Can enroll if Class is Senior or Graduate",
+  ],
+  Array [
+    "Can enroll if Class is Senior or Graduate",
+  ],
+  Array [
+    "Can enroll if Class is Senior or Graduate",
+  ],
+  Array [
+    "Can enroll if Class is Junior or Senior",
+    "Can enroll if College is Engineering and Computer Science",
+  ],
+  Array [
+    "Can enroll if Class is Junior or Senior",
+    "Can enroll if Major is Mechanical Engineering",
+  ],
+  Array [
+    "Can enroll if Class is Senior or Graduate",
   ],
 ]
 `;
