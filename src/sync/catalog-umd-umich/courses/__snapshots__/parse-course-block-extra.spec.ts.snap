@@ -1,0 +1,87 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`parseRestrictionsBlock parses restrictions and returns an array of them 1`] = `
+Array [
+  Array [
+    "Can enroll if Program is",
+  ],
+  Array [
+    "Can enroll if Class is Junior or Senior",
+  ],
+  Array [
+    "Cannot enroll if Class is Freshman",
+    "Can enroll if Level is Undergraduate",
+  ],
+  Array [
+    "Cannot enroll if Class is Freshman or Sophomore",
+  ],
+  Array [
+    "Can enroll if Class is Junior or Senior",
+    "Can enroll if Level is Undergraduate",
+  ],
+  Array [
+    "Can enroll if Class is Junior or Senior",
+    "Can enroll if Level is Undergraduate",
+    "Can enroll if College is Arts, Sciences, and Letters or Engineering and Computer Science",
+  ],
+  Array [
+    "Cannot enroll if College is Business",
+  ],
+  Array [
+    "Cannot enroll if College is Business or Education, Health, and Human Services",
+  ],
+  Array [
+    "Can enroll if Class is Senior",
+    "Can enroll if College is Business",
+  ],
+  Array [
+    "Cannot enroll if Class is Freshman",
+    "Cannot enroll if College is Business",
+  ],
+  Array [
+    "Can enroll if College is Engineering and Computer Science",
+  ],
+  Array [
+    "Cannot enroll if Class is Graduate or Doctorate",
+  ],
+  Array [
+    "Can enroll if Class is Junior or Senior",
+    "Can enroll if Level is Undergraduate",
+    "Can enroll if College is Engineering and Computer Science",
+  ],
+  Array [
+    "Can enroll if Class is Junior or Senior",
+    "Can enroll if College is Engineering and Computer Science",
+  ],
+  Array [
+    "Can enroll if Class is Senior",
+    "Can enroll if Major is CIS/Information Systems",
+  ],
+  Array [
+    "Can enroll if Class is Senior",
+    "Can enroll if Major is CIS/Information Systems",
+  ],
+  Array [
+    "Can enroll if Class is Senior",
+    "Can enroll if College is Business",
+  ],
+  Array [
+    "Can enroll if College is Engineering and Computer Science",
+  ],
+  Array [
+    "Can enroll if College is Engineering and Computer Science",
+  ],
+  Array [
+    "Can enroll if College is Engineering and Computer Science",
+  ],
+  Array [
+    "Can enroll if College is Engineering and Computer Science",
+  ],
+  Array [
+    "Can enroll if Class is Senior",
+  ],
+  Array [
+    "Can enroll if Class is Senior",
+  ],
+]
+`;
