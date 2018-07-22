@@ -1,42 +1,23 @@
 import * as fs from 'fs';
 
-// https://stackoverflow.com/questions/16697791/nodejs-get-filename-of-caller-function
-function _getCallerFile(): string {
-  const originalFunc = Error.prepareStackTrace;
-
-  let callerFile: any;
-  try {
-    const err = new Error() as any;
-    let currentFile;
-
-    Error.prepareStackTrace = function(err, stack) {
-      return stack;
-    };
-
-    currentFile = err.stack.shift().getFileName();
-
-    while (err.stack.length) {
-      callerFile = err.stack.shift().getFileName();
-      if (currentFile !== callerFile) break;
-    }
-  } catch (e) {}
-  Error.prepareStackTrace = originalFunc;
-  return callerFile;
-}
-
-export function writeExampleHtml(id: string, html: string) {
-  const callerFile = _getCallerFile();
-  const split = callerFile.split('/');
-  const callerDirectory = split.slice(0, split.length - 1).join('/');
-  const examplesDirectory = `${callerDirectory}/__examples__`;
+export function writeExampleHtml(id: string, dirname: string, html: string) {
+  const examplesDirectory = `${dirname}/__examples__`;
   if (!fs.existsSync(examplesDirectory)) fs.mkdirSync(examplesDirectory);
   fs.writeFileSync(`${examplesDirectory}/${id}.html`, html);
+  console.info(`wrote ${id}.html`);
 }
 
-export function getExampleHtml(id: string) {
-  const callerFile = _getCallerFile();
-  const split = callerFile.split('/');
-  const callerDirectory = split.slice(0, split.length - 1).join('/');
-  const examplesDirectory = `${callerDirectory}/__examples__`;
-  return fs.readFileSync(`${examplesDirectory}/${id}.html`).toString();
+export function getExampleHtml(id: string, dirname: string) {
+  return fs.readFileSync(`${dirname}/__examples__/${id}.html`).toString();
+}
+
+export async function getOrWriteHtml(id: string, dirname: string, get: () => Promise<string>) {
+  try {
+    return getExampleHtml(id, dirname);
+  } catch (e) {
+    console.info('could not find HTML so getting...');
+    const html = await get();
+    writeExampleHtml(id, dirname, html);
+    return html;
+  }
 }
