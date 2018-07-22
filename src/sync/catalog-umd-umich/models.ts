@@ -5,10 +5,10 @@ export interface Course {
   courseNumber: string;
   name: string;
   description: string;
+  creditHours: number | [number, number];
+  restrictions: string[];
   prerequisites: Prerequisite;
   corequisites: Prerequisite;
-  restrictions: string[];
-  creditHours: number | [number, number];
 }
 
 export interface Subject {

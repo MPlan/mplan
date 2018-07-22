@@ -1,10 +1,19 @@
 import { getOrWriteHtml } from 'testing-utilities/example-html';
-import { parseCourseBlockTitle } from './parse';
+import { parseCourses, parseCourseBlockTitle } from './parse';
 import { fetchCourseList } from './fetch';
 import { JSDOM } from 'jsdom';
 
 describe('courses', () => {
   describe('parse', () => {
+    it('parses the CIS course page', async () => {
+      const html = await getOrWriteHtml('cis-courses', __dirname, () =>
+        fetchCourseList('undergraduate', 'cis'),
+      );
+
+      const courses = parseCourses(html);
+      expect(courses).toMatchSnapshot();
+    });
+
     it('parses the course block correctly for CIS', async () => {
       const html = await getOrWriteHtml('cis-courses', __dirname, () =>
         fetchCourseList('undergraduate', 'cis'),
