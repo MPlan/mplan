@@ -15,7 +15,7 @@ const webpackConfig = {
   },
   module: {
     rules: [
-      { test: /\.tsx?/, loader: 'awesome-typescript-loader' },
+      { test: /\.tsx?$/, loader: 'awesome-typescript-loader' },
       {
         test: /\.css/,
         use: [{ loader: 'style-loader' }, { loader: 'css-loader', options: { minimize: true } }],
@@ -33,6 +33,7 @@ const webpackConfig = {
       routes: path.resolve(__dirname, './src/client/routes'),
       client: path.resolve(__dirname, './src/client'),
       server: path.resolve(__dirname, './src/server'),
+      sync: path.resolve(__dirname, './src/sync'),
     },
   },
   devtool: 'source-map',

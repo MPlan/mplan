@@ -17,7 +17,9 @@
       "utilities/*": ["utilities/*"],
       "recordize": ["recordize/*"],
       "client/*": ["client/*"],
-      "server/*": ["server/*"]
+      "server/*": ["server/*"],
+      "sync/*": ["sync/*"],
+      "testing-utilities/*": ["testing-utilities/*"]
     }
   }
 }
