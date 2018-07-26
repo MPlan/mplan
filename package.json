@@ -102,7 +102,8 @@
       "^.+\\.(j|t)sx?$": "ts-jest"
     },
     "moduleNameMapper": {
-      "^testing-utilities/(.*)": "<rootDir>/src/testing-utilities/$1"
+      "^testing-utilities/(.*)": "<rootDir>/src/testing-utilities/$1",
+      "^utilities/(.*)": "<rootDir>/src/utilities/$1"
     },
     "testURL": "http://catalog.umd.umich.edu",
     "testRegex": "^.+\\.spec\\.(j|t)sx?$",

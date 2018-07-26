@@ -7,10 +7,19 @@ export function parseRestrictionsBlock(restrictionsBlock: Element) {
     .filter(x => !/restriction/i.test(x));
 }
 
+export function parsePrerequisite(prerequisiteBlock: Element) {}
+
 export function parseCourseBlockExtra(courseBlockExtra: Element) {
   const textContent = courseBlockExtra.textContent;
   if (!textContent) throw new Error('could not get textContent from .courseblockextra');
-  const restrictionsBlock = /restriction/i.test(textContent);
-  if (restrictionsBlock) return { restrictions: parseRestrictionsBlock(courseBlockExtra) };
+  if (/restriction/i.test(textContent)) {
+    return { restrictions: parseRestrictionsBlock(courseBlockExtra) };
+  }
+  if (/prerequisite/i.test(textContent)) {
+    return { prerequisites: parsePrerequisite(courseBlockExtra) };
+  }
+  if (/corequisite/i.test(textContent)) {
+    return { corequisites: parsePrerequisite(courseBlockExtra) };
+  }
   return undefined;
 }
