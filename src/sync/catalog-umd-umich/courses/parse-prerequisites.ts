@@ -1,24 +1,6 @@
 import { oneLine } from 'common-tags';
 import { formDecode } from 'utilities/form-encode-decode';
-
-export type Prerequisite =
-  | undefined
-  | [string, string]
-  | string
-  | {
-      /** the logic gate to use */
-      g: '&' | '|';
-      /**
-       * the operands of the logic gate
-       *
-       * can be:
-       *
-       * * another `Prerequisite`
-       * * a tuple of `[subjectCode, courseNumber]` e.g. `["CIS", "310"]`
-       * * or a simple string e.g. `"Remedial Math"`
-       */
-      o: Prerequisite[];
-    };
+import { Prerequisite } from '../models';
 
 /** A simple interface that extends an array */
 export interface ParseTree extends Array<string | ParseTree> {
@@ -77,10 +59,13 @@ export function replacePrerequisiteAnchors(courseBlockExtra: Element) {
   }
 
   const arr = [courseBlockExtra.textContent || ''];
-  const textContent = oneLine(Object.assign(arr, { raw: arr }));
-  const prerequisiteMatch = /prerequisite.*:([^:]*)/i.exec(textContent);
+  const oneLined = oneLine(Object.assign(arr, { raw: arr }));
+  const prerequisiteMatch = /prerequisite.*:([^:]*)/i.exec(oneLined);
   if (!prerequisiteMatch) throw new Error('could not info out of perquisite block');
-  return prerequisiteMatch[1].trim();
+  const textContent = prerequisiteMatch[1].trim();
+  const withConcurrent = textContent.replace(/__(\w*)\|(\w*)__\s*\*/g, '__$1|$2|CONCURRENT__');
+  const withPrevious = withConcurrent.replace(/__(\w*)\|(\w*)__(?!\*)/g, '__$1|$2|PREVIOUS__');
+  return withPrevious;
 }
 
 /**
@@ -145,15 +130,32 @@ export function transformParenthesesToTree(
  * If the string provided matches `/__(.*)\|(.*)__/` (e.g. `blah __CIS|310__ blah`) then the
  * function will return just the `__CIS|310__` and leave out the `blah blah`
  */
-export function replaceCourseDirectiveInToken(token: string) {
-  const match = /__(.*)\|(.*)__/.exec(token);
-  if (!match) {
-    return token;
-  }
+export function replaceCourseDirective(token: string) {
+  const match = /__(.+)\|(.+)\|(.+)__/.exec(token);
+  if (!match) return undefined;
+
   const subjectCode = match[1].trim().toUpperCase();
   const courseNumber = match[2].trim().toUpperCase();
+  const previousOrConcurrent = match[3].trim().toUpperCase();
+  if (previousOrConcurrent !== 'PREVIOUS' && previousOrConcurrent !== 'CONCURRENT') {
+    throw new Error(
+      `Last value in match was neither "PREVIOUS" or "CONCURRENT". It was "${previousOrConcurrent}". Full string "${token}"`,
+    );
+  }
 
-  return `__${subjectCode}|${courseNumber}__`;
+  return [subjectCode, courseNumber, previousOrConcurrent] as [
+    string,
+    string,
+    'PREVIOUS' | 'CONCURRENT'
+  ];
+}
+
+export function removeExtraFromDirective(token: string) {
+  const result = replaceCourseDirective(token);
+  if (!result) return token;
+
+  const [subjectCode, courseNumber, previousOrConcurrent] = result;
+  return `__${subjectCode}|${courseNumber}|${previousOrConcurrent}__`;
 }
 
 /**
@@ -169,15 +171,15 @@ export function replaceCourseDirectiveInToken(token: string) {
  * ['one two', 'and', ['buckle shoe', 'or', 'three four']]
  * ```
  */
-export function tokenizeByOperator(tree: ParseTree): ParseTree {
+export function groupByOperator(tree: ParseTree): ParseTree {
   const newTree = [] as ParseTree;
   let currentToken = '';
   for (const node of tree) {
     if (Array.isArray(node)) {
-      newTree.push(tokenizeByOperator(node));
+      newTree.push(groupByOperator(node));
     } else if (node.toLowerCase() === 'and' || node.toLowerCase() === 'or') {
       if (currentToken) {
-        newTree.push(replaceCourseDirectiveInToken(currentToken.trim()));
+        newTree.push(removeExtraFromDirective(currentToken.trim()));
       }
       newTree.push(node);
       currentToken = '';
@@ -186,109 +188,71 @@ export function tokenizeByOperator(tree: ParseTree): ParseTree {
     }
   }
   if (currentToken) {
-    newTree.push(replaceCourseDirectiveInToken(currentToken.trim()));
+    newTree.push(removeExtraFromDirective(currentToken.trim()));
   }
   return newTree;
+}
+
+function isPrerequisite(obj: any): obj is Prerequisite {
+  if (!obj) return false;
+  if (typeof obj === 'string') return true;
+  if (typeof obj !== 'object') return false;
+  if (obj.and) return true;
+  if (obj.or) return true;
+  if (!Array.isArray(obj)) return false;
+  if (obj.length !== 3) return false;
+  const last = obj[obj.length - 1];
+  if (last === 'CONCURRENT') return true;
+  if (last === 'PREVIOUS') return true;
+  return false;
 }
 
 /**
  * Recursively builds the `_Prerequisite` type given a `ParseTree` from the `tokenizeByOperator`
  * function.
  */
-export function buildPrerequisiteTree(tokens: ParseTree): Prerequisite {
-  let logicGateSetOnce = false;
-  let currentPrerequisite: Prerequisite = {
-    g: '|',
-    o: [] as Prerequisite[],
-  };
-
-  for (const token of tokens) {
-    if (token === 'and' || token === 'or') {
-      const gate = /*if*/ token === 'and' ? '&' : '|';
-      if (!logicGateSetOnce) {
-        logicGateSetOnce = true;
-        currentPrerequisite.g = gate;
-      } else if (gate === currentPrerequisite.g) {
-        continue;
-      } else {
-        let previousPrerequisite = currentPrerequisite;
-        currentPrerequisite = {
-          g: gate,
-          o: [],
-        };
-        currentPrerequisite.o.push(previousPrerequisite);
-      }
-    } else if (Array.isArray(token)) {
-      currentPrerequisite.o.push(buildPrerequisiteTree(token));
-    } else {
-      currentPrerequisite.o.push(token);
-    }
+export function buildPrerequisiteTree(tokens: ParseTree | Prerequisite): Prerequisite | undefined {
+  if (typeof tokens === 'string') {
+    const result = replaceCourseDirective(tokens);
+    if (!result) return tokens;
+    return result;
   }
+  if (isPrerequisite(tokens)) return tokens;
 
-  // if the logic gate `g` has never been set, then it has never occurred in the parse tree.
-  // this should only be possible if there is a single class as the prerequisite meaning there
-  // should also only be *one* operand
-  if (!logicGateSetOnce) {
-    const firstOperand = currentPrerequisite.o[0];
-    // if there is more than one operand then there is an error
-    if (currentPrerequisite.o.length > 1) {
-      throw new Error(oneLine`
-        Encountered a ParseTree with more than one operand and no operator (i.e. 'and' or 'or')!
-        The parse tree encountered is: '${JSON.stringify(tokens)}'.
-      `);
-    }
-    return firstOperand;
-  }
+  const transformedTokens = tokens
+    .map(token => {
+      if (isPrerequisite(token)) return token;
+      return buildPrerequisiteTree(token)!;
+    })
+    .filter(token => !!token);
 
-  return currentPrerequisite;
-}
+  const rankedOperators = transformedTokens
+    .map((token, index) => ({ token, index }))
+    .filter(({ token }) => {
+      if (token === 'and') return true;
+      if (token === 'or') return true;
+      return false;
+    })
+    .map(({ token, index }) => {
+      const baseRank = token === 'and' ? 1000 : 0;
+      const rank = baseRank - index;
 
-/**
- * Given a `Prerequisite` tree, this function will replace all `__SUBJECT-CODE|COURSE-NUMBER__`
- * directives in the operands of the `Prerequisite` with `['SUBJECT-CODE', 'COURSE-NUMBER']`
- * tuples.
- */
-export function replaceAllCourseDirectivesInTree(prerequisite: Prerequisite) {
-  if (prerequisite === undefined) {
-    return undefined;
-  }
-  if (typeof prerequisite === 'string') {
-    // test the prerequisite for the `__SUBJECT-CODE|COURSE-NUMBER__` pattern
-    if (/__([^|_]*)\|([^|_]*)__/.test(prerequisite)) {
-      const match = /__([^|_]*)\|([^|_]*)__/.exec(prerequisite)!;
-      return [
-        // return the tuple if the match is found
-        match[1].toUpperCase().trim(),
-        match[2].toUpperCase().trim(),
-      ] as [string, string];
-    }
-    // else if the pattern doesn't match, just return the string
-    return prerequisite;
-  } else if (Array.isArray(prerequisite)) {
-    // this case shouldn't ever happen because this is the function that replaces the
-    // `__SUBJECT-CODE|COURSE-NUMBER__` pattern with array tuples.
-    throw new Error(oneLine`
-      Found an array when replacing '__SUBJECT-CODE|COURSE-NUMBER__' patterns from 
-      'replaceAllCourseDirectivesInTree'!
-    `);
-  }
-  const newTree = { g: prerequisite.g, o: [] as Prerequisite[] };
+      return {
+        token,
+        index,
+        rank,
+      };
+    })
+    .sort((a, b) => b.rank - a.rank);
 
-  for (let operand of prerequisite.o) {
-    if (operand === undefined) {
-      continue;
-    }
-    if (typeof operand === 'object') {
-      newTree.o.push(replaceAllCourseDirectivesInTree(operand));
-    } else if (/__([^|_]*)\|([^|_]*)__/.test(operand)) {
-      const match = /__([^|_]*)\|([^|_]*)__/.exec(operand)!;
-      newTree.o.push([match[1].toUpperCase().trim(), match[2].toUpperCase().trim()]);
-    } else {
-      newTree.o.push(operand);
-    }
-  }
+  const bestOperator = rankedOperators[0];
+  if (!bestOperator) return undefined;
 
-  return newTree as Prerequisite;
+  const operator = bestOperator.token as 'and' | 'or';
+  const previous = transformedTokens[bestOperator.index - 1];
+  const next = transformedTokens[bestOperator.index + 1];
+
+  return { [operator]: [previous, next] } as Prerequisite;
 }
 
 /**
@@ -297,8 +261,8 @@ export function replaceAllCourseDirectivesInTree(prerequisite: Prerequisite) {
 export function parsePrerequisites(prerequisiteElement: Element) {
   const textContent = replacePrerequisiteAnchors(prerequisiteElement);
   const parseTree = transformParenthesesToTree(textContent);
-  const tokens = tokenizeByOperator(parseTree.tree);
-  const prefix = buildPrerequisiteTree(tokens);
-  const result = replaceAllCourseDirectivesInTree(prefix);
+  const tokens = groupByOperator(parseTree.tree);
+  const result = buildPrerequisiteTree(tokens);
+  // const result = replaceAllCourseDirectivesInTree(prefix);
   return result;
 }

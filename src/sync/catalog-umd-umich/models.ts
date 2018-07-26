@@ -1,4 +1,8 @@
-type Prerequisite = { and: Prerequisite[] } | { or: Prerequisite[] } | [string, string, boolean];
+export type Prerequisite =
+  | { and: Prerequisite[] }
+  | { or: Prerequisite[] }
+  | [string, string, 'CONCURRENT' | 'PREVIOUS']
+  | string;
 
 export interface Course {
   subjectCode: string;
