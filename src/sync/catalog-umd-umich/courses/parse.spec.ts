@@ -12,5 +12,13 @@ describe('courses', () => {
       const courses = parseCourses(html);
       expect(courses).toMatchSnapshot();
     });
+    it('parses the ME course page', async () => {
+      const html = await getOrWriteHtml('me-courses', __dirname, () =>
+        fetchCourseList('undergraduate', 'me'),
+      );
+
+      const courses = parseCourses(html);
+      expect(courses).toMatchSnapshot();
+    });
   });
 });

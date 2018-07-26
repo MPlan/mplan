@@ -17,10 +17,29 @@ Array [
     "subjectCode": "CIS",
   },
   Object {
+    "corequisites": Array [
+      "CIS",
+      "150L",
+      "PREVIOUS",
+    ],
     "courseNumber": "150",
     "creditHours": 4,
     "description": "This course provides a foundation for further studies in computer and information science and emphasizes a structured approach to problem solving and algorithm development.  Topics include principles of program design, coding, debugging, testing, and documentation.  Students are introduced to the Unified Modeling Language for requirements analysis using use-cases and activity diagrams, an object oriented programming language, and the fundamentals of computer hardware, system software, and components.  The course will consist of three lecture hours and one two-hour laboratory.",
     "name": "Computer Science I",
+    "prerequisites": Object {
+      "or": Array [
+        Array [
+          "MATH",
+          "115",
+          "CONCURRENT",
+        ],
+        Array [
+          "MATH",
+          "113",
+          "CONCURRENT",
+        ],
+      ],
+    },
     "subjectCode": "CIS",
   },
   Object {
@@ -28,6 +47,20 @@ Array [
     "creditHours": 4,
     "description": "This course provides a foundation for further studies in computer and information science and emphasizes a structured approach to problem solving and algorithm development using a high-level language more suited to data science applications. Topics include principles of program design, coding, debugging, testing, and documentation. Students are introduced to the Unified Modeling Language for requirements analysis using use-cases and activity diagrams, an object-oriented programming language for data science applications, and the fundamentals of computer hardware, system software, and components. The course will consist of three lecture hours and one two-hour laboratory. The labs will cover various data science applications. (F,W,S)",
     "name": "CS I for Data Scientists",
+    "prerequisites": Object {
+      "or": Array [
+        Array [
+          "MATH",
+          "115",
+          "CONCURRENT",
+        ],
+        Array [
+          "MATH",
+          "113",
+          "CONCURRENT",
+        ],
+      ],
+    },
     "subjectCode": "CIS",
   },
   Object {
@@ -35,13 +68,50 @@ Array [
     "creditHours": 3,
     "description": "This course wil lcover installation, configuration, and troubleshooting Microsoft Proxy Server, methods of controlling internet access, ehancement to performance monitor, and creation of a plan for integrating Proxy Server in an existing environment. (F,W)",
     "name": "Proxy Server",
+    "prerequisites": "CIS 162",
+    "restrictions": Array [
+      "Can enroll if Program is",
+    ],
     "subjectCode": "CIS",
   },
   Object {
+    "corequisites": Array [
+      "CIS",
+      "200L",
+      "PREVIOUS",
+    ],
     "courseNumber": "200",
     "creditHours": 4,
     "description": "This course presents techniques for the design, writing, testing, and debugging of medium-sized programs, and an introduction to data structures (stacks, queues, linked lists) using an object-orientated programming language.  Topics covered include pointers, templates, and inheritance.  The principles of UML modeling are continued.  This course will consist of three lecture hours and one two-hour laboratory.",
     "name": "Computer Science II",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "or": Array [
+            Array [
+              "MATH",
+              "115",
+              "PREVIOUS",
+            ],
+            "MPLS with a score of 116",
+          ],
+        },
+        Object {
+          "or": Array [
+            Array [
+              "CIS",
+              "150",
+              "PREVIOUS",
+            ],
+            Array [
+              "IMSE",
+              "150",
+              "PREVIOUS",
+            ],
+          ],
+        },
+      ],
+    },
     "subjectCode": "CIS",
   },
   Object {
@@ -49,6 +119,20 @@ Array [
     "creditHours": 4,
     "description": "This course presents techniques for the design, writing, testing, and debugging of medium-sized programs, and an introduction to data structures (stacks, queues, linked lists) using an object-oriented programming language for data science applications. Topics covered include pointers, templates, and inheritance. The principles of UML modeling are continued. This course will consist of three lecture hours and one two-hour laboratory. The labs will cover various data science applications. (F, W, S)",
     "name": "CS II for Data Scientists",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "CIS",
+          "1501",
+          "PREVIOUS",
+        ],
+        Array [
+          "MATH",
+          "115",
+          "PREVIOUS",
+        ],
+      ],
+    },
     "subjectCode": "CIS",
   },
   Object {
@@ -56,6 +140,25 @@ Array [
     "creditHours": 3,
     "description": "Full Course Title: Computer Programming for Engineers- Intermediate topics in computer programming: arrays, files, structured data types, pointers, functions. Overview of digital computer hardware and system software components: machine architecture, operating systems, computer networks, data security, and performance evaluation. No credit for CIS majors.",
     "name": "Comp Programming for Engineers",
+    "prerequisites": Object {
+      "or": Array [
+        Array [
+          "ENGR",
+          "100",
+          "PREVIOUS",
+        ],
+        Object {
+          "or": Array [
+            Array [
+              "MATH",
+              "105",
+              "PREVIOUS",
+            ],
+            "MPLS with a score of 113",
+          ],
+        },
+      ],
+    },
     "subjectCode": "CIS",
   },
   Object {
@@ -63,6 +166,20 @@ Array [
     "creditHours": 4,
     "description": "This course introduces students to various topics in discrete mathematics, such as set theory, mathematical logic, trees, and graph theory. Applications to relational databases, modeling reactive systems and program verification are also discussed. (F,W,S)",
     "name": "Discrete Structures I",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "MATH",
+          "115",
+          "PREVIOUS",
+        ],
+        Array [
+          "CIS",
+          "200",
+          "CONCURRENT",
+        ],
+      ],
+    },
     "subjectCode": "CIS",
   },
   Object {
@@ -70,6 +187,11 @@ Array [
     "creditHours": 3,
     "description": "This course provides a practical introduction to a broad range of computer security topics.  Covered topics include: practical computer security principles to help empower students to secure their own connections to cyberspace; firewalls, malware, and intrusion detection; cryptography basics and its applications; mobile devices and related security issues; network technologies and their vulnerabilities.",
     "name": "Prac Aspects of Computer Sec",
+    "prerequisites": Array [
+      "CIS",
+      "200",
+      "PREVIOUS",
+    ],
     "subjectCode": "CIS",
   },
   Object {
@@ -77,6 +199,11 @@ Array [
     "creditHours": 3,
     "description": "This course will cover various CASE tools, such as UML modeling and code generation tools, configuration management tools, defect management tools, an integrated development environment for coding and debugging, unit and testing tools, and build tools. Students will learn these tools in a laboratory environment. This course will be comprised of one lecture hour and one two-hour laboratory. (F,W)",
     "name": "Software Engineering Tools",
+    "prerequisites": Array [
+      "CIS",
+      "200",
+      "CONCURRENT",
+    ],
     "subjectCode": "CIS",
   },
   Object {
@@ -84,6 +211,11 @@ Array [
     "creditHours": 2,
     "description": "One significant programming language is covered in depth. The particular language changes from term to term. The language chosen might be Ada, C, MODULA 2, USP, PROLOG, or SMALLTALK.",
     "name": "Topic in Programming Languages",
+    "prerequisites": Array [
+      "CIS",
+      "200",
+      "PREVIOUS",
+    ],
     "subjectCode": "CIS",
   },
   Object {
@@ -91,6 +223,11 @@ Array [
     "creditHours": 2,
     "description": "TOPIC TITLE: Advanced Visual C++ Programming. Advanced treatment of the Visual C++ Programming.",
     "name": "Topic in Programming Languages",
+    "prerequisites": Array [
+      "CIS",
+      "200",
+      "PREVIOUS",
+    ],
     "subjectCode": "CIS",
   },
   Object {
@@ -98,6 +235,20 @@ Array [
     "creditHours": 3,
     "description": "An introduction to create professional-looking applications using the graphical user interface of Windows. Students learn how to create graphical objects and controls, write event driven code that responds to clicking on buttons, work with multiple forms and executable files. (F,S).",
     "name": "Programming with Visual Basic",
+    "prerequisites": Object {
+      "or": Array [
+        Array [
+          "CIS",
+          "200",
+          "PREVIOUS",
+        ],
+        Array [
+          "IMSE",
+          "200",
+          "PREVIOUS",
+        ],
+      ],
+    },
     "subjectCode": "CIS",
   },
   Object {
@@ -105,6 +256,20 @@ Array [
     "creditHours": 3,
     "description": "Course covers Java Programming language, focusing on GUI development, distributed computing and network applications.",
     "name": "Java Programming",
+    "prerequisites": Object {
+      "or": Array [
+        Array [
+          "CIS",
+          "200",
+          "PREVIOUS",
+        ],
+        Array [
+          "IMSE",
+          "200",
+          "PREVIOUS",
+        ],
+      ],
+    },
     "subjectCode": "CIS",
   },
   Object {
@@ -112,6 +277,11 @@ Array [
     "creditHours": 3,
     "description": "This course provides an introduction to the C# programming language and the .NET Framework for the development of Windows game applications. Some discussion of DirectX programming and Xbox game development is also included. (W)",
     "name": "Intro to C Sharp",
+    "prerequisites": Array [
+      "CIS",
+      "200",
+      "PREVIOUS",
+    ],
     "subjectCode": "CIS",
   },
   Object {
@@ -126,6 +296,11 @@ Array [
     "creditHours": 4,
     "description": "This course introduces students to further topics in discrete mathematics, including theory of computation, more complexity theory, coding theory, and game theory.",
     "name": "Discrete Structures II",
+    "prerequisites": Array [
+      "CIS",
+      "275",
+      "PREVIOUS",
+    ],
     "subjectCode": "CIS",
   },
   Object {
@@ -133,6 +308,34 @@ Array [
     "creditHours": 4,
     "description": "The architecture of computer systems and associated software. Topics include digital logic circuits, computer interfacing, interrupt systems, input/output systems, memory systems, assemblers and assembly language programming, and computer networks. (F,W,S).",
     "name": "Computer Org and Assembly Lang",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "or": Array [
+            Array [
+              "MATH",
+              "115",
+              "PREVIOUS",
+            ],
+            "MPLS with a score of 116",
+          ],
+        },
+        Object {
+          "or": Array [
+            Array [
+              "CIS",
+              "200",
+              "PREVIOUS",
+            ],
+            Array [
+              "IMSE",
+              "200",
+              "PREVIOUS",
+            ],
+          ],
+        },
+      ],
+    },
     "subjectCode": "CIS",
   },
   Object {
@@ -140,6 +343,29 @@ Array [
     "creditHours": 4,
     "description": "This course provides an overview of what Big Data is and explores its characteristics. It introduces the fundamental technologies, platforms, and methods that enable Big Data analysis, and covers how to acquire, store, and analyze very large amounts of information to complete Big Data analysis tasks. Topics include MapReduce, similarity search, mining real-time data streams, link analysis, clustering, recommender systems, social network graph mining, and large scale data mining tasks. (W)",
     "name": "Data Science II",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "or": Array [
+            Array [
+              "CIS",
+              "2001",
+              "PREVIOUS",
+            ],
+            Array [
+              "CIS",
+              "200",
+              "PREVIOUS",
+            ],
+          ],
+        },
+        Array [
+          "ECE",
+          "3100",
+          "PREVIOUS",
+        ],
+      ],
+    },
     "subjectCode": "CIS",
   },
   Object {
@@ -147,6 +373,34 @@ Array [
     "creditHours": 4,
     "description": "This course focuses on data design and algorithm design. Data design topics include object-oriented discussions of hashing, advanced tree structures, graphs, and sets.  Algorithm design topics include the greedy, divide-and-conquer, dynamic programming, backtracking and branch-and-bound techniques. A significant discussion of algorithm complexity theory, including time and space trade-offs and elementary computability theory, is included. (F,W,S)",
     "name": "Data Struc and Algorithm Anlys",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "and": Array [
+            Array [
+              "MATH",
+              "115",
+              "PREVIOUS",
+            ],
+            Object {
+              "or": Array [
+                Array [
+                  "CIS",
+                  "200",
+                  "PREVIOUS",
+                ],
+                "MPLS with a score of 116",
+              ],
+            },
+          ],
+        },
+        Array [
+          "CIS",
+          "275",
+          "PREVIOUS",
+        ],
+      ],
+    },
     "subjectCode": "CIS",
   },
   Object {
@@ -154,6 +408,29 @@ Array [
     "creditHours": 4,
     "description": "This course focuses on data design and algorithm design for software engineers. Data design topics include object-oriented discussions of hashing, advanced tree structures, graphs and sets. Algorithm design topics include the greedy, divide-and-conquer, dynamic programming, backtracking and branch-and-bound techniques. A significant discussion of algorithm complexity theory, including time and space trade-offs and elementary computability theory, is included. (F,W,S)",
     "name": "Data Struc & Alg Anlys for SE",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "or": Array [
+            Array [
+              "CIS",
+              "200",
+              "PREVIOUS",
+            ],
+            Array [
+              "IMSE",
+              "200",
+              "PREVIOUS",
+            ],
+          ],
+        },
+        Array [
+          "CIS",
+          "275",
+          "PREVIOUS",
+        ],
+      ],
+    },
     "subjectCode": "CIS",
   },
   Object {
@@ -161,6 +438,38 @@ Array [
     "creditHours": 4,
     "description": "This course presents an in-depth treatment of the following software engineering topics: software engineering paradigms, requirements, specification, functional design, object-oriented design, user interface design, software verification and validation, and the maintenance and management of software engineering artifacts, as well as an introductory discussion of software reliability. Various phases of the software engineering process will be modeled using UML. (F,W)",
     "name": "Software Engineering I",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "and": Array [
+            Array [
+              "ECE",
+              "370",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "276",
+              "PREVIOUS",
+            ],
+          ],
+        },
+        Object {
+          "or": Array [
+            Array [
+              "COMP",
+              "270",
+              "PREVIOUS",
+            ],
+            Array [
+              "COMP",
+              "106",
+              "PREVIOUS",
+            ],
+          ],
+        },
+      ],
+    },
     "subjectCode": "CIS",
   },
   Object {
@@ -168,6 +477,11 @@ Array [
     "creditHours": 4,
     "description": "This course continues the formal development of the software engineering material begun in CIS 375. Topics covered include personal software process, team software process, formal methods, security, software architecture, software quality assurance, software fault tolerance, the evaluation of the effectiveness of human computer interaction and software reliability. (W,S)",
     "name": "Software Engineering II",
+    "prerequisites": Array [
+      "CIS",
+      "375",
+      "PREVIOUS",
+    ],
     "subjectCode": "CIS",
   },
   Object {
@@ -175,6 +489,14 @@ Array [
     "creditHours": 4,
     "description": "The course introduces students in engineering and computer science to fundamentals of robotics technology, programming and their applications in industrial environment. The emphasis will be on robotics anatomy and configurations, robotocs kinematics, end effectors, use of sensors in robotics, robotics programming, design of robot workcell, robotics applications to production problems, cost justifications and robotics safety, rather than on the extensive theory of robotics. Three-hour lecture and three-hour laboratory per week.",
     "name": "Industrial Robots",
+    "prerequisites": Array [
+      "MATH",
+      "115",
+      "PREVIOUS",
+    ],
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+    ],
     "subjectCode": "CIS",
   },
   Object {
@@ -182,6 +504,42 @@ Array [
     "creditHours": 4,
     "description": "This course takes a detailed, hands-on approach to study the procedures and techniques used to identify, extract, validate, document and preserve electronic evidence. Students completing this course will be familiar with the core computer science theory and practical skills necessary to perform basic computer forensic investigations, understand the role of technology in investigating computer-based crime, and be prepared to deal with investigative bodies at a basic level.",
     "name": "Digital Forensics I",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "or": Array [
+            Array [
+              "CIS",
+              "200",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "270",
+              "PREVIOUS",
+            ],
+          ],
+        },
+        Object {
+          "or": Array [
+            Array [
+              "CIS",
+              "310",
+              "CONCURRENT",
+            ],
+            Array [
+              "ECE",
+              "370",
+              "CONCURRENT",
+            ],
+          ],
+        },
+      ],
+    },
+    "restrictions": Array [
+      "Cannot enroll if Class is Freshman",
+      "Can enroll if Level is Undergraduate",
+    ],
     "subjectCode": "CIS",
   },
   Object {
@@ -192,6 +550,20 @@ Array [
     ],
     "description": "A course designed to offer selected topics in an area of computer science. The specific topics will be announced (together with special prerequisites) each time offered. Students must elect different topics to take both CIS 390 and CIS 391. (OC).",
     "name": "Topics in Computer Science",
+    "prerequisites": Object {
+      "or": Array [
+        Array [
+          "CIS",
+          "350",
+          "PREVIOUS",
+        ],
+        Array [
+          "CIS",
+          "3501",
+          "PREVIOUS",
+        ],
+      ],
+    },
     "subjectCode": "CIS",
   },
   Object {
@@ -202,6 +574,20 @@ Array [
     ],
     "description": "A course designed to offer selected topics in an area of computer science. The specific topics will be announced (together with special prerequisites) each time offered. Students must elect different topics to take both CIS 390 and CIS 391. (OC).",
     "name": "Topics in Computer Science II",
+    "prerequisites": Object {
+      "or": Array [
+        Array [
+          "CIS",
+          "350",
+          "PREVIOUS",
+        ],
+        Array [
+          "CIS",
+          "3501",
+          "PREVIOUS",
+        ],
+      ],
+    },
     "subjectCode": "CIS",
   },
   Object {
@@ -216,6 +602,38 @@ Array [
     "creditHours": 4,
     "description": "Systematic study of programming languages with regard to their implementation, structures, and use. Languages are compared with regard to their various data types, data structures, operations, control structures, programming environments, and ease of use in solving various programming problems. (F,W).",
     "name": "Programming Languages",
+    "prerequisites": Object {
+      "or": Array [
+        Object {
+          "or": Array [
+            Array [
+              "CIS",
+              "350",
+              "PREVIOUS",
+            ],
+            Array [
+              "IMSE",
+              "350",
+              "PREVIOUS",
+            ],
+          ],
+        },
+        Object {
+          "and": Array [
+            Array [
+              "ECE",
+              "370",
+              "PREVIOUS",
+            ],
+            Array [
+              "MATH",
+              "276",
+              "PREVIOUS",
+            ],
+          ],
+        },
+      ],
+    },
     "subjectCode": "CIS",
   },
   Object {
@@ -223,6 +641,11 @@ Array [
     "creditHours": 3,
     "description": "This course investigates how to design efficient algorithms. Topics include asymptotic analysis, amortized analysis, divide-and-conquer, dynamic programming, greedy algorithms, branch and bound, backtracking, lower bounds, NP-completeness and approximation algorithms.",
     "name": "Algorithm Analysis & Design",
+    "prerequisites": Array [
+      "CIS",
+      "350",
+      "PREVIOUS",
+    ],
     "subjectCode": "CIS",
   },
   Object {
@@ -230,6 +653,20 @@ Array [
     "creditHours": 4,
     "description": "An introduction to database systems, concepts, and techniques. Topics covered include: database environments, ER modeling, relational data model, object-oriented databases, database design theory and methodology, database languages, query processing and optimization, concurrency control, database recovery, and database security.",
     "name": "Database Mgmt Systems",
+    "prerequisites": Object {
+      "or": Array [
+        Array [
+          "CIS",
+          "350",
+          "PREVIOUS",
+        ],
+        Array [
+          "CIS",
+          "3501",
+          "PREVIOUS",
+        ],
+      ],
+    },
     "subjectCode": "CIS",
   },
   Object {
@@ -237,6 +674,29 @@ Array [
     "creditHours": 4,
     "description": "An introduction to database systems, concepts, and techniques for big data. The course discusses classical relational technologies, and then covers the more current approaches to managing massive amounts of data for analytics purposes. Topics include database environments, database design, the relational data model, normalization, SQL, query processing, parallel databases and query processing, in-database analytics, data warehousing, key-value and column stores, NoSQL and NewSQL approaches for managing massive data. (F)",
     "name": "Massive Data Management",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "or": Array [
+            Array [
+              "CIS",
+              "2001",
+              "PREVIOUS",
+            ],
+            Array [
+              "CIS",
+              "200",
+              "PREVIOUS",
+            ],
+          ],
+        },
+        Array [
+          "CIS",
+          "3200",
+          "PREVIOUS",
+        ],
+      ],
+    },
     "subjectCode": "CIS",
   },
   Object {
@@ -244,6 +704,11 @@ Array [
     "creditHours": 3,
     "description": "The application of artificial intelligence to building decision support and expert systems for management and other applications. Topics include fundamentals of artificial intelligence, knowledge representation and knowledge processing, tools for building expert systems (logic programming, expert shells), decision support system design (modeling and simulation), expert system design (knowledge engineering, learning). (F).",
     "name": "Dec Support and Exp Systems",
+    "prerequisites": Array [
+      "CIS",
+      "421",
+      "PREVIOUS",
+    ],
     "subjectCode": "CIS",
   },
   Object {
@@ -251,6 +716,23 @@ Array [
     "creditHours": 4,
     "description": "This course is an introduction to the principles of information systems analysis and design and their role in business organizations. Topics include Systems Development Life Cycle (SDLC), using CASE (Computer Aided Software Engineering) tools for systems design and analysis, prototyping, Rapid Application Development (RAD), extreme programming, quality assurance through software engineering, and object-oriented systems design and analysis using UML (Unified Modeling Language). Participation in a major design project is a requirement for this course.",
     "name": "Information Systems",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "CIS",
+          "375",
+          "PREVIOUS",
+        ],
+        Array [
+          "CIS",
+          "421",
+          "CONCURRENT",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Cannot enroll if Class is Freshman or Sophomore",
+    ],
     "subjectCode": "CIS",
   },
   Object {
@@ -258,6 +740,20 @@ Array [
     "creditHours": 4,
     "description": "An introduction to the principles of information systems analysis and design and their role in business organizations. Topics include information systems strategy and planning, ethical issues in information systems, system modeling, clean-room system engineering, domain ontologies, UML, Enterprise Unified Process, e-business, and supply-chain management, deployment and support. Participation in a major design project is a requirement for this course. (F).",
     "name": "Inf Sys Analysis & Design I",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "CIS",
+          "375",
+          "PREVIOUS",
+        ],
+        Array [
+          "CIS",
+          "421",
+          "CONCURRENT",
+        ],
+      ],
+    },
     "subjectCode": "CIS",
   },
   Object {
@@ -265,6 +761,11 @@ Array [
     "creditHours": 4,
     "description": "This course is a continuation of CIS 4261 and provides students with breadth and depth in the information systems area. Topics include web-based information systems, e-commerce, computer-supported collaborative work, workflow systems, data mining, and data warehousing. Participation in a major design project is a requirement of this course. (W).",
     "name": "Inf Sys Analysis & Design II",
+    "prerequisites": Array [
+      "CIS",
+      "4261",
+      "PREVIOUS",
+    ],
     "subjectCode": "CIS",
   },
   Object {
@@ -272,6 +773,38 @@ Array [
     "creditHours": 4,
     "description": "Study of the management aspects of computing networks and distributed systems. Topics include network architectures (ISO/OSI, TCP/IP, ATM), communication hardware (transmission media, network adaptors, switches), encoding, framing, error detection and correction, reliable transmission, data link control and LAN technology, internetworking, routing/congestion control, network design/management.",
     "name": "Comp Networks and Dis Process",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "and": Array [
+            Object {
+              "and": Array [
+                Array [
+                  "ECE",
+                  "370",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "ECE",
+                  "276",
+                  "PREVIOUS",
+                ],
+              ],
+            },
+            Array [
+              "MATH",
+              "276",
+              "PREVIOUS",
+            ],
+          ],
+        },
+        Array [
+          "IMSE",
+          "317",
+          "PREVIOUS",
+        ],
+      ],
+    },
     "subjectCode": "CIS",
   },
   Object {
@@ -279,6 +812,11 @@ Array [
     "creditHours": 3,
     "description": "The course requires students to setup and manage their own computer network in the lab. Topics include: overview of file servers, LAN configurations and protocols, server hardware (CPU, hard drives, memory), server clients, server installation, domains, user accounts, groups, rights, directories, permissions, applications, printers, other OS, monitoring, maintenance, high speed switching, ATM, video, routers, fire walls. (YR).",
     "name": "High Speed Network Admin",
+    "prerequisites": Array [
+      "CIS",
+      "427",
+      "PREVIOUS",
+    ],
     "subjectCode": "CIS",
   },
   Object {
@@ -286,6 +824,15 @@ Array [
     "creditHours": 3,
     "description": "This course deals with the study of technologies used to design and implement multimedia web sites. Topics include web servers, HTML, CGI, scripting languages, Java applets, back-end database connectivity, web security, multimedia, XML. (F,W).",
     "name": "Web Technology",
+    "prerequisites": Array [
+      "CIS|553|PREVIOUS__ __CIS",
+      "375",
+      "CONCURRENT",
+    ],
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if Level is Undergraduate",
+    ],
     "subjectCode": "CIS",
   },
   Object {
@@ -293,6 +840,16 @@ Array [
     "creditHours": 3,
     "description": "This course introduces students to the development of software applications for programmable mobile and wireless intelligent hand-held devises. Topics covered include the different mobile development platforms, best practices in mobile user interaction design, software quality assurance in mobile environment, security and privacy issues, and context-aware computing.  Students will participate in a final project.",
     "name": "Mobile App Des & Impl",
+    "prerequisites": Array [
+      "CIS",
+      "375",
+      "CONCURRENT",
+    ],
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if Level is Undergraduate",
+      "Can enroll if College is Arts, Sciences, and Letters or Engineering and Computer Science",
+    ],
     "subjectCode": "CIS",
   },
   Object {
@@ -300,6 +857,14 @@ Array [
     "creditHours": 3,
     "description": "Topics include an overview of the internet, congestion control, quality of service, internet multicasting, multimedia networking, mobile and wireless networks, vehicular networks, overlay networks, peer-to-peer networks, internet management (SNMP), and internet applications (web-HTTP and email-SMTP).",
     "name": "Advanced Networking",
+    "prerequisites": Array [
+      "CIS",
+      "427",
+      "PREVIOUS",
+    ],
+    "restrictions": Array [
+      "Cannot enroll if College is Business",
+    ],
     "subjectCode": "CIS",
   },
   Object {
@@ -307,6 +872,14 @@ Array [
     "creditHours": 3,
     "description": "This course will provide a broad-spectrum introduction to the fundamental principles of computer and network security. Topic will include security policies, models and mechanisms for confidentiality, integrity and availability, access control, authorization, cryptography and applications, threats and vulnerabilities in computer networks, key management, firewalls and security services in computer networks.",
     "name": "Intro Computr & Ntwrk Security",
+    "prerequisites": Array [
+      "CIS",
+      "450",
+      "CONCURRENT",
+    ],
+    "restrictions": Array [
+      "Cannot enroll if College is Business or Education, Health, and Human Services",
+    ],
     "subjectCode": "CIS",
   },
   Object {
@@ -317,6 +890,29 @@ Array [
     ],
     "description": "Introduction to computer operating systems. Process control, threads, concurrency, memory management, virtual memory, uniprocessor, multiprocessor, and real-time scheduling, I/O management, disk scheduling, file management, distributed processing, client/server, clusters, distributed process management,security. (F,W).",
     "name": "Operating Systems",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "CIS",
+          "310",
+          "PREVIOUS",
+        ],
+        Object {
+          "or": Array [
+            Array [
+              "CIS",
+              "350",
+              "PREVIOUS",
+            ],
+            Array [
+              "CIS",
+              "3501",
+              "PREVIOUS",
+            ],
+          ],
+        },
+      ],
+    },
     "subjectCode": "CIS",
   },
   Object {
@@ -324,6 +920,11 @@ Array [
     "creditHours": 3,
     "description": "Basic geometrical concepts: graphics output primatives, two-dimensional transformations, windowing and clipping, three-dimensional viewing, visible surface detection methods, and graphical user interfaces. (F).",
     "name": "Computer Graphics",
+    "prerequisites": Array [
+      "MATH",
+      "227",
+      "PREVIOUS",
+    ],
     "subjectCode": "CIS",
   },
   Object {
@@ -331,6 +932,24 @@ Array [
     "creditHours": 3,
     "description": "This course introduces basic techniques for digital animation, computer and video games, and web multimedia. Topics include the process of creating animated video clips from start to finish, including story creation, storyboarding, modeling, animation, and post-production; several key techniques for video editing and motion generation, including keyframe, motion capture editing, collision detection, particle systems, physical simulation, and real-time rendering; techniques for web animation and multimedia; and internet gaming.",
     "name": "Inf Vis & Multimedia Gaming",
+    "prerequisites": Object {
+      "or": Array [
+        Array [
+          "CIS",
+          "451",
+          "PREVIOUS",
+        ],
+        Array [
+          "CIS",
+          "487",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Senior",
+      "Can enroll if College is Business",
+    ],
     "subjectCode": "CIS",
   },
   Object {
@@ -338,6 +957,11 @@ Array [
     "creditHours": 3,
     "description": "This course covers the core tenets of the Microsoft Foundation Class (MFC) or similar package and Windows programming. The emphasis will be on the relationship between Windows Operating System and MFC. Windows OS has three major components: user, graphics device interface (GDI), and kernel. User is a module that controls input devices, GDI is a module that services output devices, and kernel controls internal resources. These three components are called the API and communicate with MFC. Projects will be assigned to simulate the major components of API using MFC. (YR)",
     "name": "Windows Programming",
+    "prerequisites": Array [
+      "CIS",
+      "350",
+      "PREVIOUS",
+    ],
     "subjectCode": "CIS",
   },
   Object {
@@ -345,6 +969,42 @@ Array [
     "creditHours": 4,
     "description": "This course is a continuation of Digital Forensics I and will focus on Internet Forensics. Students will examine in-depth concepts in Internet evidence collection and preservation, as well as applications of contemporary commercial forensic investigative software.",
     "name": "Digital Forensics II",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "or": Array [
+            Array [
+              "CIS",
+              "427",
+              "CONCURRENT",
+            ],
+            Array [
+              "ECE",
+              "471",
+              "CONCURRENT",
+            ],
+          ],
+        },
+        Object {
+          "or": Array [
+            Array [
+              "CIS",
+              "387",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "387",
+              "PREVIOUS",
+            ],
+          ],
+        },
+      ],
+    },
+    "restrictions": Array [
+      "Cannot enroll if Class is Freshman",
+      "Cannot enroll if College is Business",
+    ],
     "subjectCode": "CIS",
   },
   Object {
@@ -352,6 +1012,20 @@ Array [
     "creditHours": 3,
     "description": "Principles of language compilation.  Introduction to formal languages.  Lexical analysis, top-down and bottom-up parsing, code generation and optimization.  Error handling and symbol table management.  Run-time storage management. Programming language design.  Introduction to compiler-writing tools such as LEX and YACC. (F,W).",
     "name": "Compiler Design",
+    "prerequisites": Object {
+      "or": Array [
+        Array [
+          "CIS",
+          "350",
+          "PREVIOUS",
+        ],
+        Array [
+          "CIS",
+          "3501",
+          "PREVIOUS",
+        ],
+      ],
+    },
     "subjectCode": "CIS",
   },
   Object {
@@ -359,6 +1033,11 @@ Array [
     "creditHours": 3,
     "description": "The focus of this course is on management issues related to modern software engineering practice. Students read and discuss papers written by master software engineering professionals. Seminar topics discussed include: management of software engineering processes, software measurement, software engineering ethics, and legal issues related to professional practice. (W, S).",
     "name": "Software Engineering Seminar",
+    "prerequisites": Array [
+      "CIS",
+      "376",
+      "PREVIOUS",
+    ],
     "subjectCode": "CIS",
   },
   Object {
@@ -366,6 +1045,14 @@ Array [
     "creditHours": 3,
     "description": "This course focuses on design patterns in object-oriented programming. This course begins with an overview of UML and a review of object-oriented programming and then moves on to various structural, behavioral and creational patterns, including: facades, adaptors, bridges, factories and the template method. Analysis of case studies will also be discussed. Using various modern software tools, students will apply various design patterns to real-world software design problems to gain complete practical understanding. (F,W)",
     "name": "Soft Arch & Design Patterns",
+    "prerequisites": Array [
+      "CIS",
+      "375",
+      "PREVIOUS",
+    ],
+    "restrictions": Array [
+      "Can enroll if College is Engineering and Computer Science",
+    ],
     "subjectCode": "CIS",
   },
   Object {
@@ -373,6 +1060,20 @@ Array [
     "creditHours": 3,
     "description": "This course introduces students to basic concepts and methods of artificial intelligence from a computer science perspective. Emphasis of the course will be on the selection of data representations and algorithms useful in the design and implementation of intelligent systems. The course will contain an overview of one AI language and some discussion of important applications of artificial intelligence methodology. (S).",
     "name": "Intro to Artificial Intel",
+    "prerequisites": Object {
+      "or": Array [
+        Array [
+          "CIS",
+          "350",
+          "PREVIOUS",
+        ],
+        Array [
+          "CIS",
+          "3501",
+          "PREVIOUS",
+        ],
+      ],
+    },
     "subjectCode": "CIS",
   },
   Object {
@@ -380,6 +1081,32 @@ Array [
     "creditHours": 3,
     "description": "This course covers basic computational aspects of learning to perform a task and improve with experience. Topics include learning frameworks and problem formulations; standard models, methods, computational tools, algorithms and modern techniques; and methodologies to evaluate learning ability and to automatically select optimal models. The main focus is on computer science (e.g., basic runtime, space and complexity analysis, programming, and empirical evaluations?. Simple applications to areas such as computer vision, natural language processing (NLP), and robotics will also motivate the course material. (W)",
     "name": "Computational Learning",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "CIS",
+          "306",
+          "PREVIOUS",
+        ],
+        Object {
+          "or": Array [
+            Array [
+              "MATH",
+              "217",
+              "CONCURRENT",
+            ],
+            Array [
+              "MATH",
+              "227",
+              "CONCURRENT",
+            ],
+          ],
+        },
+      ],
+    },
+    "restrictions": Array [
+      "Cannot enroll if Class is Graduate or Doctorate",
+    ],
     "subjectCode": "CIS",
   },
   Object {
@@ -387,6 +1114,20 @@ Array [
     "creditHours": 3,
     "description": "This course covers basics of data security and privacy techniques, which can facilitate the use of data in a secure and privacy-sensitive way. Topics include security and privacy challenges due to data collection and analytics, technologies and strategies for data security and privacy (access control mechanism, integrity policy, cryptography and encryption, notice and consent, anonymization or de-identification, deletion and non-retention). (W)",
     "name": "Data Security and Privacy",
+    "prerequisites": Object {
+      "or": Array [
+        Array [
+          "CIS",
+          "200",
+          "PREVIOUS",
+        ],
+        Array [
+          "CIS",
+          "2001",
+          "PREVIOUS",
+        ],
+      ],
+    },
     "subjectCode": "CIS",
   },
   Object {
@@ -394,6 +1135,16 @@ Array [
     "creditHours": 3,
     "description": "This course deals with the study of the technology, science and art in the creation of computer games. The focus of the course will be hands-on development of computer games. Students will study a variety of software technologies relevant to computer game design, including programming languages, scripting languages, operating systems, files systems, networks, simulation engines and multi-media design systems. Lecture topics will be taken from several areas of computer science: simulation and modeling, computer graphics, artificial intelligence, real-time processing, game theory, software engineering, human computer interaction, graphic design and game aesthetics. (F).",
     "name": "Computer Game Design & Implem",
+    "prerequisites": Array [
+      "CIS",
+      "375",
+      "CONCURRENT",
+    ],
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if Level is Undergraduate",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
     "subjectCode": "CIS",
   },
   Object {
@@ -401,6 +1152,15 @@ Array [
     "creditHours": 3,
     "description": "This course is a continuation of the material studied in CIS 487. The focus of the course will be hands-on development of computer game development tools (e.g. game engines). Students will study a variety of software technologies relevant to computer game design, including: 3D graphics, computer animation, data-driven game design, multiplayer game programming, and game AI. Lecture topics will be taken from several areas of computer science: simulation and modeling, computer graphics, artificial intelligence, game theory, software engineering, human computer interaction and game content development. (W)",
     "name": "Computer Game Design II",
+    "prerequisites": Array [
+      "CIS",
+      "487",
+      "PREVIOUS",
+    ],
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
     "subjectCode": "CIS",
   },
   Object {
@@ -411,6 +1171,20 @@ Array [
     ],
     "description": "This course is intended for seniors and graduate-level students in CIS.  For specific topic, consult current semester's Schedule of Classes. (OC).",
     "name": "Advanced Topics",
+    "prerequisites": Object {
+      "or": Array [
+        Array [
+          "CIS",
+          "350",
+          "PREVIOUS",
+        ],
+        Array [
+          "CIS",
+          "3501",
+          "PREVIOUS",
+        ],
+      ],
+    },
     "subjectCode": "CIS",
   },
   Object {
@@ -418,6 +1192,29 @@ Array [
     "creditHours": 3,
     "description": "Topic Title: Special Topics: Wireless and Mobile Computing Security: The course focuses on security and privacy issues in the area of wireless networks and mobile computing such as cellular networks, wirelss LANs, connected vehicles, smart and mobile devices, sensors and sensor networks, loT, etc. The course will first present an overview of wireless communication and wireless systems, then foucs on attacks, discuss proposed solutions and their limitations. Topics of this course include: (1) introduction to security primitives wirelessand wireless networks; (2) security issues in single-hop wireless networks that include cellular networks, RFID, modern vehicle, smartphone security; (3) security issues in multi-hop wirless network that include Mobile As Hoc network, wireless sensor network and vehicular network security.(YR)",
     "name": "Adv Topics in Computer Science",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "or": Array [
+            Array [
+              "CIS",
+              "200",
+              "PREVIOUS",
+            ],
+            Array [
+              "CIS",
+              "2001",
+              "PREVIOUS",
+            ],
+          ],
+        },
+        Array [
+          "MATH",
+          "396",
+          "PREVIOUS",
+        ],
+      ],
+    },
     "subjectCode": "CIS",
   },
   Object {
@@ -428,6 +1225,10 @@ Array [
     ],
     "description": "Provides the advanced student with the opportunity to undertake a research project under the supervision of a faculty member.  At least two weeks prior to registration in the semester when such a course is to be elected, an interested student must submit to the CIS chair and one CIS faculty member a written request for permission to elect a research course on the appropriate form available in the CIS Office.  The request will include a description of the proposed research project.  The CIS chair will review the proposal with faculty members to ascertain availability of relevant faculty supervision and to establish appropriate credit.  Grades will be granted on a Pass/Fail (S/E) basis exclusively. (F,W,S).",
     "name": "Research Project I",
+    "restrictions": Array [
+      "Can enroll if Class is Senior",
+      "Can enroll if Major is CIS/Information Systems",
+    ],
     "subjectCode": "CIS",
   },
   Object {
@@ -438,6 +1239,10 @@ Array [
     ],
     "description": "This course is a second registration for a research project in CIS. (F,W,S).",
     "name": "Research Project II",
+    "restrictions": Array [
+      "Can enroll if Class is Senior",
+      "Can enroll if Major is CIS/Information Systems",
+    ],
     "subjectCode": "CIS",
   },
   Object {
@@ -465,6 +1270,15 @@ Array [
     "creditHours": 4,
     "description": "Students participate in the design and implementation of a major software project. Seminar topics discussed include: computing ethics and professional practice in computer science. (F,W,S).",
     "name": "Design Seminar",
+    "prerequisites": Array [
+      "CIS",
+      "375",
+      "PREVIOUS",
+    ],
+    "restrictions": Array [
+      "Can enroll if Class is Senior",
+      "Can enroll if College is Business",
+    ],
     "subjectCode": "CIS",
   },
   Object {
@@ -472,6 +1286,14 @@ Array [
     "creditHours": 2,
     "description": "Students participate in the design and implementation of a major software project. Seminar topics discussed include: computing ethics and professional practice. (F,W,S)",
     "name": "Design Seminar I",
+    "prerequisites": Array [
+      "CIS",
+      "375",
+      "PREVIOUS",
+    ],
+    "restrictions": Array [
+      "Can enroll if College is Engineering and Computer Science",
+    ],
     "subjectCode": "CIS",
   },
   Object {
@@ -479,6 +1301,14 @@ Array [
     "creditHours": 2,
     "description": "Students continue to participate in the design and implementation of a major software project. Seminar topics discussed include: computing ethics and professional practice. (F,W,S)",
     "name": "Design Seminar II",
+    "prerequisites": Array [
+      "CIS",
+      "4951",
+      "PREVIOUS",
+    ],
+    "restrictions": Array [
+      "Can enroll if College is Engineering and Computer Science",
+    ],
     "subjectCode": "CIS",
   },
   Object {
@@ -486,6 +1316,20 @@ Array [
     "creditHours": 4,
     "description": "Software engineering students participate in the design and implementation of a major software project.  Seminar topics discussed include: computing ethics and professional practice in software engineering.",
     "name": "Design Seminar for SE",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "CIS",
+          "376",
+          "PREVIOUS",
+        ],
+        Array [
+          "CIS",
+          "476",
+          "PREVIOUS",
+        ],
+      ],
+    },
     "subjectCode": "CIS",
   },
   Object {
@@ -493,6 +1337,14 @@ Array [
     "creditHours": 2,
     "description": "Software engineering students participate in the design and implementation of a major software project. Seminar topics discussed include: computing ethics and professional practice in software engineering. (F,W,S)",
     "name": "Design Seminar for SE I",
+    "prerequisites": Array [
+      "CIS",
+      "376",
+      "PREVIOUS",
+    ],
+    "restrictions": Array [
+      "Can enroll if College is Engineering and Computer Science",
+    ],
     "subjectCode": "CIS",
   },
   Object {
@@ -500,6 +1352,23 @@ Array [
     "creditHours": 2,
     "description": "Software engineering students continue to participate in the design and implementation of a major software project. Seminar topics discussed include: computing ethics and professional practice in software engineering.",
     "name": "Design Seminar for SE II",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "CIS",
+          "4961",
+          "PREVIOUS",
+        ],
+        Array [
+          "CIS",
+          "476",
+          "CONCURRENT",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if College is Engineering and Computer Science",
+    ],
     "subjectCode": "CIS",
   },
   Object {
@@ -507,6 +1376,28 @@ Array [
     "creditHours": 2,
     "description": "Data science students participate in the design and implementation of a major data science project. Seminar topics discussed include: computing ethics and professional practice in data science. (F, W, S)",
     "name": "Cap Sem for Data Sci I",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "CIS",
+          "3200",
+          "PREVIOUS",
+        ],
+        Object {
+          "or": Array [
+            Array [
+              "STAT",
+              "326",
+              "PREVIOUS",
+            ],
+            "STAT 425",
+          ],
+        },
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Senior",
+    ],
     "subjectCode": "CIS",
   },
   Object {
@@ -514,6 +1405,23 @@ Array [
     "creditHours": 2,
     "description": "Data science students continue to participate in the design and implementation of a major data science project. Seminar topics discussed include: computing ethics and professional practice in data science. (F, W, S)",
     "name": "Cap Proj for Data Sci II",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "CIS",
+          "4971",
+          "PREVIOUS",
+        ],
+        Array [
+          "STAT",
+          "430",
+          "CONCURRENT",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Senior",
+    ],
     "subjectCode": "CIS",
   },
   Object {
@@ -522,6 +1430,1096 @@ Array [
     "description": "Student works with industrial sponsor in area of CIS. Approval of Internship Coordinator required. (F,W,S).",
     "name": "Internship",
     "subjectCode": "CIS",
+  },
+]
+`;
+
+exports[`courses parse parses the ME course page 1`] = `
+Array [
+  Object {
+    "courseNumber": "230",
+    "creditHours": 4,
+    "description": "The course is a general introduction to thermodynamics with emphasis on engineering applications. Properties of pure substances. Work and heat. The first and second laws of thermodynamics. Entropy and efficiency. Applications to systems and control volumes. Mixtures of gases and vapors, air conditioning. Introduction to cycles. This course will become the first in a two-course series for mechanical engineering students, and will also be elected as a terminal course by IMSE students. Four hours lecture.",
+    "name": "Thermodynamics",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "PHYS",
+          "150",
+          "PREVIOUS",
+        ],
+        Object {
+          "and": Array [
+            Array [
+              "MATH",
+              "116",
+              "PREVIOUS",
+            ],
+            Object {
+              "or": Array [
+                Array [
+                  "CHEM",
+                  "134",
+                  "PREVIOUS",
+                ],
+                "MPLS with a score of 215",
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Major is Engineering, Bioengineering, Industrial & Systems Engin, Manufacturing Engineering, Electrical Engineering, Mechanical Engineering",
+    ],
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "260",
+    "creditHours": 4,
+    "description": "An introduction to statics and stress analyses with emphasis on both mechanics fundamentals and design applications. (F,W,S).",
+    "name": "Design Stress Analyses",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "PHYS",
+          "150",
+          "PREVIOUS",
+        ],
+        Object {
+          "and": Array [
+            Array [
+              "ENGR",
+              "250",
+              "CONCURRENT",
+            ],
+            Object {
+              "or": Array [
+                Array [
+                  "MATH",
+                  "205",
+                  "CONCURRENT",
+                ],
+                Array [
+                  "ECE",
+                  "385",
+                  "CONCURRENT",
+                ],
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "265",
+    "creditHours": 4,
+    "description": "A comprehensive introduction to the science of applied mechanics, encompassing a study of forces and the stresses, deflections, and motions which they produce. Topics include the concept of equilibrium and static force analysis; the mechanics of deformable bodies (internal stresses, constitutive relationships, strains, deflections, flow, failure); statics of indeterminate systems; kinematics; kinetics of particles, systems of particles, and rigid bodies. Four hours lecture. (F,W,S).",
+    "name": "Applied Mechanics",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "PHYS",
+          "150",
+          "PREVIOUS",
+        ],
+        Object {
+          "or": Array [
+            Array [
+              "MATH",
+              "205",
+              "CONCURRENT",
+            ],
+            Array [
+              "MATH",
+              "215",
+              "CONCURRENT",
+            ],
+          ],
+        },
+      ],
+    },
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "290",
+    "creditHours": Array [
+      1,
+      3,
+    ],
+    "description": "Special topics in mechanical engineering selected according to students' interest and availability of instructors and equipment.",
+    "name": "Spec Topics in Mech Engin",
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "290B",
+    "creditHours": Array [
+      1,
+      3,
+    ],
+    "description": "TOPIC TITLE: Foundry Technology Introduction to manufacturing methods of component castings. Production planning, pattern technolgy & prototypes.  Monund & core materials, development trends & properties of core materials.  sand & ceramic materials.  Hygienically safe materials & environmental aspects.  Phase diagrams.  Cast materials, solidification & microsturcture development & mechanical properties of alloys.  Shrikage & porosity formation.  Calculation of solidification, mould filling & feeding etc.  Computer simulation of the casting process. Stress & warping of castings etc.  Integration of CAD/CAM & simulation.  Design of castings & material selection. Quality control. Defect formation.",
+    "name": "Spec Topics in Mech Engin",
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "299",
+    "creditHours": 1,
+    "description": "This is a Cooperative Education course. Students wishing to experience a work experience before graduation may elect to participate in the Cooperative Education Program (minimum of two terms). (F,W,S).",
+    "name": "Internship/ Co-op",
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior or Graduate",
+    ],
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "325",
+    "creditHours": 4,
+    "description": "Power and refrigeration cycles. Thermodynamic relations. Ideal gas mixtures and psychrometrics. Reacting ideal gas mixtures. Fluid properties. Fluid flow kinematics. Integral fluid flow analysis; the conservation laws - mass, energy, momentum. Introduction to differential analysis of fluid flow. Dimensional analysis. (F,W,S).",
+    "name": "Thermal Fluid Sciences I",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "or": Array [
+            Array [
+              "ENGR",
+              "216",
+              "PREVIOUS",
+            ],
+            "ME 215",
+          ],
+        },
+        Array [
+          "ME",
+          "230",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Sophomore or Junior or Senior",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "3251",
+    "creditHours": 2,
+    "description": "Power and refrigeration cycles. Thermodynamic relations. Ideal gas mixtures and psychrometrics. Reacting ideal gas mixtures. (F,W,S)",
+    "name": "Applied Thermodynamics",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ME",
+          "230",
+          "PREVIOUS",
+        ],
+        Array [
+          "ENGR",
+          "216",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Level is Undergraduate",
+      "Can enroll if Major is Mechanical Engineering",
+    ],
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "3252",
+    "creditHours": 2,
+    "description": "Fluid properties. Fluid statics. Fluid flow kinematics. Integral fluid flow analyses; the conservation laws - mass, energy, momentum. Introduction to differential analysis of fluid flow. Diversional analysis. (F,W,S)",
+    "name": "Fluid Mechanics",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ME",
+          "230",
+          "PREVIOUS",
+        ],
+        Array [
+          "ENGR",
+          "216",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Level is Undergraduate",
+      "Can enroll if Major is Mechanical Engineering",
+    ],
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "345",
+    "creditHours": 4,
+    "description": "A comprehensive treatment of statics and the kinematics and kinetics of particles, systems of particles, and rigid bodies from a Newtonian viewpoint utilizing rigorous vector techniques. The time-dependent description of kinematical quantities and of dynamic forces and moments. Matrix methods and digital computer techniques.",
+    "name": "Engineering Dynamics",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "or": Array [
+            "ME 215*",
+            Array [
+              "ENGR",
+              "216",
+              "CONCURRENT",
+            ],
+          ],
+        },
+        Array [
+          "ME",
+          "260",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "subjectCode": "ME",
+  },
+  Object {
+    "corequisites": Array [
+      "ME",
+      "349L",
+      "PREVIOUS",
+    ],
+    "courseNumber": "349",
+    "creditHours": 3,
+    "description": "Modern instrumentation systems are considered beginning with generic issues such as calibration, error analysis, and dynamic response characteristics of instrumentation. Specific transducer systems (temperature, force and pressure, etc.) are presented, as well as interfacing techniques and elementary signal processing. Microprocessors are introduced for use in measurement and control applications. (F,W,S).",
+    "name": "Instrument & Measuremt Systems",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "or": Array [
+            Array [
+              "ME",
+              "265",
+              "PREVIOUS",
+            ],
+            Array [
+              "ME",
+              "345",
+              "PREVIOUS",
+            ],
+          ],
+        },
+        Array [
+          "ECE",
+          "305",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Sophomore or Junior or Senior",
+      "Can enroll if Level is Undergraduate",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "3601",
+    "creditHours": 4,
+    "description": "Application of fundamental mechanics to analysis and design of elementary mechanical components and systems. Topics include: stress and strain analysis; experimental measurement; stress concentration; failure theories; safety factor; fatigue; fracture; combined loading; impact; buckling; energy methods. Components considered: fasteners; springs; bearings; gears; beams; shafts and other power transmission components. Numerical techniques. (F,W,S).",
+    "name": "Des and Analy of Mach Elem",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "or": Array [
+            Array [
+              "ENGR",
+              "216",
+              "PREVIOUS",
+            ],
+            "ME 215",
+          ],
+        },
+        Array [
+          "ME",
+          "260",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Sophomore or Junior or Senior",
+      "Can enroll if Major is Mechanical Engineering",
+    ],
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "364",
+    "creditHours": 3,
+    "description": "Introduction to planned experiments in machine design and mechanical metallurgy with emphasis on orthogonal test programs with small blocks. Classical statistical analyses (e.g., analysis of variance for randomized complete block and split-plot designs) as well as computer intensive analyses (e.g., permutation and randomization tests). Maximum likelihood analysis for censored and uncensored life data and for strength (quantal response) data. Systems reliability in machine design.",
+    "name": "Prob, Stats, and Rel in Mach D",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ENGR",
+          "216",
+          "PREVIOUS",
+        ],
+        Array [
+          "ME",
+          "260",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "371",
+    "creditHours": 3,
+    "description": "Mechanisms of heat transfer processes. Steady and transient conduction in solids; analytical, numerical, and analogical methods. Thermal radiation processes; steady radiation exchange with black and gray surfaces and enclosures. Hydrodynamic boundary layer theory in convection heat transfer; thermal boundary layer, exact and integral analyses. Aerodynamic heating. Turbulent boundary layers. Reynolds' and Pradtl's analogies. Free convection. Working formulas for forced and free convection, condensation, and boiling. Combined heat transfer mechanisms; heat exchangers. Three hours lecture.",
+    "name": "Heat Transfer",
+    "prerequisites": Object {
+      "and": Array [
+        "ME 320",
+        Array [
+          "ECE",
+          "305",
+          "CONCURRENT",
+        ],
+      ],
+    },
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "375",
+    "creditHours": 4,
+    "description": "Mechanisms of heat transfer processes. Steady state and transcient conduction. Numerical methods in conduction. Internal and external flows. Boundary layer theory. Compressible flows. Convection heat transfer in internal and external flows. Heat exchanger theory. Introduction to radiation. (F,W,S).",
+    "name": "Thermal Fluid Sciences II",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "or": Array [
+            Array [
+              "ME",
+              "325",
+              "PREVIOUS",
+            ],
+            "ME 320",
+          ],
+        },
+        Array [
+          "ECE",
+          "305",
+          "CONCURRENT",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Sophomore or Junior or Senior",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "379",
+    "creditHours": 3,
+    "description": "An experimental investigation of thermodynamic, fluid mechanic, and heat transfer principles. Students will learn about thermal-fluids instrumentation and conduct experiments. In addition, they will design their own experiments to demonstrate their understanding of the principles. (F,W,S).",
+    "name": "Thermal-Fluids Laboratory",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "or": Array [
+            "ME 320",
+            Array [
+              "ME",
+              "325",
+              "PREVIOUS",
+            ],
+          ],
+        },
+        Object {
+          "or": Array [
+            Array [
+              "ME",
+              "349",
+              "PREVIOUS",
+            ],
+            Array [
+              "BENG",
+              "351",
+              "PREVIOUS",
+            ],
+          ],
+        },
+      ],
+    },
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "381",
+    "creditHours": 4,
+    "description": "This course introduces the students to the fundamentals and principles of manufacturing processes for engineering materials. It seeks to transfer an understanding of the application of principles of engineering materials and their influence on manufacturing processes. Topics covered include structure and manufacturing properties of metals, casting, heat treatments, bulk deformation processes, sheet metal working processes, processing of polymers and composites, surfaces and coating, powder metallurgy, machining and joining. Case studies of design for manufacturing and measurement of product quality; economical aspects and cost considerations in manufacturing systems will be studied. Three lecture hours and three laboratory hours.",
+    "name": "Manufacturing Processes I",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ENGR",
+          "250",
+          "PREVIOUS",
+        ],
+        Object {
+          "or": Array [
+            Array [
+              "ME",
+              "260",
+              "PREVIOUS",
+            ],
+            Array [
+              "ME",
+              "265",
+              "PREVIOUS",
+            ],
+          ],
+        },
+      ],
+    },
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "399",
+    "creditHours": 1,
+    "description": "A four-month professional work experience period of the Engineering Internship Program, integrated and alternated with the classroom terms.",
+    "name": "Internship/ Co-op",
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior or Graduate",
+    ],
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "410",
+    "creditHours": 3,
+    "description": "A presentation of the basic concepts and fundamentals of the Finite Element Method of Analysis in general, followed by applications to both continuum and field problems. Selected areas of application: dynamics and vibration including wave propagation; acoustics; fluid mechanics including film lubrication and ground water flow; heat transfer; elasticity and stress/strain analysis including structures; electrical field problems including electrostatics and electromagnetics. Two lectures and a comp/rec. period. (F,W,S).",
+    "name": "Finite Element Method wth Appl",
+    "prerequisites": Object {
+      "or": Array [
+        Object {
+          "and": Array [
+            Array [
+              "ME",
+              "345",
+              "PREVIOUS",
+            ],
+            Object {
+              "or": Array [
+                "ME 360",
+                Array [
+                  "ME",
+                  "3601",
+                  "PREVIOUS",
+                ],
+              ],
+            },
+          ],
+        },
+        Object {
+          "and": Array [
+            Array [
+              "BENG",
+              "370",
+              "PREVIOUS",
+            ],
+            Array [
+              "BENG",
+              "325",
+              "CONCURRENT",
+            ],
+          ],
+        },
+      ],
+    },
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "4191",
+    "creditHours": 4,
+    "description": "A presentation of the methods of plane elasticity to solve a variety of problems arising in the analysis and design of structures. Review of the concepts of plane stress and strain, basic equations of plane elasticity and problems, energy methods approximate/numerical techniques, elastic-plastic bending and torsion, instability of columns and frames. (F,W,S).",
+    "name": "Structural Mech & Design",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ME",
+          "345",
+          "PREVIOUS",
+        ],
+        Object {
+          "or": Array [
+            Array [
+              "ME",
+              "3601",
+              "PREVIOUS",
+            ],
+            "ME 360",
+          ],
+        },
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if Level is Undergraduate",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "4201",
+    "creditHours": 4,
+    "description": "Principles of turbomachinery design and practices. Euler's equation for energy transfer calculations.  Two- and three-dimensional velocity diagrams. Characteristic curves of axial and radial flow compressors. Design procedures of fans and blowers. Basic design and selection of pumps. Student is required to conduct a turbomachinery design project by applying the theory learned from the course. (W).",
+    "name": "Design of Turbomachinery",
+    "prerequisites": Object {
+      "or": Array [
+        Array [
+          "ME",
+          "325",
+          "PREVIOUS",
+        ],
+        "ME 320",
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if Level is Undergraduate",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "4202",
+    "creditHours": 4,
+    "description": "Principles of turbomachinery design and practices with emphasis on wind power generation. Euler's equation for energy transfer calculations. Two- and three-dimensional velocity diagrams. Aerodynamics of wind turbines. Wind turbine design and control. Power generation of wind turbines, wind energy system economics and environmental impacts. Design procedures and characteristics of compressors, fans and blowers. Basic design calculations and selection of pumps. A turbomachinery design project by using the theory learned from the course may be required.",
+    "name": "Design Turbo. and Wind Gen.",
+    "prerequisites": Array [
+      "ME",
+      "375",
+      "PREVIOUS",
+    ],
+    "restrictions": Array [
+      "Cannot enroll if Class is Freshman",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "4301",
+    "creditHours": 3,
+    "description": "This course introduces students to fundamentals and practical skills of computational fluid dynamics and heat transfer. Governing equations and their mathematical classification. Spatial and temporal approximation techniques, stability, consistency, and convergence. Finite-difference and finite-volume formulations. Survey of methods for solving discretized equations. Applications to technological flow and heat transfer problems.",
+    "name": "Computational Thermo-Fluids",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ME",
+          "325",
+          "PREVIOUS",
+        ],
+        Array [
+          "ME",
+          "375",
+          "CONCURRENT",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Senior",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "4361",
+    "creditHours": 4,
+    "description": "A comprehensive treatment of the design principles and practices in the heating, ventilating, and air conditioning. Psychrometrics, design loads, distribution systems, equipment selection.",
+    "name": "Design of HVAC Systems",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "or": Array [
+            Array [
+              "ME",
+              "325",
+              "PREVIOUS",
+            ],
+            "ME 320",
+          ],
+        },
+        Object {
+          "or": Array [
+            Array [
+              "ME",
+              "375",
+              "CONCURRENT",
+            ],
+            Array [
+              "ME",
+              "371",
+              "CONCURRENT",
+            ],
+          ],
+        },
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if Level is Undergraduate",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ME",
+  },
+  Object {
+    "corequisites": Array [
+      "ME",
+      "442L",
+      "PREVIOUS",
+    ],
+    "courseNumber": "442",
+    "creditHours": 4,
+    "description": "Modeling of mechanical systems and feedback controllers using Laplace transform techniques and block diagram analysis. System response characteristics and stability criterion. Introduction of feedback concepts, including analysis and design of feedback controllers using root locus  techniques. Frequency response concepts and use of frequency response measures in stability analysis and controller design.",
+    "name": "Control Syst Anly and Design",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ECE",
+          "305",
+          "PREVIOUS",
+        ],
+        Array [
+          "ME",
+          "345",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "4461",
+    "creditHours": 4,
+    "description": "Fundamentals of mechanical vibration and principles of noise control. Use of transducers and instruments to conduct sound and vibration measurements. Free and forced vibration in single and multiple degrees-of-freedom systems, damping, eigenvalues, eigenvectors, frequency response function, modal analysis, description of sound fields, acoustical materials and material testing, acoustics of rooms and enclosures, sound quality, and principles of noise control. Students will be required to conduct either a vibration or a noise control project. Two one-and-one-half hour lectures and one three-hour laboratory. (F).",
+    "name": "Mech Vibration & Noise Control",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ME",
+          "345",
+          "PREVIOUS",
+        ],
+        Object {
+          "or": Array [
+            Array [
+              "ME",
+              "349",
+              "CONCURRENT",
+            ],
+            "ME 348*",
+          ],
+        },
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if Level is Undergraduate",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "4471",
+    "creditHours": 4,
+    "description": "The course introduces students to the fundamentals of solar energy conversion and solar energy systems. Principles in thermodynamics and heat transfer required to understand the solar energy use is reviewed. Design of different types of solar energy systems are explored and assessed. Issues relating to the practical implementation of solar energy will also be considered.",
+    "name": "Solar Energy Sys Analy&Design",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ME",
+          "325",
+          "PREVIOUS",
+        ],
+        Array [
+          "ME",
+          "375",
+          "CONCURRENT",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Senior",
+      "Can enroll if Major is Mechanical Engineering",
+    ],
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "452",
+    "creditHours": 4,
+    "description": "This course introduces students to the fundamentals of energy sources and their environmental impacts. It covers a wide range of conventional and alternative energy sources, which includes renewable and presents the tools for assessing their sustainability and environmental impacts. It also reviews issues related to energy storage, transportation and distribution, and challenges and future opportunities.",
+    "name": "Sustainable Energy & Environ",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ME",
+          "325",
+          "PREVIOUS",
+        ],
+        Array [
+          "ME",
+          "375",
+          "CONCURRENT",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Senior",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "4521",
+    "creditHours": 3,
+    "description": "The course provides an overview of energy technology from a broad perspective that encompasses technical and environmental aspects.  It covers a wide range of traditional and alternative energy sources and presents assessments of their availability, sustainability, and environmental impacts as well as evaluation of their potential role in solving the global energy problem.",
+    "name": "Intro Sust Energy Systems",
+    "prerequisites": Array [
+      "ME",
+      "375",
+      "PREVIOUS",
+    ],
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if College is Engineering and Computer Science",
+      "Can enroll if Major is Mechanical Engineering",
+    ],
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "460",
+    "creditHours": 3,
+    "description": "Design decisions based on manufacturability and process-property relationships. Design for assembly. Manufacturing tolerances and quality control methods including NDT. Design methodology used for product development.",
+    "name": "Design for Manufacturing",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "or": Array [
+            "ME 360",
+            Array [
+              "ME",
+              "3601",
+              "PREVIOUS",
+            ],
+          ],
+        },
+        Array [
+          "ME",
+          "381",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "467",
+    "creditHours": 3,
+    "description": "A guided design project course with emphasis on decision-making process associated with establishing alternatives and evaluation procedures to synthesize designs. Students will propose design projects and work in teams. Written and oral presentations will be required at the close of the term.",
+    "name": "Senior Design I",
+    "prerequisites": Object {
+      "and": Array [
+        "ME 330",
+        Array [
+          "ME",
+          "345",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "4671",
+    "creditHours": 4,
+    "description": "A guided design project with emphasis on the decision-making process associated with establishing alternatives and evaluation procedures to synthesize designs. Students propose design projects and work in teams to produce analytical designs, conduct evaluative experiments, and construct a physical design prototype. Engineering ethics and responsibility. Written and oral presentations are required at the close of the term. (F,W,S).",
+    "name": "Senior Design I",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ME",
+          "345",
+          "PREVIOUS",
+        ],
+        Object {
+          "or": Array [
+            "ME 360",
+            Array [
+              "ME",
+              "3601",
+              "PREVIOUS",
+            ],
+          ],
+        },
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if Major is Mechanical Engineering",
+    ],
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "4681",
+    "creditHours": 4,
+    "description": "Full Title: Interdisciplinary Senior Design for ME/BENG Dual Degree Students                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+A guided interdisciplinary design project course where student teams propose design projects, design a device, system or process related to mechanical-and bio-engineering and conduct evaluative experiments and/or construct a physical prototype. Engineering ethics and responsbility. At the end of the semester, the students are required to submit written reports and give oral presentations with a demonstration of their projects. Credit can only be awarded for one of the following courses: BENG 4671, ME 4671, and ME 4681. (W)",
+    "name": "ME/BENG Dual Senior Design",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "BENG",
+          "351",
+          "PREVIOUS",
+        ],
+        Array [
+          "BENG",
+          "370",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if Major is Bioengineering, Mechanical Engineering",
+    ],
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "469",
+    "creditHours": Array [
+      1,
+      4,
+    ],
+    "description": "Student teasm develop mecanical or interdisciplinary design projects, or continue projects begun in ME 4671. Work includes mechanical engineering design, and could possibly include fabrication and testing. Projects can involve efforts by interdisciplinary teams. Written and oral presentations are required.",
+    "name": "Senior Design II",
+    "prerequisites": Array [
+      "ME",
+      "4671",
+      "PREVIOUS",
+    ],
+    "subjectCode": "ME",
+  },
+  Object {
+    "corequisites": Array [
+      "ECE|460|PREVIOUS__, __ME",
+      "442",
+      "PREVIOUS",
+    ],
+    "courseNumber": "472",
+    "creditHours": 4,
+    "description": "This course provides the student with hands-on interdisciplinary experience of mechatronic systems, which integrate mechanical, electrical/electronic components with computer and microprocessors to design a high performance system. Subjects will be covered including Mechanical and Electrical Actuator Systems, Digital Transducers and Modulators, Microcomputers and Microcontrollers Interfacing Actuators using graphic programming techniques, Programmer Logic Controllers (PLC), and Modeling of Fluid Systems. Laboratories form the core of the course. They cover microprocessor controlled mechanical actuator system for motion controls, materials handling, PLC programming and fluid power systems. The labs make extensive use of Simulink?, a MATLAB? toolbox, Mikro - C and/or Arduino. Each student builds control circuits on a breadboard kit to simulate a real operation. Student will be required to perform a course design project with mechatronic application in nature.",
+    "name": "Prin & Appl of Mechatronic Sys",
+    "prerequisites": Array [
+      "ME",
+      "265",
+      "PREVIOUS",
+    ],
+    "restrictions": Array [
+      "Cannot enroll if Class is Freshman or Sophomore",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "481",
+    "creditHours": 3,
+    "description": "A study of casting, welding, plastic forming, and machining of materials; analysis of forces, energy requirements, and temperature effects; design specifications economically obtainable in terms of dimensional accuracy, surface finish, and material properties, functional characteristics of equipment. Two lectures and a laboratory.",
+    "name": "Manufacturing Processes II",
+    "prerequisites": Array [
+      "ME",
+      "381",
+      "PREVIOUS",
+    ],
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "483",
+    "creditHours": 3,
+    "description": "Physical and mechanical behavior of unreinforced and reinforced (composite) polymeric materials in relation to their applications in modern technology. Emphasis is given to the design considerations with these materials in contrast to those with metallic materials. Time-dependent properties, such as creep and stress relaxation, are considered. Manufacturing methods are covered. Three lectures/recitation.",
+    "name": "Dsgn Cons in Poly and Comp Mat",
+    "prerequisites": Object {
+      "or": Array [
+        "ME 360",
+        Array [
+          "ME",
+          "3601",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "484",
+    "creditHours": 3,
+    "description": "This course will consider the manufacturing processes for production of plastics and composite parts.  The emphasis will be on manufacturing principles that are based on rheology, polymer flow and transport phenomena.  Design considerations and quality control techniques for manufacturing plastic and composite parts will also be covered.",
+    "name": "Manufacturing Poly Comp Matl",
+    "prerequisites": Object {
+      "or": Array [
+        Array [
+          "ME",
+          "381",
+          "PREVIOUS",
+        ],
+        Array [
+          "IMSE",
+          "382",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "490",
+    "creditHours": Array [
+      1,
+      3,
+    ],
+    "description": "Design project involving not only design but also analysis, fabrication and/or testing. Topics may be chosen from any of the areas of mechanical engineering. Students who have taken ME 425 and ME 464 will be encouraged to take this course. The student will submit a report on his or her project and give an oral presentation at the close of the term. (F,W,S).",
+    "name": "Directed Design Project",
+    "prerequisites": Object {
+      "or": Array [
+        "ME 360",
+        Array [
+          "ME",
+          "381",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Senior or Graduate",
+    ],
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "491",
+    "creditHours": Array [
+      1,
+      3,
+    ],
+    "description": "Special problems selected for laboratory or library investigation with intent of developing initiative and resourcefulness. (F,W,S).",
+    "name": "Directed Research Problems",
+    "restrictions": Array [
+      "Can enroll if Class is Senior or Graduate",
+    ],
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "492",
+    "creditHours": Array [
+      1,
+      3,
+    ],
+    "description": "Individual study, design or laboratory research in a field of interest to the student. Topics may be chosen from any of the areas of mechanical engineering. The student will submit a report on his or her project at the close of the term. (F,W,S).",
+    "name": "Guided Study in Mech Eng",
+    "restrictions": Array [
+      "Can enroll if Class is Senior or Graduate",
+    ],
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "493",
+    "creditHours": 3,
+    "description": "This course will introduce the advanced energy conversion systems in automotive vehicles and cover the fundamentals, characteristics, and design consideration of the energy systems. The topic includes using alternative fuels in internal combustion engines, advanced power train systems in hybrid, electric, and fuel cell vehicle, and exhaust energy recovery systems.",
+    "name": "Advanced Vehicle Energy Sys",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ME",
+          "325",
+          "CONCURRENT",
+        ],
+        Array [
+          "ECE",
+          "305",
+          "CONCURRENT",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "496",
+    "creditHours": Array [
+      2,
+      3,
+    ],
+    "description": "Comparison of characteristics and performance of several forms of internal combustion engines including the Otto and diesel types of piston engines and the several types of gas turbines; thermodynamics of cycles, combustion, ignition, fuel metering and injection, pollution from engines and modeling techniques. Lectures, theory demonstrations, and experiments.",
+    "name": "Internal Combustion Engines I",
+    "prerequisites": Object {
+      "or": Array [
+        Object {
+          "and": Array [
+            "ME 320",
+            "ME 330",
+          ],
+        },
+        Array [
+          "ME",
+          "325",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "4981",
+    "creditHours": 4,
+    "description": "Analysis of vehicle performance in terms of acceleration, gradability, speed, fuel economy, ride comfort, stability and safety. Engine-transmission compatibility and matching. Fundamental vehicle dynamics. Computer modeling and simulation of vehicle systems by numerical techniques. Transmission ratio and torque analysis. Design of vehicle systems such as brakes, suspensions, drive line components, steering mechanisms and other subsystems. Four hours lecture. (F,W).",
+    "name": "Automotive Engineering",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ME",
+          "345",
+          "PREVIOUS",
+        ],
+        Object {
+          "or": Array [
+            "ME 360",
+            Array [
+              "ME",
+              "3601",
+              "PREVIOUS",
+            ],
+          ],
+        },
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if Major is Mechanical Engineering",
+    ],
+    "subjectCode": "ME",
+  },
+  Object {
+    "courseNumber": "499",
+    "creditHours": 1,
+    "description": "A four-month professional work experience period of the Engineering Internship Program, integrated and alternated with the classroom terms.",
+    "name": "Internship/ Co-Op",
+    "restrictions": Array [
+      "Can enroll if Class is Senior or Graduate",
+    ],
+    "subjectCode": "ME",
   },
 ]
 `;

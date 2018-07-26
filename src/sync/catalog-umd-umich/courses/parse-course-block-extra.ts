@@ -1,3 +1,5 @@
+import { parsePrerequisites } from './parse-prerequisites';
+
 export function parseRestrictionsBlock(restrictionsBlock: Element) {
   return Array.from(restrictionsBlock.childNodes)
     .map(x => x.textContent!)
@@ -7,8 +9,6 @@ export function parseRestrictionsBlock(restrictionsBlock: Element) {
     .filter(x => !/restriction/i.test(x));
 }
 
-export function parsePrerequisite(prerequisiteBlock: Element) {}
-
 export function parseCourseBlockExtra(courseBlockExtra: Element) {
   const textContent = courseBlockExtra.textContent;
   if (!textContent) throw new Error('could not get textContent from .courseblockextra');
@@ -16,10 +16,10 @@ export function parseCourseBlockExtra(courseBlockExtra: Element) {
     return { restrictions: parseRestrictionsBlock(courseBlockExtra) };
   }
   if (/prerequisite/i.test(textContent)) {
-    return { prerequisites: parsePrerequisite(courseBlockExtra) };
+    return { prerequisites: parsePrerequisites(courseBlockExtra) };
   }
   if (/corequisite/i.test(textContent)) {
-    return { corequisites: parsePrerequisite(courseBlockExtra) };
+    return { corequisites: parsePrerequisites(courseBlockExtra) };
   }
   return undefined;
 }

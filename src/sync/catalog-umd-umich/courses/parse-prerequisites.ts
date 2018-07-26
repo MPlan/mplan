@@ -60,7 +60,7 @@ export function replacePrerequisiteAnchors(courseBlockExtra: Element) {
 
   const arr = [courseBlockExtra.textContent || ''];
   const oneLined = oneLine(Object.assign(arr, { raw: arr }));
-  const prerequisiteMatch = /prerequisite.*:([^:]*)/i.exec(oneLined);
+  const prerequisiteMatch = /(?:prerequisite|corequisite).*:([^:]*)/i.exec(oneLined);
   if (!prerequisiteMatch) throw new Error('could not info out of perquisite block');
   const textContent = prerequisiteMatch[1].trim();
   const withConcurrent = textContent.replace(/__(\w*)\|(\w*)__\s*\*/g, '__$1|$2|CONCURRENT__');
