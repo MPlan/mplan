@@ -1,0 +1,823 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`parsePrerequisites works 1`] = `
+Array [
+  Object {
+    "or": Array [
+      Array [
+        "MATH",
+        "115",
+        "CONCURRENT",
+      ],
+      Array [
+        "MATH",
+        "113",
+        "CONCURRENT",
+      ],
+    ],
+  },
+  Object {
+    "or": Array [
+      Array [
+        "MATH",
+        "115",
+        "CONCURRENT",
+      ],
+      Array [
+        "MATH",
+        "113",
+        "CONCURRENT",
+      ],
+    ],
+  },
+  "CIS 162",
+  Object {
+    "and": Array [
+      Object {
+        "or": Array [
+          Array [
+            "MATH",
+            "115",
+            "PREVIOUS",
+          ],
+          "MPLS with a score of 116",
+        ],
+      },
+      Object {
+        "or": Array [
+          Array [
+            "CIS",
+            "150",
+            "PREVIOUS",
+          ],
+          Array [
+            "IMSE",
+            "150",
+            "PREVIOUS",
+          ],
+        ],
+      },
+    ],
+  },
+  Object {
+    "and": Array [
+      Array [
+        "CIS",
+        "1501",
+        "PREVIOUS",
+      ],
+      Array [
+        "MATH",
+        "115",
+        "PREVIOUS",
+      ],
+    ],
+  },
+  Object {
+    "or": Array [
+      Array [
+        "ENGR",
+        "100",
+        "PREVIOUS",
+      ],
+      Object {
+        "or": Array [
+          Array [
+            "MATH",
+            "105",
+            "PREVIOUS",
+          ],
+          "MPLS with a score of 113",
+        ],
+      },
+    ],
+  },
+  Object {
+    "and": Array [
+      Array [
+        "MATH",
+        "115",
+        "PREVIOUS",
+      ],
+      Array [
+        "CIS",
+        "200",
+        "CONCURRENT",
+      ],
+    ],
+  },
+  Array [
+    "CIS",
+    "200",
+    "PREVIOUS",
+  ],
+  Array [
+    "CIS",
+    "200",
+    "CONCURRENT",
+  ],
+  Array [
+    "CIS",
+    "200",
+    "PREVIOUS",
+  ],
+  Array [
+    "CIS",
+    "200",
+    "PREVIOUS",
+  ],
+  Object {
+    "or": Array [
+      Array [
+        "CIS",
+        "200",
+        "PREVIOUS",
+      ],
+      Array [
+        "IMSE",
+        "200",
+        "PREVIOUS",
+      ],
+    ],
+  },
+  Object {
+    "or": Array [
+      Array [
+        "CIS",
+        "200",
+        "PREVIOUS",
+      ],
+      Array [
+        "IMSE",
+        "200",
+        "PREVIOUS",
+      ],
+    ],
+  },
+  Array [
+    "CIS",
+    "200",
+    "PREVIOUS",
+  ],
+  Array [
+    "CIS",
+    "275",
+    "PREVIOUS",
+  ],
+  Object {
+    "and": Array [
+      Object {
+        "or": Array [
+          Array [
+            "MATH",
+            "115",
+            "PREVIOUS",
+          ],
+          "MPLS with a score of 116",
+        ],
+      },
+      Object {
+        "or": Array [
+          Array [
+            "CIS",
+            "200",
+            "PREVIOUS",
+          ],
+          Array [
+            "IMSE",
+            "200",
+            "PREVIOUS",
+          ],
+        ],
+      },
+    ],
+  },
+  Object {
+    "and": Array [
+      Object {
+        "or": Array [
+          Array [
+            "CIS",
+            "2001",
+            "PREVIOUS",
+          ],
+          Array [
+            "CIS",
+            "200",
+            "PREVIOUS",
+          ],
+        ],
+      },
+      Array [
+        "ECE",
+        "3100",
+        "PREVIOUS",
+      ],
+    ],
+  },
+  Object {
+    "and": Array [
+      Object {
+        "and": Array [
+          Array [
+            "MATH",
+            "115",
+            "PREVIOUS",
+          ],
+          Object {
+            "or": Array [
+              Array [
+                "CIS",
+                "200",
+                "PREVIOUS",
+              ],
+              "MPLS with a score of 116",
+            ],
+          },
+        ],
+      },
+      Array [
+        "CIS",
+        "275",
+        "PREVIOUS",
+      ],
+    ],
+  },
+  Object {
+    "and": Array [
+      Object {
+        "or": Array [
+          Array [
+            "CIS",
+            "200",
+            "PREVIOUS",
+          ],
+          Array [
+            "IMSE",
+            "200",
+            "PREVIOUS",
+          ],
+        ],
+      },
+      Array [
+        "CIS",
+        "275",
+        "PREVIOUS",
+      ],
+    ],
+  },
+  Object {
+    "and": Array [
+      Object {
+        "and": Array [
+          Array [
+            "ECE",
+            "370",
+            "PREVIOUS",
+          ],
+          Array [
+            "ECE",
+            "276",
+            "PREVIOUS",
+          ],
+        ],
+      },
+      Object {
+        "or": Array [
+          Array [
+            "COMP",
+            "270",
+            "PREVIOUS",
+          ],
+          Array [
+            "COMP",
+            "106",
+            "PREVIOUS",
+          ],
+        ],
+      },
+    ],
+  },
+  Array [
+    "CIS",
+    "375",
+    "PREVIOUS",
+  ],
+  Array [
+    "MATH",
+    "115",
+    "PREVIOUS",
+  ],
+  Object {
+    "and": Array [
+      Object {
+        "or": Array [
+          Array [
+            "CIS",
+            "200",
+            "PREVIOUS",
+          ],
+          Array [
+            "ECE",
+            "270",
+            "PREVIOUS",
+          ],
+        ],
+      },
+      Object {
+        "or": Array [
+          Array [
+            "CIS",
+            "310",
+            "CONCURRENT",
+          ],
+          Array [
+            "ECE",
+            "370",
+            "CONCURRENT",
+          ],
+        ],
+      },
+    ],
+  },
+  Object {
+    "or": Array [
+      Array [
+        "CIS",
+        "350",
+        "PREVIOUS",
+      ],
+      Array [
+        "CIS",
+        "3501",
+        "PREVIOUS",
+      ],
+    ],
+  },
+  Object {
+    "or": Array [
+      Array [
+        "CIS",
+        "350",
+        "PREVIOUS",
+      ],
+      Array [
+        "CIS",
+        "3501",
+        "PREVIOUS",
+      ],
+    ],
+  },
+  Object {
+    "or": Array [
+      Object {
+        "or": Array [
+          Array [
+            "CIS",
+            "350",
+            "PREVIOUS",
+          ],
+          Array [
+            "IMSE",
+            "350",
+            "PREVIOUS",
+          ],
+        ],
+      },
+      Object {
+        "and": Array [
+          Array [
+            "ECE",
+            "370",
+            "PREVIOUS",
+          ],
+          Array [
+            "MATH",
+            "276",
+            "PREVIOUS",
+          ],
+        ],
+      },
+    ],
+  },
+  Array [
+    "CIS",
+    "350",
+    "PREVIOUS",
+  ],
+  Object {
+    "or": Array [
+      Array [
+        "CIS",
+        "350",
+        "PREVIOUS",
+      ],
+      Array [
+        "CIS",
+        "3501",
+        "PREVIOUS",
+      ],
+    ],
+  },
+  Object {
+    "and": Array [
+      Object {
+        "or": Array [
+          Array [
+            "CIS",
+            "2001",
+            "PREVIOUS",
+          ],
+          Array [
+            "CIS",
+            "200",
+            "PREVIOUS",
+          ],
+        ],
+      },
+      Array [
+        "CIS",
+        "3200",
+        "PREVIOUS",
+      ],
+    ],
+  },
+  Array [
+    "CIS",
+    "421",
+    "PREVIOUS",
+  ],
+  Object {
+    "and": Array [
+      Array [
+        "CIS",
+        "375",
+        "PREVIOUS",
+      ],
+      Array [
+        "CIS",
+        "421",
+        "CONCURRENT",
+      ],
+    ],
+  },
+  Object {
+    "and": Array [
+      Array [
+        "CIS",
+        "375",
+        "PREVIOUS",
+      ],
+      Array [
+        "CIS",
+        "421",
+        "CONCURRENT",
+      ],
+    ],
+  },
+  Array [
+    "CIS",
+    "4261",
+    "PREVIOUS",
+  ],
+  Object {
+    "and": Array [
+      Object {
+        "and": Array [
+          Object {
+            "and": Array [
+              Array [
+                "ECE",
+                "370",
+                "PREVIOUS",
+              ],
+              Array [
+                "ECE",
+                "276",
+                "PREVIOUS",
+              ],
+            ],
+          },
+          Array [
+            "MATH",
+            "276",
+            "PREVIOUS",
+          ],
+        ],
+      },
+      Array [
+        "IMSE",
+        "317",
+        "PREVIOUS",
+      ],
+    ],
+  },
+  Array [
+    "CIS",
+    "427",
+    "PREVIOUS",
+  ],
+  Array [
+    "CIS|553|PREVIOUS__ __CIS",
+    "375",
+    "CONCURRENT",
+  ],
+  Array [
+    "CIS",
+    "375",
+    "CONCURRENT",
+  ],
+  Array [
+    "CIS",
+    "427",
+    "PREVIOUS",
+  ],
+  Array [
+    "CIS",
+    "450",
+    "CONCURRENT",
+  ],
+  Object {
+    "and": Array [
+      Array [
+        "CIS",
+        "310",
+        "PREVIOUS",
+      ],
+      Object {
+        "or": Array [
+          Array [
+            "CIS",
+            "350",
+            "PREVIOUS",
+          ],
+          Array [
+            "CIS",
+            "3501",
+            "PREVIOUS",
+          ],
+        ],
+      },
+    ],
+  },
+  Array [
+    "MATH",
+    "227",
+    "PREVIOUS",
+  ],
+  Object {
+    "or": Array [
+      Array [
+        "CIS",
+        "451",
+        "PREVIOUS",
+      ],
+      Array [
+        "CIS",
+        "487",
+        "PREVIOUS",
+      ],
+    ],
+  },
+  Array [
+    "CIS",
+    "350",
+    "PREVIOUS",
+  ],
+  Object {
+    "and": Array [
+      Object {
+        "or": Array [
+          Array [
+            "CIS",
+            "427",
+            "CONCURRENT",
+          ],
+          Array [
+            "ECE",
+            "471",
+            "CONCURRENT",
+          ],
+        ],
+      },
+      Object {
+        "or": Array [
+          Array [
+            "CIS",
+            "387",
+            "PREVIOUS",
+          ],
+          Array [
+            "ECE",
+            "387",
+            "PREVIOUS",
+          ],
+        ],
+      },
+    ],
+  },
+  Object {
+    "or": Array [
+      Array [
+        "CIS",
+        "350",
+        "PREVIOUS",
+      ],
+      Array [
+        "CIS",
+        "3501",
+        "PREVIOUS",
+      ],
+    ],
+  },
+  Array [
+    "CIS",
+    "376",
+    "PREVIOUS",
+  ],
+  Array [
+    "CIS",
+    "375",
+    "PREVIOUS",
+  ],
+  Object {
+    "or": Array [
+      Array [
+        "CIS",
+        "350",
+        "PREVIOUS",
+      ],
+      Array [
+        "CIS",
+        "3501",
+        "PREVIOUS",
+      ],
+    ],
+  },
+  Object {
+    "and": Array [
+      Array [
+        "CIS",
+        "306",
+        "PREVIOUS",
+      ],
+      Object {
+        "or": Array [
+          Array [
+            "MATH",
+            "217",
+            "CONCURRENT",
+          ],
+          Array [
+            "MATH",
+            "227",
+            "CONCURRENT",
+          ],
+        ],
+      },
+    ],
+  },
+  Object {
+    "or": Array [
+      Array [
+        "CIS",
+        "200",
+        "PREVIOUS",
+      ],
+      Array [
+        "CIS",
+        "2001",
+        "PREVIOUS",
+      ],
+    ],
+  },
+  Array [
+    "CIS",
+    "375",
+    "CONCURRENT",
+  ],
+  Array [
+    "CIS",
+    "487",
+    "PREVIOUS",
+  ],
+  Object {
+    "or": Array [
+      Array [
+        "CIS",
+        "350",
+        "PREVIOUS",
+      ],
+      Array [
+        "CIS",
+        "3501",
+        "PREVIOUS",
+      ],
+    ],
+  },
+  Object {
+    "and": Array [
+      Object {
+        "or": Array [
+          Array [
+            "CIS",
+            "200",
+            "PREVIOUS",
+          ],
+          Array [
+            "CIS",
+            "2001",
+            "PREVIOUS",
+          ],
+        ],
+      },
+      Array [
+        "MATH",
+        "396",
+        "PREVIOUS",
+      ],
+    ],
+  },
+  Array [
+    "CIS",
+    "375",
+    "PREVIOUS",
+  ],
+  Array [
+    "CIS",
+    "375",
+    "PREVIOUS",
+  ],
+  Array [
+    "CIS",
+    "4951",
+    "PREVIOUS",
+  ],
+  Object {
+    "and": Array [
+      Array [
+        "CIS",
+        "376",
+        "PREVIOUS",
+      ],
+      Array [
+        "CIS",
+        "476",
+        "PREVIOUS",
+      ],
+    ],
+  },
+  Array [
+    "CIS",
+    "376",
+    "PREVIOUS",
+  ],
+  Object {
+    "and": Array [
+      Array [
+        "CIS",
+        "4961",
+        "PREVIOUS",
+      ],
+      Array [
+        "CIS",
+        "476",
+        "CONCURRENT",
+      ],
+    ],
+  },
+  Object {
+    "and": Array [
+      Array [
+        "CIS",
+        "3200",
+        "PREVIOUS",
+      ],
+      Object {
+        "or": Array [
+          Array [
+            "STAT",
+            "326",
+            "PREVIOUS",
+          ],
+          "STAT 425",
+        ],
+      },
+    ],
+  },
+  Object {
+    "and": Array [
+      Array [
+        "CIS",
+        "4971",
+        "PREVIOUS",
+      ],
+      Array [
+        "STAT",
+        "430",
+        "CONCURRENT",
+      ],
+    ],
+  },
+]
+`;

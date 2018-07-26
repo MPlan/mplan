@@ -19,10 +19,7 @@ describe('parsePrerequisites', () => {
       },
     );
 
-    const result = prerequisitesBlocks
-      .map(block => parsePrerequisites(block))
-      .map(result => JSON.stringify(result, null, 2))
-      .join('\n====================\n');
-    console.log(result);
+    const result = prerequisitesBlocks.map(block => parsePrerequisites(block));
+    expect(result).toMatchSnapshot();
   });
 });

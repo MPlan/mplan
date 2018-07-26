@@ -195,7 +195,7 @@ export function groupByOperator(tree: ParseTree): ParseTree {
 
 function isPrerequisite(obj: any): obj is Prerequisite {
   if (!obj) return false;
-  if (typeof obj === 'string') return true;
+  // if (typeof obj === 'string') return true;
   if (typeof obj !== 'object') return false;
   if (obj.and) return true;
   if (obj.or) return true;
@@ -211,20 +211,25 @@ function isPrerequisite(obj: any): obj is Prerequisite {
  * Recursively builds the `_Prerequisite` type given a `ParseTree` from the `tokenizeByOperator`
  * function.
  */
-export function buildPrerequisiteTree(tokens: ParseTree | Prerequisite): Prerequisite | undefined {
+export function buildPrerequisiteTree(tokens: ParseTree | Prerequisite): Prerequisite {
+  if (Array.isArray(tokens) && tokens.length === 1) {
+    return buildPrerequisiteTree(tokens[0]);
+  }
+
   if (typeof tokens === 'string') {
     const result = replaceCourseDirective(tokens);
-    if (!result) return tokens;
-    return result;
+    if (result) return result;
+    return tokens;
   }
-  if (isPrerequisite(tokens)) return tokens;
 
-  const transformedTokens = tokens
-    .map(token => {
-      if (isPrerequisite(token)) return token;
-      return buildPrerequisiteTree(token)!;
-    })
-    .filter(token => !!token);
+  if (isPrerequisite(tokens)) {
+    return tokens;
+  }
+
+  const transformedTokens = tokens.map(token => {
+    if (isPrerequisite(token)) return token;
+    return buildPrerequisiteTree(token);
+  });
 
   const rankedOperators = transformedTokens
     .map((token, index) => ({ token, index }))
@@ -246,7 +251,9 @@ export function buildPrerequisiteTree(tokens: ParseTree | Prerequisite): Prerequ
     .sort((a, b) => b.rank - a.rank);
 
   const bestOperator = rankedOperators[0];
-  if (!bestOperator) return undefined;
+  if (!bestOperator) {
+    throw new Error(`Invalid tokens: "${JSON.stringify(tokens)}"`);
+  }
 
   const operator = bestOperator.token as 'and' | 'or';
   const previous = transformedTokens[bestOperator.index - 1];
