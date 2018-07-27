@@ -38,6 +38,7 @@ Array [
           "113",
           "CONCURRENT",
         ],
+        "MPLS with a score of 116",
       ],
     },
     "subjectCode": "CIS",
@@ -59,6 +60,7 @@ Array [
           "113",
           "CONCURRENT",
         ],
+        "MPLS with a score of 116",
       ],
     },
     "subjectCode": "CIS",
@@ -108,6 +110,11 @@ Array [
               "150",
               "PREVIOUS",
             ],
+            Array [
+              "CCM",
+              "150",
+              "PREVIOUS",
+            ],
           ],
         },
       ],
@@ -120,17 +127,27 @@ Array [
     "description": "This course presents techniques for the design, writing, testing, and debugging of medium-sized programs, and an introduction to data structures (stacks, queues, linked lists) using an object-oriented programming language for data science applications. Topics covered include pointers, templates, and inheritance. The principles of UML modeling are continued. This course will consist of three lecture hours and one two-hour laboratory. The labs will cover various data science applications. (F, W, S)",
     "name": "CS II for Data Scientists",
     "prerequisites": Object {
-      "and": Array [
-        Array [
-          "CIS",
-          "1501",
-          "PREVIOUS",
-        ],
+      "or": Array [
+        Object {
+          "and": Array [
+            Array [
+              "CIS",
+              "1501",
+              "PREVIOUS",
+            ],
+            Array [
+              "MATH",
+              "115",
+              "PREVIOUS",
+            ],
+          ],
+        },
         Array [
           "MATH",
-          "115",
+          "113",
           "PREVIOUS",
         ],
+        "MPLS with a score of 116",
       ],
     },
     "subjectCode": "CIS",
@@ -147,16 +164,12 @@ Array [
           "100",
           "PREVIOUS",
         ],
-        Object {
-          "or": Array [
-            Array [
-              "MATH",
-              "105",
-              "PREVIOUS",
-            ],
-            "MPLS with a score of 113",
-          ],
-        },
+        Array [
+          "MATH",
+          "105",
+          "PREVIOUS",
+        ],
+        "MPLS with a score of 113",
       ],
     },
     "subjectCode": "CIS",
@@ -166,20 +179,6 @@ Array [
     "creditHours": 4,
     "description": "This course introduces students to various topics in discrete mathematics, such as set theory, mathematical logic, trees, and graph theory. Applications to relational databases, modeling reactive systems and program verification are also discussed. (F,W,S)",
     "name": "Discrete Structures I",
-    "prerequisites": Object {
-      "and": Array [
-        Array [
-          "MATH",
-          "115",
-          "PREVIOUS",
-        ],
-        Array [
-          "CIS",
-          "200",
-          "CONCURRENT",
-        ],
-      ],
-    },
     "subjectCode": "CIS",
   },
   Object {
@@ -334,6 +333,11 @@ Array [
             ],
           ],
         },
+        Array [
+          "CIS",
+          "275",
+          "PREVIOUS",
+        ],
       ],
     },
     "subjectCode": "CIS",
@@ -376,22 +380,31 @@ Array [
     "prerequisites": Object {
       "and": Array [
         Object {
-          "and": Array [
-            Array [
-              "MATH",
-              "115",
-              "PREVIOUS",
-            ],
+          "or": Array [
             Object {
-              "or": Array [
+              "and": Array [
                 Array [
-                  "CIS",
-                  "200",
+                  "MATH",
+                  "115",
                   "PREVIOUS",
                 ],
-                "MPLS with a score of 116",
+                Object {
+                  "or": Array [
+                    Array [
+                      "CIS",
+                      "200",
+                      "PREVIOUS",
+                    ],
+                    "MPLS with a score of 116",
+                  ],
+                },
               ],
             },
+            Array [
+              "IMSE",
+              "200",
+              "PREVIOUS",
+            ],
           ],
         },
         Array [
@@ -429,6 +442,16 @@ Array [
           "275",
           "PREVIOUS",
         ],
+        Array [
+          "CIS",
+          "285",
+          "CONCURRENT",
+        ],
+        Array [
+          "MATH",
+          "115",
+          "PREVIOUS",
+        ],
       ],
     },
     "subjectCode": "CIS",
@@ -439,33 +462,80 @@ Array [
     "description": "This course presents an in-depth treatment of the following software engineering topics: software engineering paradigms, requirements, specification, functional design, object-oriented design, user interface design, software verification and validation, and the maintenance and management of software engineering artifacts, as well as an introductory discussion of software reliability. Various phases of the software engineering process will be modeled using UML. (F,W)",
     "name": "Software Engineering I",
     "prerequisites": Object {
-      "and": Array [
+      "or": Array [
         Object {
-          "and": Array [
-            Array [
-              "ECE",
-              "370",
-              "PREVIOUS",
-            ],
-            Array [
-              "ECE",
-              "276",
-              "PREVIOUS",
-            ],
+          "or": Array [
+            Object {
+              "or": Array [
+                Array [
+                  "CIS",
+                  "350",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "CIS",
+                  "3501",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "IMSE",
+                  "350",
+                  "PREVIOUS",
+                ],
+              ],
+            },
+            Object {
+              "and": Array [
+                Array [
+                  "ECE",
+                  "370",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "MATH",
+                  "276",
+                  "PREVIOUS",
+                ],
+              ],
+            },
           ],
         },
         Object {
-          "or": Array [
-            Array [
-              "COMP",
-              "270",
-              "PREVIOUS",
-            ],
-            Array [
-              "COMP",
-              "106",
-              "PREVIOUS",
-            ],
+          "and": Array [
+            Object {
+              "and": Array [
+                Array [
+                  "ECE",
+                  "370",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "ECE",
+                  "276",
+                  "PREVIOUS",
+                ],
+              ],
+            },
+            Object {
+              "or": Array [
+                Array [
+                  "COMP",
+                  "270",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "COMP",
+                  "106",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "COMP",
+                  "220",
+                  "PREVIOUS",
+                ],
+                "CPAS with a score of 40",
+              ],
+            },
           ],
         },
       ],
@@ -532,6 +602,11 @@ Array [
               "370",
               "CONCURRENT",
             ],
+            Array [
+              "ECE",
+              "372",
+              "CONCURRENT",
+            ],
           ],
         },
       ],
@@ -552,16 +627,57 @@ Array [
     "name": "Topics in Computer Science",
     "prerequisites": Object {
       "or": Array [
-        Array [
-          "CIS",
-          "350",
-          "PREVIOUS",
-        ],
-        Array [
-          "CIS",
-          "3501",
-          "PREVIOUS",
-        ],
+        Object {
+          "or": Array [
+            Object {
+              "or": Array [
+                Array [
+                  "CIS",
+                  "350",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "CIS",
+                  "3501",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "IMSE",
+                  "350",
+                  "PREVIOUS",
+                ],
+              ],
+            },
+            Object {
+              "and": Array [
+                Array [
+                  "ECE",
+                  "370",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "ECE",
+                  "276",
+                  "PREVIOUS",
+                ],
+              ],
+            },
+          ],
+        },
+        Object {
+          "and": Array [
+            Array [
+              "ECE",
+              "370",
+              "PREVIOUS",
+            ],
+            Array [
+              "MATH",
+              "276",
+              "PREVIOUS",
+            ],
+          ],
+        },
       ],
     },
     "subjectCode": "CIS",
@@ -576,16 +692,57 @@ Array [
     "name": "Topics in Computer Science II",
     "prerequisites": Object {
       "or": Array [
-        Array [
-          "CIS",
-          "350",
-          "PREVIOUS",
-        ],
-        Array [
-          "CIS",
-          "3501",
-          "PREVIOUS",
-        ],
+        Object {
+          "or": Array [
+            Object {
+              "or": Array [
+                Array [
+                  "CIS",
+                  "350",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "CIS",
+                  "3501",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "IMSE",
+                  "350",
+                  "PREVIOUS",
+                ],
+              ],
+            },
+            Object {
+              "and": Array [
+                Array [
+                  "ECE",
+                  "370",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "ECE",
+                  "276",
+                  "PREVIOUS",
+                ],
+              ],
+            },
+          ],
+        },
+        Object {
+          "and": Array [
+            Array [
+              "ECE",
+              "370",
+              "PREVIOUS",
+            ],
+            Array [
+              "MATH",
+              "276",
+              "PREVIOUS",
+            ],
+          ],
+        },
       ],
     },
     "subjectCode": "CIS",
@@ -606,16 +763,39 @@ Array [
       "or": Array [
         Object {
           "or": Array [
-            Array [
-              "CIS",
-              "350",
-              "PREVIOUS",
-            ],
-            Array [
-              "IMSE",
-              "350",
-              "PREVIOUS",
-            ],
+            Object {
+              "or": Array [
+                Array [
+                  "CIS",
+                  "350",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "IMSE",
+                  "350",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "CIS",
+                  "3501",
+                  "PREVIOUS",
+                ],
+              ],
+            },
+            Object {
+              "and": Array [
+                Array [
+                  "ECE",
+                  "370",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "MATH",
+                  "276",
+                  "PREVIOUS",
+                ],
+              ],
+            },
           ],
         },
         Object {
@@ -626,7 +806,7 @@ Array [
               "PREVIOUS",
             ],
             Array [
-              "MATH",
+              "ECE",
               "276",
               "PREVIOUS",
             ],
@@ -655,16 +835,39 @@ Array [
     "name": "Database Mgmt Systems",
     "prerequisites": Object {
       "or": Array [
-        Array [
-          "CIS",
-          "350",
-          "PREVIOUS",
-        ],
-        Array [
-          "CIS",
-          "3501",
-          "PREVIOUS",
-        ],
+        Object {
+          "or": Array [
+            Array [
+              "CIS",
+              "350",
+              "PREVIOUS",
+            ],
+            Array [
+              "CIS",
+              "3501",
+              "PREVIOUS",
+            ],
+            Array [
+              "IMSE",
+              "351",
+              "PREVIOUS",
+            ],
+          ],
+        },
+        Object {
+          "and": Array [
+            Array [
+              "ECE",
+              "370",
+              "PREVIOUS",
+            ],
+            Array [
+              "MATH",
+              "276",
+              "PREVIOUS",
+            ],
+          ],
+        },
       ],
     },
     "subjectCode": "CIS",
@@ -774,35 +977,63 @@ Array [
     "description": "Study of the management aspects of computing networks and distributed systems. Topics include network architectures (ISO/OSI, TCP/IP, ATM), communication hardware (transmission media, network adaptors, switches), encoding, framing, error detection and correction, reliable transmission, data link control and LAN technology, internetworking, routing/congestion control, network design/management.",
     "name": "Comp Networks and Dis Process",
     "prerequisites": Object {
-      "and": Array [
+      "or": Array [
+        Object {
+          "or": Array [
+            Array [
+              "CIS",
+              "350",
+              "PREVIOUS",
+            ],
+            Array [
+              "CIS",
+              "3501",
+              "PREVIOUS",
+            ],
+            Array [
+              "IMSE",
+              "351",
+              "PREVIOUS",
+            ],
+          ],
+        },
         Object {
           "and": Array [
             Object {
-              "and": Array [
+              "or": Array [
                 Array [
                   "ECE",
                   "370",
                   "PREVIOUS",
                 ],
-                Array [
-                  "ECE",
-                  "276",
-                  "PREVIOUS",
-                ],
+                Object {
+                  "and": Array [
+                    Array [
+                      "ECE",
+                      "370",
+                      "PREVIOUS",
+                    ],
+                    Array [
+                      "ECE",
+                      "276",
+                      "PREVIOUS",
+                    ],
+                    Array [
+                      "MATH",
+                      "276",
+                      "PREVIOUS",
+                    ],
+                  ],
+                },
               ],
             },
             Array [
-              "MATH",
-              "276",
+              "IMSE",
+              "317",
               "PREVIOUS",
             ],
           ],
         },
-        Array [
-          "IMSE",
-          "317",
-          "PREVIOUS",
-        ],
       ],
     },
     "subjectCode": "CIS",
@@ -891,22 +1122,68 @@ Array [
     "description": "Introduction to computer operating systems. Process control, threads, concurrency, memory management, virtual memory, uniprocessor, multiprocessor, and real-time scheduling, I/O management, disk scheduling, file management, distributed processing, client/server, clusters, distributed process management,security. (F,W).",
     "name": "Operating Systems",
     "prerequisites": Object {
-      "and": Array [
-        Array [
-          "CIS",
-          "310",
-          "PREVIOUS",
-        ],
+      "or": Array [
         Object {
           "or": Array [
+            Object {
+              "and": Array [
+                Array [
+                  "CIS",
+                  "310",
+                  "PREVIOUS",
+                ],
+                Object {
+                  "or": Array [
+                    Array [
+                      "CIS",
+                      "350",
+                      "PREVIOUS",
+                    ],
+                    Array [
+                      "CIS",
+                      "3501",
+                      "PREVIOUS",
+                    ],
+                    Array [
+                      "IMSE",
+                      "350",
+                      "PREVIOUS",
+                    ],
+                  ],
+                },
+              ],
+            },
+            Object {
+              "and": Array [
+                Array [
+                  "ECE",
+                  "370",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "MATH",
+                  "276",
+                  "PREVIOUS",
+                ],
+              ],
+            },
+          ],
+        },
+        Object {
+          "and": Array [
             Array [
-              "CIS",
-              "350",
+              "ECE",
+              "370",
               "PREVIOUS",
             ],
             Array [
-              "CIS",
-              "3501",
+              "IMSE",
+              "317",
+              "CONCURRENT",
+            ],
+            Array [
+              "ECE",
+              "276",
               "PREVIOUS",
             ],
           ],
@@ -1014,16 +1291,39 @@ Array [
     "name": "Compiler Design",
     "prerequisites": Object {
       "or": Array [
-        Array [
-          "CIS",
-          "350",
-          "PREVIOUS",
-        ],
-        Array [
-          "CIS",
-          "3501",
-          "PREVIOUS",
-        ],
+        Object {
+          "or": Array [
+            Array [
+              "CIS",
+              "350",
+              "PREVIOUS",
+            ],
+            Array [
+              "CIS",
+              "3501",
+              "PREVIOUS",
+            ],
+            Array [
+              "IMSE",
+              "350",
+              "PREVIOUS",
+            ],
+          ],
+        },
+        Object {
+          "and": Array [
+            Array [
+              "ECE",
+              "370",
+              "PREVIOUS",
+            ],
+            Array [
+              "MATH",
+              "276",
+              "PREVIOUS",
+            ],
+          ],
+        },
       ],
     },
     "subjectCode": "CIS",
@@ -1062,16 +1362,57 @@ Array [
     "name": "Intro to Artificial Intel",
     "prerequisites": Object {
       "or": Array [
-        Array [
-          "CIS",
-          "350",
-          "PREVIOUS",
-        ],
-        Array [
-          "CIS",
-          "3501",
-          "PREVIOUS",
-        ],
+        Object {
+          "or": Array [
+            Object {
+              "or": Array [
+                Array [
+                  "CIS",
+                  "350",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "CIS",
+                  "3501",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "IMSE",
+                  "350",
+                  "PREVIOUS",
+                ],
+              ],
+            },
+            Object {
+              "and": Array [
+                Array [
+                  "ECE",
+                  "370",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "MATH",
+                  "276",
+                  "PREVIOUS",
+                ],
+              ],
+            },
+          ],
+        },
+        Object {
+          "and": Array [
+            Array [
+              "ECE",
+              "370",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "276",
+              "PREVIOUS",
+            ],
+          ],
+        },
       ],
     },
     "subjectCode": "CIS",
@@ -1083,21 +1424,44 @@ Array [
     "name": "Computational Learning",
     "prerequisites": Object {
       "and": Array [
-        Array [
-          "CIS",
-          "306",
-          "PREVIOUS",
-        ],
+        Object {
+          "and": Array [
+            Array [
+              "CIS",
+              "306",
+              "PREVIOUS",
+            ],
+            Object {
+              "or": Array [
+                Array [
+                  "MATH",
+                  "217",
+                  "CONCURRENT",
+                ],
+                Array [
+                  "MATH",
+                  "227",
+                  "CONCURRENT",
+                ],
+              ],
+            },
+          ],
+        },
         Object {
           "or": Array [
             Array [
-              "MATH",
-              "217",
+              "IMSE",
+              "317",
+              "CONCURRENT",
+            ],
+            Array [
+              "BENG",
+              "364",
               "CONCURRENT",
             ],
             Array [
               "MATH",
-              "227",
+              "425",
               "CONCURRENT",
             ],
           ],
@@ -1173,16 +1537,57 @@ Array [
     "name": "Advanced Topics",
     "prerequisites": Object {
       "or": Array [
-        Array [
-          "CIS",
-          "350",
-          "PREVIOUS",
-        ],
-        Array [
-          "CIS",
-          "3501",
-          "PREVIOUS",
-        ],
+        Object {
+          "or": Array [
+            Object {
+              "or": Array [
+                Array [
+                  "CIS",
+                  "350",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "CIS",
+                  "3501",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "IMSE",
+                  "350",
+                  "PREVIOUS",
+                ],
+              ],
+            },
+            Object {
+              "and": Array [
+                Array [
+                  "ECE",
+                  "270",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "ECE",
+                  "276",
+                  "PREVIOUS",
+                ],
+              ],
+            },
+          ],
+        },
+        Object {
+          "and": Array [
+            Array [
+              "ECE",
+              "370",
+              "PREVIOUS",
+            ],
+            Array [
+              "MATH",
+              "276",
+              "PREVIOUS",
+            ],
+          ],
+        },
       ],
     },
     "subjectCode": "CIS",
@@ -1449,22 +1854,31 @@ Array [
           "PREVIOUS",
         ],
         Object {
-          "and": Array [
-            Array [
-              "MATH",
-              "116",
-              "PREVIOUS",
-            ],
+          "or": Array [
             Object {
-              "or": Array [
+              "and": Array [
                 Array [
-                  "CHEM",
-                  "134",
+                  "MATH",
+                  "116",
                   "PREVIOUS",
                 ],
-                "MPLS with a score of 215",
+                Object {
+                  "or": Array [
+                    Array [
+                      "CHEM",
+                      "134",
+                      "PREVIOUS",
+                    ],
+                    "MPLS with a score of 215",
+                  ],
+                },
               ],
             },
+            Array [
+              "CHEM",
+              "144",
+              "PREVIOUS",
+            ],
           ],
         },
       ],
@@ -1487,26 +1901,36 @@ Array [
           "PREVIOUS",
         ],
         Object {
-          "and": Array [
-            Array [
-              "ENGR",
-              "250",
-              "CONCURRENT",
-            ],
+          "or": Array [
             Object {
-              "or": Array [
+              "and": Array [
                 Array [
-                  "MATH",
-                  "205",
+                  "ENGR",
+                  "250",
                   "CONCURRENT",
                 ],
-                Array [
-                  "ECE",
-                  "385",
-                  "CONCURRENT",
-                ],
+                Object {
+                  "or": Array [
+                    Array [
+                      "MATH",
+                      "205",
+                      "CONCURRENT",
+                    ],
+                    Array [
+                      "ECE",
+                      "385",
+                      "CONCURRENT",
+                    ],
+                  ],
+                },
               ],
             },
+            "MPLS with a score of 215",
+            Array [
+              "MATH",
+              "215",
+              "CONCURRENT",
+            ],
           ],
         },
       ],
@@ -1522,26 +1946,31 @@ Array [
     "description": "A comprehensive introduction to the science of applied mechanics, encompassing a study of forces and the stresses, deflections, and motions which they produce. Topics include the concept of equilibrium and static force analysis; the mechanics of deformable bodies (internal stresses, constitutive relationships, strains, deflections, flow, failure); statics of indeterminate systems; kinematics; kinetics of particles, systems of particles, and rigid bodies. Four hours lecture. (F,W,S).",
     "name": "Applied Mechanics",
     "prerequisites": Object {
-      "and": Array [
-        Array [
-          "PHYS",
-          "150",
-          "PREVIOUS",
-        ],
+      "or": Array [
         Object {
-          "or": Array [
+          "and": Array [
             Array [
-              "MATH",
-              "205",
-              "CONCURRENT",
+              "PHYS",
+              "150",
+              "PREVIOUS",
             ],
-            Array [
-              "MATH",
-              "215",
-              "CONCURRENT",
-            ],
+            Object {
+              "or": Array [
+                Array [
+                  "MATH",
+                  "205",
+                  "CONCURRENT",
+                ],
+                Array [
+                  "MATH",
+                  "215",
+                  "CONCURRENT",
+                ],
+              ],
+            },
           ],
         },
+        "MPLS with a score of 215",
       ],
     },
     "subjectCode": "ME",
@@ -1596,6 +2025,11 @@ Array [
         Array [
           "ME",
           "230",
+          "PREVIOUS",
+        ],
+        Array [
+          "ME",
+          "260",
           "PREVIOUS",
         ],
       ],
@@ -1678,6 +2112,11 @@ Array [
           "260",
           "PREVIOUS",
         ],
+        Array [
+          "MATH",
+          "216",
+          "PREVIOUS",
+        ],
       ],
     },
     "subjectCode": "ME",
@@ -1757,20 +2196,6 @@ Array [
     "creditHours": 3,
     "description": "Introduction to planned experiments in machine design and mechanical metallurgy with emphasis on orthogonal test programs with small blocks. Classical statistical analyses (e.g., analysis of variance for randomized complete block and split-plot designs) as well as computer intensive analyses (e.g., permutation and randomization tests). Maximum likelihood analysis for censored and uncensored life data and for strength (quantal response) data. Systems reliability in machine design.",
     "name": "Prob, Stats, and Rel in Mach D",
-    "prerequisites": Object {
-      "and": Array [
-        Array [
-          "ENGR",
-          "216",
-          "PREVIOUS",
-        ],
-        Array [
-          "ME",
-          "260",
-          "PREVIOUS",
-        ],
-      ],
-    },
     "subjectCode": "ME",
   },
   Object {
@@ -1828,25 +2253,77 @@ Array [
     "prerequisites": Object {
       "and": Array [
         Object {
-          "or": Array [
-            "ME 320",
-            Array [
-              "ME",
-              "325",
-              "PREVIOUS",
-            ],
+          "and": Array [
+            Object {
+              "and": Array [
+                Object {
+                  "or": Array [
+                    "ME 320",
+                    Array [
+                      "ME",
+                      "325",
+                      "PREVIOUS",
+                    ],
+                    Array [
+                      "ME",
+                      "3251",
+                      "PREVIOUS",
+                    ],
+                    Array [
+                      "ME",
+                      "3252",
+                      "PREVIOUS",
+                    ],
+                  ],
+                },
+                Object {
+                  "or": Array [
+                    Array [
+                      "ME",
+                      "349",
+                      "PREVIOUS",
+                    ],
+                    Array [
+                      "BENG",
+                      "351",
+                      "PREVIOUS",
+                    ],
+                  ],
+                },
+              ],
+            },
+            Object {
+              "or": Array [
+                Array [
+                  "ME",
+                  "371",
+                  "CONCURRENT",
+                ],
+                Array [
+                  "ME",
+                  "375",
+                  "CONCURRENT",
+                ],
+              ],
+            },
           ],
         },
         Object {
           "or": Array [
             Array [
-              "ME",
-              "349",
+              "COMP",
+              "270",
               "PREVIOUS",
             ],
             Array [
-              "BENG",
-              "351",
+              "COMP",
+              "106",
+              "PREVIOUS",
+            ],
+            "CPAS with a score of 40",
+            Array [
+              "COMP",
+              "220",
               "PREVIOUS",
             ],
           ],
@@ -1919,6 +2396,11 @@ Array [
                 ],
               ],
             },
+            Array [
+              "ME",
+              "375",
+              "CONCURRENT",
+            ],
           ],
         },
         Object {
@@ -2048,6 +2530,16 @@ Array [
               "PREVIOUS",
             ],
             "ME 320",
+            Array [
+              "ME",
+              "3251",
+              "PREVIOUS",
+            ],
+            Array [
+              "ME",
+              "3252",
+              "PREVIOUS",
+            ],
           ],
         },
         Object {
@@ -2236,6 +2728,12 @@ Array [
           "345",
           "PREVIOUS",
         ],
+        "ME 360",
+        Array [
+          "ME",
+          "371",
+          "PREVIOUS",
+        ],
       ],
     },
     "subjectCode": "ME",
@@ -2247,18 +2745,50 @@ Array [
     "name": "Senior Design I",
     "prerequisites": Object {
       "and": Array [
-        Array [
-          "ME",
-          "345",
-          "PREVIOUS",
-        ],
+        Object {
+          "and": Array [
+            Object {
+              "and": Array [
+                Array [
+                  "ME",
+                  "345",
+                  "PREVIOUS",
+                ],
+                Object {
+                  "or": Array [
+                    "ME 360",
+                    Array [
+                      "ME",
+                      "3601",
+                      "PREVIOUS",
+                    ],
+                  ],
+                },
+              ],
+            },
+            Object {
+              "or": Array [
+                Array [
+                  "ME",
+                  "375",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "ME",
+                  "371",
+                  "PREVIOUS",
+                ],
+              ],
+            },
+          ],
+        },
         Object {
           "or": Array [
-            "ME 360",
+            "ME 378*",
             Array [
               "ME",
-              "3601",
-              "PREVIOUS",
+              "379",
+              "CONCURRENT",
             ],
           ],
         },
@@ -2278,16 +2808,44 @@ A guided interdisciplinary design project course where student teams propose des
     "name": "ME/BENG Dual Senior Design",
     "prerequisites": Object {
       "and": Array [
-        Array [
-          "BENG",
-          "351",
-          "PREVIOUS",
-        ],
-        Array [
-          "BENG",
-          "370",
-          "PREVIOUS",
-        ],
+        Object {
+          "and": Array [
+            Array [
+              "BENG",
+              "351",
+              "PREVIOUS",
+            ],
+            Array [
+              "BENG",
+              "370",
+              "PREVIOUS",
+            ],
+            Array [
+              "BENG",
+              "364",
+              "PREVIOUS",
+            ],
+            Array [
+              "ME",
+              "375",
+              "PREVIOUS",
+            ],
+          ],
+        },
+        Object {
+          "or": Array [
+            Array [
+              "BENG",
+              "375",
+              "PREVIOUS",
+            ],
+            Array [
+              "BENG",
+              "381",
+              "PREVIOUS",
+            ],
+          ],
+        },
       ],
     },
     "restrictions": Array [
@@ -2398,6 +2956,8 @@ A guided interdisciplinary design project course where student teams propose des
           "381",
           "PREVIOUS",
         ],
+        "ME 425",
+        "ME 464",
       ],
     },
     "restrictions": Array [

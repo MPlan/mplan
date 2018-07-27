@@ -32,7 +32,7 @@ export function parseCourses(courseListHtml: string): Course[] {
         try {
           return parseCourseBlockExtra(block);
         } catch (e) {
-          console.warn(e);
+          console.warn(`Couldn't parse ${subjectCode} ${courseNumber}`, e);
           return undefined;
         }
       })

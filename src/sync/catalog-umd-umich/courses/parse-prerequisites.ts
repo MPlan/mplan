@@ -1,6 +1,7 @@
 import { oneLine } from 'common-tags';
 import { formDecode } from 'utilities/form-encode-decode';
 import { Prerequisite } from '../models';
+import { flatten } from 'lodash';
 
 /** A simple interface that extends an array */
 export interface ParseTree extends Array<string | ParseTree> {
@@ -256,10 +257,56 @@ export function buildPrerequisiteTree(tokens: ParseTree | Prerequisite): Prerequ
   }
 
   const operator = bestOperator.token as 'and' | 'or';
-  const previous = transformedTokens[bestOperator.index - 1];
-  const next = transformedTokens[bestOperator.index + 1];
+  const previousIndex = bestOperator.index - 1;
+  const nextIndex = bestOperator.index + 1;
+  const previous = transformedTokens[previousIndex];
+  const next = transformedTokens[nextIndex];
 
-  return { [operator]: [previous, next] } as Prerequisite;
+  if (!next) throw new Error(`next: ${JSON.stringify(next)} was falsy`);
+  if (!previous) throw new Error(`previous: ${JSON.stringify(previous)} was falsy`);
+
+  const before = transformedTokens.slice(0, previousIndex);
+  const after = transformedTokens.slice(nextIndex + 1, transformedTokens.length);
+
+  const newPrerequisite = { [operator]: [previous, next] } as Prerequisite;
+  return buildPrerequisiteTree([...before, newPrerequisite, ...after] as any);
+}
+
+export function simplifyPrerequisites(prerequisite: Prerequisite): Prerequisite {
+  if (typeof prerequisite === 'string') return prerequisite;
+  if (Array.isArray(prerequisite)) return prerequisite;
+  if ((prerequisite as any).and) {
+    const and = (prerequisite as { and: Prerequisite[] }).and;
+    const simplified = and.map(simplifyPrerequisites);
+    const canSimplify = simplified.every(operand => !(operand as any).or);
+    if (!canSimplify) return { and: simplified };
+    const simplifiedFlattened = flatten(
+      simplified.map(operand => {
+        if ((operand as any).and) {
+          return (operand as any).and as Prerequisite[];
+        }
+        return [operand];
+      }),
+    );
+    return { and: simplifiedFlattened };
+  }
+
+  if ((prerequisite as any).or) {
+    const or = (prerequisite as { or: Prerequisite[] }).or;
+    const simplified = or.map(simplifyPrerequisites);
+    const canSimplify = simplified.every(operand => !(operand as any).and);
+    if (!canSimplify) return { or: simplified };
+    const simplifiedFlattened = flatten(
+      simplified.map(operand => {
+        if ((operand as any).or) {
+          return (operand as any).or as Prerequisite[];
+        }
+        return [operand];
+      }),
+    );
+    return { or: simplifiedFlattened };
+  }
+  throw new Error(`could not simplify expression ${JSON.stringify(prerequisite)}`);
 }
 
 /**
@@ -270,6 +317,6 @@ export function parsePrerequisites(prerequisiteElement: Element) {
   const parseTree = transformParenthesesToTree(textContent);
   const tokens = groupByOperator(parseTree.tree);
   const result = buildPrerequisiteTree(tokens);
-  // const result = replaceAllCourseDirectivesInTree(prefix);
-  return result;
+  const simplifiedResult = simplifyPrerequisites(result);
+  return simplifiedResult;
 }

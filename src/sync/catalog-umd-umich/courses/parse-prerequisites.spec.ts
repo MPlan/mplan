@@ -19,7 +19,13 @@ describe('parsePrerequisites', () => {
       },
     );
 
-    const result = prerequisitesBlocks.map(block => parsePrerequisites(block));
+    const result = prerequisitesBlocks.map(block => {
+      try {
+        return parsePrerequisites(block);
+      } catch (e) {
+        console.warn(e);
+      }
+    });
     expect(result).toMatchSnapshot();
   });
 });
