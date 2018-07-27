@@ -4,3 +4,4 @@ mplan.js.map
 .env
 lib
 .npmrc
+coverage
