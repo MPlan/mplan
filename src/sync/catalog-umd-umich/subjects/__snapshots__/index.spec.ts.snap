@@ -1,0 +1,471 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`fetchUndergraduateSubjects fetches undergraduate subjects 1`] = `
+Array [
+  Object {
+    "code": "ACC",
+    "href": "/undergraduate/coursesaz/acc/",
+    "name": "Accounting",
+  },
+  Object {
+    "code": "AAAS",
+    "href": "/undergraduate/coursesaz/aaas/",
+    "name": "African & African-Amer Studies",
+  },
+  Object {
+    "code": "AMST",
+    "href": "/undergraduate/coursesaz/amst/",
+    "name": "American Studies",
+  },
+  Object {
+    "code": "ANTH",
+    "href": "/undergraduate/coursesaz/anth/",
+    "name": "Anthropology",
+  },
+  Object {
+    "code": "MAPP",
+    "href": "/undergraduate/coursesaz/mapp/",
+    "name": "Applied Music",
+  },
+  Object {
+    "code": "AAST",
+    "href": "/undergraduate/coursesaz/aast/",
+    "name": "Arab American Studies",
+  },
+  Object {
+    "code": "ARBC",
+    "href": "/undergraduate/coursesaz/arbc/",
+    "name": "Arabic",
+  },
+  Object {
+    "code": "ART",
+    "href": "/undergraduate/coursesaz/art/",
+    "name": "Art Applied",
+  },
+  Object {
+    "code": "ARTH",
+    "href": "/undergraduate/coursesaz/arth/",
+    "name": "Art History",
+  },
+  Object {
+    "code": "ASTR",
+    "href": "/undergraduate/coursesaz/astr/",
+    "name": "Astronomy",
+  },
+  Object {
+    "code": "BBS",
+    "href": "/undergraduate/coursesaz/bbs/",
+    "name": "Behavioral and Biological Sciences",
+  },
+  Object {
+    "code": "BCHM",
+    "href": "/undergraduate/coursesaz/bchm/",
+    "name": "Biochemistry",
+  },
+  Object {
+    "code": "BENG",
+    "href": "/undergraduate/coursesaz/beng/",
+    "name": "Bioengineering",
+  },
+  Object {
+    "code": "BIOL",
+    "href": "/undergraduate/coursesaz/biol/",
+    "name": "Biological Science",
+  },
+  Object {
+    "code": "BA",
+    "href": "/undergraduate/coursesaz/ba/",
+    "name": "Business Administration",
+  },
+  Object {
+    "code": "BE",
+    "href": "/undergraduate/coursesaz/be/",
+    "name": "Business Economics",
+  },
+  Object {
+    "code": "BI",
+    "href": "/undergraduate/coursesaz/bi/",
+    "name": "Business Internship",
+  },
+  Object {
+    "code": "BPS",
+    "href": "/undergraduate/coursesaz/bps/",
+    "name": "Business Policy and Strategy",
+  },
+  Object {
+    "code": "CHEM",
+    "href": "/undergraduate/coursesaz/chem/",
+    "name": "Chemistry",
+  },
+  Object {
+    "code": "CLS",
+    "href": "/undergraduate/coursesaz/cls/",
+    "name": "Child Life",
+  },
+  Object {
+    "code": "CIVE",
+    "href": "/undergraduate/coursesaz/cive/",
+    "name": "Civic Engagement",
+  },
+  Object {
+    "code": "COMM",
+    "href": "/undergraduate/coursesaz/comm/",
+    "name": "Communication",
+  },
+  Object {
+    "code": "CHE",
+    "href": "/undergraduate/coursesaz/che/",
+    "name": "Community Health Education",
+  },
+  Object {
+    "code": "COML",
+    "href": "/undergraduate/coursesaz/coml/",
+    "name": "Comparative Literature",
+  },
+  Object {
+    "code": "CCM",
+    "href": "/undergraduate/coursesaz/ccm/",
+    "name": "Computer & Computational Math",
+  },
+  Object {
+    "code": "CIS",
+    "href": "/undergraduate/coursesaz/cis/",
+    "name": "Computer & Information Science",
+  },
+  Object {
+    "code": "CRJ",
+    "href": "/undergraduate/coursesaz/crj/",
+    "name": "Criminal Justice Studies",
+  },
+  Object {
+    "code": "DS",
+    "href": "/undergraduate/coursesaz/ds/",
+    "name": "Decision Sciences",
+  },
+  Object {
+    "code": "ECON",
+    "href": "/undergraduate/coursesaz/econ/",
+    "name": "Economics",
+  },
+  Object {
+    "code": "EDA",
+    "href": "/undergraduate/coursesaz/eda/",
+    "name": "Educ A-Theoretical Foundatns",
+  },
+  Object {
+    "code": "EDB",
+    "href": "/undergraduate/coursesaz/edb/",
+    "name": "Educ B-Educational Admin",
+  },
+  Object {
+    "code": "EDC",
+    "href": "/undergraduate/coursesaz/edc/",
+    "name": "Educ C-Psychological Foundatns",
+  },
+  Object {
+    "code": "EDD",
+    "href": "/undergraduate/coursesaz/edd/",
+    "name": "Educ D-Curriculum & Instructn",
+  },
+  Object {
+    "code": "EDF",
+    "href": "/undergraduate/coursesaz/edf/",
+    "name": "Educ F-Physical Education",
+  },
+  Object {
+    "code": "EDK",
+    "href": "/undergraduate/coursesaz/edk/",
+    "name": "Educ K-Independent Study",
+  },
+  Object {
+    "code": "EDM",
+    "href": "/undergraduate/coursesaz/edm/",
+    "name": "Educ M-Community & Bilingual",
+  },
+  Object {
+    "code": "EDN",
+    "href": "/undergraduate/coursesaz/edn/",
+    "name": "Educ N-Special Education",
+  },
+  Object {
+    "code": "EDT",
+    "href": "/undergraduate/coursesaz/edt/",
+    "name": "Educ T-Education Technology",
+  },
+  Object {
+    "code": "ECE",
+    "href": "/undergraduate/coursesaz/ece/",
+    "name": "Electrical&Computer Engin",
+  },
+  Object {
+    "code": "ENGR",
+    "href": "/undergraduate/coursesaz/engr/",
+    "name": "Engineering Core",
+  },
+  Object {
+    "code": "COMP",
+    "href": "/undergraduate/coursesaz/comp/",
+    "name": "English Composition",
+  },
+  Object {
+    "code": "ENGL",
+    "href": "/undergraduate/coursesaz/engl/",
+    "name": "English",
+  },
+  Object {
+    "code": "ENT",
+    "href": "/undergraduate/coursesaz/ent/",
+    "name": "Entrepreneurship",
+  },
+  Object {
+    "code": "ESCI",
+    "href": "/undergraduate/coursesaz/esci/",
+    "name": "Environmental Science",
+  },
+  Object {
+    "code": "ENST",
+    "href": "/undergraduate/coursesaz/enst/",
+    "name": "Environmental Studies",
+  },
+  Object {
+    "code": "EXPS",
+    "href": "/undergraduate/coursesaz/exps/",
+    "name": "Exploratory Studies",
+  },
+  Object {
+    "code": "FIN",
+    "href": "/undergraduate/coursesaz/fin/",
+    "name": "Finance",
+  },
+  Object {
+    "code": "FREN",
+    "href": "/undergraduate/coursesaz/fren/",
+    "name": "French",
+  },
+  Object {
+    "code": "GEOG",
+    "href": "/undergraduate/coursesaz/geog/",
+    "name": "Geography",
+  },
+  Object {
+    "code": "GEOL",
+    "href": "/undergraduate/coursesaz/geol/",
+    "name": "Geology",
+  },
+  Object {
+    "code": "GER",
+    "href": "/undergraduate/coursesaz/ger/",
+    "name": "German",
+  },
+  Object {
+    "code": "GLOC",
+    "href": "/undergraduate/coursesaz/gloc/",
+    "name": "Global Cultures",
+  },
+  Object {
+    "code": "HHS",
+    "href": "/undergraduate/coursesaz/hhs/",
+    "name": "Health and Human Service",
+  },
+  Object {
+    "code": "HPS",
+    "href": "/undergraduate/coursesaz/hps/",
+    "name": "Health Policy Studies",
+  },
+  Object {
+    "code": "HIST",
+    "href": "/undergraduate/coursesaz/hist/",
+    "name": "History",
+  },
+  Object {
+    "code": "MHIS",
+    "href": "/undergraduate/coursesaz/mhis/",
+    "name": "History of Music",
+  },
+  Object {
+    "code": "HUM",
+    "href": "/undergraduate/coursesaz/hum/",
+    "name": "Humanities",
+  },
+  Object {
+    "code": "HRM",
+    "href": "/undergraduate/coursesaz/hrm/",
+    "name": "Human Resource Management",
+  },
+  Object {
+    "code": "IMSE",
+    "href": "/undergraduate/coursesaz/imse/",
+    "name": "Indust & Manufac Sys Engin",
+  },
+  Object {
+    "code": "ITM",
+    "href": "/undergraduate/coursesaz/itm/",
+    "name": "Information Technology Mgmt",
+  },
+  Object {
+    "code": "IB",
+    "href": "/undergraduate/coursesaz/ib/",
+    "name": "International Business",
+  },
+  Object {
+    "code": "JPN",
+    "href": "/undergraduate/coursesaz/jpn/",
+    "name": "Japanese",
+  },
+  Object {
+    "code": "JASS",
+    "href": "/undergraduate/coursesaz/jass/",
+    "name": "Journalism and Screen Studies",
+  },
+  Object {
+    "code": "LAT",
+    "href": "/undergraduate/coursesaz/lat/",
+    "name": "Latin",
+  },
+  Object {
+    "code": "LE",
+    "href": "/undergraduate/coursesaz/le/",
+    "name": "Law & Environment",
+  },
+  Object {
+    "code": "LIBS",
+    "href": "/undergraduate/coursesaz/libs/",
+    "name": "Liberal Studies",
+  },
+  Object {
+    "code": "LIBR",
+    "href": "/undergraduate/coursesaz/libr/",
+    "name": "Library Science",
+  },
+  Object {
+    "code": "LING",
+    "href": "/undergraduate/coursesaz/ling/",
+    "name": "Linguistics",
+  },
+  Object {
+    "code": "MKT",
+    "href": "/undergraduate/coursesaz/mkt/",
+    "name": "Marketing",
+  },
+  Object {
+    "code": "MATH",
+    "href": "/undergraduate/coursesaz/math/",
+    "name": "Mathematics",
+  },
+  Object {
+    "code": "ME",
+    "href": "/undergraduate/coursesaz/me/",
+    "name": "Mechanical Engineering",
+  },
+  Object {
+    "code": "MICR",
+    "href": "/undergraduate/coursesaz/micr/",
+    "name": "Microbiology",
+  },
+  Object {
+    "code": "MILS",
+    "href": "/undergraduate/coursesaz/mils/",
+    "name": "Military Science",
+  },
+  Object {
+    "code": "MCL",
+    "href": "/undergraduate/coursesaz/mcl/",
+    "name": "Modern & Classical Language",
+  },
+  Object {
+    "code": "MTHY",
+    "href": "/undergraduate/coursesaz/mthy/",
+    "name": "Music Theory",
+  },
+  Object {
+    "code": "NSCI",
+    "href": "/undergraduate/coursesaz/nsci/",
+    "name": "Natural Science",
+  },
+  Object {
+    "code": "OM",
+    "href": "/undergraduate/coursesaz/om/",
+    "name": "Operations Management",
+  },
+  Object {
+    "code": "OB",
+    "href": "/undergraduate/coursesaz/ob/",
+    "name": "Organizational Behavior",
+  },
+  Object {
+    "code": "PHIL",
+    "href": "/undergraduate/coursesaz/phil/",
+    "name": "Philosophy",
+  },
+  Object {
+    "code": "PHYS",
+    "href": "/undergraduate/coursesaz/phys/",
+    "name": "Physics",
+  },
+  Object {
+    "code": "POL",
+    "href": "/undergraduate/coursesaz/pol/",
+    "name": "Political Science",
+  },
+  Object {
+    "code": "PDED",
+    "href": "/undergraduate/coursesaz/pded/",
+    "name": "Professional Education",
+  },
+  Object {
+    "code": "PSYC",
+    "href": "/undergraduate/coursesaz/psyc/",
+    "name": "Psychology",
+  },
+  Object {
+    "code": "RELS",
+    "href": "/undergraduate/coursesaz/rels/",
+    "name": "Religious Studies",
+  },
+  Object {
+    "code": "STS",
+    "href": "/undergraduate/coursesaz/sts/",
+    "name": "Science and Technology Studies",
+  },
+  Object {
+    "code": "SSCI",
+    "href": "/undergraduate/coursesaz/ssci/",
+    "name": "Social Sciences",
+  },
+  Object {
+    "code": "SWK",
+    "href": "/undergraduate/coursesaz/swk/",
+    "name": "Social Work",
+  },
+  Object {
+    "code": "SOC",
+    "href": "/undergraduate/coursesaz/soc/",
+    "name": "Sociology",
+  },
+  Object {
+    "code": "SPAN",
+    "href": "/undergraduate/coursesaz/span/",
+    "name": "Spanish",
+  },
+  Object {
+    "code": "SPEE",
+    "href": "/undergraduate/coursesaz/spee/",
+    "name": "Speech",
+  },
+  Object {
+    "code": "STAT",
+    "href": "/undergraduate/coursesaz/stat/",
+    "name": "Statistics",
+  },
+  Object {
+    "code": "URS",
+    "href": "/undergraduate/coursesaz/urs/",
+    "name": "Urban and Regional Studies",
+  },
+  Object {
+    "code": "WGST",
+    "href": "/undergraduate/coursesaz/wgst/",
+    "name": "Women's and Gender Studies",
+  },
+]
+`;

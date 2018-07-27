@@ -1,0 +1,4835 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`fetchCourses fetches all the undergrad CIS courses 1`] = `
+Array [
+  Object {
+    "corequisites": Array [
+      "ECE",
+      "210L",
+      "PREVIOUS",
+    ],
+    "courseNumber": "210",
+    "creditHours": 4,
+    "description": "Fundamental laws, electrical elements and sources, energy and power.  DC analysis of linear circuits. Node and mesh analysis. Operational amplifiers and op-amp circuits, Thevenin and Norton theorems. Sinusoidal steady-state response and the phasor concept.  Introductory concepts on complex frequency, average power in AC circuits.  Transient responses.  Three lecture hours per week and one three-hour laboratory per week.",
+    "name": "Circuits",
+    "prerequisites": Object {
+      "or": Array [
+        Object {
+          "and": Array [
+            Array [
+              "MATH",
+              "116",
+              "PREVIOUS",
+            ],
+            Array [
+              "PHYS",
+              "151",
+              "CONCURRENT",
+            ],
+          ],
+        },
+        "MPLS with a score of 215",
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "270",
+    "creditHours": 4,
+    "description": "Covers structured and object-oriented computer programming concepts in the context of the C/C++ programming language and engineering applications.  Four lecture hours per week with programming assignments.",
+    "name": "Computer Methods in ECE I",
+    "prerequisites": Array [
+      "ENGR",
+      "100",
+      "PREVIOUS",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "corequisites": Array [
+      "ECE",
+      "273L",
+      "PREVIOUS",
+    ],
+    "courseNumber": "273",
+    "creditHours": 4,
+    "description": "Introduction to digital logic.  Topics include numbers and coding systems; Boolean algebra with applications to logic systems; Karnaugh and Quine-McCluskey minimization; combinatorial logic design; flip-flops; sequential network design; and design of digital logic circuits. Three lecture hours per week and one three-hour laboratory per week.",
+    "name": "Digital Systems",
+    "prerequisites": Array [
+      "ENGR",
+      "100",
+      "PREVIOUS",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "276",
+    "creditHours": 4,
+    "description": "An introduction to fundamental concepts of discrete mathematics for computer engineering. Topics will be chosen from set theory, partially ordered sets, lattices, Boolean algebra, semi-groups, rings, graphical representation of algebraic systems, graphs, and directed graphs. Applications in various areas of computer engineering will be discussed.",
+    "name": "Discrete Math in Computer Engr",
+    "prerequisites": Object {
+      "or": Array [
+        Array [
+          "MATH",
+          "116",
+          "PREVIOUS",
+        ],
+        "MPLS with a score of 215",
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "299",
+    "creditHours": 1,
+    "description": "This is a Cooperative Education course. Students wishing to experience a work experience before graduation may elect to participate in the Cooperative Education Program (minimum of two terms). (F,W,S).",
+    "name": "Internship/ Co-Op",
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "300",
+    "creditHours": 4,
+    "description": "Signals and systems representation and classification. Impulse response and convolution integral.  Fourier analysis of continuous time signals and systems.  Laplace transforms with applications to linear system analysis.  Introduction to computer software for solving problems involving signals and systems.  Three lecture hours and three recitation hours per week.",
+    "name": "Signals and Systems",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ECE",
+          "210",
+          "PREVIOUS",
+        ],
+        Object {
+          "or": Array [
+            Object {
+              "and": Array [
+                Array [
+                  "MATH",
+                  "217",
+                  "CONCURRENT",
+                ],
+                Array [
+                  "MATH",
+                  "216",
+                  "PREVIOUS",
+                ],
+              ],
+            },
+            Array [
+              "MATH",
+              "227",
+              "CONCURRENT",
+            ],
+          ],
+        },
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "corequisites": Array [
+      "ECE",
+      "305L",
+      "PREVIOUS",
+    ],
+    "courseNumber": "305",
+    "creditHours": 4,
+    "description": "Introduction to electrical and electronic circuits, machinery, and instrumentation.  Topics include Kirchoff's Laws, Thevenin and Norton theorems, sinusoidal and transient circuit analysis, numerical methods, solid state electronics, motors and generators, measuring instruments.  Three lecture hours and one three-hour laboratory analysis.  Not open to ECE students.",
+    "name": "Intro to Electrical Eng",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "and": Array [
+            Array [
+              "PHYS",
+              "151",
+              "PREVIOUS",
+            ],
+            Object {
+              "or": Array [
+                Array [
+                  "MATH",
+                  "205",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "MATH",
+                  "215",
+                  "PREVIOUS",
+                ],
+              ],
+            },
+          ],
+        },
+        Object {
+          "or": Array [
+            Array [
+              "MATH",
+              "217",
+              "CONCURRENT",
+            ],
+            Array [
+              "MATH",
+              "227",
+              "CONCURRENT",
+            ],
+          ],
+        },
+      ],
+    },
+    "restrictions": Array [
+      "Cannot enroll if Major is Electrical Engineering",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "3100",
+    "creditHours": 4,
+    "description": "This course provides an overview of the mathematical techniques and computer tools needed in the field of data science. The important types of problems addressed in the field of data science are rigorously formulated and analyzed, including regression, pattern recognition and classification, time series prediction, and clustering. Effective mathematical and computational solution methodologies are discussed, including exploratory data analysis, statistical methods, and machine learning. At the end of the course, the student will have an analytic and computational toolkit with which they can solve real problems and \\"tell a story\\" with data. (F)",
+    "name": "Data Science I",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "and": Array [
+            Object {
+              "or": Array [
+                Array [
+                  "CIS",
+                  "1501",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "CIS",
+                  "150",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "ECE",
+                  "270",
+                  "PREVIOUS",
+                ],
+              ],
+            },
+            Object {
+              "or": Array [
+                Array [
+                  "MATH",
+                  "227",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "MATH",
+                  "217",
+                  "PREVIOUS",
+                ],
+              ],
+            },
+          ],
+        },
+        Object {
+          "or": Array [
+            Array [
+              "STAT",
+              "325",
+              "CONCURRENT",
+            ],
+            Array [
+              "IMSE",
+              "317",
+              "CONCURRENT",
+            ],
+            "BENG 365*",
+          ],
+        },
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Level is Undergraduate",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "311",
+    "creditHours": 4,
+    "description": "Terminal characteristics and biasing of semiconductor diodes, bipolar and field-effect transistors, operational amplifiers. Rectifiers, amplifiers, and logic. Design projects. Three lecture hours and one three hour laboratory per week.",
+    "name": "Electronic Circuits I",
+    "prerequisites": Object {
+      "or": Array [
+        Object {
+          "and": Array [
+            Object {
+              "and": Array [
+                Array [
+                  "ECE",
+                  "210",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "CHEM",
+                  "144",
+                  "PREVIOUS",
+                ],
+              ],
+            },
+            Object {
+              "or": Array [
+                Array [
+                  "COMP",
+                  "270",
+                  "CONCURRENT",
+                ],
+                Array [
+                  "COMP",
+                  "106",
+                  "CONCURRENT",
+                ],
+                "CPAS with a score of 40",
+              ],
+            },
+          ],
+        },
+        Array [
+          "COMP",
+          "220",
+          "CONCURRENT",
+        ],
+        Array [
+          "COMP",
+          "280",
+          "CONCURRENT",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Major is Computer Engineering, Robotics Engineering, Electrical Engineering",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "314",
+    "creditHours": 3,
+    "description": "Review of filter descriptions, transfer functions, and frequency response characteristics; first and second order passive and active filters; biquad circuits; filter transformations.  Butterworth, Chebyshev, and Elliptic filters; OPAMP realization of active filters; sensitivity analysis of active circuits.  Three lecture hours per week.",
+    "name": "Filter Design",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ECE",
+          "311",
+          "PREVIOUS",
+        ],
+        Array [
+          "ECE",
+          "317",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "316",
+    "creditHours": Array [
+      0,
+      3,
+    ],
+    "description": "Design of selected electronic circuits such as signal conditioning amplifiers. Switching and digital logic circuits, using FET and BJT devices, A/D and D/A converters. Two-hour lecture and one three-hour lab per week. (YR).",
+    "name": "Computer Electronics",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "and": Array [
+            Array [
+              "ECE",
+              "210",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "273",
+              "PREVIOUS",
+            ],
+          ],
+        },
+        Object {
+          "or": Array [
+            Array [
+              "COMP",
+              "270",
+              "CONCURRENT",
+            ],
+            Array [
+              "COMP",
+              "106",
+              "CONCURRENT",
+            ],
+            "CPAS with a score of 40",
+            Array [
+              "COMP",
+              "220",
+              "CONCURRENT",
+            ],
+          ],
+        },
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "317",
+    "creditHours": 4,
+    "description": "Signals and systems representation and classification. Impulse response and convolution integral. Laplace transforms with applications to linear electronic systems analysis. Fourier series analysis for analyzing harmonic distortion. Frequency response and filter design. Four lecture hours per week.",
+    "name": "Electronic Signals and Systems",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "MATH",
+          "216",
+          "PREVIOUS",
+        ],
+        Object {
+          "or": Array [
+            Array [
+              "MATH",
+              "217",
+              "CONCURRENT",
+            ],
+            Array [
+              "MATH",
+              "227",
+              "CONCURRENT",
+            ],
+          ],
+        },
+        Array [
+          "ECE",
+          "311",
+          "CONCURRENT",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if Level is Undergraduate",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "3171",
+    "creditHours": 4,
+    "description": "Signals and systems representation and classification. Impulse response and convolution integral. Laplace and Z transforms with applications to linear system analysis. Fourier series Fourier Transform and Discrete Fourier Transform, Frequency response, Filter design. Four lecture hours per week.",
+    "name": "Analog & Discrete Sig & Sys",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "and": Array [
+            Array [
+              "MATH",
+              "216",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "311",
+              "CONCURRENT",
+            ],
+          ],
+        },
+        Object {
+          "or": Array [
+            Array [
+              "MATH",
+              "217",
+              "CONCURRENT",
+            ],
+            Array [
+              "MATH",
+              "227",
+              "CONCURRENT",
+            ],
+          ],
+        },
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "319",
+    "creditHours": 4,
+    "description": "Introduction, cabling, grounding, balancing and filtering, passive components,shielding, digital circuit noise and PCB layout, radiation, ESD, regulations, demos, experiments, lab projects and guest lectures. Three Lecture hours and one three-hour laboratory per week.",
+    "name": "Electromagnetic Compatibility",
+    "prerequisites": Array [
+      "ECE",
+      "311",
+      "PREVIOUS",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "321",
+    "creditHours": 3,
+    "description": "Vector analysis; static electric field; steady electric currents; static magnetic fields; time-varying fields and Maxwell's equations; plane electromagnetic waves.  Three lecture hours per week.",
+    "name": "Electromagnetic Fields/Waves",
+    "prerequisites": Array [
+      "ECE",
+      "311",
+      "CONCURRENT",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "329",
+    "creditHours": 4,
+    "description": "This course will introduce students to methods and technologies of computer music. The basics of digital audio will be covered, including sampling, quantization, and compression standards. Various analysis tools will be covered, including the Fourier transform and windowing techniques. Mathematical models of physical instruments will be introduced. Various sound synthesis strategies will be introduced: wave tables, additive synthesis, subtractive synthesis, frequency modulation, and granular synthesis.",
+    "name": "Intro to Computer Music",
+    "prerequisites": Array [
+      "MATH",
+      "105",
+      "PREVIOUS",
+    ],
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "347",
+    "creditHours": 4,
+    "description": "Introduction to rigid, multi-body dynamics tailored to the analysis and design of linkage-based robotic systems.  Three dimensional kinematics, Eulerian angles, general motion of rigid bodies subjected to various forcing functions.  Matrix methods, numerial and software-based problem solving.  Project required.  Four lecture hours per week.",
+    "name": "Applied Dynamics",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "MATH",
+          "216",
+          "PREVIOUS",
+        ],
+        Array [
+          "MATH",
+          "217",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Level is Undergraduate",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "351",
+    "creditHours": 4,
+    "description": "The course covers measurements in biological materials using a variety of sensor technologies along with electronic instrumentation design and use. Safety and FDA requirements are also presented.",
+    "name": "Bio-Sensors & Instrumentation",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ECE",
+          "305",
+          "PREVIOUS",
+        ],
+        Object {
+          "or": Array [
+            Array [
+              "ENGR",
+              "216",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "270",
+              "PREVIOUS",
+            ],
+          ],
+        },
+        Array [
+          "MATH",
+          "216",
+          "PREVIOUS",
+        ],
+        Array [
+          "BIOL",
+          "103",
+          "PREVIOUS",
+        ],
+        Array [
+          "BIOL",
+          "140",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if College is Arts, Sciences, and Letters or Engineering and Computer Science",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "3641",
+    "creditHours": 4,
+    "description": "Design, construction, and testing of field robotic systems.  Focus on electronics, instrumentation, and machine elements.  Particular attention to modeling dynamic systems, measuring and controlling their behavior, and making decisions about future courses of action.  Examples include industrial robots, service robots, mobile robots, and medical robots. Three lecture hours and one three hour laboratory per week.",
+    "name": "Robotics I",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "or": Array [
+            Array [
+              "ECE",
+              "3731",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "372",
+              "PREVIOUS",
+            ],
+          ],
+        },
+        Array [
+          "ECE",
+          "347",
+          "PREVIOUS",
+        ],
+        Array [
+          "IMSE",
+          "317",
+          "CONCURRENT",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Level is Undergraduate",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "370",
+    "creditHours": 4,
+    "description": "Advanced concepts and techniques of modular object oriented and structured programming; representative real-world computer engineering applications including data structures, search and sorting. A term project is required. Four lecture hours per week. (F,W,S).",
+    "name": "Adv Soft Techn in Comp Engr",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ECE",
+          "270",
+          "PREVIOUS",
+        ],
+        Array [
+          "ECE",
+          "273",
+          "CONCURRENT",
+        ],
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "371",
+    "creditHours": 3,
+    "description": "Fundamentals of computer data structures.  Introduction to abstract data types.  Characteristics and implementation of structured data types including arrays, stacks, queues, linked lists, generalized lists, trees, and graphs. Algorithms and applications of data structures in sorting and searching.  Considerations of algorithm efficiency and complexity.  Engineering applications and design.  Three lecture hours per week.",
+    "name": "Information Structures",
+    "prerequisites": Object {
+      "or": Array [
+        Array [
+          "ECE",
+          "370",
+          "PREVIOUS",
+        ],
+        "ECE 274",
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "372",
+    "creditHours": Array [
+      0,
+      4,
+    ],
+    "description": "Introduction to operation, interfacing, and applications of microcomputers and microprocessor-based systems. Assembly language programming, interrupts and interfacing. Three lecture hours and one three-hour laboratory per week.",
+    "name": "Intro to Microprocessors",
+    "prerequisites": Object {
+      "or": Array [
+        Object {
+          "and": Array [
+            Array [
+              "ECE",
+              "270",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "273",
+              "PREVIOUS",
+            ],
+          ],
+        },
+        Object {
+          "and": Array [
+            Array [
+              "CIS",
+              "310",
+              "PREVIOUS",
+            ],
+            Object {
+              "or": Array [
+                Array [
+                  "COMP",
+                  "270",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "COMP",
+                  "106",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "COMP",
+                  "220",
+                  "PREVIOUS",
+                ],
+                "CPAS with a score of 40",
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "corequisites": Array [
+      "ECE",
+      "3731L",
+      "PREVIOUS",
+    ],
+    "courseNumber": "3731",
+    "creditHours": 4,
+    "description": "This course is an introduction to the operation, interfacing, and applications of micro processor based systems, and real-time embedded system design.  Topics include: microprocessor architecture, embedded C programming, real-time programming.  Final project required.  Three lecture hours and one three hour laboratory per week.",
+    "name": "Microproc and Embedded Sys",
+    "prerequisites": Object {
+      "or": Array [
+        Object {
+          "and": Array [
+            Array [
+              "ECE",
+              "270",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "273",
+              "PREVIOUS",
+            ],
+          ],
+        },
+        Array [
+          "CIS",
+          "310",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Level is Undergraduate",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "375",
+    "creditHours": 4,
+    "description": "Introduction to architecture of mini- and mainframe computers.  CPU, memory, and I/O characteristics. Introduction to parallel architectures and hardware design languages.  Case studies of popular computer systems and design considerations.  A design project is required. Three lecture hours and one laboratory hour per week.",
+    "name": "Intro to Comp Architecture",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "and": Array [
+            Object {
+              "and": Array [
+                Array [
+                  "ECE",
+                  "270",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "ECE",
+                  "273",
+                  "PREVIOUS",
+                ],
+              ],
+            },
+            Object {
+              "or": Array [
+                Array [
+                  "ECE",
+                  "276",
+                  "CONCURRENT",
+                ],
+                Array [
+                  "MATH",
+                  "276",
+                  "CONCURRENT",
+                ],
+              ],
+            },
+          ],
+        },
+        Object {
+          "or": Array [
+            Array [
+              "ECE",
+              "372",
+              "CONCURRENT",
+            ],
+            Array [
+              "ECE",
+              "3731",
+              "CONCURRENT",
+            ],
+          ],
+        },
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "3801",
+    "creditHours": 3,
+    "description": "Spectral characterization of periodic and aperiodic signals. Continuous-time filters.Frequency response. Sampling and Fourier Analysis. Discrete time signals. Input-output relationships in discrete-time systems, including impulse response, transfer function, and frequency response. Design and analysis of digital filters - finite impulse response (FIR) and infinite impulse response (IIR). Matlab projects will be assigned. Three lecture hours per week.",
+    "name": "Intro to Signals and Systems",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ECE",
+          "210",
+          "PREVIOUS",
+        ],
+        Array [
+          "MATH",
+          "216",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Cannot enroll if Class is Freshman",
+      "Can enroll if Level is Undergraduate",
+      "Cannot enroll if Major is Electrical Engineering",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "385",
+    "creditHours": 3,
+    "description": "Introduction to properties of conductors, semi-conductors, and insulators. Definitions of stress and strain. Description of the mechanical behavior of solids. Characterization of selected materials; circuit models for resistors, capacitors, inductors, junction and field-effect transistors, etc.  Three lecture hours per week.",
+    "name": "Elec Materials and Devices",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ECE",
+          "311",
+          "CONCURRENT",
+        ],
+        Object {
+          "or": Array [
+            Array [
+              "CHEM",
+              "144",
+              "PREVIOUS",
+            ],
+            Array [
+              "CHEM",
+              "134",
+              "PREVIOUS",
+            ],
+          ],
+        },
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "3851",
+    "creditHours": 4,
+    "description": "Introduction to properties of conductors, semi-conductors, and insulators. Definitions of stress and strain. Description of the mechanical behavior of solids. Characterization of selected materials; circuit models for resistors, capacitors, inductors, junction and field-effect transistors, etc. Three lecture hours per week and on three-hour laboratory session.",
+    "name": "Intro Elect Materials & Device",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ECE",
+          "311",
+          "CONCURRENT",
+        ],
+        Object {
+          "or": Array [
+            Array [
+              "CHEM",
+              "134",
+              "PREVIOUS",
+            ],
+            Array [
+              "CHEM",
+              "144",
+              "PREVIOUS",
+            ],
+          ],
+        },
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if Level is Undergraduate",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "387",
+    "creditHours": 4,
+    "description": "This course takes a detailed, hands-on approach to study the procedures and techniques used to identify, extract, validate, document and preserve electronic evidence. Students completing this course will be familiar with the core computer science theory and practical skills necessary to perform basic computer forensic investigations, understand the role of technology in investigating computer-based crime, and be prepared to deal with investigative bodies at a basic level.",
+    "name": "Digital Forensics I",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "or": Array [
+            Array [
+              "ECE",
+              "270",
+              "PREVIOUS",
+            ],
+            Array [
+              "CIS",
+              "200",
+              "PREVIOUS",
+            ],
+          ],
+        },
+        Object {
+          "or": Array [
+            Array [
+              "ECE",
+              "370",
+              "CONCURRENT",
+            ],
+            Array [
+              "ECE",
+              "372",
+              "CONCURRENT",
+            ],
+            Array [
+              "CIS",
+              "310",
+              "CONCURRENT",
+            ],
+          ],
+        },
+      ],
+    },
+    "restrictions": Array [
+      "Cannot enroll if Class is Freshman",
+      "Cannot enroll if Level is Graduate or Rackham",
+      "Cannot enroll if College is Business",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "390",
+    "creditHours": Array [
+      1,
+      3,
+    ],
+    "description": "Special topics in ECE according to student's interest and availability of instructors and equipment.",
+    "name": "Selected Topics in ECE",
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "399",
+    "creditHours": 1,
+    "description": "A four-month professional work experience period of the Engineering Internship Program, integrated and alternated with the classroom terms.",
+    "name": "Internship/Co-op",
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "411",
+    "creditHours": 4,
+    "description": "Review of solid state devices and their physical properties, introduction to the state of art devices, design of operational amplifiers, oscillators, switching and digital circuits.  A project will be required.  Three lecture hours per week and one three-hour laboratory per week.",
+    "name": "Electronics II",
+    "prerequisites": Object {
+      "and": Array [
+        "ECE 301",
+        Array [
+          "ECE",
+          "311",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "413",
+    "creditHours": 3,
+    "description": "Introduction to digital systems and VLSI, CMOS fabrication, layout and CMOS integrated circuits, basic principles of MOSFET theory, CMOS logic circuits, subsystem design, Architecture design and HDL, CLSI chip design, advanced topics, laboratory consist of a series of design projects. Three lecture hours per week.",
+    "name": "Intro to VLSI Design",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ECE",
+          "273",
+          "PREVIOUS",
+        ],
+        Array [
+          "ECE",
+          "311",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "414",
+    "creditHours": 4,
+    "description": "Review of solid state device characteristics and circuit analysis. Design of selected electronic circuits such as operational amplifiers, power amplifiers, power supplies, oscillators, switching and digital circuits to further illustrate analysis and design of representative electronic circuits using classical and computer-aided design techniques. Four lecture/laboratory per week.",
+    "name": "Electronic Systems Design",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ECE",
+          "311",
+          "PREVIOUS",
+        ],
+        Object {
+          "or": Array [
+            Array [
+              "ECE",
+              "317",
+              "CONCURRENT",
+            ],
+            Array [
+              "ECE",
+              "3171",
+              "CONCURRENT",
+            ],
+          ],
+        },
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "415",
+    "creditHours": 4,
+    "description": "Introduction to power electronic circuit analysis and design.  Power electronic circuits, power converters, power semiconductors.  Time domain analysis emphasized.  A design project is required.  Four lecture/laboratory hours per week.",
+    "name": "Power Electronics",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "or": Array [
+            Array [
+              "ECE",
+              "317",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "3171",
+              "PREVIOUS",
+            ],
+          ],
+        },
+        Array [
+          "ECE",
+          "385",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "420",
+    "creditHours": 3,
+    "description": "Introduction to EMC measurements, RF measurement fundamentals, EM waves, radiation mechanisms, measurement and measurement systems, screened rooms, open field test sites, practical measurements, conducted emission measurements, radiated emission measurements, radiated immunity, conducted immunity and electrostatic discharge. Projects will be assigned.  (YR).",
+    "name": "EMC Measurement and Testing",
+    "prerequisites": Array [
+      "ECE",
+      "319",
+      "PREVIOUS",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "426",
+    "creditHours": 4,
+    "description": "The objective of this course is to introduce current state-of-the-art in digital multimedia editing, its impacts on multimedia tampering, and multimedia forensics techniques to uncover inconsistencies due to tampering. This course will cover existing digital multimedia tampering techniques such as copy-move, cut-and-paste, etc. and digital multimedia tamper detection techniques. The course will also cover covert communication methods such as steganography and covert channel detection method steganlysis. This course will cover the limitations of existing state-of-the-art in multimedia forensics. Hands-on experience will be provided in various aspects of multimedia tampering and analysis through the numerous assignments and projects. Three lecture hours per week and one three-hour laboratory per week. (F)",
+    "name": "Multimedia Forensics",
+    "prerequisites": Object {
+      "or": Array [
+        Array [
+          "ECE",
+          "387",
+          "PREVIOUS",
+        ],
+        Array [
+          "CIS",
+          "387",
+          "PREVIOUS",
+        ],
+        Array [
+          "CIS",
+          "447",
+          "PREVIOUS",
+        ],
+        Array [
+          "ECE",
+          "317",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if Level is Undergraduate",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "427",
+    "creditHours": 4,
+    "description": "The objective of this course is to introduce current techniques information security in general and multimedia security in particular. This course will cover existing information hiding techniques such as digital watermarking, steganography, and fingerprinting. The course will also cover conventional digital content protection methods such as cryptography. This course will cover the pros and cons of conventional and non-conventional digital content protection methods and associated design issues to give the student hands-on experience in various aspects of information security and analysis through the various assignments and projects. (W)",
+    "name": "Digi Content Protec",
+    "prerequisites": Object {
+      "or": Array [
+        Array [
+          "ECE",
+          "387",
+          "PREVIOUS",
+        ],
+        Array [
+          "CIS",
+          "387",
+          "PREVIOUS",
+        ],
+        Array [
+          "CIS",
+          "447",
+          "PREVIOUS",
+        ],
+        Array [
+          "ECE",
+          "317",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if Level is Undergraduate",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "428",
+    "creditHours": 3,
+    "description": "Cloud computing represents the emerging Internet-based services/platforms with elastic and scalable computation powers operating at costs associated with service. Topics may include advanced web technologies (AJAX and Mashup), distributed computing models and technologies (Hadoop and MapReduce), Infrastructure-as-a-Service (IaaS), Software as a Service (SaaS), Platform-as-a-Service (PaaS), virtualization, parallelization, security/privacy, and other issues in cloud computing. This course will also explore the current challenges facing cloud computing. Course work will include homework assignments, presentations and a term project. Students cannot take both ECE 428 and ECE 528 for degree credit. Three lecture hours per week.",
+    "name": "Cloud Computing",
+    "prerequisites": Array [
+      "ECE",
+      "270",
+      "PREVIOUS",
+    ],
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if Major is Computer & Information Science, Computer Engineering, Electrical Engineering, Industrial & Systems Engin, Software Engineering, Mechanical Engineering",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "431",
+    "creditHours": 4,
+    "description": "The course is conducted as a guided project design course with the class divided into teams and assigned a specific design project.  Periodic progress reports are submitted during the term.  A final written report and an oral presentation including demonstration are required at the end of the term.  Cost analysis, evaluation of design alternatives and application of engineering principles are emphasized.  Two scheduled contact hours and six hours open laboratories per week.",
+    "name": "Electrical Eng Design",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ECE",
+          "311",
+          "PREVIOUS",
+        ],
+        "ECE 373",
+        Array [
+          "ECE",
+          "493",
+          "CONCURRENT",
+        ],
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "432",
+    "creditHours": 6,
+    "description": "The course is conducted as a guided project design course over a two-semester period with the class divided into teams and assigned a specific design project.  Periodic progress reports are submitted during the term.  A final written report and an oral presentation including demonstration are required at the end of the term.  Cost analysis, evaluation of design alternatives and application of engineering principles are emphasized.  Two scheduled contact hours and six hours open laboratories per week.",
+    "name": "Electrical Eng Design",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ECE",
+          "311",
+          "PREVIOUS",
+        ],
+        Array [
+          "ECE",
+          "372",
+          "PREVIOUS",
+        ],
+        Array [
+          "ECE",
+          "493",
+          "CONCURRENT",
+        ],
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "433",
+    "creditHours": 4,
+    "description": "This course will introduce students to basic terminology and methods of multimedia. Basic concepts of digital audio will be reviewed, including frequency, sampling, and popular compression schemes. Concepts of digital images will be introduced, such as resolution, color theory, and compression formats. Basic concepts of digital video and animation will be introduced. Relevant web technologies will be reviewed. Four lecture hours per week.",
+    "name": "Intr to Multimedia Technolgies",
+    "prerequisites": Object {
+      "or": Array [
+        Array [
+          "ECE",
+          "311",
+          "PREVIOUS",
+        ],
+        Array [
+          "ECE",
+          "370",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if Level is Undergraduate",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "434",
+    "creditHours": 4,
+    "description": "Introduce fundamental theories and basic techniques in machine learning with an emphasis on engineering applications. Topics include learning concepts, search algorithms, neural networks, fuzzy learning, paradigms for problem solving using machine learning. (F, W).",
+    "name": "Machine Learning in Engin",
+    "prerequisites": Array [
+      "ECE",
+      "370",
+      "PREVIOUS",
+    ],
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if Level is Undergraduate",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "435",
+    "creditHours": 4,
+    "description": "This class will introduce students to the technology used in mobile/smart devices and mobile communication networks. Various hardware and software aspects will be introduced, with particular emphasis on the constraints intrinsic to such systems. Students will get an overview of various mobile operating systems and how to develop software for mobile devices. Four lecture hours per week.",
+    "name": "Intro to Mobil/Smrt Dev & Tech",
+    "prerequisites": Array [
+      "ECE",
+      "3731",
+      "PREVIOUS",
+    ],
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if Major is Electrical Engineering, Computer Engineering, Software Engineering",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "436",
+    "creditHours": 4,
+    "description": "This is an introductory course on electric machines and drive systems and their application in EV, HEV, PHEV and FCV powertrains. The objectives are to familiarize the students with the basic concepts of electromechanical energy conversion and electric drive systems. Students are expected to be able to analyze and design electric drive systems for automotive powertrain applications. The topics covered in this course include DC machines, induction machines, permanent magnet synchronous machines, and switched reluctance motors and drives. Case studies in automotive applications such as electric and hybrid drivetrains will be discussed. Four lecture hours per week.",
+    "name": "Elec Machines & Hybrid Drives",
+    "prerequisites": Array [
+      "ECE",
+      "311",
+      "PREVIOUS",
+    ],
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if Major is Software Engineering, Computer Engineering, Electrical Engineering",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "4361",
+    "creditHours": 4,
+    "description": "This is an introductory course on electric machines and drive systems and their application in HEV/PHEV powertrain and other industrial and residential systems. The objectives are to familiarize the students with the basic concepts of electromechanical energy conversion and electric drive systems. Students are expected to be able to analyze and design electric drive systems for automotive, industrial, and residential applications. The topics covered in this course include DC machines, induction machines, permanent magnet synchronous machines, and switched reluctant motors and drives. Case studies in automotive applications such as electric and hybrid drivetrains, industrial and residential electric variable speed drive systems, will be discussed. Students cannot take both ECE 436 and ECE 4361 for credit. Four lecture hours per week.",
+    "name": "Electric Machines and Drives",
+    "prerequisites": Array [
+      "ECE",
+      "311",
+      "PREVIOUS",
+    ],
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if Major is Computer Engineering, Electrical Engineering, Software Engineering, Industrial & Systems Engin, Computer & Information Science, Mechanical Engineering",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "438",
+    "creditHours": 4,
+    "description": "Advanced concepts and techniques of web technology, focusing on interactive applications; real-world web engineering applications including data persistence, web security, hardware/software issues and asynchronous client/server communication. A term project is required. Four lectures per week.",
+    "name": "Web Engr: Prin & Tech",
+    "prerequisites": Object {
+      "or": Array [
+        Array [
+          "ECE",
+          "311",
+          "PREVIOUS",
+        ],
+        Array [
+          "ECE",
+          "370",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if Major is Electrical Engineering, Computer Engineering, Software Engineering",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "443",
+    "creditHours": 3,
+    "description": "This course will introduce students to basic methods of electric power systems. Topics include AC circuits, phasors, complex power and complex impedance, transformers, per unit system, transmissions lines, power flow, economic dispatch, real and reactive power control, symmetric and unsymmetric faults, transient stability, relaying and protection. Three lecture hours per week.",
+    "name": "Intr to Electric Power Systems",
+    "prerequisites": Object {
+      "or": Array [
+        Array [
+          "ECE",
+          "317",
+          "PREVIOUS",
+        ],
+        Array [
+          "ECE",
+          "3171",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "4431",
+    "creditHours": 4,
+    "description": "This is an introductory course on power systems and load analysis with focus on automotive applications. The objectives are to familiarize the students with the basic principles and concepts of vehicular power systems and loads. Students are expected to be able to analyze and design basic vehicular power systems. The topics covered in this course include an overview of power systems, vehicular power system architecture, DC and AC power grid in vehicular systems, power system stability, reliability, reactive power control, load flow analysis, short circuit analysis, and vehicular power system protection. Four lecture hours per week.",
+    "name": "Vehicular Pwr Sys & Loads",
+    "prerequisites": Object {
+      "or": Array [
+        Array [
+          "ECE",
+          "317",
+          "PREVIOUS",
+        ],
+        Array [
+          "ECE",
+          "3171",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "4432",
+    "creditHours": 4,
+    "description": "This course is an introduction to traditional power grids as well as renewable electric power systems.  This course covers long-distance transmission of electric power with emphasis on admittance and impedance modeling of components and systems, complex power-flow studies, symmetrical and unsymmetrical fault calculations, economic operation of large-scale generation and transmission systems, an overview of emerging renewable energy technologies (e.g. wind and solar) and the impact of grid integration of renewable energy on power grids.  Students cannot take both ECE 4431 and ECE 4432 for credit.  Four lecture hours per week.",
+    "name": "Renewable Elec Pwr Sys",
+    "prerequisites": Array [
+      "ECE",
+      "3171",
+      "PREVIOUS",
+    ],
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if Major is Computer & Information Science, Industrial & Systems Engin, Software Engineering, Computer Engineering, Electrical Engineering, Mechanical Engineering",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "446",
+    "creditHours": 4,
+    "description": "Introduces fundamental concepts and specifications of electromechanical energy conversion: AC and DC machines drive, electric and magnetic storage and transfer, transformer, and performance analysis of AC and DC machines. The topics include principles of energy conversion, permanent magnet synchronous machines, induction machines, and DC machines. The lab projects for the course will focus on modeling, evaluation, and practice of AC and DC machine drives based on computer simulation and DSP based experiments; transient and dynamic analysis; linearization and small signal analysis of machines. Four lecture/laboratory hours per week.",
+    "name": "Electromechanical Energy Conv",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ECE",
+          "311",
+          "PREVIOUS",
+        ],
+        Object {
+          "or": Array [
+            Array [
+              "ECE",
+              "317",
+              "CONCURRENT",
+            ],
+            Array [
+              "ECE",
+              "3171",
+              "CONCURRENT",
+            ],
+          ],
+        },
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "450",
+    "creditHours": 4,
+    "description": "Topics include introduction to communication systems, base band communications, sampling theorem, amplitude and frequency modulation system design, statistical analysis of error and performance, digital modulation of analogy signals, digital communication and digital modulation schemes, random processes and applications in digital communications, and noise analysis, optimal receiver. Four lecture hours per week.",
+    "name": "Analog and Digital Comm Sys",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "or": Array [
+            Array [
+              "ECE",
+              "317",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "3171",
+              "PREVIOUS",
+            ],
+          ],
+        },
+        Array [
+          "IMSE",
+          "317",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "451",
+    "creditHours": 3,
+    "description": "Introduction to signal detection, parameter estimation and information extraction theory and its application to communication systems.  Subject areas covered within the context of a digital environment are decision theory, detection and estimation of known and random signals in noise,  adaptive recursive digital filtering, optimal linear filtering and pattern recognition.  Three lecture hours.",
+    "name": "Signal Detection",
+    "prerequisites": Array [
+      "ECE",
+      "450",
+      "PREVIOUS",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "452",
+    "creditHours": 3,
+    "description": "Introduction to probability, random processes, correlation functions, and spectral density.  Response of linear systems to random inputs.  Applications in the field of communications.",
+    "name": "Probabilistic Meth/Signal Alys",
+    "prerequisites": Array [
+      "ECE",
+      "300",
+      "PREVIOUS",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "454",
+    "creditHours": 3,
+    "description": "This course provides an introduction to the fundamentals of modern wireless communication. The focus of this course will be on the (i) basic signal propagation issues and channel impairments, (ii) modulation schemes and bandwidth/power trade-offs, and (iii) overcoming channel impairment using equalizers, diversity and channel coding. Additionally case studies will examine current wireless LANs and cellular system. Three Hours of lecture per week.",
+    "name": "Intr to Modern Wireless Comm",
+    "prerequisites": Object {
+      "or": Array [
+        Array [
+          "ECE",
+          "450",
+          "PREVIOUS",
+        ],
+        Array [
+          "ECE",
+          "471",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Cannot enroll if Class is Freshman or Sophomore",
+      "Can enroll if Level is Undergraduate",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "456",
+    "creditHours": 3,
+    "description": "Laser sources, detectors, imaging systems, optical signal processing, illumination and image acquisition, triangulation, and fiber optics.  Three one-hour lecture periods.",
+    "name": "Intro to Electro-optics",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ECE",
+          "311",
+          "PREVIOUS",
+        ],
+        Array [
+          "ECE",
+          "321",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "corequisites": Array [
+      "ECE",
+      "460L",
+      "PREVIOUS",
+    ],
+    "courseNumber": "460",
+    "creditHours": 4,
+    "description": "Modeling and response of dynamic systems. Transfer functions, poles and zeros and their significance to transient and steady state response of feedback systems. Analysis of stability of closed-loop systems. Steady state errors and transient performance of closed-loop systems. Design of feedback control systems by root locus techniques and by frequency domain methods. Laboratory projects include modeling, controller design, controller realization, system performance evaluation, and simulation studies. Three lecture hours and one three hour laboratory per week.",
+    "name": "Automatic Control Systems",
+    "prerequisites": Object {
+      "or": Array [
+        Array [
+          "ECE",
+          "317",
+          "PREVIOUS",
+        ],
+        Array [
+          "ECE",
+          "3171",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "464",
+    "creditHours": 4,
+    "description": "An overview of robotics systems and current technology.  Spatial descriptions and transforms. Lagrange and Newton-Euler equations of motion. Path planning and trajectory calculations.  Direct and inverse kinematics and dynamics of open articulated chains.  Feedback control problems in manipulators.",
+    "name": "Robotics",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "or": Array [
+            Array [
+              "ECE",
+              "300",
+              "PREVIOUS",
+            ],
+            "ECE 365",
+          ],
+        },
+        Array [
+          "ME",
+          "265",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "4641",
+    "creditHours": 4,
+    "description": "This is the second of a two-course sequence introducing foundational theory and applications of robotics engineering.  The topics of this course include embedded computing, locomotion, localization, dead reckoning, inertial sensors and perception, navigation, multi-robotics systems, and human-robot interaction, and complex response processes.  Three lecture hours and one three hour laboratory per week.",
+    "name": "Robotics II",
+    "prerequisites": Array [
+      "ECE",
+      "3641",
+      "PREVIOUS",
+    ],
+    "restrictions": Array [
+      "Can enroll if Level is Undergraduate",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "465",
+    "creditHours": 4,
+    "description": "Discrete model of a continuous-time system.  Differential equations and Z-transforms.  Similarities and differences between discrete-time and continuous-time models. Translation of analog designs to digital designs. State-space methods including state feedback and observers. Hardware limitations and implementation issues.  Four lecture/laboratory hours per week.",
+    "name": "Digital Control Desgn and Imp",
+    "prerequisites": Array [
+      "ECE",
+      "460",
+      "PREVIOUS",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "467",
+    "creditHours": 4,
+    "description": "This course is a continuation of Digital Forensics I and will focus on Internet Forensics. Students will examine in-depth concepts in Internet evidence collection and preservation, as well as applications of contemporary commercial forensic investigative software.",
+    "name": "Digital Forensics II",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "or": Array [
+            Array [
+              "ECE",
+              "387",
+              "PREVIOUS",
+            ],
+            Array [
+              "CIS",
+              "387",
+              "PREVIOUS",
+            ],
+          ],
+        },
+        Object {
+          "or": Array [
+            Array [
+              "ECE",
+              "471",
+              "CONCURRENT",
+            ],
+            Array [
+              "CIS",
+              "427",
+              "CONCURRENT",
+            ],
+          ],
+        },
+      ],
+    },
+    "restrictions": Array [
+      "Cannot enroll if Class is Freshman",
+      "Cannot enroll if Level is Rackham or Graduate",
+      "Cannot enroll if College is Business",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "470",
+    "creditHours": 4,
+    "description": "Hardware and software techniques used in interfacing between computers and other computers or devices.  Analog and digital techniques.  Parallel and serial communications. Popular communication protocols.  Error detection and correction. Lab project involves interfacing and communicating with a microprocessor.",
+    "name": "Computer Int and Data Comm",
+    "prerequisites": Array [
+      "ECE",
+      "372",
+      "PREVIOUS",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "471",
+    "creditHours": 4,
+    "description": "Hardware and software techniques used in interfacing between computers and other computers or devices. Data transmission techniques and protocols. Introduction to popular local area network protocols. Forward Error Control Techniques and Data Compression. Introduction to wireless communications with focus on major challenges and obstacles and the cellular phone infrastructure. Term projects involve developing a data link layer protocol for interfacing and communication with microprocessors. Four lecture hours per week.",
+    "name": "Comp Networks/Data Comm",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "IMSE",
+          "317",
+          "PREVIOUS",
+        ],
+        Object {
+          "or": Array [
+            Array [
+              "ECE",
+              "372",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "3731",
+              "PREVIOUS",
+            ],
+          ],
+        },
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "473",
+    "creditHours": 4,
+    "description": "This course studies the issues dealing with real-time embedded system design. Topics include: microprocessor architecture, assembly language, real-time programming, space and time limitations, relations between ANSIC Compiler output and assembly language, compiler linkers and using a system development package for C programming. (F,W,S).",
+    "name": "Embedded System Design",
+    "prerequisites": Array [
+      "ECE",
+      "372",
+      "PREVIOUS",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "474",
+    "creditHours": 3,
+    "description": "Principles of language compilation.  Introduction to formal languages.  Lexical analysis, top-down and bottom-up parsing, code generation and optimization.  Error handling and symbol table management.  Run-time storage management. Programming language design.  Introduction to compiler-writing tools.  A software design project is required.  Three lecture hours per week.",
+    "name": "Compiler Design",
+    "prerequisites": Array [
+      "ECE",
+      "370",
+      "PREVIOUS",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "475",
+    "creditHours": 4,
+    "description": "Design methodology, performance analysis using probability and statistic methods, hardwired and microprogramming in CPU design, hardware design languages and memory design. Advanced concepts in computer architecture.  A design project is required.  Three lecture hours per week and one three-hour laboratory per week.",
+    "name": "Comp Hardware Org/Design",
+    "prerequisites": Array [
+      "ECE",
+      "375",
+      "PREVIOUS",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "476",
+    "creditHours": 3,
+    "description": "Advances in computer architecture, parallel structures, performance evaluation, memory bandwidth considerations, processing bandwidth, communication and synchronization. A design project is required.  Three lecture hours per week.",
+    "name": "Intro to Parallel Processing",
+    "prerequisites": Array [
+      "ECE",
+      "375",
+      "PREVIOUS",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "478",
+    "creditHours": 4,
+    "description": "Introduction to computer operating systems.  Process management, threads, CPU scheduling, memory management, process synchronization, file systems and I/O devices.  Selected advanced topics, e.g., distributed systems, deadlock, I/O, job scheduling, and performance analysis using queueing models, will be introduced.  Case studies of modern operating systems.  A design project is required. Four lecture hours per week.",
+    "name": "Operating Systems",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ECE",
+          "370",
+          "PREVIOUS",
+        ],
+        Array [
+          "IMSE",
+          "317",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "479",
+    "creditHours": 3,
+    "description": "Basic concepts and methodology of artificial intelligence from a computer engineering perspective. Emphasis is placed on the knowledge representations, reasoning and algorithms for the design and implementation of intelligent systems. Introduction to an AI language and representative intelligence systems. A design project is required. Three lecture hours per week.",
+    "name": "Artificial Intelligence",
+    "prerequisites": Array [
+      "ECE",
+      "370",
+      "PREVIOUS",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "480",
+    "creditHours": 4,
+    "description": "Fundamentals of discrete-time signals and systems. Introduction to z-transform and its applications. Design of digital filters. Characteristics of analog-to-digital and digital-to-analog converters. Fourier transform of sequences, DFT and FFT algorithms. An introduction to software tools for the simulation and design of real time-digital filters.  Implementation of digital systems using digital signal processing boards. Three hours lecture and three hours laboratory experiments per week.",
+    "name": "Intro to Dig Signal Processing",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "or": Array [
+            Array [
+              "ECE",
+              "317",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "3171",
+              "PREVIOUS",
+            ],
+          ],
+        },
+        Object {
+          "or": Array [
+            Array [
+              "MATH",
+              "217",
+              "PREVIOUS",
+            ],
+            Array [
+              "MATH",
+              "227",
+              "PREVIOUS",
+            ],
+          ],
+        },
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "488",
+    "creditHours": 4,
+    "description": "Applications to machine vision. Representative topics are: optics and lighting, sensor characteristics, image acquisition, image analysis, segmentation, connectivity, shape description, hardware for vision applications, software considerations, applications including automatic inspection and metrology. Open lab and project will be required.",
+    "name": "Introduction to Machine Vision",
+    "prerequisites": Array [
+      "ECE",
+      "270",
+      "PREVIOUS",
+    ],
+    "restrictions": Array [
+      "Can enroll if Class is Senior",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "4881",
+    "creditHours": 3,
+    "description": "This course introduces the theories and modern technologies in robot vision. Topics include sensors, image analysis, region and segmentation, object recognition, stereo vision, optical flow, color image, object tracking and applications. Students cannot receive credit for both ECE 4881 and ECE 588. Three lecture hours per week.",
+    "name": "Introduction to Robot Vision",
+    "prerequisites": Array [
+      "ECE",
+      "270",
+      "PREVIOUS",
+    ],
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if Level is Undergraduate",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "490",
+    "creditHours": Array [
+      1,
+      3,
+    ],
+    "description": "Advanced or applied topics in electrical engineering offered according to student's interest and availability of instructors and equipment.  Lecture hours, laboratory, and/or computation period to be arranged.",
+    "name": "Selected Topics in Elec Engin",
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "491",
+    "creditHours": Array [
+      1,
+      4,
+    ],
+    "description": "Student in consultation with a faculty advisor will prepare a proposal in sufficient detail describing a subject topic to be studied.  The proposal will be subject to approval by the department.  A formal written and oral evaluation of the work performed are required for successful completion. Lecture hours, laboratory, and/or computation periods to be arranged.",
+    "name": "Directed Studies",
+    "restrictions": Array [
+      "Can enroll if Class is Senior or Graduate",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "492",
+    "creditHours": Array [
+      1,
+      4,
+    ],
+    "description": "Student, in consultation with a faculty advisor will prepare a proposal in sufficient detail describing a research problem to be studied.  The proposal will be subject to approval by the department.  A formal written and oral evaluation of the research performed are required for successful completion.  Lecture hours, laboratory, and/or computation period to be arranged.",
+    "name": "Directed Research",
+    "restrictions": Array [
+      "Can enroll if Class is Senior or Graduate",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "493",
+    "creditHours": 2,
+    "description": "This course is comprised of a series of lectures on the subject of design. It will promote awareness of such factors as literature review, performance specifications, design considerations, product liability, standards and ethics, professional registration codes, patents and copyrights, packaging, documentation and report preparation. Two lecture hours.",
+    "name": "Design Factors in Eng",
+    "restrictions": Array [
+      "Can enroll if Class is Senior or Graduate",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "495",
+    "creditHours": 4,
+    "description": "Course content includes discussion and laboratory experience on a number of interfacing topics (timing, serial and parallel communication, ADC/DAC, control loop) and the preparation of a major report on a design topic approved by the course instructor. Team design projects may involve either software or hardware, or both. Two lecture hours and two three-hour laboratories per week.",
+    "name": "Micro Systems Design",
+    "prerequisites": Object {
+      "and": Array [
+        "ECE 373",
+        Object {
+          "or": Array [
+            Array [
+              "ECE",
+              "311",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "316",
+              "PREVIOUS",
+            ],
+          ],
+        },
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "4951",
+    "creditHours": 3,
+    "description": "Techniques for interfacing actuators and sensors to computers with emphasis on the use of a variety of microprocessors and a broad range of sensors. Topics include introduction to small microprocessors such as PIC16, PIC18, small systems such as oopic, basicx as well as using a PC as a controller. Control of motors and other actuators using opto-isolators and discrete electronics, use of H-bridges. Interfacing sensors that provide different encoding data, such as analog signals, digital communication using I2C protocol, handshake I/O, pulse width encoding. Interfacing to wireless communication using RF or IR. Includes laboratory experiments, individual midterm project and a final team project. Three lecture hours per week. (F,W)",
+    "name": "Sys Desgn and Microcontrollers",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ECE",
+          "311",
+          "PREVIOUS",
+        ],
+        Object {
+          "or": Array [
+            Array [
+              "ECE",
+              "372",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "3731",
+              "PREVIOUS",
+            ],
+          ],
+        },
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "498",
+    "creditHours": 3,
+    "description": "This course is conducted as a guided project design course over a two-semester period, with the class divided into teams, each assigned a specific design project.  Periodic progress reports, a final written report, an oral presentation and project demonstration are required. Cost analysis, evaluation of design alternatives and application of engineering principles will be emphasized. A series of lectures on design issues will be presented in the first semester.",
+    "name": "Senior Engineering Design",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "or": Array [
+            Array [
+              "ECE",
+              "311",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "316",
+              "PREVIOUS",
+            ],
+          ],
+        },
+        "ECE 373",
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "4981",
+    "creditHours": 2,
+    "description": "This course is conducted as a guided project design course over a two semester period, with the class divided into teams, each assigned a specific design project. Periodic progress reports, a final written report, an oral presentation and project demonstration are required. Cost analysis, societal impact, safety issues, evaluation of design alternatives and application of engineering principles will be emphasized. A series of tutorials will be presented to provide student teams with insight into important system level considerations and trade offs.",
+    "name": "Electrical Engineering Des I",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "and": Array [
+            Object {
+              "and": Array [
+                Object {
+                  "or": Array [
+                    Array [
+                      "COMP",
+                      "270",
+                      "PREVIOUS",
+                    ],
+                    Array [
+                      "COMP",
+                      "106",
+                      "PREVIOUS",
+                    ],
+                    Array [
+                      "COMP",
+                      "220",
+                      "PREVIOUS",
+                    ],
+                    Array [
+                      "COMP",
+                      "280",
+                      "PREVIOUS",
+                    ],
+                  ],
+                },
+                Object {
+                  "or": Array [
+                    Array [
+                      "ECE",
+                      "317",
+                      "PREVIOUS",
+                    ],
+                    Array [
+                      "ECE",
+                      "3171",
+                      "PREVIOUS",
+                    ],
+                  ],
+                },
+              ],
+            },
+            Object {
+              "or": Array [
+                Array [
+                  "ECE",
+                  "372",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "ECE",
+                  "3731",
+                  "PREVIOUS",
+                ],
+              ],
+            },
+          ],
+        },
+        Object {
+          "or": Array [
+            Array [
+              "ECE",
+              "414",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "415",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "450",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "460",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "480",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "4951",
+              "PREVIOUS",
+            ],
+          ],
+        },
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Senior",
+      "Can enroll if Level is Undergraduate",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "4982",
+    "creditHours": 2,
+    "description": "This course is conducted as a guided project design course over a two semester period, with the class divided into teams, each assigned a specific design project. Periodic progress reports, a final written report, an oral presentation and project demonstration are required. Cost analysis, societal impact, safety issues, evaluation of design alternatives and application of engineering principles will be emphasized. A series of tutorials will be presented to provide student teams with insight into important system level considerations and trade offs.",
+    "name": "Computer Engineering Des I",
+    "prerequisites": Object {
+      "or": Array [
+        Object {
+          "and": Array [
+            Object {
+              "or": Array [
+                Array [
+                  "COMP",
+                  "270",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "COMP",
+                  "106",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "COMP",
+                  "220",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "COMP",
+                  "280",
+                  "PREVIOUS",
+                ],
+              ],
+            },
+            Object {
+              "or": Array [
+                Array [
+                  "ECE",
+                  "372",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "ECE",
+                  "3731",
+                  "PREVIOUS",
+                ],
+              ],
+            },
+            Array [
+              "ECE",
+              "375",
+              "PREVIOUS",
+            ],
+          ],
+        },
+        Object {
+          "or": Array [
+            Array [
+              "ECE",
+              "471",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "473",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "475",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "478",
+              "PREVIOUS",
+            ],
+          ],
+        },
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Senior",
+      "Can enroll if Level is Undergraduate",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "4983",
+    "creditHours": 2,
+    "description": "Second Semester ? Electrical Engineering Design                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+This course is conducted as a guided project design course over a two semester period, with the class divided into teams, each assigned a specific design project. Periodic progress reports, a final written report, an oral presentation and project demonstration are required. Cost analysis, societal impact, safety issues, evaluation of design alternatives and application of engineering principles will be emphasized.",
+    "name": "Electrical Engin Design II",
+    "prerequisites": Array [
+      "ECE",
+      "4981",
+      "PREVIOUS",
+    ],
+    "restrictions": Array [
+      "Cannot enroll if Class is Freshman or Sophomore or Junior",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "4984",
+    "creditHours": 2,
+    "description": "Second Semester Computer Engineering Design                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+This course is conducted as a guided project design course over a two semester period, with the class divided into teams, each assigned a specific design project. Periodic progress reports, a final written report, an oral presentation and project demonstration are required. Cost analysis, societal impact, safety issues, evaluation of design alternatives and application of engineering principles will be emphasized.",
+    "name": "Computer Engin Design II",
+    "prerequisites": Array [
+      "ECE",
+      "4982",
+      "PREVIOUS",
+    ],
+    "restrictions": Array [
+      "Cannot enroll if Class is Freshman or Sophomore or Junior",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "4985",
+    "creditHours": 3,
+    "description": "This course is conducted as a guided project design course over a two-semester period, with the class divided into teams, each assigned a specific design project. Periodic progress reports, a final written report, an oral presentation and project demonstration are required. Cost analysis, societal impact, safety issues, evaluation of design alternatives, and application of engineering principles will be emphasized. A series of lectures on design issues will be presented in the first semester.",
+    "name": "Electrical Engineering Design",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "and": Array [
+            Object {
+              "or": Array [
+                Array [
+                  "COMP",
+                  "270",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "COMP",
+                  "106",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "COMP",
+                  "220",
+                  "PREVIOUS",
+                ],
+                "CPAS with a score of 40",
+              ],
+            },
+            Object {
+              "or": Array [
+                Array [
+                  "ECE",
+                  "317",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "ECE",
+                  "3171",
+                  "PREVIOUS",
+                ],
+              ],
+            },
+            Array [
+              "ECE",
+              "372",
+              "PREVIOUS",
+            ],
+          ],
+        },
+        Object {
+          "or": Array [
+            Array [
+              "ECE",
+              "414",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "415",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "450",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "460",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "480",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "4951",
+              "PREVIOUS",
+            ],
+          ],
+        },
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Senior",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "4986",
+    "creditHours": 3,
+    "description": "This course is conducted as a guided project design course over a two-semester period, with the class divided into teams, each assigned a specific design project. Periodic progress reports, a final written report, an oral presentation, and application of demonstration are required. Cost analysis, societal impact, safety issues, evaluation of design alternatives and application of engineering principles will be emphasized. A series of lectures on design issues will be presented in the first semester.",
+    "name": "Computer Engineering Design",
+    "prerequisites": Object {
+      "or": Array [
+        Object {
+          "and": Array [
+            Object {
+              "and": Array [
+                Object {
+                  "or": Array [
+                    Array [
+                      "COMP",
+                      "270",
+                      "PREVIOUS",
+                    ],
+                    "CPAS with a score of 40",
+                    Array [
+                      "COMP",
+                      "106",
+                      "PREVIOUS",
+                    ],
+                    Array [
+                      "COMP",
+                      "220",
+                      "PREVIOUS",
+                    ],
+                  ],
+                },
+                Object {
+                  "or": Array [
+                    Array [
+                      "ECE",
+                      "317",
+                      "PREVIOUS",
+                    ],
+                    Array [
+                      "ECE",
+                      "3171",
+                      "PREVIOUS",
+                    ],
+                  ],
+                },
+                Array [
+                  "ECE",
+                  "372",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "ECE",
+                  "375",
+                  "PREVIOUS",
+                ],
+              ],
+            },
+            Object {
+              "or": Array [
+                Array [
+                  "ECE",
+                  "471",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "ECE",
+                  "473",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "ECE",
+                  "475",
+                  "PREVIOUS",
+                ],
+              ],
+            },
+          ],
+        },
+        Array [
+          "ECE",
+          "478",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Senior",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "4987",
+    "creditHours": 2,
+    "description": "This course is conducted as a guided project design course over a two-course sequence, with the class divided into teams, each assigned a specific design project. Periodic progress reports, a final written report, an oral presentation and project demonstration are required. Cost analysis, societal impact, safety issues, evaluation of design alternatives and application of engineering principles will be emphasized. A series of tutorials will be presented to provide student teams with insight into important system level considerations and trade offs.",
+    "name": "Robotics Engineering Design I",
+    "restrictions": Array [
+      "Can enroll if Class is Senior",
+      "Can enroll if Level is Undergraduate",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "4988",
+    "creditHours": 2,
+    "description": "Second semester Robotics Engineering Design: This course is conducted as a guided project design course over a two-course sequence, with the class divided into teams, each assigned a specific design project. Periodic progress reports, a final written report, an oral presentation and project demonstration are required. Cost analysis, societal impact, safety issues, evaluation of design alternatives and application of engineering principles will be emphasized.",
+    "name": "Robotics Engineering Design II",
+    "prerequisites": Array [
+      "ECE",
+      "4987",
+      "PREVIOUS",
+    ],
+    "restrictions": Array [
+      "Can enroll if Class is Senior",
+      "Can enroll if Level is Undergraduate",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "499",
+    "creditHours": 1,
+    "description": "A four-month professional work experience period of the Engineering Internship Program, integrated and alternated with the classroom terms.",
+    "name": "Internship/Co-op",
+    "restrictions": Array [
+      "Can enroll if Class is Senior",
+    ],
+    "subjectCode": "ECE",
+  },
+]
+`;
+
+exports[`fetchCourses fetches all the undergrad ECE courses 1`] = `
+Array [
+  Object {
+    "corequisites": Array [
+      "ECE",
+      "210L",
+      "PREVIOUS",
+    ],
+    "courseNumber": "210",
+    "creditHours": 4,
+    "description": "Fundamental laws, electrical elements and sources, energy and power.  DC analysis of linear circuits. Node and mesh analysis. Operational amplifiers and op-amp circuits, Thevenin and Norton theorems. Sinusoidal steady-state response and the phasor concept.  Introductory concepts on complex frequency, average power in AC circuits.  Transient responses.  Three lecture hours per week and one three-hour laboratory per week.",
+    "name": "Circuits",
+    "prerequisites": Object {
+      "or": Array [
+        Object {
+          "and": Array [
+            Array [
+              "MATH",
+              "116",
+              "PREVIOUS",
+            ],
+            Array [
+              "PHYS",
+              "151",
+              "CONCURRENT",
+            ],
+          ],
+        },
+        "MPLS with a score of 215",
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "270",
+    "creditHours": 4,
+    "description": "Covers structured and object-oriented computer programming concepts in the context of the C/C++ programming language and engineering applications.  Four lecture hours per week with programming assignments.",
+    "name": "Computer Methods in ECE I",
+    "prerequisites": Array [
+      "ENGR",
+      "100",
+      "PREVIOUS",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "corequisites": Array [
+      "ECE",
+      "273L",
+      "PREVIOUS",
+    ],
+    "courseNumber": "273",
+    "creditHours": 4,
+    "description": "Introduction to digital logic.  Topics include numbers and coding systems; Boolean algebra with applications to logic systems; Karnaugh and Quine-McCluskey minimization; combinatorial logic design; flip-flops; sequential network design; and design of digital logic circuits. Three lecture hours per week and one three-hour laboratory per week.",
+    "name": "Digital Systems",
+    "prerequisites": Array [
+      "ENGR",
+      "100",
+      "PREVIOUS",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "276",
+    "creditHours": 4,
+    "description": "An introduction to fundamental concepts of discrete mathematics for computer engineering. Topics will be chosen from set theory, partially ordered sets, lattices, Boolean algebra, semi-groups, rings, graphical representation of algebraic systems, graphs, and directed graphs. Applications in various areas of computer engineering will be discussed.",
+    "name": "Discrete Math in Computer Engr",
+    "prerequisites": Object {
+      "or": Array [
+        Array [
+          "MATH",
+          "116",
+          "PREVIOUS",
+        ],
+        "MPLS with a score of 215",
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "299",
+    "creditHours": 1,
+    "description": "This is a Cooperative Education course. Students wishing to experience a work experience before graduation may elect to participate in the Cooperative Education Program (minimum of two terms). (F,W,S).",
+    "name": "Internship/ Co-Op",
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "300",
+    "creditHours": 4,
+    "description": "Signals and systems representation and classification. Impulse response and convolution integral.  Fourier analysis of continuous time signals and systems.  Laplace transforms with applications to linear system analysis.  Introduction to computer software for solving problems involving signals and systems.  Three lecture hours and three recitation hours per week.",
+    "name": "Signals and Systems",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ECE",
+          "210",
+          "PREVIOUS",
+        ],
+        Object {
+          "or": Array [
+            Object {
+              "and": Array [
+                Array [
+                  "MATH",
+                  "217",
+                  "CONCURRENT",
+                ],
+                Array [
+                  "MATH",
+                  "216",
+                  "PREVIOUS",
+                ],
+              ],
+            },
+            Array [
+              "MATH",
+              "227",
+              "CONCURRENT",
+            ],
+          ],
+        },
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "corequisites": Array [
+      "ECE",
+      "305L",
+      "PREVIOUS",
+    ],
+    "courseNumber": "305",
+    "creditHours": 4,
+    "description": "Introduction to electrical and electronic circuits, machinery, and instrumentation.  Topics include Kirchoff's Laws, Thevenin and Norton theorems, sinusoidal and transient circuit analysis, numerical methods, solid state electronics, motors and generators, measuring instruments.  Three lecture hours and one three-hour laboratory analysis.  Not open to ECE students.",
+    "name": "Intro to Electrical Eng",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "and": Array [
+            Array [
+              "PHYS",
+              "151",
+              "PREVIOUS",
+            ],
+            Object {
+              "or": Array [
+                Array [
+                  "MATH",
+                  "205",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "MATH",
+                  "215",
+                  "PREVIOUS",
+                ],
+              ],
+            },
+          ],
+        },
+        Object {
+          "or": Array [
+            Array [
+              "MATH",
+              "217",
+              "CONCURRENT",
+            ],
+            Array [
+              "MATH",
+              "227",
+              "CONCURRENT",
+            ],
+          ],
+        },
+      ],
+    },
+    "restrictions": Array [
+      "Cannot enroll if Major is Electrical Engineering",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "3100",
+    "creditHours": 4,
+    "description": "This course provides an overview of the mathematical techniques and computer tools needed in the field of data science. The important types of problems addressed in the field of data science are rigorously formulated and analyzed, including regression, pattern recognition and classification, time series prediction, and clustering. Effective mathematical and computational solution methodologies are discussed, including exploratory data analysis, statistical methods, and machine learning. At the end of the course, the student will have an analytic and computational toolkit with which they can solve real problems and \\"tell a story\\" with data. (F)",
+    "name": "Data Science I",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "and": Array [
+            Object {
+              "or": Array [
+                Array [
+                  "CIS",
+                  "1501",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "CIS",
+                  "150",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "ECE",
+                  "270",
+                  "PREVIOUS",
+                ],
+              ],
+            },
+            Object {
+              "or": Array [
+                Array [
+                  "MATH",
+                  "227",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "MATH",
+                  "217",
+                  "PREVIOUS",
+                ],
+              ],
+            },
+          ],
+        },
+        Object {
+          "or": Array [
+            Array [
+              "STAT",
+              "325",
+              "CONCURRENT",
+            ],
+            Array [
+              "IMSE",
+              "317",
+              "CONCURRENT",
+            ],
+            "BENG 365*",
+          ],
+        },
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Level is Undergraduate",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "311",
+    "creditHours": 4,
+    "description": "Terminal characteristics and biasing of semiconductor diodes, bipolar and field-effect transistors, operational amplifiers. Rectifiers, amplifiers, and logic. Design projects. Three lecture hours and one three hour laboratory per week.",
+    "name": "Electronic Circuits I",
+    "prerequisites": Object {
+      "or": Array [
+        Object {
+          "and": Array [
+            Object {
+              "and": Array [
+                Array [
+                  "ECE",
+                  "210",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "CHEM",
+                  "144",
+                  "PREVIOUS",
+                ],
+              ],
+            },
+            Object {
+              "or": Array [
+                Array [
+                  "COMP",
+                  "270",
+                  "CONCURRENT",
+                ],
+                Array [
+                  "COMP",
+                  "106",
+                  "CONCURRENT",
+                ],
+                "CPAS with a score of 40",
+              ],
+            },
+          ],
+        },
+        Array [
+          "COMP",
+          "220",
+          "CONCURRENT",
+        ],
+        Array [
+          "COMP",
+          "280",
+          "CONCURRENT",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Major is Computer Engineering, Robotics Engineering, Electrical Engineering",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "314",
+    "creditHours": 3,
+    "description": "Review of filter descriptions, transfer functions, and frequency response characteristics; first and second order passive and active filters; biquad circuits; filter transformations.  Butterworth, Chebyshev, and Elliptic filters; OPAMP realization of active filters; sensitivity analysis of active circuits.  Three lecture hours per week.",
+    "name": "Filter Design",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ECE",
+          "311",
+          "PREVIOUS",
+        ],
+        Array [
+          "ECE",
+          "317",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "316",
+    "creditHours": Array [
+      0,
+      3,
+    ],
+    "description": "Design of selected electronic circuits such as signal conditioning amplifiers. Switching and digital logic circuits, using FET and BJT devices, A/D and D/A converters. Two-hour lecture and one three-hour lab per week. (YR).",
+    "name": "Computer Electronics",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "and": Array [
+            Array [
+              "ECE",
+              "210",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "273",
+              "PREVIOUS",
+            ],
+          ],
+        },
+        Object {
+          "or": Array [
+            Array [
+              "COMP",
+              "270",
+              "CONCURRENT",
+            ],
+            Array [
+              "COMP",
+              "106",
+              "CONCURRENT",
+            ],
+            "CPAS with a score of 40",
+            Array [
+              "COMP",
+              "220",
+              "CONCURRENT",
+            ],
+          ],
+        },
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "317",
+    "creditHours": 4,
+    "description": "Signals and systems representation and classification. Impulse response and convolution integral. Laplace transforms with applications to linear electronic systems analysis. Fourier series analysis for analyzing harmonic distortion. Frequency response and filter design. Four lecture hours per week.",
+    "name": "Electronic Signals and Systems",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "MATH",
+          "216",
+          "PREVIOUS",
+        ],
+        Object {
+          "or": Array [
+            Array [
+              "MATH",
+              "217",
+              "CONCURRENT",
+            ],
+            Array [
+              "MATH",
+              "227",
+              "CONCURRENT",
+            ],
+          ],
+        },
+        Array [
+          "ECE",
+          "311",
+          "CONCURRENT",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if Level is Undergraduate",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "3171",
+    "creditHours": 4,
+    "description": "Signals and systems representation and classification. Impulse response and convolution integral. Laplace and Z transforms with applications to linear system analysis. Fourier series Fourier Transform and Discrete Fourier Transform, Frequency response, Filter design. Four lecture hours per week.",
+    "name": "Analog & Discrete Sig & Sys",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "and": Array [
+            Array [
+              "MATH",
+              "216",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "311",
+              "CONCURRENT",
+            ],
+          ],
+        },
+        Object {
+          "or": Array [
+            Array [
+              "MATH",
+              "217",
+              "CONCURRENT",
+            ],
+            Array [
+              "MATH",
+              "227",
+              "CONCURRENT",
+            ],
+          ],
+        },
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "319",
+    "creditHours": 4,
+    "description": "Introduction, cabling, grounding, balancing and filtering, passive components,shielding, digital circuit noise and PCB layout, radiation, ESD, regulations, demos, experiments, lab projects and guest lectures. Three Lecture hours and one three-hour laboratory per week.",
+    "name": "Electromagnetic Compatibility",
+    "prerequisites": Array [
+      "ECE",
+      "311",
+      "PREVIOUS",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "321",
+    "creditHours": 3,
+    "description": "Vector analysis; static electric field; steady electric currents; static magnetic fields; time-varying fields and Maxwell's equations; plane electromagnetic waves.  Three lecture hours per week.",
+    "name": "Electromagnetic Fields/Waves",
+    "prerequisites": Array [
+      "ECE",
+      "311",
+      "CONCURRENT",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "329",
+    "creditHours": 4,
+    "description": "This course will introduce students to methods and technologies of computer music. The basics of digital audio will be covered, including sampling, quantization, and compression standards. Various analysis tools will be covered, including the Fourier transform and windowing techniques. Mathematical models of physical instruments will be introduced. Various sound synthesis strategies will be introduced: wave tables, additive synthesis, subtractive synthesis, frequency modulation, and granular synthesis.",
+    "name": "Intro to Computer Music",
+    "prerequisites": Array [
+      "MATH",
+      "105",
+      "PREVIOUS",
+    ],
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "347",
+    "creditHours": 4,
+    "description": "Introduction to rigid, multi-body dynamics tailored to the analysis and design of linkage-based robotic systems.  Three dimensional kinematics, Eulerian angles, general motion of rigid bodies subjected to various forcing functions.  Matrix methods, numerial and software-based problem solving.  Project required.  Four lecture hours per week.",
+    "name": "Applied Dynamics",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "MATH",
+          "216",
+          "PREVIOUS",
+        ],
+        Array [
+          "MATH",
+          "217",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Level is Undergraduate",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "351",
+    "creditHours": 4,
+    "description": "The course covers measurements in biological materials using a variety of sensor technologies along with electronic instrumentation design and use. Safety and FDA requirements are also presented.",
+    "name": "Bio-Sensors & Instrumentation",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ECE",
+          "305",
+          "PREVIOUS",
+        ],
+        Object {
+          "or": Array [
+            Array [
+              "ENGR",
+              "216",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "270",
+              "PREVIOUS",
+            ],
+          ],
+        },
+        Array [
+          "MATH",
+          "216",
+          "PREVIOUS",
+        ],
+        Array [
+          "BIOL",
+          "103",
+          "PREVIOUS",
+        ],
+        Array [
+          "BIOL",
+          "140",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if College is Arts, Sciences, and Letters or Engineering and Computer Science",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "3641",
+    "creditHours": 4,
+    "description": "Design, construction, and testing of field robotic systems.  Focus on electronics, instrumentation, and machine elements.  Particular attention to modeling dynamic systems, measuring and controlling their behavior, and making decisions about future courses of action.  Examples include industrial robots, service robots, mobile robots, and medical robots. Three lecture hours and one three hour laboratory per week.",
+    "name": "Robotics I",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "or": Array [
+            Array [
+              "ECE",
+              "3731",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "372",
+              "PREVIOUS",
+            ],
+          ],
+        },
+        Array [
+          "ECE",
+          "347",
+          "PREVIOUS",
+        ],
+        Array [
+          "IMSE",
+          "317",
+          "CONCURRENT",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Level is Undergraduate",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "370",
+    "creditHours": 4,
+    "description": "Advanced concepts and techniques of modular object oriented and structured programming; representative real-world computer engineering applications including data structures, search and sorting. A term project is required. Four lecture hours per week. (F,W,S).",
+    "name": "Adv Soft Techn in Comp Engr",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ECE",
+          "270",
+          "PREVIOUS",
+        ],
+        Array [
+          "ECE",
+          "273",
+          "CONCURRENT",
+        ],
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "371",
+    "creditHours": 3,
+    "description": "Fundamentals of computer data structures.  Introduction to abstract data types.  Characteristics and implementation of structured data types including arrays, stacks, queues, linked lists, generalized lists, trees, and graphs. Algorithms and applications of data structures in sorting and searching.  Considerations of algorithm efficiency and complexity.  Engineering applications and design.  Three lecture hours per week.",
+    "name": "Information Structures",
+    "prerequisites": Object {
+      "or": Array [
+        Array [
+          "ECE",
+          "370",
+          "PREVIOUS",
+        ],
+        "ECE 274",
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "372",
+    "creditHours": Array [
+      0,
+      4,
+    ],
+    "description": "Introduction to operation, interfacing, and applications of microcomputers and microprocessor-based systems. Assembly language programming, interrupts and interfacing. Three lecture hours and one three-hour laboratory per week.",
+    "name": "Intro to Microprocessors",
+    "prerequisites": Object {
+      "or": Array [
+        Object {
+          "and": Array [
+            Array [
+              "ECE",
+              "270",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "273",
+              "PREVIOUS",
+            ],
+          ],
+        },
+        Object {
+          "and": Array [
+            Array [
+              "CIS",
+              "310",
+              "PREVIOUS",
+            ],
+            Object {
+              "or": Array [
+                Array [
+                  "COMP",
+                  "270",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "COMP",
+                  "106",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "COMP",
+                  "220",
+                  "PREVIOUS",
+                ],
+                "CPAS with a score of 40",
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "corequisites": Array [
+      "ECE",
+      "3731L",
+      "PREVIOUS",
+    ],
+    "courseNumber": "3731",
+    "creditHours": 4,
+    "description": "This course is an introduction to the operation, interfacing, and applications of micro processor based systems, and real-time embedded system design.  Topics include: microprocessor architecture, embedded C programming, real-time programming.  Final project required.  Three lecture hours and one three hour laboratory per week.",
+    "name": "Microproc and Embedded Sys",
+    "prerequisites": Object {
+      "or": Array [
+        Object {
+          "and": Array [
+            Array [
+              "ECE",
+              "270",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "273",
+              "PREVIOUS",
+            ],
+          ],
+        },
+        Array [
+          "CIS",
+          "310",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Level is Undergraduate",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "375",
+    "creditHours": 4,
+    "description": "Introduction to architecture of mini- and mainframe computers.  CPU, memory, and I/O characteristics. Introduction to parallel architectures and hardware design languages.  Case studies of popular computer systems and design considerations.  A design project is required. Three lecture hours and one laboratory hour per week.",
+    "name": "Intro to Comp Architecture",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "and": Array [
+            Object {
+              "and": Array [
+                Array [
+                  "ECE",
+                  "270",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "ECE",
+                  "273",
+                  "PREVIOUS",
+                ],
+              ],
+            },
+            Object {
+              "or": Array [
+                Array [
+                  "ECE",
+                  "276",
+                  "CONCURRENT",
+                ],
+                Array [
+                  "MATH",
+                  "276",
+                  "CONCURRENT",
+                ],
+              ],
+            },
+          ],
+        },
+        Object {
+          "or": Array [
+            Array [
+              "ECE",
+              "372",
+              "CONCURRENT",
+            ],
+            Array [
+              "ECE",
+              "3731",
+              "CONCURRENT",
+            ],
+          ],
+        },
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "3801",
+    "creditHours": 3,
+    "description": "Spectral characterization of periodic and aperiodic signals. Continuous-time filters.Frequency response. Sampling and Fourier Analysis. Discrete time signals. Input-output relationships in discrete-time systems, including impulse response, transfer function, and frequency response. Design and analysis of digital filters - finite impulse response (FIR) and infinite impulse response (IIR). Matlab projects will be assigned. Three lecture hours per week.",
+    "name": "Intro to Signals and Systems",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ECE",
+          "210",
+          "PREVIOUS",
+        ],
+        Array [
+          "MATH",
+          "216",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Cannot enroll if Class is Freshman",
+      "Can enroll if Level is Undergraduate",
+      "Cannot enroll if Major is Electrical Engineering",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "385",
+    "creditHours": 3,
+    "description": "Introduction to properties of conductors, semi-conductors, and insulators. Definitions of stress and strain. Description of the mechanical behavior of solids. Characterization of selected materials; circuit models for resistors, capacitors, inductors, junction and field-effect transistors, etc.  Three lecture hours per week.",
+    "name": "Elec Materials and Devices",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ECE",
+          "311",
+          "CONCURRENT",
+        ],
+        Object {
+          "or": Array [
+            Array [
+              "CHEM",
+              "144",
+              "PREVIOUS",
+            ],
+            Array [
+              "CHEM",
+              "134",
+              "PREVIOUS",
+            ],
+          ],
+        },
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "3851",
+    "creditHours": 4,
+    "description": "Introduction to properties of conductors, semi-conductors, and insulators. Definitions of stress and strain. Description of the mechanical behavior of solids. Characterization of selected materials; circuit models for resistors, capacitors, inductors, junction and field-effect transistors, etc. Three lecture hours per week and on three-hour laboratory session.",
+    "name": "Intro Elect Materials & Device",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ECE",
+          "311",
+          "CONCURRENT",
+        ],
+        Object {
+          "or": Array [
+            Array [
+              "CHEM",
+              "134",
+              "PREVIOUS",
+            ],
+            Array [
+              "CHEM",
+              "144",
+              "PREVIOUS",
+            ],
+          ],
+        },
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if Level is Undergraduate",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "387",
+    "creditHours": 4,
+    "description": "This course takes a detailed, hands-on approach to study the procedures and techniques used to identify, extract, validate, document and preserve electronic evidence. Students completing this course will be familiar with the core computer science theory and practical skills necessary to perform basic computer forensic investigations, understand the role of technology in investigating computer-based crime, and be prepared to deal with investigative bodies at a basic level.",
+    "name": "Digital Forensics I",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "or": Array [
+            Array [
+              "ECE",
+              "270",
+              "PREVIOUS",
+            ],
+            Array [
+              "CIS",
+              "200",
+              "PREVIOUS",
+            ],
+          ],
+        },
+        Object {
+          "or": Array [
+            Array [
+              "ECE",
+              "370",
+              "CONCURRENT",
+            ],
+            Array [
+              "ECE",
+              "372",
+              "CONCURRENT",
+            ],
+            Array [
+              "CIS",
+              "310",
+              "CONCURRENT",
+            ],
+          ],
+        },
+      ],
+    },
+    "restrictions": Array [
+      "Cannot enroll if Class is Freshman",
+      "Cannot enroll if Level is Graduate or Rackham",
+      "Cannot enroll if College is Business",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "390",
+    "creditHours": Array [
+      1,
+      3,
+    ],
+    "description": "Special topics in ECE according to student's interest and availability of instructors and equipment.",
+    "name": "Selected Topics in ECE",
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "399",
+    "creditHours": 1,
+    "description": "A four-month professional work experience period of the Engineering Internship Program, integrated and alternated with the classroom terms.",
+    "name": "Internship/Co-op",
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "411",
+    "creditHours": 4,
+    "description": "Review of solid state devices and their physical properties, introduction to the state of art devices, design of operational amplifiers, oscillators, switching and digital circuits.  A project will be required.  Three lecture hours per week and one three-hour laboratory per week.",
+    "name": "Electronics II",
+    "prerequisites": Object {
+      "and": Array [
+        "ECE 301",
+        Array [
+          "ECE",
+          "311",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "413",
+    "creditHours": 3,
+    "description": "Introduction to digital systems and VLSI, CMOS fabrication, layout and CMOS integrated circuits, basic principles of MOSFET theory, CMOS logic circuits, subsystem design, Architecture design and HDL, CLSI chip design, advanced topics, laboratory consist of a series of design projects. Three lecture hours per week.",
+    "name": "Intro to VLSI Design",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ECE",
+          "273",
+          "PREVIOUS",
+        ],
+        Array [
+          "ECE",
+          "311",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "414",
+    "creditHours": 4,
+    "description": "Review of solid state device characteristics and circuit analysis. Design of selected electronic circuits such as operational amplifiers, power amplifiers, power supplies, oscillators, switching and digital circuits to further illustrate analysis and design of representative electronic circuits using classical and computer-aided design techniques. Four lecture/laboratory per week.",
+    "name": "Electronic Systems Design",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ECE",
+          "311",
+          "PREVIOUS",
+        ],
+        Object {
+          "or": Array [
+            Array [
+              "ECE",
+              "317",
+              "CONCURRENT",
+            ],
+            Array [
+              "ECE",
+              "3171",
+              "CONCURRENT",
+            ],
+          ],
+        },
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "415",
+    "creditHours": 4,
+    "description": "Introduction to power electronic circuit analysis and design.  Power electronic circuits, power converters, power semiconductors.  Time domain analysis emphasized.  A design project is required.  Four lecture/laboratory hours per week.",
+    "name": "Power Electronics",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "or": Array [
+            Array [
+              "ECE",
+              "317",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "3171",
+              "PREVIOUS",
+            ],
+          ],
+        },
+        Array [
+          "ECE",
+          "385",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "420",
+    "creditHours": 3,
+    "description": "Introduction to EMC measurements, RF measurement fundamentals, EM waves, radiation mechanisms, measurement and measurement systems, screened rooms, open field test sites, practical measurements, conducted emission measurements, radiated emission measurements, radiated immunity, conducted immunity and electrostatic discharge. Projects will be assigned.  (YR).",
+    "name": "EMC Measurement and Testing",
+    "prerequisites": Array [
+      "ECE",
+      "319",
+      "PREVIOUS",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "426",
+    "creditHours": 4,
+    "description": "The objective of this course is to introduce current state-of-the-art in digital multimedia editing, its impacts on multimedia tampering, and multimedia forensics techniques to uncover inconsistencies due to tampering. This course will cover existing digital multimedia tampering techniques such as copy-move, cut-and-paste, etc. and digital multimedia tamper detection techniques. The course will also cover covert communication methods such as steganography and covert channel detection method steganlysis. This course will cover the limitations of existing state-of-the-art in multimedia forensics. Hands-on experience will be provided in various aspects of multimedia tampering and analysis through the numerous assignments and projects. Three lecture hours per week and one three-hour laboratory per week. (F)",
+    "name": "Multimedia Forensics",
+    "prerequisites": Object {
+      "or": Array [
+        Array [
+          "ECE",
+          "387",
+          "PREVIOUS",
+        ],
+        Array [
+          "CIS",
+          "387",
+          "PREVIOUS",
+        ],
+        Array [
+          "CIS",
+          "447",
+          "PREVIOUS",
+        ],
+        Array [
+          "ECE",
+          "317",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if Level is Undergraduate",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "427",
+    "creditHours": 4,
+    "description": "The objective of this course is to introduce current techniques information security in general and multimedia security in particular. This course will cover existing information hiding techniques such as digital watermarking, steganography, and fingerprinting. The course will also cover conventional digital content protection methods such as cryptography. This course will cover the pros and cons of conventional and non-conventional digital content protection methods and associated design issues to give the student hands-on experience in various aspects of information security and analysis through the various assignments and projects. (W)",
+    "name": "Digi Content Protec",
+    "prerequisites": Object {
+      "or": Array [
+        Array [
+          "ECE",
+          "387",
+          "PREVIOUS",
+        ],
+        Array [
+          "CIS",
+          "387",
+          "PREVIOUS",
+        ],
+        Array [
+          "CIS",
+          "447",
+          "PREVIOUS",
+        ],
+        Array [
+          "ECE",
+          "317",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if Level is Undergraduate",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "428",
+    "creditHours": 3,
+    "description": "Cloud computing represents the emerging Internet-based services/platforms with elastic and scalable computation powers operating at costs associated with service. Topics may include advanced web technologies (AJAX and Mashup), distributed computing models and technologies (Hadoop and MapReduce), Infrastructure-as-a-Service (IaaS), Software as a Service (SaaS), Platform-as-a-Service (PaaS), virtualization, parallelization, security/privacy, and other issues in cloud computing. This course will also explore the current challenges facing cloud computing. Course work will include homework assignments, presentations and a term project. Students cannot take both ECE 428 and ECE 528 for degree credit. Three lecture hours per week.",
+    "name": "Cloud Computing",
+    "prerequisites": Array [
+      "ECE",
+      "270",
+      "PREVIOUS",
+    ],
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if Major is Computer & Information Science, Computer Engineering, Electrical Engineering, Industrial & Systems Engin, Software Engineering, Mechanical Engineering",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "431",
+    "creditHours": 4,
+    "description": "The course is conducted as a guided project design course with the class divided into teams and assigned a specific design project.  Periodic progress reports are submitted during the term.  A final written report and an oral presentation including demonstration are required at the end of the term.  Cost analysis, evaluation of design alternatives and application of engineering principles are emphasized.  Two scheduled contact hours and six hours open laboratories per week.",
+    "name": "Electrical Eng Design",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ECE",
+          "311",
+          "PREVIOUS",
+        ],
+        "ECE 373",
+        Array [
+          "ECE",
+          "493",
+          "CONCURRENT",
+        ],
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "432",
+    "creditHours": 6,
+    "description": "The course is conducted as a guided project design course over a two-semester period with the class divided into teams and assigned a specific design project.  Periodic progress reports are submitted during the term.  A final written report and an oral presentation including demonstration are required at the end of the term.  Cost analysis, evaluation of design alternatives and application of engineering principles are emphasized.  Two scheduled contact hours and six hours open laboratories per week.",
+    "name": "Electrical Eng Design",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ECE",
+          "311",
+          "PREVIOUS",
+        ],
+        Array [
+          "ECE",
+          "372",
+          "PREVIOUS",
+        ],
+        Array [
+          "ECE",
+          "493",
+          "CONCURRENT",
+        ],
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "433",
+    "creditHours": 4,
+    "description": "This course will introduce students to basic terminology and methods of multimedia. Basic concepts of digital audio will be reviewed, including frequency, sampling, and popular compression schemes. Concepts of digital images will be introduced, such as resolution, color theory, and compression formats. Basic concepts of digital video and animation will be introduced. Relevant web technologies will be reviewed. Four lecture hours per week.",
+    "name": "Intr to Multimedia Technolgies",
+    "prerequisites": Object {
+      "or": Array [
+        Array [
+          "ECE",
+          "311",
+          "PREVIOUS",
+        ],
+        Array [
+          "ECE",
+          "370",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if Level is Undergraduate",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "434",
+    "creditHours": 4,
+    "description": "Introduce fundamental theories and basic techniques in machine learning with an emphasis on engineering applications. Topics include learning concepts, search algorithms, neural networks, fuzzy learning, paradigms for problem solving using machine learning. (F, W).",
+    "name": "Machine Learning in Engin",
+    "prerequisites": Array [
+      "ECE",
+      "370",
+      "PREVIOUS",
+    ],
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if Level is Undergraduate",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "435",
+    "creditHours": 4,
+    "description": "This class will introduce students to the technology used in mobile/smart devices and mobile communication networks. Various hardware and software aspects will be introduced, with particular emphasis on the constraints intrinsic to such systems. Students will get an overview of various mobile operating systems and how to develop software for mobile devices. Four lecture hours per week.",
+    "name": "Intro to Mobil/Smrt Dev & Tech",
+    "prerequisites": Array [
+      "ECE",
+      "3731",
+      "PREVIOUS",
+    ],
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if Major is Electrical Engineering, Computer Engineering, Software Engineering",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "436",
+    "creditHours": 4,
+    "description": "This is an introductory course on electric machines and drive systems and their application in EV, HEV, PHEV and FCV powertrains. The objectives are to familiarize the students with the basic concepts of electromechanical energy conversion and electric drive systems. Students are expected to be able to analyze and design electric drive systems for automotive powertrain applications. The topics covered in this course include DC machines, induction machines, permanent magnet synchronous machines, and switched reluctance motors and drives. Case studies in automotive applications such as electric and hybrid drivetrains will be discussed. Four lecture hours per week.",
+    "name": "Elec Machines & Hybrid Drives",
+    "prerequisites": Array [
+      "ECE",
+      "311",
+      "PREVIOUS",
+    ],
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if Major is Software Engineering, Computer Engineering, Electrical Engineering",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "4361",
+    "creditHours": 4,
+    "description": "This is an introductory course on electric machines and drive systems and their application in HEV/PHEV powertrain and other industrial and residential systems. The objectives are to familiarize the students with the basic concepts of electromechanical energy conversion and electric drive systems. Students are expected to be able to analyze and design electric drive systems for automotive, industrial, and residential applications. The topics covered in this course include DC machines, induction machines, permanent magnet synchronous machines, and switched reluctant motors and drives. Case studies in automotive applications such as electric and hybrid drivetrains, industrial and residential electric variable speed drive systems, will be discussed. Students cannot take both ECE 436 and ECE 4361 for credit. Four lecture hours per week.",
+    "name": "Electric Machines and Drives",
+    "prerequisites": Array [
+      "ECE",
+      "311",
+      "PREVIOUS",
+    ],
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if Major is Computer Engineering, Electrical Engineering, Software Engineering, Industrial & Systems Engin, Computer & Information Science, Mechanical Engineering",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "438",
+    "creditHours": 4,
+    "description": "Advanced concepts and techniques of web technology, focusing on interactive applications; real-world web engineering applications including data persistence, web security, hardware/software issues and asynchronous client/server communication. A term project is required. Four lectures per week.",
+    "name": "Web Engr: Prin & Tech",
+    "prerequisites": Object {
+      "or": Array [
+        Array [
+          "ECE",
+          "311",
+          "PREVIOUS",
+        ],
+        Array [
+          "ECE",
+          "370",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if Major is Electrical Engineering, Computer Engineering, Software Engineering",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "443",
+    "creditHours": 3,
+    "description": "This course will introduce students to basic methods of electric power systems. Topics include AC circuits, phasors, complex power and complex impedance, transformers, per unit system, transmissions lines, power flow, economic dispatch, real and reactive power control, symmetric and unsymmetric faults, transient stability, relaying and protection. Three lecture hours per week.",
+    "name": "Intr to Electric Power Systems",
+    "prerequisites": Object {
+      "or": Array [
+        Array [
+          "ECE",
+          "317",
+          "PREVIOUS",
+        ],
+        Array [
+          "ECE",
+          "3171",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "4431",
+    "creditHours": 4,
+    "description": "This is an introductory course on power systems and load analysis with focus on automotive applications. The objectives are to familiarize the students with the basic principles and concepts of vehicular power systems and loads. Students are expected to be able to analyze and design basic vehicular power systems. The topics covered in this course include an overview of power systems, vehicular power system architecture, DC and AC power grid in vehicular systems, power system stability, reliability, reactive power control, load flow analysis, short circuit analysis, and vehicular power system protection. Four lecture hours per week.",
+    "name": "Vehicular Pwr Sys & Loads",
+    "prerequisites": Object {
+      "or": Array [
+        Array [
+          "ECE",
+          "317",
+          "PREVIOUS",
+        ],
+        Array [
+          "ECE",
+          "3171",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "4432",
+    "creditHours": 4,
+    "description": "This course is an introduction to traditional power grids as well as renewable electric power systems.  This course covers long-distance transmission of electric power with emphasis on admittance and impedance modeling of components and systems, complex power-flow studies, symmetrical and unsymmetrical fault calculations, economic operation of large-scale generation and transmission systems, an overview of emerging renewable energy technologies (e.g. wind and solar) and the impact of grid integration of renewable energy on power grids.  Students cannot take both ECE 4431 and ECE 4432 for credit.  Four lecture hours per week.",
+    "name": "Renewable Elec Pwr Sys",
+    "prerequisites": Array [
+      "ECE",
+      "3171",
+      "PREVIOUS",
+    ],
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if Major is Computer & Information Science, Industrial & Systems Engin, Software Engineering, Computer Engineering, Electrical Engineering, Mechanical Engineering",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "446",
+    "creditHours": 4,
+    "description": "Introduces fundamental concepts and specifications of electromechanical energy conversion: AC and DC machines drive, electric and magnetic storage and transfer, transformer, and performance analysis of AC and DC machines. The topics include principles of energy conversion, permanent magnet synchronous machines, induction machines, and DC machines. The lab projects for the course will focus on modeling, evaluation, and practice of AC and DC machine drives based on computer simulation and DSP based experiments; transient and dynamic analysis; linearization and small signal analysis of machines. Four lecture/laboratory hours per week.",
+    "name": "Electromechanical Energy Conv",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ECE",
+          "311",
+          "PREVIOUS",
+        ],
+        Object {
+          "or": Array [
+            Array [
+              "ECE",
+              "317",
+              "CONCURRENT",
+            ],
+            Array [
+              "ECE",
+              "3171",
+              "CONCURRENT",
+            ],
+          ],
+        },
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "450",
+    "creditHours": 4,
+    "description": "Topics include introduction to communication systems, base band communications, sampling theorem, amplitude and frequency modulation system design, statistical analysis of error and performance, digital modulation of analogy signals, digital communication and digital modulation schemes, random processes and applications in digital communications, and noise analysis, optimal receiver. Four lecture hours per week.",
+    "name": "Analog and Digital Comm Sys",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "or": Array [
+            Array [
+              "ECE",
+              "317",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "3171",
+              "PREVIOUS",
+            ],
+          ],
+        },
+        Array [
+          "IMSE",
+          "317",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "451",
+    "creditHours": 3,
+    "description": "Introduction to signal detection, parameter estimation and information extraction theory and its application to communication systems.  Subject areas covered within the context of a digital environment are decision theory, detection and estimation of known and random signals in noise,  adaptive recursive digital filtering, optimal linear filtering and pattern recognition.  Three lecture hours.",
+    "name": "Signal Detection",
+    "prerequisites": Array [
+      "ECE",
+      "450",
+      "PREVIOUS",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "452",
+    "creditHours": 3,
+    "description": "Introduction to probability, random processes, correlation functions, and spectral density.  Response of linear systems to random inputs.  Applications in the field of communications.",
+    "name": "Probabilistic Meth/Signal Alys",
+    "prerequisites": Array [
+      "ECE",
+      "300",
+      "PREVIOUS",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "454",
+    "creditHours": 3,
+    "description": "This course provides an introduction to the fundamentals of modern wireless communication. The focus of this course will be on the (i) basic signal propagation issues and channel impairments, (ii) modulation schemes and bandwidth/power trade-offs, and (iii) overcoming channel impairment using equalizers, diversity and channel coding. Additionally case studies will examine current wireless LANs and cellular system. Three Hours of lecture per week.",
+    "name": "Intr to Modern Wireless Comm",
+    "prerequisites": Object {
+      "or": Array [
+        Array [
+          "ECE",
+          "450",
+          "PREVIOUS",
+        ],
+        Array [
+          "ECE",
+          "471",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Cannot enroll if Class is Freshman or Sophomore",
+      "Can enroll if Level is Undergraduate",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "456",
+    "creditHours": 3,
+    "description": "Laser sources, detectors, imaging systems, optical signal processing, illumination and image acquisition, triangulation, and fiber optics.  Three one-hour lecture periods.",
+    "name": "Intro to Electro-optics",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ECE",
+          "311",
+          "PREVIOUS",
+        ],
+        Array [
+          "ECE",
+          "321",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "corequisites": Array [
+      "ECE",
+      "460L",
+      "PREVIOUS",
+    ],
+    "courseNumber": "460",
+    "creditHours": 4,
+    "description": "Modeling and response of dynamic systems. Transfer functions, poles and zeros and their significance to transient and steady state response of feedback systems. Analysis of stability of closed-loop systems. Steady state errors and transient performance of closed-loop systems. Design of feedback control systems by root locus techniques and by frequency domain methods. Laboratory projects include modeling, controller design, controller realization, system performance evaluation, and simulation studies. Three lecture hours and one three hour laboratory per week.",
+    "name": "Automatic Control Systems",
+    "prerequisites": Object {
+      "or": Array [
+        Array [
+          "ECE",
+          "317",
+          "PREVIOUS",
+        ],
+        Array [
+          "ECE",
+          "3171",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "464",
+    "creditHours": 4,
+    "description": "An overview of robotics systems and current technology.  Spatial descriptions and transforms. Lagrange and Newton-Euler equations of motion. Path planning and trajectory calculations.  Direct and inverse kinematics and dynamics of open articulated chains.  Feedback control problems in manipulators.",
+    "name": "Robotics",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "or": Array [
+            Array [
+              "ECE",
+              "300",
+              "PREVIOUS",
+            ],
+            "ECE 365",
+          ],
+        },
+        Array [
+          "ME",
+          "265",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "4641",
+    "creditHours": 4,
+    "description": "This is the second of a two-course sequence introducing foundational theory and applications of robotics engineering.  The topics of this course include embedded computing, locomotion, localization, dead reckoning, inertial sensors and perception, navigation, multi-robotics systems, and human-robot interaction, and complex response processes.  Three lecture hours and one three hour laboratory per week.",
+    "name": "Robotics II",
+    "prerequisites": Array [
+      "ECE",
+      "3641",
+      "PREVIOUS",
+    ],
+    "restrictions": Array [
+      "Can enroll if Level is Undergraduate",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "465",
+    "creditHours": 4,
+    "description": "Discrete model of a continuous-time system.  Differential equations and Z-transforms.  Similarities and differences between discrete-time and continuous-time models. Translation of analog designs to digital designs. State-space methods including state feedback and observers. Hardware limitations and implementation issues.  Four lecture/laboratory hours per week.",
+    "name": "Digital Control Desgn and Imp",
+    "prerequisites": Array [
+      "ECE",
+      "460",
+      "PREVIOUS",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "467",
+    "creditHours": 4,
+    "description": "This course is a continuation of Digital Forensics I and will focus on Internet Forensics. Students will examine in-depth concepts in Internet evidence collection and preservation, as well as applications of contemporary commercial forensic investigative software.",
+    "name": "Digital Forensics II",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "or": Array [
+            Array [
+              "ECE",
+              "387",
+              "PREVIOUS",
+            ],
+            Array [
+              "CIS",
+              "387",
+              "PREVIOUS",
+            ],
+          ],
+        },
+        Object {
+          "or": Array [
+            Array [
+              "ECE",
+              "471",
+              "CONCURRENT",
+            ],
+            Array [
+              "CIS",
+              "427",
+              "CONCURRENT",
+            ],
+          ],
+        },
+      ],
+    },
+    "restrictions": Array [
+      "Cannot enroll if Class is Freshman",
+      "Cannot enroll if Level is Rackham or Graduate",
+      "Cannot enroll if College is Business",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "470",
+    "creditHours": 4,
+    "description": "Hardware and software techniques used in interfacing between computers and other computers or devices.  Analog and digital techniques.  Parallel and serial communications. Popular communication protocols.  Error detection and correction. Lab project involves interfacing and communicating with a microprocessor.",
+    "name": "Computer Int and Data Comm",
+    "prerequisites": Array [
+      "ECE",
+      "372",
+      "PREVIOUS",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "471",
+    "creditHours": 4,
+    "description": "Hardware and software techniques used in interfacing between computers and other computers or devices. Data transmission techniques and protocols. Introduction to popular local area network protocols. Forward Error Control Techniques and Data Compression. Introduction to wireless communications with focus on major challenges and obstacles and the cellular phone infrastructure. Term projects involve developing a data link layer protocol for interfacing and communication with microprocessors. Four lecture hours per week.",
+    "name": "Comp Networks/Data Comm",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "IMSE",
+          "317",
+          "PREVIOUS",
+        ],
+        Object {
+          "or": Array [
+            Array [
+              "ECE",
+              "372",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "3731",
+              "PREVIOUS",
+            ],
+          ],
+        },
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "473",
+    "creditHours": 4,
+    "description": "This course studies the issues dealing with real-time embedded system design. Topics include: microprocessor architecture, assembly language, real-time programming, space and time limitations, relations between ANSIC Compiler output and assembly language, compiler linkers and using a system development package for C programming. (F,W,S).",
+    "name": "Embedded System Design",
+    "prerequisites": Array [
+      "ECE",
+      "372",
+      "PREVIOUS",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "474",
+    "creditHours": 3,
+    "description": "Principles of language compilation.  Introduction to formal languages.  Lexical analysis, top-down and bottom-up parsing, code generation and optimization.  Error handling and symbol table management.  Run-time storage management. Programming language design.  Introduction to compiler-writing tools.  A software design project is required.  Three lecture hours per week.",
+    "name": "Compiler Design",
+    "prerequisites": Array [
+      "ECE",
+      "370",
+      "PREVIOUS",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "475",
+    "creditHours": 4,
+    "description": "Design methodology, performance analysis using probability and statistic methods, hardwired and microprogramming in CPU design, hardware design languages and memory design. Advanced concepts in computer architecture.  A design project is required.  Three lecture hours per week and one three-hour laboratory per week.",
+    "name": "Comp Hardware Org/Design",
+    "prerequisites": Array [
+      "ECE",
+      "375",
+      "PREVIOUS",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "476",
+    "creditHours": 3,
+    "description": "Advances in computer architecture, parallel structures, performance evaluation, memory bandwidth considerations, processing bandwidth, communication and synchronization. A design project is required.  Three lecture hours per week.",
+    "name": "Intro to Parallel Processing",
+    "prerequisites": Array [
+      "ECE",
+      "375",
+      "PREVIOUS",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "478",
+    "creditHours": 4,
+    "description": "Introduction to computer operating systems.  Process management, threads, CPU scheduling, memory management, process synchronization, file systems and I/O devices.  Selected advanced topics, e.g., distributed systems, deadlock, I/O, job scheduling, and performance analysis using queueing models, will be introduced.  Case studies of modern operating systems.  A design project is required. Four lecture hours per week.",
+    "name": "Operating Systems",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ECE",
+          "370",
+          "PREVIOUS",
+        ],
+        Array [
+          "IMSE",
+          "317",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "479",
+    "creditHours": 3,
+    "description": "Basic concepts and methodology of artificial intelligence from a computer engineering perspective. Emphasis is placed on the knowledge representations, reasoning and algorithms for the design and implementation of intelligent systems. Introduction to an AI language and representative intelligence systems. A design project is required. Three lecture hours per week.",
+    "name": "Artificial Intelligence",
+    "prerequisites": Array [
+      "ECE",
+      "370",
+      "PREVIOUS",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "480",
+    "creditHours": 4,
+    "description": "Fundamentals of discrete-time signals and systems. Introduction to z-transform and its applications. Design of digital filters. Characteristics of analog-to-digital and digital-to-analog converters. Fourier transform of sequences, DFT and FFT algorithms. An introduction to software tools for the simulation and design of real time-digital filters.  Implementation of digital systems using digital signal processing boards. Three hours lecture and three hours laboratory experiments per week.",
+    "name": "Intro to Dig Signal Processing",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "or": Array [
+            Array [
+              "ECE",
+              "317",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "3171",
+              "PREVIOUS",
+            ],
+          ],
+        },
+        Object {
+          "or": Array [
+            Array [
+              "MATH",
+              "217",
+              "PREVIOUS",
+            ],
+            Array [
+              "MATH",
+              "227",
+              "PREVIOUS",
+            ],
+          ],
+        },
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "488",
+    "creditHours": 4,
+    "description": "Applications to machine vision. Representative topics are: optics and lighting, sensor characteristics, image acquisition, image analysis, segmentation, connectivity, shape description, hardware for vision applications, software considerations, applications including automatic inspection and metrology. Open lab and project will be required.",
+    "name": "Introduction to Machine Vision",
+    "prerequisites": Array [
+      "ECE",
+      "270",
+      "PREVIOUS",
+    ],
+    "restrictions": Array [
+      "Can enroll if Class is Senior",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "4881",
+    "creditHours": 3,
+    "description": "This course introduces the theories and modern technologies in robot vision. Topics include sensors, image analysis, region and segmentation, object recognition, stereo vision, optical flow, color image, object tracking and applications. Students cannot receive credit for both ECE 4881 and ECE 588. Three lecture hours per week.",
+    "name": "Introduction to Robot Vision",
+    "prerequisites": Array [
+      "ECE",
+      "270",
+      "PREVIOUS",
+    ],
+    "restrictions": Array [
+      "Can enroll if Class is Junior or Senior",
+      "Can enroll if Level is Undergraduate",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "490",
+    "creditHours": Array [
+      1,
+      3,
+    ],
+    "description": "Advanced or applied topics in electrical engineering offered according to student's interest and availability of instructors and equipment.  Lecture hours, laboratory, and/or computation period to be arranged.",
+    "name": "Selected Topics in Elec Engin",
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "491",
+    "creditHours": Array [
+      1,
+      4,
+    ],
+    "description": "Student in consultation with a faculty advisor will prepare a proposal in sufficient detail describing a subject topic to be studied.  The proposal will be subject to approval by the department.  A formal written and oral evaluation of the work performed are required for successful completion. Lecture hours, laboratory, and/or computation periods to be arranged.",
+    "name": "Directed Studies",
+    "restrictions": Array [
+      "Can enroll if Class is Senior or Graduate",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "492",
+    "creditHours": Array [
+      1,
+      4,
+    ],
+    "description": "Student, in consultation with a faculty advisor will prepare a proposal in sufficient detail describing a research problem to be studied.  The proposal will be subject to approval by the department.  A formal written and oral evaluation of the research performed are required for successful completion.  Lecture hours, laboratory, and/or computation period to be arranged.",
+    "name": "Directed Research",
+    "restrictions": Array [
+      "Can enroll if Class is Senior or Graduate",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "493",
+    "creditHours": 2,
+    "description": "This course is comprised of a series of lectures on the subject of design. It will promote awareness of such factors as literature review, performance specifications, design considerations, product liability, standards and ethics, professional registration codes, patents and copyrights, packaging, documentation and report preparation. Two lecture hours.",
+    "name": "Design Factors in Eng",
+    "restrictions": Array [
+      "Can enroll if Class is Senior or Graduate",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "495",
+    "creditHours": 4,
+    "description": "Course content includes discussion and laboratory experience on a number of interfacing topics (timing, serial and parallel communication, ADC/DAC, control loop) and the preparation of a major report on a design topic approved by the course instructor. Team design projects may involve either software or hardware, or both. Two lecture hours and two three-hour laboratories per week.",
+    "name": "Micro Systems Design",
+    "prerequisites": Object {
+      "and": Array [
+        "ECE 373",
+        Object {
+          "or": Array [
+            Array [
+              "ECE",
+              "311",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "316",
+              "PREVIOUS",
+            ],
+          ],
+        },
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "4951",
+    "creditHours": 3,
+    "description": "Techniques for interfacing actuators and sensors to computers with emphasis on the use of a variety of microprocessors and a broad range of sensors. Topics include introduction to small microprocessors such as PIC16, PIC18, small systems such as oopic, basicx as well as using a PC as a controller. Control of motors and other actuators using opto-isolators and discrete electronics, use of H-bridges. Interfacing sensors that provide different encoding data, such as analog signals, digital communication using I2C protocol, handshake I/O, pulse width encoding. Interfacing to wireless communication using RF or IR. Includes laboratory experiments, individual midterm project and a final team project. Three lecture hours per week. (F,W)",
+    "name": "Sys Desgn and Microcontrollers",
+    "prerequisites": Object {
+      "and": Array [
+        Array [
+          "ECE",
+          "311",
+          "PREVIOUS",
+        ],
+        Object {
+          "or": Array [
+            Array [
+              "ECE",
+              "372",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "3731",
+              "PREVIOUS",
+            ],
+          ],
+        },
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "498",
+    "creditHours": 3,
+    "description": "This course is conducted as a guided project design course over a two-semester period, with the class divided into teams, each assigned a specific design project.  Periodic progress reports, a final written report, an oral presentation and project demonstration are required. Cost analysis, evaluation of design alternatives and application of engineering principles will be emphasized. A series of lectures on design issues will be presented in the first semester.",
+    "name": "Senior Engineering Design",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "or": Array [
+            Array [
+              "ECE",
+              "311",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "316",
+              "PREVIOUS",
+            ],
+          ],
+        },
+        "ECE 373",
+      ],
+    },
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "4981",
+    "creditHours": 2,
+    "description": "This course is conducted as a guided project design course over a two semester period, with the class divided into teams, each assigned a specific design project. Periodic progress reports, a final written report, an oral presentation and project demonstration are required. Cost analysis, societal impact, safety issues, evaluation of design alternatives and application of engineering principles will be emphasized. A series of tutorials will be presented to provide student teams with insight into important system level considerations and trade offs.",
+    "name": "Electrical Engineering Des I",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "and": Array [
+            Object {
+              "and": Array [
+                Object {
+                  "or": Array [
+                    Array [
+                      "COMP",
+                      "270",
+                      "PREVIOUS",
+                    ],
+                    Array [
+                      "COMP",
+                      "106",
+                      "PREVIOUS",
+                    ],
+                    Array [
+                      "COMP",
+                      "220",
+                      "PREVIOUS",
+                    ],
+                    Array [
+                      "COMP",
+                      "280",
+                      "PREVIOUS",
+                    ],
+                  ],
+                },
+                Object {
+                  "or": Array [
+                    Array [
+                      "ECE",
+                      "317",
+                      "PREVIOUS",
+                    ],
+                    Array [
+                      "ECE",
+                      "3171",
+                      "PREVIOUS",
+                    ],
+                  ],
+                },
+              ],
+            },
+            Object {
+              "or": Array [
+                Array [
+                  "ECE",
+                  "372",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "ECE",
+                  "3731",
+                  "PREVIOUS",
+                ],
+              ],
+            },
+          ],
+        },
+        Object {
+          "or": Array [
+            Array [
+              "ECE",
+              "414",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "415",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "450",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "460",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "480",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "4951",
+              "PREVIOUS",
+            ],
+          ],
+        },
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Senior",
+      "Can enroll if Level is Undergraduate",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "4982",
+    "creditHours": 2,
+    "description": "This course is conducted as a guided project design course over a two semester period, with the class divided into teams, each assigned a specific design project. Periodic progress reports, a final written report, an oral presentation and project demonstration are required. Cost analysis, societal impact, safety issues, evaluation of design alternatives and application of engineering principles will be emphasized. A series of tutorials will be presented to provide student teams with insight into important system level considerations and trade offs.",
+    "name": "Computer Engineering Des I",
+    "prerequisites": Object {
+      "or": Array [
+        Object {
+          "and": Array [
+            Object {
+              "or": Array [
+                Array [
+                  "COMP",
+                  "270",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "COMP",
+                  "106",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "COMP",
+                  "220",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "COMP",
+                  "280",
+                  "PREVIOUS",
+                ],
+              ],
+            },
+            Object {
+              "or": Array [
+                Array [
+                  "ECE",
+                  "372",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "ECE",
+                  "3731",
+                  "PREVIOUS",
+                ],
+              ],
+            },
+            Array [
+              "ECE",
+              "375",
+              "PREVIOUS",
+            ],
+          ],
+        },
+        Object {
+          "or": Array [
+            Array [
+              "ECE",
+              "471",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "473",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "475",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "478",
+              "PREVIOUS",
+            ],
+          ],
+        },
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Senior",
+      "Can enroll if Level is Undergraduate",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "4983",
+    "creditHours": 2,
+    "description": "Second Semester ? Electrical Engineering Design                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+This course is conducted as a guided project design course over a two semester period, with the class divided into teams, each assigned a specific design project. Periodic progress reports, a final written report, an oral presentation and project demonstration are required. Cost analysis, societal impact, safety issues, evaluation of design alternatives and application of engineering principles will be emphasized.",
+    "name": "Electrical Engin Design II",
+    "prerequisites": Array [
+      "ECE",
+      "4981",
+      "PREVIOUS",
+    ],
+    "restrictions": Array [
+      "Cannot enroll if Class is Freshman or Sophomore or Junior",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "4984",
+    "creditHours": 2,
+    "description": "Second Semester Computer Engineering Design                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+This course is conducted as a guided project design course over a two semester period, with the class divided into teams, each assigned a specific design project. Periodic progress reports, a final written report, an oral presentation and project demonstration are required. Cost analysis, societal impact, safety issues, evaluation of design alternatives and application of engineering principles will be emphasized.",
+    "name": "Computer Engin Design II",
+    "prerequisites": Array [
+      "ECE",
+      "4982",
+      "PREVIOUS",
+    ],
+    "restrictions": Array [
+      "Cannot enroll if Class is Freshman or Sophomore or Junior",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "4985",
+    "creditHours": 3,
+    "description": "This course is conducted as a guided project design course over a two-semester period, with the class divided into teams, each assigned a specific design project. Periodic progress reports, a final written report, an oral presentation and project demonstration are required. Cost analysis, societal impact, safety issues, evaluation of design alternatives, and application of engineering principles will be emphasized. A series of lectures on design issues will be presented in the first semester.",
+    "name": "Electrical Engineering Design",
+    "prerequisites": Object {
+      "and": Array [
+        Object {
+          "and": Array [
+            Object {
+              "or": Array [
+                Array [
+                  "COMP",
+                  "270",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "COMP",
+                  "106",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "COMP",
+                  "220",
+                  "PREVIOUS",
+                ],
+                "CPAS with a score of 40",
+              ],
+            },
+            Object {
+              "or": Array [
+                Array [
+                  "ECE",
+                  "317",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "ECE",
+                  "3171",
+                  "PREVIOUS",
+                ],
+              ],
+            },
+            Array [
+              "ECE",
+              "372",
+              "PREVIOUS",
+            ],
+          ],
+        },
+        Object {
+          "or": Array [
+            Array [
+              "ECE",
+              "414",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "415",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "450",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "460",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "480",
+              "PREVIOUS",
+            ],
+            Array [
+              "ECE",
+              "4951",
+              "PREVIOUS",
+            ],
+          ],
+        },
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Senior",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "4986",
+    "creditHours": 3,
+    "description": "This course is conducted as a guided project design course over a two-semester period, with the class divided into teams, each assigned a specific design project. Periodic progress reports, a final written report, an oral presentation, and application of demonstration are required. Cost analysis, societal impact, safety issues, evaluation of design alternatives and application of engineering principles will be emphasized. A series of lectures on design issues will be presented in the first semester.",
+    "name": "Computer Engineering Design",
+    "prerequisites": Object {
+      "or": Array [
+        Object {
+          "and": Array [
+            Object {
+              "and": Array [
+                Object {
+                  "or": Array [
+                    Array [
+                      "COMP",
+                      "270",
+                      "PREVIOUS",
+                    ],
+                    "CPAS with a score of 40",
+                    Array [
+                      "COMP",
+                      "106",
+                      "PREVIOUS",
+                    ],
+                    Array [
+                      "COMP",
+                      "220",
+                      "PREVIOUS",
+                    ],
+                  ],
+                },
+                Object {
+                  "or": Array [
+                    Array [
+                      "ECE",
+                      "317",
+                      "PREVIOUS",
+                    ],
+                    Array [
+                      "ECE",
+                      "3171",
+                      "PREVIOUS",
+                    ],
+                  ],
+                },
+                Array [
+                  "ECE",
+                  "372",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "ECE",
+                  "375",
+                  "PREVIOUS",
+                ],
+              ],
+            },
+            Object {
+              "or": Array [
+                Array [
+                  "ECE",
+                  "471",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "ECE",
+                  "473",
+                  "PREVIOUS",
+                ],
+                Array [
+                  "ECE",
+                  "475",
+                  "PREVIOUS",
+                ],
+              ],
+            },
+          ],
+        },
+        Array [
+          "ECE",
+          "478",
+          "PREVIOUS",
+        ],
+      ],
+    },
+    "restrictions": Array [
+      "Can enroll if Class is Senior",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "4987",
+    "creditHours": 2,
+    "description": "This course is conducted as a guided project design course over a two-course sequence, with the class divided into teams, each assigned a specific design project. Periodic progress reports, a final written report, an oral presentation and project demonstration are required. Cost analysis, societal impact, safety issues, evaluation of design alternatives and application of engineering principles will be emphasized. A series of tutorials will be presented to provide student teams with insight into important system level considerations and trade offs.",
+    "name": "Robotics Engineering Design I",
+    "restrictions": Array [
+      "Can enroll if Class is Senior",
+      "Can enroll if Level is Undergraduate",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "4988",
+    "creditHours": 2,
+    "description": "Second semester Robotics Engineering Design: This course is conducted as a guided project design course over a two-course sequence, with the class divided into teams, each assigned a specific design project. Periodic progress reports, a final written report, an oral presentation and project demonstration are required. Cost analysis, societal impact, safety issues, evaluation of design alternatives and application of engineering principles will be emphasized.",
+    "name": "Robotics Engineering Design II",
+    "prerequisites": Array [
+      "ECE",
+      "4987",
+      "PREVIOUS",
+    ],
+    "restrictions": Array [
+      "Can enroll if Class is Senior",
+      "Can enroll if Level is Undergraduate",
+      "Can enroll if College is Engineering and Computer Science",
+    ],
+    "subjectCode": "ECE",
+  },
+  Object {
+    "courseNumber": "499",
+    "creditHours": 1,
+    "description": "A four-month professional work experience period of the Engineering Internship Program, integrated and alternated with the classroom terms.",
+    "name": "Internship/Co-op",
+    "restrictions": Array [
+      "Can enroll if Class is Senior",
+    ],
+    "subjectCode": "ECE",
+  },
+]
+`;
