@@ -3,6 +3,4 @@
 console.log('hello world');
 require('ts-node/register');
 
-const { test } = require('../src/sync/catalog-umd-umich/test');
-
-test();
+require('../src/sync/catalog-umd-umich');
