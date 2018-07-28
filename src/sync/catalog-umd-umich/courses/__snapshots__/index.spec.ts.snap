@@ -4,9 +4,10 @@ exports[`fetchCourses fetches all the undergrad ECE courses 1`] = `
 Array [
   Object {
     "corequisites": Array [
-      "ECE",
-      "210L",
-      "PREVIOUS",
+      Array [
+        "ECE",
+        "210L",
+      ],
     ],
     "courseNumber": "210",
     "creditHours": 4,
@@ -47,9 +48,10 @@ Array [
   },
   Object {
     "corequisites": Array [
-      "ECE",
-      "273L",
-      "PREVIOUS",
+      Array [
+        "ECE",
+        "273L",
+      ],
     ],
     "courseNumber": "273",
     "creditHours": 4,
@@ -130,9 +132,10 @@ Array [
   },
   Object {
     "corequisites": Array [
-      "ECE",
-      "305L",
-      "PREVIOUS",
+      Array [
+        "ECE",
+        "305L",
+      ],
     ],
     "courseNumber": "305",
     "creditHours": 4,
@@ -707,9 +710,10 @@ Array [
   },
   Object {
     "corequisites": Array [
-      "ECE",
-      "3731L",
-      "PREVIOUS",
+      Array [
+        "ECE",
+        "3731L",
+      ],
     ],
     "courseNumber": "3731",
     "creditHours": 4,
@@ -1516,9 +1520,10 @@ Array [
   },
   Object {
     "corequisites": Array [
-      "ECE",
-      "460L",
-      "PREVIOUS",
+      Array [
+        "ECE",
+        "460L",
+      ],
     ],
     "courseNumber": "460",
     "creditHours": 4,

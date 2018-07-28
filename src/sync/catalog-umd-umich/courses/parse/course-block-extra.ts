@@ -1,4 +1,5 @@
 import { parsePrerequisites } from './prerequisites';
+import { parseCorequisites } from './corequisites';
 import { parseRestrictionsBlock } from './restrictions';
 
 export function parseCourseBlockExtra(courseBlockExtra: Element) {
@@ -11,7 +12,9 @@ export function parseCourseBlockExtra(courseBlockExtra: Element) {
     return { prerequisites: parsePrerequisites(courseBlockExtra) };
   }
   if (/corequisite/i.test(textContent)) {
-    return { corequisites: parsePrerequisites(courseBlockExtra) };
+    const corequisites = parseCorequisites(courseBlockExtra);
+    if (!corequisites) return undefined;
+    return { corequisites };
   }
   return undefined;
 }

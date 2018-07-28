@@ -18,9 +18,10 @@ Array [
   },
   Object {
     "corequisites": Array [
-      "CIS",
-      "150L",
-      "PREVIOUS",
+      Array [
+        "CIS",
+        "150L",
+      ],
     ],
     "courseNumber": "150",
     "creditHours": 4,
@@ -78,9 +79,10 @@ Array [
   },
   Object {
     "corequisites": Array [
-      "CIS",
-      "200L",
-      "PREVIOUS",
+      Array [
+        "CIS",
+        "200L",
+      ],
     ],
     "courseNumber": "200",
     "creditHours": 4,
@@ -2123,9 +2125,10 @@ Array [
   },
   Object {
     "corequisites": Array [
-      "ME",
-      "349L",
-      "PREVIOUS",
+      Array [
+        "ME",
+        "349L",
+      ],
     ],
     "courseNumber": "349",
     "creditHours": 3,
@@ -2567,9 +2570,10 @@ Array [
   },
   Object {
     "corequisites": Array [
-      "ME",
-      "442L",
-      "PREVIOUS",
+      Array [
+        "ME",
+        "442L",
+      ],
     ],
     "courseNumber": "442",
     "creditHours": 4,
@@ -2871,9 +2875,14 @@ A guided interdisciplinary design project course where student teams propose des
   },
   Object {
     "corequisites": Array [
-      "ECE|460|PREVIOUS__, __ME",
-      "442",
-      "PREVIOUS",
+      Array [
+        "ECE",
+        "460",
+      ],
+      Array [
+        "ME",
+        "442",
+      ],
     ],
     "courseNumber": "472",
     "creditHours": 4,

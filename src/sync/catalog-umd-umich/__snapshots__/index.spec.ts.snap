@@ -1237,9 +1237,10 @@ the African intellectual renaissance, the Civil Rights Movement in the United St
     },
     Object {
       "corequisites": Array [
-        "ACC",
-        "381",
-        "PREVIOUS",
+        Array [
+          "ACC",
+          "381",
+        ],
       ],
       "courseNumber": "380",
       "creditHours": 3,
@@ -1254,9 +1255,10 @@ the African intellectual renaissance, the Civil Rights Movement in the United St
     },
     Object {
       "corequisites": Array [
-        "ACC",
-        "380",
-        "PREVIOUS",
+        Array [
+          "ACC",
+          "380",
+        ],
       ],
       "courseNumber": "381",
       "creditHours": 1,
@@ -6049,9 +6051,10 @@ A one-semester course on the scientific search for life throughout the Universe.
     },
     Object {
       "corequisites": Array [
-        "BCHM",
-        "474L",
-        "PREVIOUS",
+        Array [
+          "BCHM",
+          "474L",
+        ],
       ],
       "courseNumber": "474",
       "creditHours": 4,
@@ -7013,9 +7016,10 @@ A one-semester course on the scientific search for life throughout the Universe.
     },
     Object {
       "corequisites": Array [
-        "BIOL",
-        "103L",
-        "PREVIOUS",
+        Array [
+          "BIOL",
+          "103L",
+        ],
       ],
       "courseNumber": "103",
       "creditHours": 4,
@@ -7025,9 +7029,10 @@ A one-semester course on the scientific search for life throughout the Universe.
     },
     Object {
       "corequisites": Array [
-        "BIOL",
-        "105L",
-        "PREVIOUS",
+        Array [
+          "BIOL",
+          "105L",
+        ],
       ],
       "courseNumber": "105",
       "creditHours": 4,
@@ -7042,9 +7047,10 @@ A one-semester course on the scientific search for life throughout the Universe.
     },
     Object {
       "corequisites": Array [
-        "BIOL",
-        "130L",
-        "PREVIOUS",
+        Array [
+          "BIOL",
+          "130L",
+        ],
       ],
       "courseNumber": "130",
       "creditHours": Array [
@@ -7057,9 +7063,10 @@ A one-semester course on the scientific search for life throughout the Universe.
     },
     Object {
       "corequisites": Array [
-        "BIOL",
-        "140L",
-        "PREVIOUS",
+        Array [
+          "BIOL",
+          "140L",
+        ],
       ],
       "courseNumber": "140",
       "creditHours": 4,
@@ -7109,9 +7116,10 @@ A one-semester course on the scientific search for life throughout the Universe.
     },
     Object {
       "corequisites": Array [
-        "BIOL",
-        "290",
-        "PREVIOUS",
+        Array [
+          "BIOL",
+          "290",
+        ],
       ],
       "courseNumber": "291",
       "creditHours": 1,
@@ -7121,9 +7129,10 @@ A one-semester course on the scientific search for life throughout the Universe.
     },
     Object {
       "corequisites": Array [
-        "BIOL",
-        "301L",
-        "PREVIOUS",
+        Array [
+          "BIOL",
+          "301L",
+        ],
       ],
       "courseNumber": "301",
       "creditHours": 4,
@@ -7138,9 +7147,10 @@ A one-semester course on the scientific search for life throughout the Universe.
     },
     Object {
       "corequisites": Array [
-        "BIOL",
-        "303L",
-        "PREVIOUS",
+        Array [
+          "BIOL",
+          "303L",
+        ],
       ],
       "courseNumber": "303",
       "creditHours": 4,
@@ -7187,9 +7197,10 @@ A one-semester course on the scientific search for life throughout the Universe.
     },
     Object {
       "corequisites": Array [
-        "BIOL",
-        "304L",
-        "PREVIOUS",
+        Array [
+          "BIOL",
+          "304L",
+        ],
       ],
       "courseNumber": "304",
       "creditHours": 4,
@@ -7233,9 +7244,10 @@ A one-semester course on the scientific search for life throughout the Universe.
     },
     Object {
       "corequisites": Array [
-        "BIOL",
-        "305L",
-        "PREVIOUS",
+        Array [
+          "BIOL",
+          "305L",
+        ],
       ],
       "courseNumber": "305",
       "creditHours": 4,
@@ -7250,9 +7262,10 @@ A one-semester course on the scientific search for life throughout the Universe.
     },
     Object {
       "corequisites": Array [
-        "BIOL",
-        "306R",
-        "PREVIOUS",
+        Array [
+          "BIOL",
+          "306R",
+        ],
       ],
       "courseNumber": "306",
       "creditHours": 3,
@@ -7276,9 +7289,10 @@ A one-semester course on the scientific search for life throughout the Universe.
     },
     Object {
       "corequisites": Array [
-        "BIOL",
-        "306",
-        "PREVIOUS",
+        Array [
+          "BIOL",
+          "306",
+        ],
       ],
       "courseNumber": "306R",
       "creditHours": 0,
@@ -7321,9 +7335,10 @@ A one-semester course on the scientific search for life throughout the Universe.
     },
     Object {
       "corequisites": Array [
-        "BIOL",
-        "310L",
-        "PREVIOUS",
+        Array [
+          "BIOL",
+          "310L",
+        ],
       ],
       "courseNumber": "310",
       "creditHours": 4,
@@ -7347,9 +7362,10 @@ A one-semester course on the scientific search for life throughout the Universe.
     },
     Object {
       "corequisites": Array [
-        "BIOL",
-        "311L",
-        "PREVIOUS",
+        Array [
+          "BIOL",
+          "311L",
+        ],
       ],
       "courseNumber": "311",
       "creditHours": 4,
@@ -7454,9 +7470,10 @@ A one-semester course on the scientific search for life throughout the Universe.
     },
     Object {
       "corequisites": Array [
-        "BIOL",
-        "333L",
-        "PREVIOUS",
+        Array [
+          "BIOL",
+          "333L",
+        ],
       ],
       "courseNumber": "333",
       "creditHours": 4,
@@ -7471,9 +7488,10 @@ A one-semester course on the scientific search for life throughout the Universe.
     },
     Object {
       "corequisites": Array [
-        "BIOL",
-        "335L",
-        "PREVIOUS",
+        Array [
+          "BIOL",
+          "335L",
+        ],
       ],
       "courseNumber": "335",
       "creditHours": 4,
@@ -7509,9 +7527,10 @@ A one-semester course on the scientific search for life throughout the Universe.
     },
     Object {
       "corequisites": Array [
-        "BIOL",
-        "350L",
-        "PREVIOUS",
+        Array [
+          "BIOL",
+          "350L",
+        ],
       ],
       "courseNumber": "350",
       "creditHours": 4,
@@ -7723,9 +7742,10 @@ A one-semester course on the scientific search for life throughout the Universe.
     },
     Object {
       "corequisites": Array [
-        "BIOL",
-        "385L",
-        "PREVIOUS",
+        Array [
+          "BIOL",
+          "385L",
+        ],
       ],
       "courseNumber": "385",
       "creditHours": 4,
@@ -7968,9 +7988,10 @@ A one-semester course on the scientific search for life throughout the Universe.
     },
     Object {
       "corequisites": Array [
-        "BIOL",
-        "414L",
-        "PREVIOUS",
+        Array [
+          "BIOL",
+          "414L",
+        ],
       ],
       "courseNumber": "414",
       "creditHours": 4,
@@ -8448,9 +8469,10 @@ A one-semester course on the scientific search for life throughout the Universe.
     },
     Object {
       "corequisites": Array [
-        "BIOL",
-        "474L",
-        "PREVIOUS",
+        Array [
+          "BIOL",
+          "474L",
+        ],
       ],
       "courseNumber": "474",
       "creditHours": 4,
@@ -8793,9 +8815,10 @@ A one-semester course on the scientific search for life throughout the Universe.
   "CCM": Array [
     Object {
       "corequisites": Array [
-        "CCM",
-        "150L",
-        "PREVIOUS",
+        Array [
+          "CCM",
+          "150L",
+        ],
       ],
       "courseNumber": "150",
       "creditHours": 4,
@@ -9190,9 +9213,10 @@ A one-semester course on the scientific search for life throughout the Universe.
     },
     Object {
       "corequisites": Array [
-        "CHEM",
-        "116L",
-        "PREVIOUS",
+        Array [
+          "CHEM",
+          "116L",
+        ],
       ],
       "courseNumber": "116",
       "creditHours": 4,
@@ -9203,9 +9227,10 @@ A one-semester course on the scientific search for life throughout the Universe.
     },
     Object {
       "corequisites": Array [
-        "CHEM",
-        "124L",
-        "PREVIOUS",
+        Array [
+          "CHEM",
+          "124L",
+        ],
       ],
       "courseNumber": "124",
       "creditHours": 4,
@@ -9230,9 +9255,10 @@ A one-semester course on the scientific search for life throughout the Universe.
     },
     Object {
       "corequisites": Array [
-        "CHEM",
-        "134L",
-        "PREVIOUS",
+        Array [
+          "CHEM",
+          "134L",
+        ],
       ],
       "courseNumber": "134",
       "creditHours": 4,
@@ -9268,9 +9294,10 @@ A one-semester course on the scientific search for life throughout the Universe.
     },
     Object {
       "corequisites": Array [
-        "CHEM",
-        "136L",
-        "PREVIOUS",
+        Array [
+          "CHEM",
+          "136L",
+        ],
       ],
       "courseNumber": "136",
       "creditHours": 4,
@@ -9299,9 +9326,10 @@ A one-semester course on the scientific search for life throughout the Universe.
     },
     Object {
       "corequisites": Array [
-        "CHEM",
-        "144L",
-        "PREVIOUS",
+        Array [
+          "CHEM",
+          "144L",
+        ],
       ],
       "courseNumber": "144",
       "creditHours": Array [
@@ -9325,9 +9353,10 @@ A one-semester course on the scientific search for life throughout the Universe.
     },
     Object {
       "corequisites": Array [
-        "CHEM",
-        "146L",
-        "PREVIOUS",
+        Array [
+          "CHEM",
+          "146L",
+        ],
       ],
       "courseNumber": "146",
       "creditHours": Array [
@@ -9359,9 +9388,10 @@ A one-semester course on the scientific search for life throughout the Universe.
     },
     Object {
       "corequisites": Array [
-        "CHEM",
-        "225R",
-        "PREVIOUS",
+        Array [
+          "CHEM",
+          "225R",
+        ],
       ],
       "courseNumber": "225",
       "creditHours": 3,
@@ -9385,9 +9415,10 @@ A one-semester course on the scientific search for life throughout the Universe.
     },
     Object {
       "corequisites": Array [
-        "CHEM",
-        "225",
-        "PREVIOUS",
+        Array [
+          "CHEM",
+          "225",
+        ],
       ],
       "courseNumber": "225R",
       "creditHours": 0,
@@ -9397,9 +9428,10 @@ A one-semester course on the scientific search for life throughout the Universe.
     },
     Object {
       "corequisites": Array [
-        "CHEM",
-        "226R",
-        "PREVIOUS",
+        Array [
+          "CHEM",
+          "226R",
+        ],
       ],
       "courseNumber": "226",
       "creditHours": 3,
@@ -9414,9 +9446,10 @@ A one-semester course on the scientific search for life throughout the Universe.
     },
     Object {
       "corequisites": Array [
-        "CHEM",
-        "226",
-        "PREVIOUS",
+        Array [
+          "CHEM",
+          "226",
+        ],
       ],
       "courseNumber": "226R",
       "creditHours": 0,
@@ -9499,9 +9532,10 @@ A one-semester course on the scientific search for life throughout the Universe.
     },
     Object {
       "corequisites": Array [
-        "CHEM",
-        "344L",
-        "PREVIOUS",
+        Array [
+          "CHEM",
+          "344L",
+        ],
       ],
       "courseNumber": "344",
       "creditHours": 4,
@@ -9855,9 +9889,10 @@ A one-semester course on the scientific search for life throughout the Universe.
     },
     Object {
       "corequisites": Array [
-        "CHEM",
-        "452",
-        "PREVIOUS",
+        Array [
+          "CHEM",
+          "452",
+        ],
       ],
       "courseNumber": "450",
       "creditHours": 1,
@@ -9887,9 +9922,10 @@ A one-semester course on the scientific search for life throughout the Universe.
     },
     Object {
       "corequisites": Array [
-        "CHEM",
-        "450",
-        "PREVIOUS",
+        Array [
+          "CHEM",
+          "450",
+        ],
       ],
       "courseNumber": "452",
       "creditHours": 1,
@@ -10199,9 +10235,10 @@ A one-semester course on the scientific search for life throughout the Universe.
     },
     Object {
       "corequisites": Array [
-        "CIS",
-        "150L",
-        "PREVIOUS",
+        Array [
+          "CIS",
+          "150L",
+        ],
       ],
       "courseNumber": "150",
       "creditHours": 4,
@@ -10259,9 +10296,10 @@ A one-semester course on the scientific search for life throughout the Universe.
     },
     Object {
       "corequisites": Array [
-        "CIS",
-        "200L",
-        "PREVIOUS",
+        Array [
+          "CIS",
+          "200L",
+        ],
       ],
       "courseNumber": "200",
       "creditHours": 4,
@@ -15347,9 +15385,10 @@ The continuance of DS301: an introduction to the use of estimation and statistic
   "ECE": Array [
     Object {
       "corequisites": Array [
-        "ECE",
-        "210L",
-        "PREVIOUS",
+        Array [
+          "ECE",
+          "210L",
+        ],
       ],
       "courseNumber": "210",
       "creditHours": 4,
@@ -15390,9 +15429,10 @@ The continuance of DS301: an introduction to the use of estimation and statistic
     },
     Object {
       "corequisites": Array [
-        "ECE",
-        "273L",
-        "PREVIOUS",
+        Array [
+          "ECE",
+          "273L",
+        ],
       ],
       "courseNumber": "273",
       "creditHours": 4,
@@ -15473,9 +15513,10 @@ The continuance of DS301: an introduction to the use of estimation and statistic
     },
     Object {
       "corequisites": Array [
-        "ECE",
-        "305L",
-        "PREVIOUS",
+        Array [
+          "ECE",
+          "305L",
+        ],
       ],
       "courseNumber": "305",
       "creditHours": 4,
@@ -16050,9 +16091,10 @@ The continuance of DS301: an introduction to the use of estimation and statistic
     },
     Object {
       "corequisites": Array [
-        "ECE",
-        "3731L",
-        "PREVIOUS",
+        Array [
+          "ECE",
+          "3731L",
+        ],
       ],
       "courseNumber": "3731",
       "creditHours": 4,
@@ -16859,9 +16901,10 @@ The continuance of DS301: an introduction to the use of estimation and statistic
     },
     Object {
       "corequisites": Array [
-        "ECE",
-        "460L",
-        "PREVIOUS",
+        Array [
+          "ECE",
+          "460L",
+        ],
       ],
       "courseNumber": "460",
       "creditHours": 4,
@@ -18708,9 +18751,10 @@ Students cannot receive credit for ECON 336 and ECON 438 or ECON 538.
   "EDC": Array [
     Object {
       "corequisites": Array [
-        "EDC",
-        "241",
-        "PREVIOUS",
+        Array [
+          "EDC",
+          "241",
+        ],
       ],
       "courseNumber": "240",
       "creditHours": 3,
@@ -18723,9 +18767,10 @@ Students cannot receive credit for ECON 336 and ECON 438 or ECON 538.
     },
     Object {
       "corequisites": Array [
-        "EDC",
-        "240",
-        "PREVIOUS",
+        Array [
+          "EDC",
+          "240",
+        ],
       ],
       "courseNumber": "241",
       "creditHours": 1,
@@ -18789,9 +18834,10 @@ Students cannot receive credit for ECON 336 and ECON 438 or ECON 538.
     },
     Object {
       "corequisites": Array [
-        "EDC",
-        "304",
-        "PREVIOUS",
+        Array [
+          "EDC",
+          "304",
+        ],
       ],
       "courseNumber": "302",
       "creditHours": 3,
@@ -18846,9 +18892,10 @@ This course surveys mental health across the lifespan and the manifestation of m
     },
     Object {
       "corequisites": Array [
-        "EDC",
-        "302",
-        "PREVIOUS",
+        Array [
+          "EDC",
+          "302",
+        ],
       ],
       "courseNumber": "304",
       "creditHours": 1,
@@ -19328,9 +19375,10 @@ This course seeks to address the selection, development, and integration of beha
   "EDD": Array [
     Object {
       "corequisites": Array [
-        "EDD",
-        "304",
-        "PREVIOUS",
+        Array [
+          "EDD",
+          "304",
+        ],
       ],
       "courseNumber": "301",
       "creditHours": Array [
@@ -19380,9 +19428,10 @@ This course seeks to address the selection, development, and integration of beha
     },
     Object {
       "corequisites": Array [
-        "EDD",
-        "301",
-        "PREVIOUS",
+        Array [
+          "EDD",
+          "301",
+        ],
       ],
       "courseNumber": "304",
       "creditHours": Array [
@@ -19398,9 +19447,10 @@ This course seeks to address the selection, development, and integration of beha
     },
     Object {
       "corequisites": Array [
-        "EDD",
-        "307",
-        "PREVIOUS",
+        Array [
+          "EDD",
+          "307",
+        ],
       ],
       "courseNumber": "305",
       "creditHours": Array [
@@ -19489,9 +19539,10 @@ This course seeks to address the selection, development, and integration of beha
     },
     Object {
       "corequisites": Array [
-        "EDD",
-        "305",
-        "PREVIOUS",
+        Array [
+          "EDD",
+          "305",
+        ],
       ],
       "courseNumber": "307",
       "creditHours": Array [
@@ -19508,9 +19559,10 @@ This course seeks to address the selection, development, and integration of beha
     },
     Object {
       "corequisites": Array [
-        "EDD",
-        "410",
-        "PREVIOUS",
+        Array [
+          "EDD",
+          "410",
+        ],
       ],
       "courseNumber": "404",
       "creditHours": 3,
@@ -19585,9 +19637,10 @@ This course seeks to address the selection, development, and integration of beha
     },
     Object {
       "corequisites": Array [
-        "EDD",
-        "410",
-        "PREVIOUS",
+        Array [
+          "EDD",
+          "410",
+        ],
       ],
       "courseNumber": "406",
       "creditHours": 3,
@@ -19709,9 +19762,10 @@ This course seeks to address the selection, development, and integration of beha
     },
     Object {
       "corequisites": Array [
-        "EDD",
-        "406",
-        "PREVIOUS",
+        Array [
+          "EDD",
+          "406",
+        ],
       ],
       "courseNumber": "410",
       "creditHours": 1,
@@ -19762,9 +19816,10 @@ This course seeks to address the selection, development, and integration of beha
     },
     Object {
       "corequisites": Array [
-        "EDD",
-        "412",
-        "PREVIOUS",
+        Array [
+          "EDD",
+          "412",
+        ],
       ],
       "courseNumber": "411",
       "creditHours": Array [
@@ -19886,9 +19941,14 @@ This course seeks to address the selection, development, and integration of beha
     },
     Object {
       "corequisites": Array [
-        "EDD|420|PREVIOUS__, __EDN",
-        "408",
-        "PREVIOUS",
+        Array [
+          "EDD",
+          "420",
+        ],
+        Array [
+          "EDN",
+          "408",
+        ],
       ],
       "courseNumber": "413",
       "creditHours": 2,
@@ -20112,9 +20172,14 @@ This course seeks to address the selection, development, and integration of beha
     },
     Object {
       "corequisites": Array [
-        "EDN|408|PREVIOUS__, __EDN",
-        "413",
-        "PREVIOUS",
+        Array [
+          "EDN",
+          "408",
+        ],
+        Array [
+          "EDN",
+          "413",
+        ],
       ],
       "courseNumber": "420",
       "creditHours": 2,
@@ -20163,9 +20228,10 @@ This course seeks to address the selection, development, and integration of beha
     },
     Object {
       "corequisites": Array [
-        "EDD",
-        "424",
-        "PREVIOUS",
+        Array [
+          "EDD",
+          "424",
+        ],
       ],
       "courseNumber": "421",
       "creditHours": Array [
@@ -20220,9 +20286,10 @@ This course seeks to address the selection, development, and integration of beha
     },
     Object {
       "corequisites": Array [
-        "EDD",
-        "421",
-        "PREVIOUS",
+        Array [
+          "EDD",
+          "421",
+        ],
       ],
       "courseNumber": "424",
       "creditHours": 1,
@@ -20337,9 +20404,10 @@ This course seeks to address the selection, development, and integration of beha
     },
     Object {
       "corequisites": Array [
-        "EDD",
-        "437",
-        "PREVIOUS",
+        Array [
+          "EDD",
+          "437",
+        ],
       ],
       "courseNumber": "435",
       "creditHours": Array [
@@ -20356,9 +20424,10 @@ This course seeks to address the selection, development, and integration of beha
     },
     Object {
       "corequisites": Array [
-        "EDD",
-        "435",
-        "PREVIOUS",
+        Array [
+          "EDD",
+          "435",
+        ],
       ],
       "courseNumber": "437",
       "creditHours": 1,
@@ -20372,9 +20441,10 @@ This course seeks to address the selection, development, and integration of beha
     },
     Object {
       "corequisites": Array [
-        "EDD",
-        "441",
-        "PREVIOUS",
+        Array [
+          "EDD",
+          "441",
+        ],
       ],
       "courseNumber": "440",
       "creditHours": Array [
@@ -20428,9 +20498,10 @@ This course seeks to address the selection, development, and integration of beha
     },
     Object {
       "corequisites": Array [
-        "EDD",
-        "440",
-        "PREVIOUS",
+        Array [
+          "EDD",
+          "440",
+        ],
       ],
       "courseNumber": "441",
       "creditHours": 1,
@@ -20698,9 +20769,10 @@ This course seeks to address the selection, development, and integration of beha
     },
     Object {
       "corequisites": Array [
-        "EDD",
-        "448",
-        "PREVIOUS",
+        Array [
+          "EDD",
+          "448",
+        ],
       ],
       "courseNumber": "447",
       "creditHours": 3,
@@ -20751,9 +20823,10 @@ This course seeks to address the selection, development, and integration of beha
     },
     Object {
       "corequisites": Array [
-        "EDD",
-        "447",
-        "PREVIOUS",
+        Array [
+          "EDD",
+          "447",
+        ],
       ],
       "courseNumber": "448",
       "creditHours": 1,
@@ -20804,9 +20877,10 @@ This course seeks to address the selection, development, and integration of beha
     },
     Object {
       "corequisites": Array [
-        "EDD",
-        "451",
-        "PREVIOUS",
+        Array [
+          "EDD",
+          "451",
+        ],
       ],
       "courseNumber": "450",
       "creditHours": 3,
@@ -20861,9 +20935,10 @@ This course seeks to address the selection, development, and integration of beha
     },
     Object {
       "corequisites": Array [
-        "EDD",
-        "450",
-        "PREVIOUS",
+        Array [
+          "EDD",
+          "450",
+        ],
       ],
       "courseNumber": "451",
       "creditHours": 1,
@@ -21255,9 +21330,10 @@ K-8. Includes classroom activities designed to strengthen skills in reading comp
     },
     Object {
       "corequisites": Array [
-        "EDD",
-        "467",
-        "PREVIOUS",
+        Array [
+          "EDD",
+          "467",
+        ],
       ],
       "courseNumber": "471",
       "creditHours": 3,
@@ -21364,9 +21440,10 @@ K-8. Includes classroom activities designed to strengthen skills in reading comp
     },
     Object {
       "corequisites": Array [
-        "EDD",
-        "481",
-        "PREVIOUS",
+        Array [
+          "EDD",
+          "481",
+        ],
       ],
       "courseNumber": "480",
       "creditHours": Array [
@@ -21420,9 +21497,10 @@ K-8. Includes classroom activities designed to strengthen skills in reading comp
     },
     Object {
       "corequisites": Array [
-        "EDD",
-        "480",
-        "PREVIOUS",
+        Array [
+          "EDD",
+          "480",
+        ],
       ],
       "courseNumber": "481",
       "creditHours": 1,
@@ -21569,9 +21647,10 @@ K-8. Includes classroom activities designed to strengthen skills in reading comp
     },
     Object {
       "corequisites": Array [
-        "EDD",
-        "490",
-        "PREVIOUS",
+        Array [
+          "EDD",
+          "490",
+        ],
       ],
       "courseNumber": "489",
       "creditHours": 1,
@@ -21622,9 +21701,10 @@ K-8. Includes classroom activities designed to strengthen skills in reading comp
     },
     Object {
       "corequisites": Array [
-        "EDD",
-        "489",
-        "PREVIOUS",
+        Array [
+          "EDD",
+          "489",
+        ],
       ],
       "courseNumber": "490",
       "creditHours": Array [
@@ -21678,9 +21758,10 @@ K-8. Includes classroom activities designed to strengthen skills in reading comp
     },
     Object {
       "corequisites": Array [
-        "EDD",
-        "495",
-        "PREVIOUS",
+        Array [
+          "EDD",
+          "495",
+        ],
       ],
       "courseNumber": "491",
       "creditHours": 1,
@@ -21844,9 +21925,10 @@ K-8. Includes classroom activities designed to strengthen skills in reading comp
     },
     Object {
       "corequisites": Array [
-        "EDD",
-        "497",
-        "PREVIOUS",
+        Array [
+          "EDD",
+          "497",
+        ],
       ],
       "courseNumber": "496",
       "creditHours": 3,
@@ -21916,9 +21998,10 @@ K-8. Includes classroom activities designed to strengthen skills in reading comp
     },
     Object {
       "corequisites": Array [
-        "EDD",
-        "496",
-        "PREVIOUS",
+        Array [
+          "EDD",
+          "496",
+        ],
       ],
       "courseNumber": "497",
       "creditHours": 1,
@@ -22154,9 +22237,10 @@ K-8. Includes classroom activities designed to strengthen skills in reading comp
     },
     Object {
       "corequisites": Array [
-        "EDN",
-        "404",
-        "PREVIOUS",
+        Array [
+          "EDN",
+          "404",
+        ],
       ],
       "courseNumber": "403",
       "creditHours": 3,
@@ -22174,9 +22258,10 @@ K-8. Includes classroom activities designed to strengthen skills in reading comp
     },
     Object {
       "corequisites": Array [
-        "EDN",
-        "403",
-        "PREVIOUS",
+        Array [
+          "EDN",
+          "403",
+        ],
       ],
       "courseNumber": "404",
       "creditHours": 1,
@@ -22206,9 +22291,10 @@ K-8. Includes classroom activities designed to strengthen skills in reading comp
     },
     Object {
       "corequisites": Array [
-        "EDD",
-        "413",
-        "PREVIOUS",
+        Array [
+          "EDD",
+          "413",
+        ],
       ],
       "courseNumber": "408",
       "creditHours": 2,
@@ -22251,9 +22337,10 @@ K-8. Includes classroom activities designed to strengthen skills in reading comp
     },
     Object {
       "corequisites": Array [
-        "EDN",
-        "411",
-        "PREVIOUS",
+        Array [
+          "EDN",
+          "411",
+        ],
       ],
       "courseNumber": "410",
       "creditHours": 3,
@@ -22273,9 +22360,10 @@ K-8. Includes classroom activities designed to strengthen skills in reading comp
     },
     Object {
       "corequisites": Array [
-        "EDN",
-        "410",
-        "PREVIOUS",
+        Array [
+          "EDN",
+          "410",
+        ],
       ],
       "courseNumber": "411",
       "creditHours": 1,
@@ -22295,9 +22383,10 @@ K-8. Includes classroom activities designed to strengthen skills in reading comp
     },
     Object {
       "corequisites": Array [
-        "EDN",
-        "413",
-        "PREVIOUS",
+        Array [
+          "EDN",
+          "413",
+        ],
       ],
       "courseNumber": "412",
       "creditHours": 3,
@@ -22331,9 +22420,10 @@ K-8. Includes classroom activities designed to strengthen skills in reading comp
     },
     Object {
       "corequisites": Array [
-        "EDN",
-        "412",
-        "PREVIOUS",
+        Array [
+          "EDN",
+          "412",
+        ],
       ],
       "courseNumber": "413",
       "creditHours": 1,
@@ -22367,9 +22457,10 @@ K-8. Includes classroom activities designed to strengthen skills in reading comp
     },
     Object {
       "corequisites": Array [
-        "EDN",
-        "415",
-        "PREVIOUS",
+        Array [
+          "EDN",
+          "415",
+        ],
       ],
       "courseNumber": "414",
       "creditHours": 3,
@@ -22421,9 +22512,10 @@ K-8. Includes classroom activities designed to strengthen skills in reading comp
     },
     Object {
       "corequisites": Array [
-        "EDN",
-        "414",
-        "PREVIOUS",
+        Array [
+          "EDN",
+          "414",
+        ],
       ],
       "courseNumber": "415",
       "creditHours": 1,
@@ -22641,9 +22733,10 @@ K-8. Includes classroom activities designed to strengthen skills in reading comp
     },
     Object {
       "corequisites": Array [
-        "EDN",
-        "421",
-        "PREVIOUS",
+        Array [
+          "EDN",
+          "421",
+        ],
       ],
       "courseNumber": "420",
       "creditHours": 3,
@@ -22657,9 +22750,10 @@ K-8. Includes classroom activities designed to strengthen skills in reading comp
     },
     Object {
       "corequisites": Array [
-        "EDN",
-        "420",
-        "PREVIOUS",
+        Array [
+          "EDN",
+          "420",
+        ],
       ],
       "courseNumber": "421",
       "creditHours": 1,
@@ -22685,9 +22779,10 @@ K-8. Includes classroom activities designed to strengthen skills in reading comp
     },
     Object {
       "corequisites": Array [
-        "EDN",
-        "426",
-        "PREVIOUS",
+        Array [
+          "EDN",
+          "426",
+        ],
       ],
       "courseNumber": "425",
       "creditHours": 3,
@@ -22702,9 +22797,10 @@ K-8. Includes classroom activities designed to strengthen skills in reading comp
     },
     Object {
       "corequisites": Array [
-        "EDN",
-        "425",
-        "PREVIOUS",
+        Array [
+          "EDN",
+          "425",
+        ],
       ],
       "courseNumber": "426",
       "creditHours": 1,
@@ -28345,9 +28441,10 @@ This course serves as an elective course for the Semester in Detroit (SiD) progr
   "ENGR": Array [
     Object {
       "corequisites": Array [
-        "ENGR",
-        "100L",
-        "PREVIOUS",
+        Array [
+          "ENGR",
+          "100L",
+        ],
       ],
       "courseNumber": "100",
       "creditHours": 2,
@@ -28360,9 +28457,10 @@ This course serves as an elective course for the Semester in Detroit (SiD) progr
     },
     Object {
       "corequisites": Array [
-        "ENGR",
-        "126L",
-        "PREVIOUS",
+        Array [
+          "ENGR",
+          "126L",
+        ],
       ],
       "courseNumber": "126",
       "creditHours": 2,
@@ -28425,9 +28523,10 @@ This course serves as an elective course for the Semester in Detroit (SiD) progr
     },
     Object {
       "corequisites": Array [
-        "ENGR",
-        "250R",
-        "PREVIOUS",
+        Array [
+          "ENGR",
+          "250R",
+        ],
       ],
       "courseNumber": "250",
       "creditHours": 3,
@@ -28478,9 +28577,10 @@ This course serves as an elective course for the Semester in Detroit (SiD) progr
     },
     Object {
       "corequisites": Array [
-        "ENGR",
-        "250",
-        "PREVIOUS",
+        Array [
+          "ENGR",
+          "250",
+        ],
       ],
       "courseNumber": "250R",
       "creditHours": 0,
@@ -29404,9 +29504,10 @@ Students in this course examineis entrepreneurship from historical, philosophica
     },
     Object {
       "corequisites": Array [
-        "ESCI",
-        "304L",
-        "PREVIOUS",
+        Array [
+          "ESCI",
+          "304L",
+        ],
       ],
       "courseNumber": "304",
       "creditHours": 4,
@@ -29450,9 +29551,10 @@ Students in this course examineis entrepreneurship from historical, philosophica
     },
     Object {
       "corequisites": Array [
-        "ESCI",
-        "305L",
-        "PREVIOUS",
+        Array [
+          "ESCI",
+          "305L",
+        ],
       ],
       "courseNumber": "305",
       "creditHours": 4,
@@ -29467,9 +29569,10 @@ Students in this course examineis entrepreneurship from historical, philosophica
     },
     Object {
       "corequisites": Array [
-        "ESCI",
-        "305",
-        "PREVIOUS",
+        Array [
+          "ESCI",
+          "305",
+        ],
       ],
       "courseNumber": "305D",
       "creditHours": 0,
@@ -29723,9 +29826,10 @@ Students in this course examineis entrepreneurship from historical, philosophica
     },
     Object {
       "corequisites": Array [
-        "ESCI",
-        "414L",
-        "PREVIOUS",
+        Array [
+          "ESCI",
+          "414L",
+        ],
       ],
       "courseNumber": "414",
       "creditHours": 4,
@@ -30015,9 +30119,10 @@ The statistical methods behind analyzing spatial datasets is covered in detail, 
     },
     Object {
       "corequisites": Array [
-        "EXPS",
-        "401",
-        "PREVIOUS",
+        Array [
+          "EXPS",
+          "401",
+        ],
       ],
       "courseNumber": "400",
       "creditHours": 3,
@@ -30044,9 +30149,10 @@ The statistical methods behind analyzing spatial datasets is covered in detail, 
     },
     Object {
       "corequisites": Array [
-        "EXPS",
-        "400",
-        "PREVIOUS",
+        Array [
+          "EXPS",
+          "400",
+        ],
       ],
       "courseNumber": "401",
       "creditHours": 1,
@@ -31174,9 +31280,10 @@ The statistical methods behind analyzing spatial datasets is covered in detail, 
     },
     Object {
       "corequisites": Array [
-        "GEOG",
-        "305L",
-        "PREVIOUS",
+        Array [
+          "GEOG",
+          "305L",
+        ],
       ],
       "courseNumber": "305",
       "creditHours": 4,
@@ -31191,9 +31298,10 @@ The statistical methods behind analyzing spatial datasets is covered in detail, 
     },
     Object {
       "corequisites": Array [
-        "GEOG",
-        "305",
-        "PREVIOUS",
+        Array [
+          "GEOG",
+          "305",
+        ],
       ],
       "courseNumber": "305D",
       "creditHours": 0,
@@ -31301,9 +31409,10 @@ The statistical methods behind analyzing spatial datasets is covered in detail, 
     },
     Object {
       "corequisites": Array [
-        "GEOL",
-        "118L",
-        "PREVIOUS",
+        Array [
+          "GEOL",
+          "118L",
+        ],
       ],
       "courseNumber": "118",
       "creditHours": 4,
@@ -31318,9 +31427,10 @@ The statistical methods behind analyzing spatial datasets is covered in detail, 
     },
     Object {
       "corequisites": Array [
-        "GEOL",
-        "218L",
-        "PREVIOUS",
+        Array [
+          "GEOL",
+          "218L",
+        ],
       ],
       "courseNumber": "218",
       "creditHours": 4,
@@ -31337,9 +31447,10 @@ The statistical methods behind analyzing spatial datasets is covered in detail, 
     },
     Object {
       "corequisites": Array [
-        "GEOL",
-        "305L",
-        "PREVIOUS",
+        Array [
+          "GEOL",
+          "305L",
+        ],
       ],
       "courseNumber": "305",
       "creditHours": 4,
@@ -31354,9 +31465,10 @@ The statistical methods behind analyzing spatial datasets is covered in detail, 
     },
     Object {
       "corequisites": Array [
-        "GEOL",
-        "305",
-        "PREVIOUS",
+        Array [
+          "GEOL",
+          "305",
+        ],
       ],
       "courseNumber": "305D",
       "creditHours": 0,
@@ -36286,9 +36398,10 @@ This course offers upper division students an intensive study of the works and l
   "IMSE": Array [
     Object {
       "corequisites": Array [
-        "IMSE",
-        "150L",
-        "PREVIOUS",
+        Array [
+          "IMSE",
+          "150L",
+        ],
       ],
       "courseNumber": "150",
       "creditHours": Array [
@@ -36306,9 +36419,14 @@ This course offers upper division students an intensive study of the works and l
     },
     Object {
       "corequisites": Array [
-        "CIS|275|PREVIOUS__, __IMSE",
-        "200L",
-        "PREVIOUS",
+        Array [
+          "CIS",
+          "275",
+        ],
+        Array [
+          "IMSE",
+          "200L",
+        ],
       ],
       "courseNumber": "200",
       "creditHours": Array [
@@ -37020,9 +37138,10 @@ This course offers upper division students an intensive study of the works and l
     },
     Object {
       "corequisites": Array [
-        "IMSE",
-        "4675",
-        "PREVIOUS",
+        Array [
+          "IMSE",
+          "4675",
+        ],
       ],
       "courseNumber": "4815",
       "creditHours": 4,
@@ -37049,9 +37168,10 @@ This course offers upper division students an intensive study of the works and l
     },
     Object {
       "corequisites": Array [
-        "ECE",
-        "305",
-        "PREVIOUS",
+        Array [
+          "ECE",
+          "305",
+        ],
       ],
       "courseNumber": "4825",
       "creditHours": 4,
@@ -37235,9 +37355,10 @@ This course offers upper division students an intensive study of the works and l
     },
     Object {
       "corequisites": Array [
-        "ME",
-        "4671",
-        "PREVIOUS",
+        Array [
+          "ME",
+          "4671",
+        ],
       ],
       "courseNumber": "4953",
       "creditHours": 1,
@@ -38949,9 +39070,10 @@ This course offers upper division students an intensive study of the works and l
     },
     Object {
       "corequisites": Array [
-        "COMP",
-        "105",
-        "PREVIOUS",
+        Array [
+          "COMP",
+          "105",
+        ],
       ],
       "courseNumber": "111",
       "creditHours": 3,
@@ -38964,9 +39086,10 @@ This course offers upper division students an intensive study of the works and l
     },
     Object {
       "corequisites": Array [
-        "COMP",
-        "105",
-        "PREVIOUS",
+        Array [
+          "COMP",
+          "105",
+        ],
       ],
       "courseNumber": "112",
       "creditHours": 3,
@@ -38979,9 +39102,14 @@ This course offers upper division students an intensive study of the works and l
     },
     Object {
       "corequisites": Array [
-        "COMP|105|PREVIOUS__, __COMP",
-        "106",
-        "PREVIOUS",
+        Array [
+          "COMP",
+          "105",
+        ],
+        Array [
+          "COMP",
+          "106",
+        ],
       ],
       "courseNumber": "113",
       "creditHours": 3,
@@ -38994,9 +39122,10 @@ This course offers upper division students an intensive study of the works and l
     },
     Object {
       "corequisites": Array [
-        "COMP",
-        "105",
-        "PREVIOUS",
+        Array [
+          "COMP",
+          "105",
+        ],
       ],
       "courseNumber": "114",
       "creditHours": 3,
@@ -39006,9 +39135,10 @@ This course offers upper division students an intensive study of the works and l
     },
     Object {
       "corequisites": Array [
-        "COMP",
-        "105",
-        "PREVIOUS",
+        Array [
+          "COMP",
+          "105",
+        ],
       ],
       "courseNumber": "115",
       "creditHours": 3,
@@ -39021,9 +39151,10 @@ This course offers upper division students an intensive study of the works and l
     },
     Object {
       "corequisites": Array [
-        "COMP",
-        "105",
-        "PREVIOUS",
+        Array [
+          "COMP",
+          "105",
+        ],
       ],
       "courseNumber": "116",
       "creditHours": 3,
@@ -39036,9 +39167,10 @@ This course offers upper division students an intensive study of the works and l
     },
     Object {
       "corequisites": Array [
-        "COMP",
-        "105",
-        "PREVIOUS",
+        Array [
+          "COMP",
+          "105",
+        ],
       ],
       "courseNumber": "117",
       "creditHours": 3,
@@ -39051,9 +39183,10 @@ This course offers upper division students an intensive study of the works and l
     },
     Object {
       "corequisites": Array [
-        "COMP",
-        "105",
-        "PREVIOUS",
+        Array [
+          "COMP",
+          "105",
+        ],
       ],
       "courseNumber": "118",
       "creditHours": 3,
@@ -39066,9 +39199,10 @@ This course offers upper division students an intensive study of the works and l
     },
     Object {
       "corequisites": Array [
-        "COMP",
-        "105",
-        "PREVIOUS",
+        Array [
+          "COMP",
+          "105",
+        ],
       ],
       "courseNumber": "119",
       "creditHours": 3,
@@ -39081,9 +39215,10 @@ This course offers upper division students an intensive study of the works and l
     },
     Object {
       "corequisites": Array [
-        "COMP",
-        "105",
-        "PREVIOUS",
+        Array [
+          "COMP",
+          "105",
+        ],
       ],
       "courseNumber": "120",
       "creditHours": 3,
@@ -39096,9 +39231,10 @@ This course offers upper division students an intensive study of the works and l
     },
     Object {
       "corequisites": Array [
-        "COMP",
-        "105",
-        "PREVIOUS",
+        Array [
+          "COMP",
+          "105",
+        ],
       ],
       "courseNumber": "121",
       "creditHours": 3,
@@ -39111,9 +39247,10 @@ This course offers upper division students an intensive study of the works and l
     },
     Object {
       "corequisites": Array [
-        "COMP",
-        "105",
-        "PREVIOUS",
+        Array [
+          "COMP",
+          "105",
+        ],
       ],
       "courseNumber": "122",
       "creditHours": 3,
@@ -39126,9 +39263,10 @@ This course offers upper division students an intensive study of the works and l
     },
     Object {
       "corequisites": Array [
-        "COMP",
-        "105",
-        "PREVIOUS",
+        Array [
+          "COMP",
+          "105",
+        ],
       ],
       "courseNumber": "123",
       "creditHours": 3,
@@ -39141,9 +39279,10 @@ This course offers upper division students an intensive study of the works and l
     },
     Object {
       "corequisites": Array [
-        "COMP",
-        "105",
-        "PREVIOUS",
+        Array [
+          "COMP",
+          "105",
+        ],
       ],
       "courseNumber": "124",
       "creditHours": 3,
@@ -39153,9 +39292,10 @@ This course offers upper division students an intensive study of the works and l
     },
     Object {
       "corequisites": Array [
-        "COMP",
-        "105",
-        "PREVIOUS",
+        Array [
+          "COMP",
+          "105",
+        ],
       ],
       "courseNumber": "125",
       "creditHours": 3,
@@ -39169,9 +39309,10 @@ This course offers upper division students an intensive study of the works and l
     },
     Object {
       "corequisites": Array [
-        "COMP",
-        "105",
-        "PREVIOUS",
+        Array [
+          "COMP",
+          "105",
+        ],
       ],
       "courseNumber": "126",
       "creditHours": 3,
@@ -39185,9 +39326,10 @@ This course offers upper division students an intensive study of the works and l
     },
     Object {
       "corequisites": Array [
-        "COMP",
-        "105",
-        "PREVIOUS",
+        Array [
+          "COMP",
+          "105",
+        ],
       ],
       "courseNumber": "127",
       "creditHours": 3,
@@ -39201,9 +39343,10 @@ This course offers upper division students an intensive study of the works and l
     },
     Object {
       "corequisites": Array [
-        "COMP",
-        "105",
-        "PREVIOUS",
+        Array [
+          "COMP",
+          "105",
+        ],
       ],
       "courseNumber": "128",
       "creditHours": 3,
@@ -39217,9 +39360,10 @@ This course offers upper division students an intensive study of the works and l
     },
     Object {
       "corequisites": Array [
-        "COMP",
-        "105",
-        "PREVIOUS",
+        Array [
+          "COMP",
+          "105",
+        ],
       ],
       "courseNumber": "129",
       "creditHours": 3,
@@ -39233,9 +39377,10 @@ This course offers upper division students an intensive study of the works and l
     },
     Object {
       "corequisites": Array [
-        "EXPS",
-        "102",
-        "PREVIOUS",
+        Array [
+          "EXPS",
+          "102",
+        ],
       ],
       "courseNumber": "130",
       "creditHours": 3,
@@ -39245,9 +39390,10 @@ This course offers upper division students an intensive study of the works and l
     },
     Object {
       "corequisites": Array [
-        "COMP",
-        "105",
-        "PREVIOUS",
+        Array [
+          "COMP",
+          "105",
+        ],
       ],
       "courseNumber": "131",
       "creditHours": 3,
@@ -39260,9 +39406,10 @@ This course offers upper division students an intensive study of the works and l
     },
     Object {
       "corequisites": Array [
-        "COMP",
-        "105",
-        "PREVIOUS",
+        Array [
+          "COMP",
+          "105",
+        ],
       ],
       "courseNumber": "132",
       "creditHours": 3,
@@ -39276,9 +39423,10 @@ This course offers upper division students an intensive study of the works and l
     },
     Object {
       "corequisites": Array [
-        "COMP",
-        "105",
-        "PREVIOUS",
+        Array [
+          "COMP",
+          "105",
+        ],
       ],
       "courseNumber": "133",
       "creditHours": 3,
@@ -39292,9 +39440,10 @@ This course offers upper division students an intensive study of the works and l
     },
     Object {
       "corequisites": Array [
-        "COMP",
-        "105",
-        "PREVIOUS",
+        Array [
+          "COMP",
+          "105",
+        ],
       ],
       "courseNumber": "134",
       "creditHours": 3,
@@ -39308,9 +39457,10 @@ This course offers upper division students an intensive study of the works and l
     },
     Object {
       "corequisites": Array [
-        "COMP",
-        "105",
-        "PREVIOUS",
+        Array [
+          "COMP",
+          "105",
+        ],
       ],
       "courseNumber": "135",
       "creditHours": 3,
@@ -39335,9 +39485,10 @@ This course offers upper division students an intensive study of the works and l
     },
     Object {
       "corequisites": Array [
-        "COMP",
-        "105",
-        "PREVIOUS",
+        Array [
+          "COMP",
+          "105",
+        ],
       ],
       "courseNumber": "137",
       "creditHours": 3,
@@ -39351,9 +39502,10 @@ This course offers upper division students an intensive study of the works and l
     },
     Object {
       "corequisites": Array [
-        "COMP",
-        "105",
-        "PREVIOUS",
+        Array [
+          "COMP",
+          "105",
+        ],
       ],
       "courseNumber": "138",
       "creditHours": 3,
@@ -41954,9 +42106,10 @@ PIC Math prepares mathematical science students for industrial careers by engagi
     },
     Object {
       "corequisites": Array [
-        "ME",
-        "349L",
-        "PREVIOUS",
+        Array [
+          "ME",
+          "349L",
+        ],
       ],
       "courseNumber": "349",
       "creditHours": 3,
@@ -42398,9 +42551,10 @@ PIC Math prepares mathematical science students for industrial careers by engagi
     },
     Object {
       "corequisites": Array [
-        "ME",
-        "442L",
-        "PREVIOUS",
+        Array [
+          "ME",
+          "442L",
+        ],
       ],
       "courseNumber": "442",
       "creditHours": 4,
@@ -42702,9 +42856,14 @@ A guided interdisciplinary design project course where student teams propose des
     },
     Object {
       "corequisites": Array [
-        "ECE|460|PREVIOUS__, __ME",
-        "442",
-        "PREVIOUS",
+        Array [
+          "ECE",
+          "460",
+        ],
+        Array [
+          "ME",
+          "442",
+        ],
       ],
       "courseNumber": "472",
       "creditHours": 4,
@@ -43655,9 +43814,10 @@ A guided interdisciplinary design project course where student teams propose des
     },
     Object {
       "corequisites": Array [
-        "MICR",
-        "385L",
-        "PREVIOUS",
+        Array [
+          "MICR",
+          "385L",
+        ],
       ],
       "courseNumber": "385",
       "creditHours": 4,
@@ -44417,9 +44577,10 @@ A guided interdisciplinary design project course where student teams propose des
   "NSCI": Array [
     Object {
       "corequisites": Array [
-        "NSCI",
-        "120L",
-        "PREVIOUS",
+        Array [
+          "NSCI",
+          "120L",
+        ],
       ],
       "courseNumber": "120",
       "creditHours": 4,
@@ -44429,9 +44590,10 @@ A guided interdisciplinary design project course where student teams propose des
     },
     Object {
       "corequisites": Array [
-        "NSCI",
-        "121L",
-        "PREVIOUS",
+        Array [
+          "NSCI",
+          "121L",
+        ],
       ],
       "courseNumber": "121",
       "creditHours": 4,
@@ -48468,9 +48630,10 @@ This course provides international TESOL instructors with the background to the 
     },
     Object {
       "corequisites": Array [
-        "PHYS",
-        "125L",
-        "PREVIOUS",
+        Array [
+          "PHYS",
+          "125L",
+        ],
       ],
       "courseNumber": "125",
       "creditHours": 4,
@@ -48490,9 +48653,10 @@ This course provides international TESOL instructors with the background to the 
     },
     Object {
       "corequisites": Array [
-        "PHYS",
-        "126L",
-        "PREVIOUS",
+        Array [
+          "PHYS",
+          "126L",
+        ],
       ],
       "courseNumber": "126",
       "creditHours": 4,
@@ -48516,9 +48680,10 @@ This course provides international TESOL instructors with the background to the 
     },
     Object {
       "corequisites": Array [
-        "PHYS",
-        "150L",
-        "PREVIOUS",
+        Array [
+          "PHYS",
+          "150L",
+        ],
       ],
       "courseNumber": "150",
       "creditHours": 4,
@@ -48538,9 +48703,10 @@ This course provides international TESOL instructors with the background to the 
     },
     Object {
       "corequisites": Array [
-        "PHYS",
-        "151L",
-        "PREVIOUS",
+        Array [
+          "PHYS",
+          "151L",
+        ],
       ],
       "courseNumber": "151",
       "creditHours": 4,
@@ -55021,9 +55187,10 @@ This course serves as an elective course for the Semester in Detroit (SiD) progr
     },
     Object {
       "corequisites": Array [
-        "URS",
-        "301",
-        "PREVIOUS",
+        Array [
+          "URS",
+          "301",
+        ],
       ],
       "courseNumber": "302",
       "creditHours": 2,
@@ -55769,9 +55936,10 @@ This course counts as a required capstone (4000-level) course in Economics and a
     },
     Object {
       "corequisites": Array [
-        "SSCI",
-        "302",
-        "PREVIOUS",
+        Array [
+          "SSCI",
+          "302",
+        ],
       ],
       "courseNumber": "301",
       "creditHours": 3,
