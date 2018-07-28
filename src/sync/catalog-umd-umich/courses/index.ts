@@ -3,5 +3,10 @@ import { parseCourses } from './parse';
 
 export async function fetchCourses(level: 'undergraduate' | 'graduate', subjectCode: string) {
   const courseList = await fetchCourseList(level, subjectCode);
-  return parseCourses(courseList);
+  try {
+    return parseCourses(courseList);
+  } catch (e) {
+    console.warn(`Could not get courses for "${level}" subject code: "${subjectCode}"`, e);
+    return undefined;
+  }
 }

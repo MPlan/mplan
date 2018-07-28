@@ -3,5 +3,10 @@ import { parseSubjects } from './parse';
 
 export async function fetchUndergraduateSubjects() {
   const subjectsHtml = await fetchUndergraduateSubjectsHtml();
-  return parseSubjects(subjectsHtml);
+  try {
+    return parseSubjects(subjectsHtml);
+  } catch (e) {
+    console.warn(`could not fetch undergraduate subjects`, e);
+    return undefined;
+  }
 }
