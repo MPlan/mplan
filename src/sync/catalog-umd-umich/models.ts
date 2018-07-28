@@ -4,6 +4,8 @@ export type Prerequisite =
   | [string, string, 'CONCURRENT' | 'PREVIOUS']
   | string;
 
+export type Corequisite = [string, string] | string;
+
 export interface Course {
   subjectCode: string;
   courseNumber: string;
@@ -11,8 +13,8 @@ export interface Course {
   description: string;
   creditHours: number | [number, number];
   restrictions?: string[];
-  prerequisites?: Prerequisite;
-  corequisites?: Prerequisite;
+  prerequisite?: Prerequisite;
+  corequisite?: Corequisite[];
 }
 
 export interface Subject {
