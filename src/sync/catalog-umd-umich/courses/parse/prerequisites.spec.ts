@@ -1,6 +1,6 @@
 import { getOrWriteHtml } from 'testing-utilities/example-html';
-import { fetchCourseList } from './fetch';
-import { parsePrerequisites } from './parse-prerequisites';
+import { fetchCourseList } from '../fetch';
+import { parsePrerequisites } from './prerequisites';
 import { JSDOM } from 'jsdom';
 
 describe('parsePrerequisites', () => {

@@ -1,6 +1,6 @@
 import { getOrWriteHtml } from 'testing-utilities/example-html';
-import { parseCourses } from './parse';
-import { fetchCourseList } from './fetch';
+import { parseCourses } from './';
+import { fetchCourseList } from '../fetch';
 
 describe('courses', () => {
   describe('parse', () => {

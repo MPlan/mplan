@@ -1,8 +1,8 @@
 // import { Course } from 'sync/catalog-umd-umich/models';
 import { JSDOM } from 'jsdom';
-import { parseCourseBlockTitle } from './parse-course-block-title';
-import { parseCourseBlockExtra } from './parse-course-block-extra';
-import { Prerequisite, Course } from '../models';
+import { parseCourseBlockTitle } from './course-block-title';
+import { parseCourseBlockExtra } from './course-block-extra';
+import { Prerequisite, Course } from '../../models';
 
 export function parseCourses(courseListHtml: string): Course[] {
   const { window } = new JSDOM(courseListHtml);

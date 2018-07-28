@@ -1,7 +1,7 @@
 import { JSDOM } from 'jsdom';
 import { getOrWriteHtml } from 'testing-utilities/example-html';
-import { parseCourseBlockTitle } from './parse-course-block-title';
-import { fetchCourseList } from './fetch';
+import { parseCourseBlockTitle } from './course-block-title';
+import { fetchCourseList } from '../fetch';
 
 describe('parseCourseBlockTitle', () => {
   it('parses the course block correctly for CIS', async () => {

@@ -1,7 +1,7 @@
 import { JSDOM } from 'jsdom';
 import { getOrWriteHtml } from 'testing-utilities/example-html';
-import { fetchCourseList } from './fetch';
-import { parseRestrictionsBlock } from './parse-course-block-extra';
+import { fetchCourseList } from '../fetch';
+import { parseRestrictionsBlock } from './restrictions';
 
 describe('parseRestrictionsBlock', () => {
   it('parses restrictions for CIS and returns an array of them', async () => {

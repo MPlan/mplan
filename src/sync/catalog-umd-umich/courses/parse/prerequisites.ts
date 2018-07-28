@@ -1,6 +1,6 @@
 import { oneLine } from 'common-tags';
 import { formDecode } from 'utilities/form-encode-decode';
-import { Prerequisite } from '../models';
+import { Prerequisite } from '../../models';
 import { flatten } from 'lodash';
 
 /** A simple interface that extends an array */
