@@ -7,6 +7,7 @@ import { history } from 'client/history';
 import { View } from 'components/view';
 import { Text } from 'components/text';
 import { Button } from 'components/button';
+import { Prerequisite } from 'components/prerequisite';
 import { PreferredPrerequisite } from 'components/preferred-prerequisite';
 import { Fa } from 'components/fa';
 
@@ -67,7 +68,7 @@ class CourseDetail extends React.PureComponent<CourseDetailProps, CourseDetailSt
           <FullName>{course.name}</FullName>
         </Header>
         <Row>
-          <Text>{course.creditHoursString}</Text>
+          <Text>{course.creditHoursFullString}</Text>
         </Row>
         <Row>
           <Button onClick={this.handleBackClick}>
@@ -81,10 +82,18 @@ class CourseDetail extends React.PureComponent<CourseDetailProps, CourseDetailSt
           <Key>Previous instructors:</Key>
           <Text>{course.historicallyTaughtBy().join(', ')}</Text>
         </Row>
-        <Row>
-          <Key>Preferred prerequisites:</Key>
-          <PreferredPrerequisite course={course} />
-        </Row>
+        {course.prerequisites && (
+          <Row>
+            <Key>Preferred prerequisites:</Key>
+            <PreferredPrerequisite course={course} />
+          </Row>
+        )}
+        {course.prerequisites && (
+          <Row>
+            <Key>Prerequisites</Key>
+            <Prerequisite prerequisite={course.prerequisites} />
+          </Row>
+        )}
       </Container>
     );
   }

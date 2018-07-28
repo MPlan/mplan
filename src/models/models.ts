@@ -1,4 +1,6 @@
 import * as Mongo from 'mongodb';
+import { Prerequisite, Corequisite } from 'sync/catalog-umd-umich/models';
+export { Prerequisite, Corequisite };
 
 export interface DbSynced {
   _id: Mongo.ObjectId;
@@ -17,26 +19,6 @@ export interface Subject extends DbSynced {
   name: string;
 }
 
-export type Prerequisite =
-  | undefined
-  | null
-  | [string, string]
-  | string
-  | {
-      /** the logic gate to use */
-      g: '&' | '|';
-      /**
-       * the operands of the logic gate
-       *
-       * can be:
-       *
-       * * another `Prerequisite`
-       * * a tuple of `[subjectCode, courseNumber]` e.g. `["CIS", "310"]`
-       * * or a simple string e.g. `"Remedial Math"`
-       */
-      o: Prerequisite[];
-    };
-
 export interface Course extends DbSynced {
   /** the subject code of this course. e.g. `CIS` */
   subjectCode: string;
@@ -46,26 +28,15 @@ export interface Course extends DbSynced {
   name: string;
   /** the description of the course */
   description: string | undefined | null;
-  /**
-   * the number of credit hours of the course determined by the most recent sections in the most
-   * recent terms of this course
-   */
-  credits: number | undefined | null;
-  /**
-   * a credit range is possible if the `creditsMin` is present.
-   */
-  creditsMin: number | undefined | null;
-  creditHours: number | undefined | null;
-  creditHoursMin: number | undefined | null;
-  /** the restriction placed on this course */
-  restrictions: string | undefined | null;
+  creditHours?: [number, number] | number | undefined | null;
+  restrictions?: string[] | undefined | null;
   /** represents the set of courses needed to have been taken before the course */
-  prerequisites: Prerequisite;
+  prerequisites?: Prerequisite | undefined;
   /** represents the set of courses needed to be taken either before or during the course */
-  corequisites: Prerequisite;
+  corequisites?: Corequisite[] | undefined;
   /** tuples of courses that this course is cross listed with */
-  crossList: Array<[string, string]> | undefined | null;
-  scheduleTypes: string[];
+  crossList?: Array<[string, string]> | undefined | null;
+  scheduleTypes?: string[] | undefined;
 }
 
 export interface Section extends DbSynced {

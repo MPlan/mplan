@@ -267,9 +267,10 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
   private _getOrCalculateCreditHoursMin = createGetOrCalculate(
     (courses: Immutable.List<Model.Course>) => {
       return courses.reduce(
-        (creditHoursMin, next) =>
-          (next instanceof Model.Course ? next.creditsMin || next.creditHoursMin || 0 : 0) +
-          creditHoursMin,
+        (creditHoursMin, course) =>
+          (course instanceof Model.Course
+            ? (Array.isArray(course.creditHours) ? course.creditHours[1] : course.creditHours) || 0
+            : 0) + creditHoursMin,
         0,
       );
     },
@@ -281,9 +282,13 @@ export class DegreeGroup extends React.Component<DegreeGroupProps, DegreeGroupSt
   private _getOrCalculateCreditHoursMax = createGetOrCalculate(
     (courses: Immutable.List<Model.Course>) => {
       return courses.reduce(
-        (creditHoursMax, next) =>
-          (next instanceof Model.Course ? next.credits || next.creditHours || 0 : 0) +
-          creditHoursMax,
+        (creditHoursMax, course) =>
+          // TODO: replace this with picked credit hours
+          (course instanceof Model.Course
+            ? Array.isArray(course.creditHours)
+              ? course.creditHours[1]
+              : course.creditHours || 0
+            : 0) + creditHoursMax,
         0,
       );
     },

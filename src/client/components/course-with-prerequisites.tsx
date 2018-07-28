@@ -61,7 +61,7 @@ export function CourseWithPrerequisites({ course, criticalLevel }: CourseWithPre
           Prerequisites:
         </Text>
       ) : null}
-      <Prerequisite prerequisite={course.prerequisites} />
+      {course.prerequisites && <Prerequisite prerequisite={course.prerequisites} />}
     </CourseContainer>
   );
 }

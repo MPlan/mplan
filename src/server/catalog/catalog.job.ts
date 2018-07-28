@@ -1,24 +1,38 @@
-import { log, combineUniquely, sequentially, flatten } from '../../utilities/utilities';
+import { sequentially, flatten } from '../../utilities/utilities';
 import {
-  fetchTerms, fetchSubjects, fetchCatalogEntries, fetchCourseDetail, fetchScheduleListings,
+  fetchSubjects,
+  fetchCatalogEntries,
+  fetchCourseDetail,
+  fetchScheduleListings,
   fetchScheduleDetail,
 } from 'unofficial-umdearborn-catalog-api';
 import { dbConnection, updateIfSameTermOrLater } from '../models/mongo';
 import * as Mongo from 'mongodb';
 import * as Model from '../../models/models';
 import { queue } from '../scheduler/scheduler';
-import { isEqual } from 'lodash';
 import { oneLine } from 'common-tags';
 
 export async function sync() {
   const termCodeFromLastFiveYears = [
     '201610',
-    '201530', '201520', '201510',
-    '201430', '201420', '201410',
-    '201330', '201320', '201310',
-    '201230', '201220', '201210',
-    '201130', '201120', '201110',
-    '201030', '201020', '201010',
+    '201530',
+    '201520',
+    '201510',
+    '201430',
+    '201420',
+    '201410',
+    '201330',
+    '201320',
+    '201310',
+    '201230',
+    '201220',
+    '201210',
+    '201130',
+    '201120',
+    '201110',
+    '201030',
+    '201020',
+    '201010',
   ];
 
   for (const termCode of termCodeFromLastFiveYears) {
@@ -28,11 +42,13 @@ export async function sync() {
       parameters: [termCode],
       priority: 10,
     });
-  };
+  }
 }
 
 export async function syncSubjects(termCode: string) {
-  if (!termCode) { return; }
+  if (!termCode) {
+    return;
+  }
   const subjectsFromUmconnect = await fetchSubjects(termCode);
 
   const subjectsToSave = subjectsFromUmconnect.map(s => {
@@ -65,8 +81,12 @@ export async function syncSubjects(termCode: string) {
 }
 
 export async function syncCatalogEntries(termCode: string, subjectCode: string) {
-  if (!termCode) { return; }
-  if (!subjectCode) { return; }
+  if (!termCode) {
+    return;
+  }
+  if (!subjectCode) {
+    return;
+  }
 
   // download all catalog entries
   const catalogEntriesFromUmconnect = await fetchCatalogEntries(termCode, subjectCode);
@@ -96,7 +116,9 @@ export async function syncCatalogEntries(termCode: string, subjectCode: string) 
 
   for (const newCourse of newCourses) {
     const courseNumber = newCourse && newCourse.courseNumber;
-    if (!courseNumber) { continue; }
+    if (!courseNumber) {
+      continue;
+    }
     await queue({
       jobName: 'syncCourseDetails',
       parameters: [termCode, subjectCode, courseNumber, ...(newCourse.scheduleTypes || [])],
@@ -118,17 +140,11 @@ export async function syncCourseDetails(
 
   const updatedCourseDetail: Partial<Model.Course> & Model.DbSynced = {
     _id: new Mongo.ObjectId(),
-    corequisites: courseFromUmconnect.corequisites,
     courseNumber,
-    description: courseFromUmconnect.description,
     lastTermCode: termCode,
     lastUpdateDate: new Date().getTime(),
-    prerequisites: courseFromUmconnect.prerequisites,
-    restrictions: courseFromUmconnect.restrictions,
-    creditHours: courseFromUmconnect.creditHours,
-    creditHoursMin: courseFromUmconnect.creditHoursMin,
     subjectCode,
-  }
+  };
 
   await updateIfSameTermOrLater({
     collection: courses,
@@ -150,10 +166,11 @@ export async function syncSchedules(
   courseNumber: string,
   ...scheduleTypes: string[]
 ) {
-  const schedules = flatten(await sequentially(
-    scheduleTypes,
-    scheduleType => fetchScheduleListings(termCode, subjectCode, courseNumber, scheduleType)
-  ));
+  const schedules = flatten(
+    await sequentially(scheduleTypes, scheduleType =>
+      fetchScheduleListings(termCode, subjectCode, courseNumber, scheduleType),
+    ),
+  );
 
   const sectionsFromUmconnect = await sequentially(schedules, async schedule => {
     const scheduleDetail = await fetchScheduleDetail(termCode, schedule.courseRegistrationNumber);
@@ -167,21 +184,22 @@ export async function syncSchedules(
   const creditsMin = creditsList[0];
   const credits = creditsList[creditsList.length - 1];
 
-  const sectionsAsStrings = flatten(sectionsFromUmconnect
-    .map(section => section.crossList.map(course => course.join('__|__')))
+  const sectionsAsStrings = flatten(
+    sectionsFromUmconnect.map(section => section.crossList.map(course => course.join('__|__'))),
   );
   const uniqueSections = Object.keys(
-    sectionsAsStrings.reduce((obj, next) => {
-      obj[next] = true;
-      return obj;
-    }, {} as { [key: string]: true })
+    sectionsAsStrings.reduce(
+      (obj, next) => {
+        obj[next] = true;
+        return obj;
+      },
+      {} as { [key: string]: true },
+    ),
   );
   const crossList = uniqueSections.map(s => s.split('__|__') as [string, string]);
 
   const updatedCourseDetail: Partial<Model.Course> & Model.DbSynced = {
     _id: new Mongo.ObjectId(),
-    creditsMin,
-    credits,
     crossList: crossList.length > 0 ? crossList : undefined,
     lastTermCode: termCode,
     lastUpdateDate: new Date().getTime(),

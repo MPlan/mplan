@@ -106,7 +106,7 @@ export class DegreeGroupCourse extends React.Component<DegreeGroupCourseProps, {
         <NameAndCredits>
           <SimpleNameAndCredits>
             <SimpleName>{course.simpleName}</SimpleName>
-            <Credits>{course.creditsString}</Credits>
+            <Credits>{course.creditHoursFullString}</Credits>
           </SimpleNameAndCredits>
           <FullName>{course.name}</FullName>
         </NameAndCredits>

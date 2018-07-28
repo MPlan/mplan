@@ -35,13 +35,14 @@ export function Prerequisite({ prerequisite }: PrerequisiteProps): JSX.Element |
     );
   }
 
-  const logicGate = /*if*/ prerequisite.g === '&' ? 'ALL' : 'EITHER';
+  const logicGate = (prerequisite as any).and ? 'ALL' : 'EITHER';
+  const operators = ((prerequisite as any).and || (prerequisite as any).or) as Model.Prerequisite[];
 
   return (
     <PrerequisiteContainer>
       <Text small>{logicGate}</Text>
       <OperandsContainer>
-        {prerequisite.o.map((p, i) => <Prerequisite key={i} prerequisite={p} />)}
+        {operators.map((p, i) => <Prerequisite key={i} prerequisite={p} />)}
       </OperandsContainer>
     </PrerequisiteContainer>
   );

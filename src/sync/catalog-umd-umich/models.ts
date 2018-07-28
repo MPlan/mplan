@@ -13,8 +13,8 @@ export interface Course {
   description: string;
   creditHours: number | [number, number];
   restrictions?: string[];
-  prerequisite?: Prerequisite;
-  corequisite?: Corequisite[];
+  prerequisites?: Prerequisite;
+  corequisites?: Corequisite[];
 }
 
 export interface Subject {

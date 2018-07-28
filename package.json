@@ -11,7 +11,8 @@
     "server": "ts-node ./src/server/index.ts",
     "build": "webpack -p",
     "heroku-prebuild": "npm install --only=dev && npm install && npm run build",
-    "pretty": "prettier --single-quote --write ./src/**/*.ts ./src/**/*.tsx"
+    "pretty": "prettier --single-quote --write ./src/**/*.ts ./src/**/*.tsx",
+    "sync-catalog": "NODE_PATH=./src ts-node ./src/sync/index"
   },
   "private": true,
   "author": "",

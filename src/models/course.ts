@@ -57,13 +57,13 @@ function flattenPrerequisites(
     );
   }
   if (typeof prerequisite === 'object') {
-    if (prerequisite.g === '&') {
-      const operandsPrerequisites = prerequisite.o.map(operand =>
-        flattenPrerequisites(operand, catalog),
-      );
+    if ((prerequisite as any).and) {
+      const and = (prerequisite as any).and as Model.Prerequisite[];
+      const operandsPrerequisites = and.map(operand => flattenPrerequisites(operand, catalog));
       return allCombinations(operandsPrerequisites);
-    } else if (prerequisite.g === '|') {
-      const operandSetsFlattened = prerequisite.o
+    } else if ((prerequisite as any).or) {
+      const or = (prerequisite as any).or as Model.Prerequisite[];
+      const operandSetsFlattened = or
         .map(operand => flattenPrerequisites(operand, catalog))
         .reduce(
           (combinedSetOfSets, flattenedOperand) =>
@@ -85,13 +85,10 @@ export class Course
       subjectCode: '',
       courseNumber: '',
       description: undefined as string | undefined | null,
-      credits: undefined as number | undefined | null,
-      creditsMin: undefined as number | undefined | null,
-      creditHours: undefined as number | undefined | null,
-      creditHoursMin: undefined as number | undefined | null,
-      restrictions: undefined as string | undefined | null,
-      prerequisites: undefined as Model.Prerequisite,
-      corequisites: undefined as Model.Prerequisite,
+      creditHours: undefined as [number, number] | number | undefined | null,
+      restrictions: undefined as string[] | undefined | null,
+      prerequisites: undefined as Model.Prerequisite | undefined,
+      corequisites: undefined as Model.Corequisite[] | undefined,
       crossList: undefined as Array<[string, string]> | undefined | null,
       scheduleTypes: [] as string[],
       lastUpdateDate: 0,
@@ -117,26 +114,18 @@ export class Course
     return `${this.subjectCode} ${this.courseNumber}`;
   }
 
-  get creditHoursString() {
-    const _min = this.creditHoursMin;
-    const _max = this.creditHours;
-
-    const min = _min || _max;
-    const max = _max || _min;
-
-    if (max === undefined) return '';
-    if (min !== max) return `${min} - ${max} credit hours`;
-    return `${max} credit hours`;
+  get creditHoursFullString() {
+    if (!this.creditHours) return '';
+    if (Array.isArray(this.creditHours))
+      return `${this.creditHours[0]} - ${this.creditHours[1]} credit hours`;
+    if (this.creditHours === 1) return '1 credit hour';
+    return `${this.creditHours} credit hours`;
   }
 
-  get creditsString() {
-    const max = this.credits || this.creditHours || 0;
-    const min = this.creditsMin || this.creditHoursMin || max;
-
-    if (min === max) {
-      return `${min} credits`;
-    }
-    return `${min} - ${max} credits`;
+  get creditHoursString() {
+    if (!this.creditHours) return 'NA';
+    if (Array.isArray(this.creditHours)) return `${this.creditHours[0]} - ${this.creditHours[1]}`;
+    return this.creditHours.toString();
   }
 
   static optionsMemo = new Map<any, any>();
@@ -255,6 +244,7 @@ export class Course
     if (Course.optionsMemo.has(hash)) {
       return Course.optionsMemo.get(hash);
     }
+    if (!this.prerequisites) return Immutable.Set<Immutable.Set<string | Course>>();
     const flattened = flattenPrerequisites(this.prerequisites, catalog);
     Course.optionsMemo.set(hash, flattened);
     return flattened;

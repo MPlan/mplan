@@ -1,5 +1,7 @@
 import * as Immutable from 'immutable';
 import { ObjectID as _ObjectId } from 'bson';
+import { Prerequisite, Corequisite } from 'sync/catalog-umd-umich/models';
+export { Prerequisite, Corequisite };
 
 export function ObjectId(id?: string | number | _ObjectId) {
   return (_ObjectId as any)(id) as _ObjectId;

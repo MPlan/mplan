@@ -8,12 +8,7 @@ import * as throng from 'throng';
 import * as compression from 'compression';
 
 import { api } from './api';
-import { getOrThrow, log } from '../utilities/utilities';
-import {
-  queue,
-  executeSchedulerQueue,
-  restartUnfinishedJobs
-} from './scheduler/scheduler';
+import { log } from '../utilities/utilities';
 import { dbConnection } from './models/mongo';
 
 const app = express();
@@ -36,10 +31,7 @@ async function start(workerId: number) {
   }
 
   app.use('/api', api);
-  app.use(
-    compression(),
-    express.static(path.resolve(__dirname, '../web-root'))
-  );
+  app.use(compression(), express.static(path.resolve(__dirname, '../web-root')));
   app.use('*', compression(), (req, res) => {
     res.sendFile(path.resolve(__dirname, '../web-root/index.html'));
   });
@@ -53,18 +45,10 @@ async function start(workerId: number) {
     log.info('Disconnected successful from the database.');
     log.info('Exiting process...');
   });
-
-  // process.exit(0);
-  // await executeSchedulerQueue();
 }
 
 async function master() {
   log.info('Application started');
-  // await restartUnfinishedJobs();
-  // await queue({
-  //   jobName: 'sync',
-  //   plannedStartTime: new Date().getTime()
-  // });
 }
 
 throng({ workers: webConcurrency, start, master });

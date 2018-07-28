@@ -1,18 +1,15 @@
-import * as cluster from 'cluster';
 import * as Mongo from 'mongodb';
-import {
-  log, getOrThrow, throwIfNotOne, removeEmptyKeys, combineObjects
-} from '../../utilities/utilities';
+import { log, getOrThrow, removeEmptyKeys } from '../../utilities/utilities';
 import { Job, JobFailure, JobSuccess, JobInProgress } from './jobs';
 import * as Model from '../../models/models';
 
 const mongoUri = getOrThrow(process.env.MONGODB_URI);
 
 export async function updateIfSameTermOrLater<T extends Model.DbSynced>(options: {
-  itemsToUpdate: Array<Partial<T> & Model.DbSynced>,
-  collection: Mongo.Collection<T>,
-  query: (t: Partial<T>) => Partial<T>,
-  replace?: boolean,
+  itemsToUpdate: Array<Partial<T> & Model.DbSynced>;
+  collection: Mongo.Collection<T>;
+  query: (t: Partial<T>) => Partial<T>;
+  replace?: boolean;
 }) {
   const { collection, itemsToUpdate, query } = options;
 
@@ -23,7 +20,9 @@ export async function updateIfSameTermOrLater<T extends Model.DbSynced>(options:
       const insertedCount = await collection.insertOne(itemToUpdate);
     } else {
       // don't do an update if the object is from a previous term
-      if (itemToUpdate.lastTermCode < existingItem.lastTermCode) { continue; }
+      if (itemToUpdate.lastTermCode < existingItem.lastTermCode) {
+        continue;
+      }
 
       const replacement: T = {
         ...removeEmptyKeys(existingItem as any),
@@ -41,22 +40,42 @@ async function createMongoDbConnection() {
   if (!match) {
     throw new Error('Could not find database name in mongo URI');
   }
-  const databaseName = match[1]
+  const databaseName = match[1];
   const client = await Mongo.MongoClient.connect(mongoUri);
   log.info(`P${process.pid} Connected to the database!`);
   const db = client.db(databaseName);
 
   const collections = {
-    get jobs() { return db.collection<Job>('Jobs'); },
-    get jobFailures() { return db.collection<JobFailure>('JobFailures'); },
-    get jobSuccesses() { return db.collection<JobSuccess>('JobSuccesses'); },
-    get jobsInProgress() { return db.collection<JobInProgress>('JobsInProgress'); },
-    get terms() { return db.collection<Model.Term>('Terms'); },
-    get subjects() { return db.collection<Model.Subject>('Subjects'); },
-    get courses() { return db.collection<Model.Course>('Courses'); },
-    get sections() { return db.collection<Model.Section>('Sections'); },
-    get users() { return db.collection<Model.User>('Users'); },
-    get degrees() { return db.collection<any>('Degrees'); },
+    get jobs() {
+      return db.collection<Job>('Jobs');
+    },
+    get jobFailures() {
+      return db.collection<JobFailure>('JobFailures');
+    },
+    get jobSuccesses() {
+      return db.collection<JobSuccess>('JobSuccesses');
+    },
+    get jobsInProgress() {
+      return db.collection<JobInProgress>('JobsInProgress');
+    },
+    get terms() {
+      return db.collection<Model.Term>('Terms');
+    },
+    get subjects() {
+      return db.collection<Model.Subject>('Subjects');
+    },
+    get courses() {
+      return db.collection<Model.Course>('Courses');
+    },
+    get sections() {
+      return db.collection<Model.Section>('Sections');
+    },
+    get users() {
+      return db.collection<Model.User>('Users');
+    },
+    get degrees() {
+      return db.collection<any>('Degrees');
+    },
     close: client.close.bind(client) as (force?: boolean) => Promise<void>,
   };
 

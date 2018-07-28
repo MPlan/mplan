@@ -89,7 +89,7 @@ export class Course extends React.PureComponent<CourseProps, CourseState> {
         <Summary>
           <SimpleName>{course.simpleName}</SimpleName>
           <FullName>{course.name}</FullName>
-          <CreditHours>{course.creditHoursString}</CreditHours>
+          <CreditHours>{course.creditHoursFullString}</CreditHours>
         </Summary>
         <Description>
           <Text>{this.activeDescription}</Text>

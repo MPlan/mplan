@@ -41,7 +41,10 @@ export class Semester extends Record.define({
 
   totalCredits() {
     return this.courses()
-      .map(course => course.credits || 0)
+      .map(
+        course =>
+          Array.isArray(course.creditHours) ? course.creditHours[1] : course.creditHours || 0,
+      )
       .reduce((sum, next) => sum + next, 0);
   }
 

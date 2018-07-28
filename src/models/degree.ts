@@ -10,7 +10,7 @@ import { App } from './app';
 import { SortEnd } from 'react-sortable-hoc';
 import { MasteredDegree } from './mastered-degree';
 
-const emptyDegreeId = '5b2f1c7d2889270190a73af8'
+const emptyDegreeId = '5b2f1c7d2889270190a73af8';
 const emptyDegree = new MasteredDegree({
   name: 'Custom Degree',
   descriptionHtml: 'Custom Degree',
@@ -27,7 +27,7 @@ export function printSchedule(schedule: Immutable.List<Immutable.Set<Course>>) {
         .map(
           course =>
             /*if*/ course instanceof Course
-              ? `${course.simpleName} (${course.credits || course.creditHours || 0})`
+              ? `${course.simpleName} (${course.creditHoursString})`
               : course,
         )
         .join(', '),
@@ -69,10 +69,13 @@ export function generatePlans(degree: Degree, options: PlanOptions) {
    */
   function canPlace(course: Course, semester: Immutable.Set<Course>) {
     const totalCredits = semester.reduce(
-      (sum, course) => sum + (course.credits || course.creditHours || 0),
+      (sum, course) =>
+        sum + (Array.isArray(course.creditHours) ? course.creditHours[1] : course.creditHours || 0),
       0,
     );
-    const newCourseCredits = course.credits || course.creditHours || 0;
+    const newCourseCredits = Array.isArray(course.creditHours)
+      ? course.creditHours[1]
+      : course.creditHours || 0;
 
     if (totalCredits + newCourseCredits > creditHourCap) return false;
     if (!course.prerequisitesSatisfied(processedCourses)) return false;
@@ -221,14 +224,17 @@ export class Degree extends Record.define({
       return this.degreeGroups.reduce(
         (totalCredits, group) =>
           totalCredits +
-          group
-            .courses()
-            .reduce(
-              (totalCredits, course) =>
-                totalCredits +
-                (course instanceof Course ? course.credits || course.creditHours || 0 : 0),
-              0,
-            ),
+          group.courses().reduce(
+            (totalCredits, course) =>
+              totalCredits +
+              // TODO use picked credit hours
+              (course instanceof Course
+                ? Array.isArray(course.creditHours)
+                  ? course.creditHours[1]
+                  : course.creditHours || 0
+                : 0),
+            0,
+          ),
         0,
       );
     });
@@ -241,7 +247,10 @@ export class Degree extends Record.define({
         .map(id => courses.find(course => course.id === id)!)
         .filter(x => x);
       const nextCredits = completedCourses
-        .map(course => course.credits || course.creditHours || 0)
+        .map(
+          course =>
+            Array.isArray(course.creditHours) ? course.creditHours[1] : course.creditHours || 0,
+        )
         .reduce((sum, next) => sum + next, 0);
       return completedCredits + nextCredits;
     }, 0);
