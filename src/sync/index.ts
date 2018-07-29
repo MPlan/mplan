@@ -2,7 +2,7 @@ if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
 
-import { fetchCourses, fetchUndergraduateSubjects } from './catalog-umd-umich';
+import { fetchCourses, fetchSubjects } from './catalog-umd-umich';
 import { dbConnection } from 'server/models/mongo';
 import { sequentially } from 'utilities/utilities';
 import { flatten } from 'lodash';
@@ -15,13 +15,28 @@ async function main() {
     parseErrors.insertOne({ message, timestamp: Date.now() });
   }
 
-  const subjects = await fetchUndergraduateSubjects(logger);
-  if (!subjects) throw new Error('No subjects');
-  const subjectCodes = subjects.map(({ code }) => code);
-  const _courses = await sequentially(subjectCodes, async subjectCode => {
+  console.log('Fetching subjects...');
+  const undergraduateSubjects = await fetchSubjects('undergraduate', logger);
+  const graduateSubjects = await fetchSubjects('graduate', logger);
+
+  if (!undergraduateSubjects) throw new Error('No undergraduate subjects');
+  if (!graduateSubjects) throw new Error('No graduate subjects');
+
+  console.log('Fetching courses...');
+  // undergraduate
+  const undergraduateSubjectCodes = undergraduateSubjects.map(({ code }) => code);
+  const _undergraduateCourses = await sequentially(undergraduateSubjectCodes, async subjectCode => {
     return (await fetchCourses('undergraduate', subjectCode, logger))!;
   });
-  const coursesToSave = flatten(_courses.filter(x => !!x));
+  const undergraduateCoursesToSave = flatten(_undergraduateCourses.filter(x => !!x));
+  // graduate
+  const graduateSubjectCodes = graduateSubjects.map(({ code }) => code);
+  const _graduateCourses = await sequentially(graduateSubjectCodes, async subjectCode => {
+    return (await fetchCourses('undergraduate', subjectCode, logger))!;
+  });
+  const graduateCoursesToSave = flatten(_graduateCourses.filter(x => !!x));
+
+  const coursesToSave = [...undergraduateCoursesToSave, ...graduateCoursesToSave];
 
   await sequentially(coursesToSave, async course => {
     console.log(`Saving ${course.subjectCode} ${course.courseNumber}`);

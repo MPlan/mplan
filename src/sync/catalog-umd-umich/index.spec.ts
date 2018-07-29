@@ -1,11 +1,11 @@
-import { fetchUndergraduateSubjects, fetchCourses } from './';
+import { fetchSubjects, fetchCourses } from './';
 import { sequentially } from 'utilities/utilities';
 import { Course } from './models';
 
 describe('catalog-umd-umich-scraper', () => {
   it('gets all the undergraduate courses without crashing', async () => {
     jest.setTimeout(3 * 60 * 1000);
-    const subjects = await fetchUndergraduateSubjects();
+    const subjects = await fetchSubjects('undergraduate');
     if (!subjects) throw new Error('No subjects');
     const subjectCodes = subjects.map(({ code }) => code);
     const _courses = await sequentially(subjectCodes, async subjectCode => {

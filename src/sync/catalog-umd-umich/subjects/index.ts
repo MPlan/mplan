@@ -1,13 +1,16 @@
-import { fetchUndergraduateSubjectsHtml } from './fetch';
+import { fetchSubjectsHtml } from './fetch';
 import { parseSubjects } from './parse';
 
-export async function fetchUndergraduateSubjects(logger?: (message: string) => void) {
-  const subjectsHtml = await fetchUndergraduateSubjectsHtml();
+export async function fetchSubjects(
+  level: 'undergraduate' | 'graduate',
+  logger?: (message: string) => void,
+) {
+  const subjectsHtml = await fetchSubjectsHtml(level);
   const log = logger || console.warn.bind(console);
   try {
     return parseSubjects(subjectsHtml);
   } catch (e) {
-    log(`Failed to get and parse undergraduate subjects: ${e && e.message}`);
+    log(`Failed to get and parse ${level} subjects: ${e && e.message}`);
     return undefined;
   }
 }
