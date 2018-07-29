@@ -1,12 +1,17 @@
 import { fetchCourseList } from './fetch';
 import { parseCourses } from './parse';
 
-export async function fetchCourses(level: 'undergraduate' | 'graduate', subjectCode: string) {
+export async function fetchCourses(
+  level: 'undergraduate' | 'graduate',
+  subjectCode: string,
+  logger?: (message: string) => void,
+) {
+  const log = logger || console.warn.bind(console);
   const courseList = await fetchCourseList(level, subjectCode);
   try {
-    return parseCourses(courseList);
+    return parseCourses(courseList, log);
   } catch (e) {
-    console.warn(`Could not get courses for "${level}" subject code: "${subjectCode}"`, e);
+    log(`Could not get courses for "${level}" subject code: "${subjectCode}"`, e);
     return undefined;
   }
 }

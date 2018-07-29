@@ -76,6 +76,9 @@ async function createMongoDbConnection() {
     get degrees() {
       return db.collection<any>('Degrees');
     },
+    get parseErrors() {
+      return db.collection<any>('ParseErrors');
+    },
     close: client.close.bind(client) as (force?: boolean) => Promise<void>,
   };
 

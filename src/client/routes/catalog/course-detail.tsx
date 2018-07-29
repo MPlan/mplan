@@ -90,7 +90,7 @@ class CourseDetail extends React.PureComponent<CourseDetailProps, CourseDetailSt
         )}
         {course.prerequisites && (
           <Row>
-            <Key>Prerequisites</Key>
+            <Key>Prerequisites:</Key>
             <Prerequisite prerequisite={course.prerequisites} />
           </Row>
         )}

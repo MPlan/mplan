@@ -8,15 +8,21 @@ import { sequentially } from 'utilities/utilities';
 import { flatten } from 'lodash';
 
 async function main() {
-  const subjects = await fetchUndergraduateSubjects();
+  const { courses, parseErrors } = await dbConnection;
+
+  function logger(message: string) {
+    console.warn(message);
+    parseErrors.insertOne({ message, timestamp: Date.now() });
+  }
+
+  const subjects = await fetchUndergraduateSubjects(logger);
   if (!subjects) throw new Error('No subjects');
   const subjectCodes = subjects.map(({ code }) => code);
   const _courses = await sequentially(subjectCodes, async subjectCode => {
-    return (await fetchCourses('undergraduate', subjectCode))!;
+    return (await fetchCourses('undergraduate', subjectCode, logger))!;
   });
   const coursesToSave = flatten(_courses.filter(x => !!x));
 
-  const { courses } = await dbConnection;
   await sequentially(coursesToSave, async course => {
     console.log(`Saving ${course.subjectCode} ${course.courseNumber}`);
     const courseFromDb = await courses.findOne({

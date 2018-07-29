@@ -4,7 +4,11 @@ import { parseCourseBlockTitle } from './course-block-title';
 import { parseCourseBlockExtra } from './course-block-extra';
 import { Prerequisite, Course } from '../../models';
 
-export function parseCourses(courseListHtml: string): Course[] {
+export function parseCourses(
+  courseListHtml: string,
+  _logger?: (message: string) => void,
+): Course[] {
+  const logger = _logger || console.warn.bind(console);
   const { window } = new JSDOM(courseListHtml);
   const { document } = window;
   const courseBlocks = Array.from(document.querySelectorAll('.courseblock'));
@@ -34,7 +38,7 @@ export function parseCourses(courseListHtml: string): Course[] {
             try {
               return parseCourseBlockExtra(block);
             } catch (e) {
-              console.warn(`Couldn't parse ${subjectCode} ${courseNumber}`, e);
+              logger(`Couldn't parse ${subjectCode} ${courseNumber}: ${e && e.message}`);
               return undefined;
             }
           })
@@ -59,7 +63,7 @@ export function parseCourses(courseListHtml: string): Course[] {
           ...extras,
         };
       } catch (e) {
-        console.error('Failed to parse a course', e);
+        logger(`Failed to parse a course: ${e && e.message}`);
         return undefined as any;
       }
     })
