@@ -9,10 +9,11 @@ import { flatten } from 'lodash';
 
 async function main() {
   const { courses, parseErrors } = await dbConnection;
+  const jobStartTimestamp = Date.now();
 
   function logger(message: string) {
     console.warn(message);
-    parseErrors.insertOne({ message, timestamp: Date.now() });
+    parseErrors.insertOne({ message, timestamp: Date.now(), jobStartTimestamp });
   }
 
   console.log('Fetching subjects...');
