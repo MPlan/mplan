@@ -1,11 +1,7 @@
 import * as Model from 'models';
 import * as Immutable from 'immutable';
-import { DegreeEditor, DegreeEditorProps } from './degree-editor';
+import { DegreeEditor } from './degree-editor';
 import { RouteComponentProps } from 'react-router-dom';
-
-const scopeDefiner = (store: Model.App) => ({
-  masteredDegrees: store.masteredDegrees,
-});
 
 export interface DegreeEditorContainerProps extends RouteComponentProps<{}> {}
 

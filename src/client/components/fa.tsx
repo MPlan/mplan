@@ -1,6 +1,6 @@
 import * as React from 'react';
-const FontAwesomeIcon = require('@fortawesome/react-fontawesome').default;
-const icons = require('@ricokahler/fontawesome-pro-light').default;
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import * as icons from '@fortawesome/pro-light-svg-icons';
 
 interface FaProps {
   icon: string;
@@ -23,5 +23,5 @@ interface FaProps {
 export function Fa(props: FaProps) {
   const { icon, ...restOfProps } = props;
   const iconKey = `fa${icon.charAt(0).toUpperCase()}${icon.substring(1)}`;
-  return <FontAwesomeIcon icon={icons[iconKey]} {...restOfProps} />;
+  return <FontAwesomeIcon icon={(icons as any)[iconKey]} {...restOfProps} />;
 }

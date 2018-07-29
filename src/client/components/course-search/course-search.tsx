@@ -1,18 +1,19 @@
 import * as React from 'react';
 import * as Model from 'models';
-import * as Immutable from 'immutable';
-import * as styles from 'styles';
-import styled from 'styled-components';
-import { View } from 'components/view';
-import { Text } from 'components/text';
-import { CourseSearchItem } from './course-search-item';
-import { Button } from 'components/button';
-import { Fa } from 'components/fa';
+import * as uuid from 'uuid/v4';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
 import { debounceTime } from 'rxjs/operators';
-import * as uuid from 'uuid/v4';
+import * as styles from 'styles';
+import styled from 'styled-components';
+
+import { View } from 'components/view';
+import { Text } from 'components/text';
+import { Button } from 'components/button';
+import { Fa } from 'components/fa';
 import { Modal } from 'components/modal';
+
+import { CourseSearchItem } from './course-search-item';
 
 const INPUT_DEBOUNCE_TIME = 250;
 
@@ -67,14 +68,14 @@ const ButtonRow = styled(View)`
 `;
 
 export interface CourseSearchProps {
+  title: string;
+  open: boolean;
   defaultCourses: Model.Course[];
   searchResults: Model.Course[];
   totalMatches: number;
-  title: string;
-  open: boolean;
-  onSaveCourses: (course: Model.Course[]) => void;
-  onCancel: () => void;
   onSearch: (query: string) => void;
+  onCancel: () => void;
+  onSaveCourses: (course: Model.Course[]) => void;
 }
 
 export interface CourseSearchState {
@@ -82,7 +83,7 @@ export interface CourseSearchState {
   currentCourses: Model.Course[];
 }
 
-export class CourseSearch extends React.PureComponent<CourseSearchProps, CourseSearchState> {
+class _CourseSearch extends React.PureComponent<CourseSearchProps, CourseSearchState> {
   input$ = new Subject<string>();
   subscription: Subscription | undefined;
   htmlForId = uuid();
@@ -210,3 +211,5 @@ export class CourseSearch extends React.PureComponent<CourseSearchProps, CourseS
     );
   }
 }
+
+export const CourseSearch = (_CourseSearch as any) as React.ComponentType<CourseSearchProps>;

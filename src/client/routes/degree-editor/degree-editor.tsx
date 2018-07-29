@@ -152,7 +152,7 @@ export interface DegreeEditorProps extends RouteComponentProps<{}> {
 }
 export interface DegreeEditorState extends InitialState {}
 
-export class DegreeEditor extends React.PureComponent<DegreeEditorProps, DegreeEditorState> {
+class _DegreeEditor extends React.PureComponent<DegreeEditorProps, DegreeEditorState> {
   searchMainRef = React.createRef<HTMLInputElement>();
 
   componentDidMount() {
@@ -278,3 +278,5 @@ export class DegreeEditor extends React.PureComponent<DegreeEditorProps, DegreeE
     );
   }
 }
+
+export const DegreeEditor = (_DegreeEditor as any) as React.ComponentType<DegreeEditorProps>;

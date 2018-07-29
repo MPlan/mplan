@@ -134,7 +134,7 @@ export function createStore<Store extends Immutable.Record<any>>(initialStore: S
     }
 
     return (Component: React.ComponentType<ComponentProps>) => {
-      return class ConnectedComponent extends React.PureComponent<
+      const connectedComponent = class ConnectedComponent extends React.PureComponent<
         OwnProps,
         ConnectedComponentState
       > {
@@ -236,6 +236,8 @@ export function createStore<Store extends Immutable.Record<any>>(initialStore: S
           return <Component {...componentProps} />;
         }
       };
+
+      return (connectedComponent as any) as React.ComponentType<OwnProps>;
       // TODO:
       // return React.forwardRef<Ref, OwnProps & { forwardedRef?: any }>((props, ref) => (
       //   <ConnectedComponent {...props} forwardedRef={ref} />

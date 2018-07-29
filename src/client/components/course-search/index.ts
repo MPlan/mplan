@@ -1,4 +1,3 @@
-import * as React from 'react';
 import * as Model from 'models';
 import { CourseSearch } from './course-search';
 
