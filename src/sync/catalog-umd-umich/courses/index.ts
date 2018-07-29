@@ -7,8 +7,8 @@ export async function fetchCourses(
   logger?: (message: string) => void,
 ) {
   const log = logger || console.warn.bind(console);
-  const courseList = await fetchCourseList(level, subjectCode);
   try {
+    const courseList = await fetchCourseList(level, subjectCode);
     return parseCourses(courseList, log);
   } catch (e) {
     log(`Could not get courses for "${level}" subject code: "${subjectCode}"`, e);

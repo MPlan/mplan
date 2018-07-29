@@ -22,6 +22,7 @@ async function main() {
 
   if (!undergraduateSubjects) throw new Error('No undergraduate subjects');
   if (!graduateSubjects) throw new Error('No graduate subjects');
+  console.log('Done getting subjects.');
 
   console.log('Fetching courses...');
   // undergraduate
@@ -38,7 +39,9 @@ async function main() {
   const graduateCoursesToSave = flatten(_graduateCourses.filter(x => !!x));
 
   const coursesToSave = [...undergraduateCoursesToSave, ...graduateCoursesToSave];
+  console.log('Done fetching courses.');
 
+  console.log('Saving courses to database...');
   await sequentially(coursesToSave, async course => {
     console.log(`Saving ${course.subjectCode} ${course.courseNumber}`);
     const courseFromDb = await courses.findOne({
@@ -61,8 +64,15 @@ async function main() {
     }
   });
 
-  console.log('Done!');
-  process.exit(0);
+  console.log('Done saving courses to database.');
 }
 
-main();
+main()
+  .then(() => {
+    console.log('Done!');
+    process.exit(0);
+  })
+  .catch(error => {
+    console.error(error);
+    process.exit(1);
+  });
