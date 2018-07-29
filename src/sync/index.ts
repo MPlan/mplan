@@ -34,7 +34,7 @@ async function main() {
   // graduate
   const graduateSubjectCodes = graduateSubjects.map(({ code }) => code);
   const _graduateCourses = await sequentially(graduateSubjectCodes, async subjectCode => {
-    return (await fetchCourses('undergraduate', subjectCode, logger))!;
+    return (await fetchCourses('graduate', subjectCode, logger))!;
   });
   const graduateCoursesToSave = flatten(_graduateCourses.filter(x => !!x));
 
