@@ -63,8 +63,9 @@ async function main() {
       console.log(result);
     }
   });
-
   console.log('Done saving courses to database.');
+
+  
 }
 
 main()
