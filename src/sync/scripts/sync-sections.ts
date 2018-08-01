@@ -60,7 +60,9 @@ async function main() {
         errorLogger,
       );
       logger(
-        `${Math.floor((index + 1) * 100 / courseCount)}% Got sections for "${termCode} ${course.subjectCode} ${course.courseNumber}".`,
+        `${Math.floor(((index + 1) * 100) / courseCount)}% Got sections for "${termCode} ${
+          course.subjectCode
+        } ${course.courseNumber}".`,
       );
       return sections;
     });
@@ -71,7 +73,9 @@ async function main() {
       sectionSections.filter(sections => !!sections).map(sections => sections!),
     );
 
+    let sectionIndex = 0;
     for (const sectionToSave of sectionsToSave) {
+      const percentage = `${Math.floor((sectionIndex * 100) / sectionsToSave.length)}%`;
       const existingSection = await sections.findOne({
         termCode: sectionToSave.termCode,
         courseRegistrationNumber: sectionToSave.courseRegistrationNumber,
@@ -90,12 +94,13 @@ async function main() {
           },
           sectionToSave,
         );
-        logger(`Replaced section: ${JSON.stringify(result)}`);
+        logger(`${percentage} | Replaced section: ${JSON.stringify(result)}`);
       } else {
         // insert
         const result = await sections.insertOne(sectionToSave);
-        logger(`Inserted section: ${JSON.stringify(result)}`);
+        logger(`${percentage} | Inserted section: ${JSON.stringify(result)}`);
       }
+      sectionIndex += 1;
     }
     logger(`Done saving sections to DB for term code "${termCode}"`);
   }
