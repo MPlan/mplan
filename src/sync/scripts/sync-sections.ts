@@ -10,6 +10,8 @@ import { flatten } from 'lodash';
 import * as Model from 'models';
 
 async function main() {
+  const { courses, sections, syncErrors, syncReports, syncStatus } = await dbConnection;
+  
   await wait(10 * 1000);
   const jobTimestamp = Date.now();
   const termCodes = process.argv
@@ -41,7 +43,6 @@ async function main() {
 
   logger(`Started job to sync sections from terms: ${termCodes.join(', ')} at ${jobTimestamp}`);
 
-  const { courses, sections, syncErrors, syncReports, syncStatus } = await dbConnection;
 
   logger('Fetching all courses from DB...');
   const coursesFromDb = await courses.find({}).toArray();
