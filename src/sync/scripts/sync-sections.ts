@@ -102,4 +102,4 @@ async function main() {
 
 main()
   .then(() => console.log('DONE!'))
-  .catch(e => console.error(`Failed to sync sections: ${e && e.message}`));
+  .catch(e => console.error(`Failed to sync sections: ${e && e.message}`, e));
