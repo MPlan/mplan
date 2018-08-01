@@ -5,11 +5,12 @@ if (process.env.NODE_ENV !== 'production') {
 import { dbConnection } from 'server/models/mongo';
 import { fetchSections } from 'sync';
 import { RemoveProps } from 'utilities/typings';
-import { sequentially } from 'utilities/utilities';
+import { sequentially, wait } from 'utilities/utilities';
 import { flatten } from 'lodash';
 import * as Model from 'models';
 
 async function main() {
+  await wait(10 * 1000);
   const jobTimestamp = Date.now();
   const termCodes = process.argv
     .slice(2)
