@@ -28,9 +28,11 @@ export function Prerequisite({ prerequisite }: PrerequisiteProps): JSX.Element |
   if (Array.isArray(prerequisite)) {
     const subjectCode = prerequisite[0];
     const courseNumber = prerequisite[1];
+    const concurrent = prerequisite[2] === 'CONCURRENT';
     return (
       <Text small>
         {subjectCode} {courseNumber}
+        {concurrent ? '*' : ''}
       </Text>
     );
   }
@@ -42,7 +44,9 @@ export function Prerequisite({ prerequisite }: PrerequisiteProps): JSX.Element |
     <PrerequisiteContainer>
       <Text small>{logicGate}</Text>
       <OperandsContainer>
-        {operators.map((p, i) => <Prerequisite key={i} prerequisite={p} />)}
+        {operators.map((p, i) => (
+          <Prerequisite key={i} prerequisite={p} />
+        ))}
       </OperandsContainer>
     </PrerequisiteContainer>
   );
