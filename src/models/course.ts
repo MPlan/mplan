@@ -107,7 +107,7 @@ export class Course
     return this._id.toHexString();
   }
   get catalogId() {
-    return `${this.subjectCode}__|__${this.courseNumber}`;
+    return `${this.subjectCode}__|__${this.courseNumber}`.toUpperCase();
   }
   get simpleName() {
     return `${this.subjectCode} ${this.courseNumber}`;

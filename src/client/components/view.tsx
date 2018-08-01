@@ -7,4 +7,5 @@ export interface ViewProps
 export const View = styled.div`
   display: flex;
   flex-direction: column;
+  flex: 0 0 auto;
 `;

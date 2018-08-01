@@ -75,6 +75,7 @@ export class Plan extends Record.define({
     if (Plan.warningsNotOfferedDuringSeason.has(hash)) {
       return Plan.warningsNotOfferedDuringSeason.get(hash);
     }
+
     const allCourses = this.semesterMap
       .valueSeq()
       .map(semester =>
@@ -84,18 +85,21 @@ export class Plan extends Record.define({
             semester,
           }))
           .filter(({ course }) => !!course)
-          .map(({ course, semester }) => ({
-            course,
-            semester,
-            hasRanDuringSeason:
-              semester.season === 'Winter'
-                ? course.winterSections.count() > 0
-                : semester.season === 'Summer'
-                  ? course.summerSections.count() > 0
-                  : semester.season === 'Fall'
-                    ? course.winterSections.count() > 0
-                    : false,
-          }))
+          .map(({ course, semester }) => {
+            // debugger;
+            return {
+              course,
+              semester,
+              hasRanDuringSeason:
+                semester.season === 'winter'
+                  ? course.winterSections.count() > 0
+                  : semester.season === 'summer'
+                    ? course.summerSections.count() > 0
+                    : semester.season === 'fall'
+                      ? course.fallSections.count() > 0
+                      : false,
+            };
+          })
           .filter(({ hasRanDuringSeason }) => !hasRanDuringSeason)
           .map(
             ({ course, semester }) =>

@@ -9,7 +9,7 @@ export class Semester extends Record.define({
   _id: ObjectId(),
   /** these are in the form `__subjectCode|courseNumber__` */
   _courseIds: Immutable.List<string>(),
-  season: 'Fall' as 'Fall' | 'Winter' | 'Summer',
+  season: 'fall' as 'fall' | 'winter' | 'summer',
   year: 0,
 }) {
   get root(): App {
@@ -21,7 +21,7 @@ export class Semester extends Record.define({
 
   get position() {
     const seasonNumber =
-      /*if*/ this.season === 'Winter' ? 0 : /*if*/ this.season === 'Summer' ? 1 / 3 : 2 / 3;
+      /*if*/ this.season === 'winter' ? 0 : /*if*/ this.season === 'summer' ? 1 / 3 : 2 / 3;
     return seasonNumber + this.year;
   }
 
@@ -73,52 +73,52 @@ export class Semester extends Record.define({
   }
 
   private _previousSemesterSeason() {
-    if (this.season === 'Winter') {
-      return 'Fall';
+    if (this.season === 'winter') {
+      return 'fall';
     }
-    if (this.season === 'Fall') {
-      return 'Summer';
+    if (this.season === 'fall') {
+      return 'summer';
     }
-    if (this.season === 'Summer') {
-      return 'Winter';
+    if (this.season === 'summer') {
+      return 'winter';
     }
     throw new Error('season was neither Winter, Fall, or Summer');
   }
 
   private _previousSemesterYear() {
-    if (this.season === 'Winter') {
+    if (this.season === 'winter') {
       return this.year - 1;
     }
     return this.year;
   }
 
   private _nextSemesterSeason() {
-    if (this.season === 'Winter') {
-      return 'Summer';
+    if (this.season === 'winter') {
+      return 'summer';
     }
-    if (this.season === 'Fall') {
-      return 'Winter';
+    if (this.season === 'fall') {
+      return 'winter';
     }
-    if (this.season === 'Summer') {
-      return 'Fall';
+    if (this.season === 'summer') {
+      return 'fall';
     }
     throw new Error('season was neither Winter, Fall, or Summer');
   }
 
   private _nextSemesterYear() {
-    if (this.season === 'Fall') {
+    if (this.season === 'fall') {
       return this.year + 1;
     }
     return this.year;
   }
 
-  previousSemester(): { season: 'Fall' | 'Winter' | 'Summer'; year: number } {
+  previousSemester(): { season: 'fall' | 'winter' | 'summer'; year: number } {
     const season = this._previousSemesterSeason();
     const year = this._previousSemesterYear();
     return { season, year };
   }
 
-  nextSemester(): { season: 'Fall' | 'Winter' | 'Summer'; year: number } {
+  nextSemester(): { season: 'fall' | 'winter' | 'summer'; year: number } {
     const season = this._nextSemesterSeason();
     const year = this._nextSemesterYear();
     return { season, year };

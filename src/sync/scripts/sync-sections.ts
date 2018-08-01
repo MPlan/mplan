@@ -45,14 +45,14 @@ async function main() {
 
   logger('Fetching all courses from DB...');
   const coursesFromDb = await courses.find({}).toArray();
+  const courseCount = coursesFromDb.length;
   logger('Done fetching courses.');
 
   logger(`Starting to fetch sections for all term codes (${termCodes.join(', ')})..`);
 
   for (const termCode of termCodes) {
     logger(`Fetching sections for term code "${termCode}"`);
-    const sectionSections = await sequentially(coursesFromDb, async course => {
-      logger(`Fetching sections for "${termCode} ${course.subjectCode} ${course.courseNumber}"`);
+    const sectionSections = await sequentially(coursesFromDb, async (course, index) => {
       const sections = await fetchSections(
         termCode,
         course.subjectCode,
@@ -60,7 +60,7 @@ async function main() {
         errorLogger,
       );
       logger(
-        `Done fetching sections for "${termCode} ${course.subjectCode} ${course.courseNumber}".`,
+        `${Math.floor((index + 1) * 100 / courseCount)}% Got sections for "${termCode} ${course.subjectCode} ${course.courseNumber}".`,
       );
       return sections;
     });

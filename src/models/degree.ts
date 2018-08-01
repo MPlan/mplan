@@ -267,7 +267,7 @@ export class Degree extends Record.define({
         (set, i) =>
           new Semester({
             _id: ObjectId(),
-            season: ['Winter', 'Summer', 'Fall'][i % 3] as any,
+            season: ['winter', 'summer', 'fall'][i % 3] as any,
             year: Math.floor(i / 3) + 2018,
             _courseIds: set.map(course => course.catalogId).toList(),
           }),

@@ -131,10 +131,15 @@ export function combineObjects<T>(...objects: any[]) {
   ) as T;
 }
 
-export async function sequentially<T, R>(list: T[], asyncFunction: (t: T) => Promise<R>) {
+export async function sequentially<T, R>(
+  list: T[],
+  asyncFunction: (t: T, index: number) => Promise<R>,
+) {
   const newList = [] as R[];
-  for (const i of list) {
-    newList.push(await asyncFunction(i));
+  let index = 0;
+  for (const item of list) {
+    newList.push(await asyncFunction(item, index));
+    index++;
   }
   return newList;
 }
