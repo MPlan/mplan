@@ -77,9 +77,7 @@ async function fetchCatalog() {
     }),
   });
   const joinedCatalog = (await response.json()) as Model.JoinedCatalog;
-  const catalogRecord = Record.Catalog.fromJS({ courseMap: joinedCatalog });
-  debugger;
-  return catalogRecord;
+  return Record.Catalog.fromJS({ courseMap: joinedCatalog });
 }
 
 async function fetchUser() {

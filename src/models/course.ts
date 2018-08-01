@@ -90,14 +90,13 @@ export class Course
       prerequisites: undefined as Model.Prerequisite | undefined,
       corequisites: undefined as Model.Corequisite[] | undefined,
       crossList: undefined as Array<[string, string]> | undefined | null,
-      scheduleTypes: [] as string[],
       lastUpdateDate: 0,
       lastTermCode: '',
       fallSections: Record.SetOf(Section),
       winterSections: Record.SetOf(Section),
       summerSections: Record.SetOf(Section),
     },
-    ['prerequisites', 'corequisites', 'crossList', 'scheduleTypes'],
+    ['prerequisites', 'corequisites', 'crossList', 'scheduleTypes', 'creditHours'],
   )
   implements Model.Course {
   get root(): App {
