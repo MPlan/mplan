@@ -12,7 +12,21 @@ type Unpacked<T> =
 type ScheduleListing = Unpacked<NonNullable<Unpacked<Unpacked<typeof fetchScheduleListings>>>>;
 type ScheduleDetail = NonNullable<Unpacked<Unpacked<typeof fetchScheduleDetail>>>;
 
-export type Section = ScheduleListing & ScheduleDetail;
+export type Section = ScheduleListing &
+  ScheduleDetail & {
+    subjectCode: string;
+    courseNumber: string;
+    termCode: string;
+    season: 'winter' | 'summer' | 'fall' | 'unknown';
+  };
+
+export function getSeasonFromTermCode(termCode: string) {
+  const lastDigits = termCode.substr(-2);
+  if (lastDigits === '10') return 'fall';
+  if (lastDigits === '20') return 'winter';
+  if (lastDigits === '30') return 'summer';
+  return 'unknown';
+}
 
 export async function fetchSections(
   termCode: string,
@@ -34,6 +48,10 @@ export async function fetchSections(
 
       if (!scheduleDetail) return undefined;
       const section: Section = {
+        subjectCode,
+        courseNumber,
+        termCode,
+        season: getSeasonFromTermCode(termCode),
         ...listing,
         ...scheduleDetail,
       };

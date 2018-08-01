@@ -1,22 +1,13 @@
 import * as Mongo from 'mongodb';
 import { Prerequisite, Corequisite } from 'sync/catalog-umd-umich/models';
 export { Prerequisite, Corequisite };
+import { Section as _Section } from 'sync/selfservice-umd-umich/sections';
+
+export interface Section extends _Section, DbSynced {}
 
 export interface DbSynced {
   _id: Mongo.ObjectId;
   lastUpdateDate: number;
-  lastTermCode: string;
-}
-
-export interface Term extends DbSynced {
-  code: string;
-  season: string;
-  year: number;
-}
-
-export interface Subject extends DbSynced {
-  code: string;
-  name: string;
 }
 
 export interface Course extends DbSynced {
@@ -34,40 +25,6 @@ export interface Course extends DbSynced {
   prerequisites?: Prerequisite | undefined;
   /** represents the set of courses needed to be taken either before or during the course */
   corequisites?: Corequisite[] | undefined;
-  /** tuples of courses that this course is cross listed with */
-  crossList?: Array<[string, string]> | undefined | null;
-  scheduleTypes?: string[] | undefined;
-}
-
-export interface Section extends DbSynced {
-  /** a link to the course id this section belongs to */
-  courseId: Mongo.ObjectId;
-  /** the term for this section */
-  termCode: string;
-  /** the course registration number */
-  courseRegistrationNumber: string;
-  /** unique name of the instructor */
-  instructors: string[];
-  /** schedule type of this section e.g. Lecture or Internet */
-  scheduleTypes: string[];
-  /** time of day of this schedule */
-  times: string[];
-  /** the days this schedule was offered on e.g. TR for Tuesday Thursdays */
-  days: string[];
-  /** the location of this section as it appears on the SIS */
-  locations: string[];
-  /** the total capacity *including* cross-listed seats */
-  capacity: number;
-  /** the remaining seats *including* cross-listed seats */
-  remaining: number;
-}
-
-export interface CourseWithSections extends Course {
-  sections: { [termCode: string]: Section[] };
-}
-
-export interface Catalog {
-  [courseId: string]: CourseWithSections;
 }
 
 export interface User extends DbSynced {
@@ -78,4 +35,27 @@ export interface User extends DbSynced {
   lastLoginDate: number;
   plan: any;
   degree: any;
+}
+
+export interface Report {
+  _id: Mongo.ObjectId;
+  message: string;
+  timestamp: number;
+  jobTimestamp: number;
+}
+
+export function courseKey(course: Course) {
+  return `${course.subjectCode}__|__${course.courseNumber}`.toUpperCase();
+}
+
+export interface JoinedCatalog {
+  [courseLookupKey: string]: Course & {
+    fallSections: Section[];
+    winterSections: Section[];
+    summerSections: Section[];
+  };
+}
+
+export interface SyncStatus {
+  lastSyncTimestamp: number;
 }

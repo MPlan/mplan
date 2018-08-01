@@ -76,32 +76,10 @@ async function fetchCatalog() {
       Authorization: `Bearer ${token}`,
     }),
   });
-  const courses = (await response.json()) as Model.Catalog;
-  const courseMap = Object.entries(courses).reduce((catalogRecord, [courseId, course]) => {
-    const { _id, sections: rawSections, ...restOfCourse } = course;
-
-    const sections = Object.entries(rawSections).reduce((sections, [_season, sectionList]) => {
-      const season = _season as 'Fall' | 'Winter' | 'Summer';
-      const sectionSet = sectionList.reduce((sectionSet, rawSection) => {
-        const section = new Record.Section({ ...rawSection });
-        return sectionSet.add(section);
-      }, Immutable.Set<Record.Section>());
-
-      return sections.set(season, sectionSet);
-    }, Immutable.Map<'Fall' | 'Winter' | 'Summer', Immutable.Set<Record.Section>>());
-
-    const courseRecord = new Record.Course({
-      ...restOfCourse,
-      _id: Record.ObjectId(course._id),
-      fallSections: sections.get('Fall') || Immutable.Set<Record.Section>(),
-      winterSections: sections.get('Winter') || Immutable.Set<Record.Section>(),
-      summerSections: sections.get('Summer') || Immutable.Set<Record.Section>(),
-    });
-    return catalogRecord.set(courseId, courseRecord);
-  }, Immutable.Map<string, Record.Course>());
-
-  const catalog = new Record.Catalog({ courseMap });
-  return catalog;
+  const joinedCatalog = (await response.json()) as Model.JoinedCatalog;
+  const catalogRecord = Record.Catalog.fromJS({ courseMap: joinedCatalog });
+  debugger;
+  return catalogRecord;
 }
 
 async function fetchUser() {

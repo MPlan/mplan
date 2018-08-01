@@ -28,3 +28,4 @@ export * from './store';
 export * from './catalog-ui';
 export * from './degree-page';
 export * from './search';
+export { Report, JoinedCatalog, SyncStatus, courseKey } from './models';

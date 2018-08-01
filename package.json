@@ -4,15 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "NODE_PATH=./src jest",
     "start": "npm run server & npm run start:client",
     "start:server": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server/index.ts",
     "start:client": "webpack-dev-server",
-    "server": "ts-node ./src/server/index.ts",
+    "server": "NODE_PATH=./src ts-node ./src/server/index.ts",
     "build": "webpack -p",
     "heroku-prebuild": "npm install --only=dev && npm install && npm run build",
     "pretty": "prettier --single-quote --write ./src/**/*.ts ./src/**/*.tsx",
-    "sync-catalog": "NODE_PATH=./src ts-node ./src/sync/index"
+    "sync-courses": "NODE_PATH=./src ts-node ./src/sync/scripts/sync-courses",
+    "sync-sections": "NODE_PATH=./src ts-node ./src/sync/scripts/sync-sections",
+    "sloc": "sloc --exclude \"(.html|mplan.js)$\" ./src"
   },
   "private": true,
   "author": "Rico Kahler",
@@ -112,6 +114,7 @@
       "tsx",
       "js",
       "jsx"
-    ]
+    ],
+    "testEnvironment": "node"
   }
 }

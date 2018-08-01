@@ -5,7 +5,6 @@ import { regularToCamelCase } from 'utilities/regular-to-camel-case';
 
 interface SectionTableParseResult {
   instructors: string[];
-  scheduleType: string[];
   times: string[];
   days: string[];
   locations: string[];
@@ -88,7 +87,6 @@ const emptySectionResult: SectionTableParseResult = {
   days: [],
   instructors: [],
   locations: [],
-  scheduleType: [],
   times: [],
 };
 
@@ -139,7 +137,6 @@ function parseSectionElement(body: HTMLTableRowElement | undefined | null) {
 
   const section: SectionTableParseResult = {
     instructors: result.instructors || [],
-    scheduleType: (result.scheduleType || []).map(type => type.toLowerCase().trim()),
     times: result.time || [],
     days: result.days || [],
     locations: result.where || [],
