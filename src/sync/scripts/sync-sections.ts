@@ -11,7 +11,7 @@ import * as Model from 'models';
 
 async function main() {
   const { courses, sections, syncErrors, syncReports, syncStatus } = await dbConnection;
-  
+
   await wait(10 * 1000);
   const jobTimestamp = Date.now();
   const termCodes = process.argv
@@ -43,7 +43,6 @@ async function main() {
 
   logger(`Started job to sync sections from terms: ${termCodes.join(', ')} at ${jobTimestamp}`);
 
-
   logger('Fetching all courses from DB...');
   const coursesFromDb = await courses.find({}).toArray();
   logger('Done fetching courses.');
@@ -53,7 +52,17 @@ async function main() {
   for (const termCode of termCodes) {
     logger(`Fetching sections for term code "${termCode}"`);
     const sectionSections = await sequentially(coursesFromDb, async course => {
-      return await fetchSections(termCode, course.subjectCode, course.courseNumber, errorLogger);
+      logger(`Fetching sections for "${termCode} ${course.subjectCode} ${course.courseNumber}"`);
+      const sections = await fetchSections(
+        termCode,
+        course.subjectCode,
+        course.courseNumber,
+        errorLogger,
+      );
+      logger(
+        `Done fetching sections for "${termCode} ${course.subjectCode} ${course.courseNumber}".`,
+      );
+      return sections;
     });
     logger(`Done fetching sections for term code "${termCode}"`);
 
@@ -63,7 +72,7 @@ async function main() {
     );
 
     for (const sectionToSave of sectionsToSave) {
-      const existingSection = sections.findOne({
+      const existingSection = await sections.findOne({
         termCode: sectionToSave.termCode,
         courseRegistrationNumber: sectionToSave.courseRegistrationNumber,
         subjectCode: sectionToSave.subjectCode,
