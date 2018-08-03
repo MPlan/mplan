@@ -8,23 +8,20 @@ import { checkJwts } from './check-jwts';
 import { degrees } from './degrees';
 import { auth } from './auth';
 
-let catalog = {} as Model.JoinedCatalog;
-let lastJoinTimestamp = 0;
+let catalog: Model.JoinedCatalog | undefined;
 
 api.use(express.json());
 api.use('/auth', auth);
 api.use(checkJwts);
 
 function shouldJoinCatalog(syncStatus: Model.SyncStatus | null | undefined) {
-  if (!syncStatus) return true;
-  if (syncStatus.lastSyncTimestamp > lastJoinTimestamp) return true;
-  return false;
+  if (!catalog) return ;
 }
 
 api.get('/catalog', compression(), async (req, res) => {
-  const { courses, sections, syncStatus } = await dbConnection;
+  const { courses, sections } = await dbConnection;
 
-  if (shouldJoinCatalog(await syncStatus.findOne({}))) {
+  if (!catalog) {
     console.log('Joining catalog...');
     console.time('catalog join');
 
@@ -72,8 +69,6 @@ api.get('/catalog', compression(), async (req, res) => {
       },
       {} as Model.JoinedCatalog,
     );
-
-    lastJoinTimestamp = Date.now();
 
     console.log('Done joining catalog.');
     console.timeEnd('catalog join');
