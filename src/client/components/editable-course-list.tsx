@@ -9,10 +9,10 @@ import { Fa } from './fa';
 import { CourseSearch } from './course-search';
 
 const Container = styled(View)`
-  flex: 1;
+  flex: 1 1 auto;
 `;
 const CourseList = styled(View)`
-  flex: 1;
+  flex: 1 1 auto;
   margin-bottom: ${styles.space(-1)};
 `;
 const CourseItem = styled(View)`

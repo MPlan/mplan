@@ -22,7 +22,7 @@ const Container = styled(View)`
   max-height: 80vh;
 `;
 const SearchHalf = styled(View)`
-  flex: 1;
+  flex: 1 1 auto;
 `;
 const Form = styled.form`
   margin-right: ${styles.space(0)};
@@ -49,13 +49,13 @@ const SearchResults = styled(View)`
 `;
 const Count = styled(Text)``;
 const CurrentList = styled(View)`
-  flex: 1;
+  flex: 1 1 auto;
 `;
 const CurrentListLabel = styled(Text)`
   margin-bottom: ${styles.space(-1)};
 `;
 const Split = styled(View)`
-  flex: 1;
+  flex: 1 1 auto;
   flex-direction: row;
 `;
 const ButtonRow = styled(View)`

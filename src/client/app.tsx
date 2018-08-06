@@ -17,7 +17,7 @@ import { Landing } from './routes/landing';
 import { Callback } from './routes/callback';
 
 const AuthenticatedRouteContainer = styled(View)`
-  flex: 1;
+  flex: 1 1 auto;
 `;
 
 const Header = styled(View)`
@@ -31,7 +31,7 @@ const Header = styled(View)`
 const HeaderContent = styled(View)`
   flex-direction: row;
   justify-content: flex-end;
-  flex: 1;
+  flex: 1 1 auto;
 `;
 const User = styled(View)`
   flex-direction: row;
@@ -43,11 +43,11 @@ const UserName = styled(Text)`
 `;
 const Body = styled(View)`
   flex-direction: row;
-  flex: 1;
+  flex: 1 1 auto;
   overflow: auto;
 `;
 const Content = styled(View)`
-  flex: 1;
+  flex: 1 1 auto;
   overflow: auto;
 `;
 const Brand = styled(Text)`

@@ -37,7 +37,7 @@ const NavText = styled(Text)`
   text-align: center;
 `;
 const Spacer = styled.div`
-  flex: 1;
+  flex: 1 1 auto;
 `;
 
 interface NavButtonProps {

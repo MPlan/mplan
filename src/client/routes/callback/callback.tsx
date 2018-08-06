@@ -7,7 +7,7 @@ import { View } from 'components/view';
 import { Text } from 'components/text';
 
 const CallbackContainer = styled(View)`
-  flex: 1;
+  flex: 1 1 auto;
   justify-content: center;
   align-items: center;
 `;

@@ -41,7 +41,7 @@ const Card = styled(View)`
   box-shadow: ${styles.boxShadow(0)};
 `;
 const Body = styled(View)`
-  flex: 1;
+  flex: 1 1 auto;
   margin: 0 ${styles.space(1)};
   margin-bottom: ${styles.space(1)};
   max-width: 50rem;

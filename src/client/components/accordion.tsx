@@ -10,7 +10,7 @@ interface ContainerProps
   open?: boolean;
 }
 const Container = styled<ContainerProps>(View)`
-  ${props => (props.open ? 'flex: 1;' : '')};
+  ${props => (props.open ? 'flex: 1 1 auto;' : '')};
 `;
 const Header = styled(View)`
   padding: ${styles.space(-1)};
@@ -29,7 +29,7 @@ const Body = styled<ContainerProps>(View)`
   max-height: ${props => (props.open ? '100rem' : '0')};
   overflow: ${props => (props.open ? 'auto' : 'hidden')};
   transition: all 400ms;
-  flex: 1;
+  flex: 1 1 auto;
 `;
 
 interface AccordionProps {

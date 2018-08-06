@@ -49,7 +49,7 @@ const CreditHourTotal = styled(Text)`
 `;
 const DegreeGroupTotal = styled(Text)``;
 const NameAndDetails = styled(View)`
-  flex: 1;
+  flex: 1 1 auto;
   margin-right: ${styles.space(0)};
 `;
 const Icon = styled(View)`

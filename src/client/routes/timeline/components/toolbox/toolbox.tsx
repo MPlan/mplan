@@ -24,7 +24,7 @@ const Header = styled(Text)`
   margin: ${styles.space(0)};
 `;
 const Body = styled(View)`
-  flex: 1;
+  flex: 1 1 auto;
 `;
 const Warning = styled(View)`
   padding: ${styles.space(-1)};

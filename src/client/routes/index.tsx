@@ -11,7 +11,7 @@ import styled from 'styled-components';
 import * as styles from '../styles';
 
 const WipContainer = styled(View)`
-  flex: 1;
+  flex: 1 1 auto;
   justify-content: center;
   align-items: center;
 `;

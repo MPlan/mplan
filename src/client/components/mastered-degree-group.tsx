@@ -61,11 +61,11 @@ const ButtonRow = styled(View)`
   flex-direction: row;
   width: 100%;
   & > * {
-    flex: 1;
+    flex: 1 1 auto;
   }
 `;
 const CreditsLabel = styled(Text)`
-  flex: 1;
+  flex: 1 1 auto;
   margin-bottom: ${styles.space(0)};
 `;
 const Row = styled(View)`
@@ -76,7 +76,7 @@ const Split = styled(View)`
   flex-direction: row;
   margin-bottom: ${styles.space(-1)};
   & > * {
-    flex: 1;
+    flex: 1 1 auto;
   }
 `;
 const Hr = styled.hr`
@@ -94,7 +94,7 @@ const DescriptionNonEdit = styled(View)`
   }
 `;
 const NameForm = styled.form`
-  flex: 1;
+  flex: 1 1 auto;
 `;
 const NameInput = styled.input`
   background-color: transparent;

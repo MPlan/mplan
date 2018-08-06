@@ -46,7 +46,7 @@ const CriticalLevel = styled(Text)`
   margin-bottom: ${styles.space(-1)};
 `;
 const Body = styled(View)`
-  flex: 1;
+  flex: 1 1 auto;
 `;
 
 export interface CourseProps {

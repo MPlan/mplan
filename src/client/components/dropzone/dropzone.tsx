@@ -16,7 +16,7 @@ export interface ContainerProps
   dragging?: boolean;
 }
 const Container = styled<ContainerProps>(View)`
-  flex: 1;
+  flex: 1 1 auto;
   overflow: auto;
 `;
 

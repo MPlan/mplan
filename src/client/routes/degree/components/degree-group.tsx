@@ -34,7 +34,7 @@ interface NameProps extends ViewProps {
   editable?: boolean;
 }
 const Name = styled<NameProps>(Text as any)`
-  flex: 1;
+  flex: 1 1 auto;
   font-size: ${styles.space(1)};
   font-weight: ${styles.bold};
   &:hover {
@@ -65,7 +65,7 @@ const Card = styled(View)`
   background-color: ${styles.white};
   padding: ${styles.space(0)};
   box-shadow: ${styles.boxShadow(0)};
-  flex: 1;
+  flex: 1 1 auto;
 `;
 const NameHeader = styled(Text)`
   font-size: ${styles.space(-1)};
@@ -82,7 +82,7 @@ const CardHeaders = styled(View)`
   margin-bottom: ${styles.space(-1)};
 `;
 const Courses = styled(View)`
-  flex: 1;
+  flex: 1 1 auto;
 `;
 const AddCourseContainer = styled(View)``;
 

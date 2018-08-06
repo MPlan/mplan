@@ -12,7 +12,7 @@ function onButtonClick() {
 }
 
 const LandingContainer = styled(View)`
-  flex: 1;
+  flex: 1 1 auto;
   justify-content: center;
   align-items: center;
 `;

@@ -42,7 +42,7 @@ const Percentage = styled(Text)`
   margin-bottom: ${styles.space(-1)};
 `;
 const DegreeGroupContainer = styled(View)`
-  flex: 1;
+  flex: 1 1 auto;
   flex-wrap: wrap;
   flex-direction: row;
 `;

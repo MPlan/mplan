@@ -17,15 +17,15 @@ import { Semester } from './components/semester';
 
 const Container = styled(View)`
   flex-direction: row;
-  flex: 1;
+  flex: 1 1 auto;
 `;
 const Content = styled(View)`
-  flex: 1;
+  flex: 1 1 auto;
   position: relative;
   overflow: auto;
 `;
 const SemestersContainer = styled(View)`
-  flex: 1;
+  flex: 1 1 auto;
   flex-direction: row;
   overflow-y: auto;
   overflow-x: scroll;
@@ -63,7 +63,7 @@ const NavigationLabel = styled(Text)`
   font-size: ${styles.space(-1)};
   cursor: pointer;
   position: relative;
-  flex: 1;
+  flex: 1 1 auto;
   &:hover {
     text-decoration: underline;
     color: ${styles.hover(styles.gray)};

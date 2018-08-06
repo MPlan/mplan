@@ -30,7 +30,7 @@ const NonCourseName = styled(Text)`
 `;
 const Credits = styled(Text)``;
 const NameAndCredits = styled(View)`
-  flex: 1;
+  flex: 1 1 auto;
 `;
 const FullName = styled(ActionableText)`
   color: ${styles.text};

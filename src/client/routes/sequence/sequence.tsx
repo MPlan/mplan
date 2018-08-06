@@ -36,7 +36,7 @@ const GraphContainer = styled(View)`
     padding-right: 5rem;
   }
   position: relative;
-  flex: 1;
+  flex: 1 1 auto;
   align-items: flex-start;
   padding-bottom: ${styles.space(1)};
 `;
@@ -46,7 +46,7 @@ const Level = styled(View)`
   width: 5rem;
 `;
 const LevelCard = styled(View)`
-  flex: 1;
+  flex: 1 1 auto;
   & > * {
     flex-shrink: 0;
     margin-top: auto;

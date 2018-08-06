@@ -12,7 +12,7 @@ import styled from 'styled-components';
 import * as styles from 'styles';
 
 const Container = styled(View)`
-  flex: 1;
+  flex: 1 1 auto;
   position: relative;
   overflow: hidden;
 `;
@@ -29,7 +29,7 @@ const SubHeader = styled(Text)`
   color: ${styles.textLight};
 `;
 const Body = styled(View)`
-  flex: 1;
+  flex: 1 1 auto;
   flex-direction: row;
 `;
 const DegreeMaster = styled(View)`
@@ -68,6 +68,7 @@ const DegreeListCard = styled(View)`
   background-color: ${styles.white};
   padding: ${styles.space(0)} 0;
   box-shadow: ${styles.boxShadow(1)};
+  flex: 1 1 auto;
 `;
 const DegreeSearch = styled.form`
   display: flex;
@@ -75,12 +76,12 @@ const DegreeSearch = styled.form`
   flex-direction: row;
   align-items: center;
   margin-bottom: ${styles.space(-1)};
-  flex-shrink: 0;
+  flex: 0 0 auto;
 `;
 const DegreeSearchInput = styled.input`
   outline: none;
   border: none;
-  flex: 1;
+  flex: 1 1 auto;
   font-family: ${styles.fontFamily};
 `;
 const DegreeSearchButton = styled.button`
@@ -88,6 +89,7 @@ const DegreeSearchButton = styled.button`
   background-color: transparent;
 `;
 const DegreeList = styled(View)`
+  flex: 1 1 auto;
   overflow: auto;
 `;
 const Sidebar = styled(View)`
@@ -133,7 +135,7 @@ const SidebarHeaderIcon = styled(View)`
 `;
 const SidebarContent = styled(View)`
   overflow: auto;
-  flex: 1;
+  flex: 1 1 auto;
 `;
 
 const initialState = {

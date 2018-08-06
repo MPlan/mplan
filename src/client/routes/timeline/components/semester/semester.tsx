@@ -18,7 +18,7 @@ const Container = styled(View)`
   max-width: 16rem;
   min-width: 16rem;
   margin-right: ${styles.space(2)};
-  flex: 1;
+  flex: 1 1 auto;
   position: relative;
   &::after {
     content: ' ';
@@ -47,7 +47,7 @@ const Count = styled(Text)`
   /* font-size: ${styles.space(-1)}; */
 `;
 const Card = styled(View)`
-  flex: 1;
+  flex: 1 1 auto;
   background-color: ${styles.white};
   box-shadow: ${styles.boxShadow(1)};
   padding-top: ${styles.space(-1)};
