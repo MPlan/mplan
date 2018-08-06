@@ -14,12 +14,8 @@ api.use(express.json());
 api.use('/auth', auth);
 api.use(checkJwts);
 
-function shouldJoinCatalog(syncStatus: Model.SyncStatus | null | undefined) {
-  if (!catalog) return ;
-}
-
-api.get('/catalog', compression(), async (req, res) => {
-  const { courses, sections } = await dbConnection;
+api.get('/catalog', compression(), async (_, res) => {
+  const { courses } = await dbConnection;
 
   if (!catalog) {
     console.log('Joining catalog...');
@@ -32,38 +28,14 @@ api.get('/catalog', compression(), async (req, res) => {
         return {
           key: Model.courseKey(course),
           course,
-          fallSections: await sections
-            .find({
-              subjectCode: course.subjectCode,
-              courseNumber: course.courseNumber,
-              season: 'fall',
-            })
-            .toArray(),
-          winterSections: await sections
-            .find({
-              subjectCode: course.subjectCode,
-              courseNumber: course.courseNumber,
-              season: 'winter',
-            })
-            .toArray(),
-          summerSections: await sections
-            .find({
-              subjectCode: course.subjectCode,
-              courseNumber: course.courseNumber,
-              season: 'summer',
-            })
-            .toArray(),
         };
       }),
     );
 
     catalog = coursesArr.reduce(
-      (joinedCatalog, { course, key, fallSections, summerSections, winterSections }) => {
+      (joinedCatalog, { course, key }) => {
         joinedCatalog[key] = {
           ...course,
-          fallSections,
-          summerSections,
-          winterSections,
         };
         return joinedCatalog;
       },

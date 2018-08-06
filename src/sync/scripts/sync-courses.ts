@@ -8,6 +8,7 @@ import { dbConnection } from 'server/models/mongo';
 import { sequentially } from 'utilities/utilities';
 import { RemoveProps } from 'utilities/typings';
 import { flatten } from 'lodash';
+const { floor } = Math;
 
 async function main() {
   const { courses, syncErrors, syncReports } = await dbConnection;
@@ -60,8 +61,8 @@ async function main() {
   logger('Done fetching courses.');
 
   logger('Saving courses to database...');
-  await sequentially(coursesToSave, async course => {
-    logger(`Saving ${course.subjectCode} ${course.courseNumber}`);
+  await sequentially(coursesToSave, async (course, index) => {
+    const percentage = floor((index * 100) / (coursesToSave.length - 1));
     const courseFromDb = await courses.findOne({
       subjectCode: course.subjectCode,
       courseNumber: course.courseNumber,
@@ -78,6 +79,7 @@ async function main() {
         { ...course, lastUpdateDate: Date.now(), lastTermCode: '201910' },
       );
     }
+    logger(`${percentage}% Saved ${course.subjectCode} ${course.courseNumber}.`);
   });
   logger('Done saving courses to database.');
   logger('Done!');

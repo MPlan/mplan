@@ -14,6 +14,7 @@
     "pretty": "prettier --single-quote --write ./src/**/*.ts ./src/**/*.tsx",
     "sync-courses": "NODE_PATH=./src ts-node ./src/sync/scripts/sync-courses",
     "sync-sections": "NODE_PATH=./src ts-node ./src/sync/scripts/sync-sections",
+    "update-courses-from-sections": "NODE_PATH=./src ts-node ./src/sync/scripts/update-courses-from-sections",
     "sloc": "sloc --exclude \"(.html|mplan.js)$\" ./src"
   },
   "private": true,

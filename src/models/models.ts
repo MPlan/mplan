@@ -25,6 +25,7 @@ export interface Course extends DbSynced {
   prerequisites?: Prerequisite | undefined;
   /** represents the set of courses needed to be taken either before or during the course */
   corequisites?: Corequisite[] | undefined;
+  sectionsSummary?: { [termCode: string]: undefined | { seatsRemaining: number } };
 }
 
 export interface User extends DbSynced {
@@ -44,16 +45,21 @@ export interface Report {
   jobTimestamp: number;
 }
 
-export function courseKey(course: Course) {
+export function courseKey(course: { subjectCode: string; courseNumber: string }) {
   return `${course.subjectCode}__|__${course.courseNumber}`.toUpperCase();
 }
 
+export function parseCourseKey(courseKey: string) {
+  const match = /(.*)__\|__(.*)/.exec(courseKey);
+  if (!match) return undefined;
+  const subjectCode = match[1];
+  const courseNumber = match[2];
+
+  return { subjectCode, courseNumber };
+}
+
 export interface JoinedCatalog {
-  [courseLookupKey: string]: Course & {
-    fallSections: Section[];
-    winterSections: Section[];
-    summerSections: Section[];
-  };
+  [courseLookupKey: string]: Course;
 }
 
 export interface SyncStatus {
