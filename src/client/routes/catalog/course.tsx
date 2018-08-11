@@ -6,7 +6,7 @@ import * as styles from 'styles';
 import { View } from 'components/view';
 import { Text } from 'components/text';
 import { ActionableText } from 'components/actionable-text';
-import { Fa } from 'components/Fa';
+import { Fa } from 'components/fa';
 
 const SimpleName = styled(Text)`
   font-weight: bold;
