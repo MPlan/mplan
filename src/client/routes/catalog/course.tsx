@@ -23,6 +23,9 @@ const Container = styled(View)`
   &:hover {
     box-shadow: ${styles.boxShadow(1)};
   }
+  &:active {
+    box-shadow: ${styles.boxShadow(-1)};
+  }
   &:hover ${SimpleName} {
     text-decoration: underline;
   }
