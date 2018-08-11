@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import * as styles from 'styles';
 import { history } from 'client/history';
 
+import { Link } from 'react-router-dom';
 import { View } from 'components/view';
 import { Text } from 'components/text';
 import { Button } from 'components/button';
@@ -43,6 +44,18 @@ const Key = styled(Text)`
   font-weight: bold;
   margin-right: ${styles.space(-1)};
 `;
+const StyledLink = styled(Link)`
+  cursor: pointer;
+  color: ${styles.link};
+  text-decoration: none;
+  &:hover {
+    color: ${styles.linkHover};
+    text-decoration: underline;
+  }
+  &:active {
+    color: ${styles.linkActive};
+  }
+`;
 
 interface CourseDetailProps {
   course: Model.Course | undefined;
@@ -53,11 +66,13 @@ class CourseDetail extends React.PureComponent<CourseDetailProps, CourseDetailSt
   handleBackClick = () => {
     history.push('/catalog');
   };
+
   renderSubtitle = () => {
     const { course } = this.props;
     if (!course) return null;
     return <Text color={styles.textLight}>Course details for {course.name}</Text>;
   };
+
   render() {
     const { course } = this.props;
     if (!course) return null;
@@ -72,7 +87,8 @@ class CourseDetail extends React.PureComponent<CourseDetailProps, CourseDetailSt
         </Row>
         <Row>
           <Button onClick={this.handleBackClick}>
-            <Icon icon="arrowLeft" />Catalog
+            <Icon icon="arrowLeft" />
+            Catalog
           </Button>
         </Row>
         <Row>
@@ -92,6 +108,23 @@ class CourseDetail extends React.PureComponent<CourseDetailProps, CourseDetailSt
           <Row>
             <Key>Prerequisites:</Key>
             <Prerequisite prerequisite={course.prerequisites} />
+          </Row>
+        )}
+        {course.crossList && (
+          <Row>
+            <Key>Cross-listed with:</Key>
+            <Text>
+              {course.crossList.map(([subjectCode, courseNumber]) => (
+                <React.Fragment>
+                  <StyledLink
+                    key={`${subjectCode} ${courseNumber}`}
+                    to={`/catalog/${subjectCode}/${courseNumber}`}
+                  >
+                    {subjectCode} {courseNumber}
+                  </StyledLink>{' '}
+                </React.Fragment>
+              ))}
+            </Text>
           </Row>
         )}
       </Container>

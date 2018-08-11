@@ -24,13 +24,6 @@ const Container = styled(View)`
   max-width: 100%;
   width: 100%;
 `;
-const Aside = styled(View)`
-  flex: 0 0 auto;
-  background-color: ${styles.white};
-  box-shadow: ${styles.boxShadow(0)};
-  min-width: 15rem;
-  padding: ${styles.space(0)};
-`;
 const CourseListings = styled(View)`
   overflow: auto;
   width: 60rem;

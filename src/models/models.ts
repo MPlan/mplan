@@ -26,6 +26,7 @@ export interface Course extends DbSynced {
   /** represents the set of courses needed to be taken either before or during the course */
   corequisites?: Corequisite[] | undefined;
   sectionsSummary?: { [termCode: string]: undefined | { seatsRemaining: number } };
+  crossList?: [string, string][];
 }
 
 export interface User extends DbSynced {

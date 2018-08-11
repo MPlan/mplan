@@ -7,7 +7,6 @@ import { Text } from 'components/text';
 import { ActionableText } from 'components/actionable-text';
 
 const Container = styled(View)`
-  flex: 0 0 auto;
   flex-direction: row;
   padding: ${styles.space(0)};
   margin: ${styles.space(0)};
@@ -15,6 +14,7 @@ const Container = styled(View)`
   box-shadow: ${styles.boxShadow(0)};
 `;
 const Summary = styled(View)`
+  flex: 0 1 auto;
   min-width: 12rem;
   margin-right: ${styles.space(0)};
 `;
@@ -27,7 +27,9 @@ const FullName = styled(Text)`
   margin-bottom: ${styles.space(-1)};
 `;
 const CreditHours = styled(Text)``;
-const Description = styled(View)``;
+const Description = styled(View)`
+  flex: 1 1 auto;
+`;
 
 interface CourseProps {
   course: Model.Course;
@@ -82,10 +84,20 @@ export class Course extends React.PureComponent<CourseProps, CourseState> {
     }));
   };
 
+  handleClick = (e: React.MouseEvent<Element>) => {
+    const target = e.target;
+    if (!target) return;
+    const targetElement = target as Element;
+    if (!targetElement.classList) return;
+    if (targetElement.classList.contains('show-more-less')) return;
+
+    this.props.onClick();
+  };
+
   render() {
     const { course } = this.props;
     return (
-      <Container onClick={this.props.onClick}>
+      <Container onClick={this.handleClick}>
         <Summary>
           <SimpleName>{course.simpleName}</SimpleName>
           <FullName>{course.name}</FullName>
@@ -94,10 +106,14 @@ export class Course extends React.PureComponent<CourseProps, CourseState> {
         <Description>
           <Text>{this.activeDescription}</Text>
           {this.showShowMore && (
-            <ActionableText onClick={this.handleShowMore}>Show more</ActionableText>
+            <ActionableText className="show-more-less" onClick={this.handleShowMore}>
+              Show more
+            </ActionableText>
           )}
           {this.showShowLess && (
-            <ActionableText onClick={this.handleShowLess}>Show less</ActionableText>
+            <ActionableText className="show-more-less" onClick={this.handleShowLess}>
+              Show less
+            </ActionableText>
           )}
         </Description>
       </Container>
