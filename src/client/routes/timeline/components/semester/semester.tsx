@@ -41,6 +41,7 @@ const SemesterName = styled(Text)`
   color: ${styles.textLight};
   font-weight: bold;
   margin-right: ${styles.space(0)};
+  text-transform: capitalize;
 `;
 const Count = styled(Text)`
   color: ${styles.textLight};
