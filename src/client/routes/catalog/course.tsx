@@ -2,26 +2,35 @@ import * as React from 'react';
 import * as Model from 'models';
 import styled from 'styled-components';
 import * as styles from 'styles';
+
 import { View } from 'components/view';
 import { Text } from 'components/text';
 import { ActionableText } from 'components/actionable-text';
+import { Fa } from 'components/Fa';
 
+const SimpleName = styled(Text)`
+  font-weight: bold;
+  /* margin-bottom: ${styles.space(-1)}; */
+  font-size: ${styles.space(1)};
+`;
 const Container = styled(View)`
+  cursor: pointer;
   flex-direction: row;
   padding: ${styles.space(0)};
   margin: ${styles.space(0)};
   background-color: ${styles.white};
   box-shadow: ${styles.boxShadow(0)};
+  &:hover {
+    box-shadow: ${styles.boxShadow(1)};
+  }
+  &:hover ${SimpleName} {
+    text-decoration: underline;
+  }
 `;
 const Summary = styled(View)`
   flex: 0 1 auto;
   min-width: 12rem;
   margin-right: ${styles.space(0)};
-`;
-const SimpleName = styled(Text)`
-  font-weight: bold;
-  /* margin-bottom: ${styles.space(-1)}; */
-  font-size: ${styles.space(1)};
 `;
 const FullName = styled(Text)`
   margin-bottom: ${styles.space(-1)};
@@ -29,7 +38,9 @@ const FullName = styled(Text)`
 const CreditHours = styled(Text)``;
 const Description = styled(View)`
   flex: 1 1 auto;
+  margin-right: ${styles.space(0)};
 `;
+const ArrowContainer = styled(View)``;
 
 interface CourseProps {
   course: Model.Course;
@@ -116,6 +127,9 @@ export class Course extends React.PureComponent<CourseProps, CourseState> {
             </ActionableText>
           )}
         </Description>
+        <ArrowContainer>
+          <Fa icon="chevronRight" />
+        </ArrowContainer>
       </Container>
     );
   }
