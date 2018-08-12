@@ -51,24 +51,25 @@ export function courseIdClassName(course: string | Model.Course) {
   return `course-id-${createClassName(course instanceof Model.Course ? course.id : course)}`;
 }
 
-const backgroundColorMap = {
-  PREVIOUS: '#E5FAFF',
-  CONCURRENT_BEFORE: '#EAFFEC',
-  CONCURRENT_NEXT: '#EAFFEC',
-  NEXT: '#F5F1FF',
+const colorMap = {
+  PREVIOUS: '#00A074',
+  CONCURRENT_BEFORE: '#F1E645',
+  CONCURRENT_NEXT: '#F1E645',
+  NEXT: '#CC7AA8',
 };
 
 export class Course extends React.PureComponent<SequenceCourseProps, {}> {
   get style() {
     return {
-      backgroundColor: /*if*/ this.props.focused
-        ? styles.white
-        : /*if*/ this.props.highlighted
-          ? backgroundColorMap[this.props.highlighted] || styles.white
-          : '#fff',
-      outline: /*if*/ this.props.focused
-        ? `${styles.borderWidth} solid ${styles.focusBorderColor}`
-        : 'none',
+      // backgroundColor: this.props.focused ? styles.highlight : undefined,
+      borderLeft: /*if*/ this.props.focused
+        ? `3px solid ${styles.focusBorderColor}`
+        : /*if*/ this.props.focused
+          ? styles.white
+          : /*if*/ this.props.highlighted
+            ? `3px solid ${colorMap[this.props.highlighted] || '#fff'}`
+            : '3px solid #fff',
+      outline: this.props.focused ? `3px solid ${styles.focusBorderColor}` : undefined,
       opacity: this.props.dimmed ? 0.25 : 1,
     };
   }
@@ -97,7 +98,7 @@ export class Course extends React.PureComponent<SequenceCourseProps, {}> {
       );
     }
 
-    if (highlighted === 'CONCURRENT_BEFORE') {
+    if (highlighted === 'CONCURRENT_NEXT') {
       return (
         <React.Fragment>
           Take {this.courseName}{' '}
@@ -113,7 +114,7 @@ export class Course extends React.PureComponent<SequenceCourseProps, {}> {
       );
     }
 
-    if (highlighted === 'CONCURRENT_NEXT') {
+    if (highlighted === 'CONCURRENT_BEFORE') {
       return (
         <React.Fragment>
           Take {this.courseName}{' '}

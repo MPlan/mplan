@@ -310,7 +310,7 @@ export class Sequence extends React.PureComponent<SequenceProps, SequenceState> 
       .map(tuple => tuple.course);
 
     if (thisCourseConcurrent.contains(focusedCourse || '')) {
-      return 'CONCURRENT_BEFORE';
+      return 'CONCURRENT_NEXT';
     }
 
     if (thisCoursePrevious.contains(focusedCourse || '')) {
@@ -327,7 +327,7 @@ export class Sequence extends React.PureComponent<SequenceProps, SequenceState> 
         .filter(tuple => !tuple.canTakeConcurrently)
         .map(tuple => tuple.course);
 
-      if (focusedCourseConcurrent.contains(course)) return 'CONCURRENT_NEXT';
+      if (focusedCourseConcurrent.contains(course)) return 'CONCURRENT_BEFORE';
       if (focusedCoursePrevious.contains(course)) return 'PREVIOUS';
     }
 
