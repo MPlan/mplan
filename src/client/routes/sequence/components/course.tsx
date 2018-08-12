@@ -38,7 +38,7 @@ const HighlightMessage = styled(Text)`
 export interface SequenceCourseProps {
   selectedCourseName: string;
   course: string | Model.Course;
-  highlighted: 'CONCURRENT' | 'PREVIOUS' | 'NEXT' | undefined;
+  highlighted: 'CONCURRENT_BEFORE' | 'CONCURRENT_NEXT' | 'PREVIOUS' | 'NEXT' | undefined;
   focused: boolean;
   dimmed: boolean;
   onMouseOver: () => void;
@@ -53,7 +53,8 @@ export function courseIdClassName(course: string | Model.Course) {
 
 const backgroundColorMap = {
   PREVIOUS: '#E5FAFF',
-  CONCURRENT: '#EAFFEC',
+  CONCURRENT_BEFORE: '#EAFFEC',
+  CONCURRENT_NEXT: '#EAFFEC',
   NEXT: '#F5F1FF',
 };
 
@@ -85,18 +86,51 @@ export class Course extends React.PureComponent<SequenceCourseProps, {}> {
   get highlightMessage() {
     const { highlighted, selectedCourseName } = this.props;
     if (highlighted === 'PREVIOUS') {
-      return `Take ${this.courseName} before taking ${selectedCourseName}`;
+      return (
+        <React.Fragment>
+          Take {selectedCourseName}{' '}
+          <strong>
+            <em>after</em>
+          </strong>{' '}
+          taking {this.courseName}
+        </React.Fragment>
+      );
     }
 
-    if (highlighted === 'CONCURRENT') {
-      if (selectedCourseName === this.courseName) {
-        return `Take ${selectedCourseName} before or same time as ${this.courseName}`;
-      }
-      return `Take ${this.courseName} before or same time as ${selectedCourseName}`;
+    if (highlighted === 'CONCURRENT_BEFORE') {
+      return (
+        <React.Fragment>
+          Take {selectedCourseName}{' '}
+          <strong>
+            <em>before</em>
+          </strong>{' '}
+          or same time as {this.courseName}
+        </React.Fragment>
+      );
+    }
+
+    if (highlighted === 'CONCURRENT_NEXT') {
+      return (
+        <React.Fragment>
+          Take {selectedCourseName}{' '}
+          <strong>
+            <em>after</em>
+          </strong>{' '}
+          or same time as {this.courseName}
+        </React.Fragment>
+      );
     }
 
     if (highlighted === 'NEXT') {
-      return `Take ${this.courseName} after taking ${selectedCourseName}`;
+      return (
+        <React.Fragment>
+          Take {selectedCourseName}{' '}
+          <strong>
+            <em>before</em>
+          </strong>{' '}
+          taking {this.courseName}`
+        </React.Fragment>
+      );
     }
 
     return undefined;
