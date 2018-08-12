@@ -96,13 +96,6 @@ export function disjunctiveNormalForm(
   throw new Error('Unmet case when calculating disjunctive normal form.');
 }
 
-function flattenPrerequisites(
-  prerequisite: Model.Prerequisite,
-  catalog: Catalog,
-): Immutable.Set<Immutable.Set<string | Course>> {
-  throw new Error(`Could not flatten prerequisite because its type could not be matched.`);
-}
-
 export class Course
   extends Record.define(
     {
@@ -155,6 +148,7 @@ export class Course
 
   static optionsMemo = new Map<any, any>();
   static bestOptionMemo = new Map<any, any>();
+  static bestOptionWithPrerequisitesMemo = new Map<any, any>();
   static intersectionMemo = new Map<any, any>();
   static depthMemo = new Map<any, any>();
   static minDepthMemo = new Map<any, any>();
@@ -276,7 +270,14 @@ export class Course
   }
 
   bestOption(): Immutable.Set<string | Course> {
-    return this.bestOptionWithConcurrent().map(tuple => tuple.course);
+    const bestOptionWithConcurrent = this.bestOptionWithConcurrent();
+    const hash = hashObjects({ bestOptionWithConcurrent });
+    if (Course.bestOptionMemo.has(hash)) {
+      return Course.bestOptionMemo.get(hash);
+    }
+    const value = this.bestOptionWithConcurrent().map(tuple => tuple.course);
+    Course.bestOptionMemo.set(hash, value);
+    return value;
   }
 
   /**
@@ -287,8 +288,8 @@ export class Course
     const catalog = this.root.catalog;
     const preferredCourses = this.root.user.degree.preferredCourses();
     const hash = hashObjects({ catalog, preferredCourses, course: this });
-    if (Course.bestOptionMemo.has(hash)) {
-      return Course.bestOptionMemo.get(hash);
+    if (Course.bestOptionWithPrerequisitesMemo.has(hash)) {
+      return Course.bestOptionWithPrerequisitesMemo.get(hash);
     }
 
     if (typeof preferredCourses.intersect !== 'function') {
@@ -349,7 +350,7 @@ export class Course
 
     const bestOption = bestOptionResult.option;
 
-    Course.bestOptionMemo.set(hash, bestOption);
+    Course.bestOptionWithPrerequisitesMemo.set(hash, bestOption);
     return bestOption;
   }
 
