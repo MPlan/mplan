@@ -263,23 +263,27 @@ export class Course
    * calculates all possible options of prerequisites. e.g. for CIS 350, you can take either
    * (CIS 200 and CIS 275 and MATH 115) or (IMSE 200 and CIS 275 and MATH 115)
    */
-  options(): Immutable.Set<Immutable.Set<string | Course>> {
+  options(): Immutable.Set<Immutable.Set<PrerequisiteTuple>> {
     const catalog = this.root.catalog;
     const hash = hashObjects({ catalog, course: this });
     if (Course.optionsMemo.has(hash)) {
       return Course.optionsMemo.get(hash);
     }
-    if (!this.prerequisites) return Immutable.Set<Immutable.Set<string | Course>>();
-    const flattened = flattenPrerequisites(this.prerequisites, catalog);
-    Course.optionsMemo.set(hash, flattened);
-    return flattened;
+    if (!this.prerequisites) return Immutable.Set<Immutable.Set<PrerequisiteTuple>>();
+    const disjuncts = disjunctiveNormalForm(this.prerequisites, catalog);
+    Course.optionsMemo.set(hash, disjuncts);
+    return disjuncts;
+  }
+
+  bestOption(): Immutable.Set<string | Course> {
+    return this.bestOptionWithConcurrent().map(tuple => tuple.course);
   }
 
   /**
    * given a set of preferred courses, this will return the best option has the most preferred
    * courses
    */
-  bestOption(): Immutable.Set<string | Course> {
+  bestOptionWithConcurrent(): Immutable.Set<PrerequisiteTuple> {
     const catalog = this.root.catalog;
     const preferredCourses = this.root.user.degree.preferredCourses();
     const hash = hashObjects({ catalog, preferredCourses, course: this });
@@ -299,7 +303,7 @@ export class Course
        * `preferredCourses` in its closure.
        */
       const intersection = option
-        .map(course => {
+        .map(({ course }) => {
           let intersection = Immutable.Set<string | Course>();
           if (preferredCourses.has(course)) {
             intersection = intersection.add(course);
@@ -315,7 +319,7 @@ export class Course
       const intersectionCount = intersection.count();
 
       const maxDepth = option
-        .map(course => {
+        .map(({ course }) => {
           if (typeof course === 'string') {
             return 0;
           }
@@ -323,7 +327,7 @@ export class Course
         })
         .reduce((max, next) => (/*if*/ next > max ? next : max), 0);
 
-      const closure = option.reduce((fullClosure, course) => {
+      const closure = option.reduce((fullClosure, { course }) => {
         if (course instanceof Course) {
           return fullClosure.add(course).union(course.closure());
         }
@@ -340,7 +344,7 @@ export class Course
     );
 
     if (!bestOptionResult) {
-      return Immutable.Set<string | Course>();
+      return Immutable.Set<PrerequisiteTuple>();
     }
 
     const bestOption = bestOptionResult.option;
@@ -368,7 +372,7 @@ export class Course
     }
 
     for (const option of options) {
-      for (const course of option) {
+      for (const { course } of option) {
         if (preferredCourses.has(course)) {
           foundCourses = foundCourses.add(course);
         }
@@ -396,7 +400,7 @@ export class Course
     const options = this.options();
 
     for (const option of options) {
-      for (const course of option) {
+      for (const { course } of option) {
         mutableClosure.add(course);
         if (course instanceof Course) {
           const subClosure = course.fullClosure();
@@ -424,12 +428,12 @@ export class Course
       return Course.depthMemo.get(hash);
     }
 
-    const bestOption = this.bestOption();
+    const bestOption = this.bestOptionWithConcurrent();
 
     let maxDepth = 0;
-    for (const course of bestOption) {
+    for (const { course, canTakeConcurrently } of bestOption) {
       if (course instanceof Course) {
-        const courseDepth = course.depth();
+        const courseDepth = course.depth() - (canTakeConcurrently ? 1 : 0);
         if (courseDepth > maxDepth) {
           maxDepth = courseDepth;
         }
@@ -455,11 +459,13 @@ export class Course
     }
 
     let minDepthOfAllOptions = 9999;
+
     for (const option of options) {
       let maxDepthOfAllCourses = 0;
-      for (const course of option) {
+
+      for (const { course, canTakeConcurrently } of option) {
         if (course instanceof Course) {
-          const courseDepth = course.minDepth();
+          const courseDepth = course.minDepth() - (canTakeConcurrently ? 1 : 0);
           if (courseDepth > maxDepthOfAllCourses) {
             maxDepthOfAllCourses = courseDepth;
           }
@@ -514,7 +520,7 @@ export class Course
     const options = this.options();
     if (options.isEmpty()) return true;
     for (const option of options) {
-      if (option.every(course => previousCourses.has(course))) {
+      if (option.every(({ course }) => previousCourses.has(course))) {
         return true;
       }
     }
