@@ -191,12 +191,13 @@ export class Sequence extends React.PureComponent<SequenceProps, SequenceState> 
 
         const parentRect = parentElement.getBoundingClientRect();
         const rect = sequenceCourseElement.getBoundingClientRect();
+        const middleY = rect.top + rect.height / 2 - parentRect.top;
         const left = {
-          y: (rect.top + rect.height / 2 - parentRect.top) / parentRect.height,
+          y: middleY / parentRect.height,
           x: (rect.left - parentRect.left) / parentRect.width,
         };
         const right = {
-          y: (rect.top + rect.height / 2 - parentRect.top) / parentRect.height,
+          y: middleY / parentRect.height,
           x: (rect.left + rect.width - parentRect.left) / parentRect.width,
         };
 
@@ -239,7 +240,7 @@ export class Sequence extends React.PureComponent<SequenceProps, SequenceState> 
                   .add(option)
                   .add(course);
                 return { key, x1, y1, x2, y2, nodes };
-              } else {
+              } else if (depth > courseDepth) {
                 const x1 = coursePoints.right.x;
                 const y1 = coursePoints.right.y;
                 const x2 = optionPoints.left.x;
