@@ -295,22 +295,15 @@ export class Sequence extends React.PureComponent<SequenceProps, SequenceState> 
   courseHighlighted(course: string | Model.Course) {
     if (typeof course === 'string') return false;
     const bestOption = course.bestOption();
-    if (this.state.mouseOverCourse === undefined) {
-      const selectedCourse = this.state.selectedCourse;
-      if (bestOption.contains(selectedCourse || '')) return true;
-      if (
-        selectedCourse instanceof Model.Course &&
-        selectedCourse.bestOption().contains(course || '')
-      ) {
-        return true;
-      }
-      return false;
-    }
-    if (bestOption.contains(this.state.mouseOverCourse || '')) return true;
-    const selectedCourse = this.state.mouseOverCourse;
+
+    const focusedCourse = this.state.mouseOverCourse
+      ? this.state.mouseOverCourse
+      : this.state.selectedCourse;
+
+    if (bestOption.contains(focusedCourse || '')) return true;
     if (
-      selectedCourse instanceof Model.Course &&
-      selectedCourse.bestOption().contains(course || '')
+      focusedCourse instanceof Model.Course &&
+      focusedCourse.bestOption().contains(course || '')
     ) {
       return true;
     }
