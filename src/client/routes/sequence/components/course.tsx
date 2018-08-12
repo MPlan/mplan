@@ -88,11 +88,11 @@ export class Course extends React.PureComponent<SequenceCourseProps, {}> {
     if (highlighted === 'PREVIOUS') {
       return (
         <React.Fragment>
-          Take {selectedCourseName}{' '}
+          Take {this.courseName}{' '}
           <strong>
-            <em>after</em>
+            <em>before</em>
           </strong>{' '}
-          taking {this.courseName}
+          taking {selectedCourseName}
         </React.Fragment>
       );
     }
@@ -100,11 +100,15 @@ export class Course extends React.PureComponent<SequenceCourseProps, {}> {
     if (highlighted === 'CONCURRENT_BEFORE') {
       return (
         <React.Fragment>
-          Take {selectedCourseName}{' '}
+          Take {this.courseName}{' '}
           <strong>
-            <em>before</em>
+            <em>after</em>
           </strong>{' '}
-          or same time as {this.courseName}
+          or{' '}
+          <strong>
+            <em>same time as</em>
+          </strong>{' '}
+          {selectedCourseName}
         </React.Fragment>
       );
     }
@@ -112,11 +116,15 @@ export class Course extends React.PureComponent<SequenceCourseProps, {}> {
     if (highlighted === 'CONCURRENT_NEXT') {
       return (
         <React.Fragment>
-          Take {selectedCourseName}{' '}
+          Take {this.courseName}{' '}
           <strong>
-            <em>after</em>
+            <em>before</em>
           </strong>{' '}
-          or same time as {this.courseName}
+          or{' '}
+          <strong>
+            <em>same time as</em>
+          </strong>{' '}
+          {selectedCourseName}
         </React.Fragment>
       );
     }
@@ -124,11 +132,11 @@ export class Course extends React.PureComponent<SequenceCourseProps, {}> {
     if (highlighted === 'NEXT') {
       return (
         <React.Fragment>
-          Take {selectedCourseName}{' '}
+          Take {this.courseName}{' '}
           <strong>
-            <em>before</em>
+            <em>after</em>
           </strong>{' '}
-          taking {this.courseName}`
+          taking {selectedCourseName}
         </React.Fragment>
       );
     }
