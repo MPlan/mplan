@@ -8,19 +8,24 @@ import { pointer } from './pointer';
 import { App } from './app';
 import { flatten } from 'lodash';
 
+class PrerequisiteTuple extends Immutable.Record({
+  course: '' as string | Course,
+  canTakeConcurrently: false,
+}) {}
+
 export function allCombinations(
-  listsOfLists: Array<Immutable.Set<Immutable.Set<string | Course>>>,
+  listsOfLists: Array<Immutable.Set<Immutable.Set<PrerequisiteTuple>>>,
 ) {
   return _allCombinations(listsOfLists)[0];
 }
 
 function _allCombinations(
-  listsOfLists: Array<Immutable.Set<Immutable.Set<string | Course>>>,
-): Array<Immutable.Set<Immutable.Set<string | Course>>> {
+  listsOfLists: Array<Immutable.Set<Immutable.Set<PrerequisiteTuple>>>,
+): Array<Immutable.Set<Immutable.Set<PrerequisiteTuple>>> {
   if (listsOfLists.length <= 1) {
     return listsOfLists;
   }
-  let combined = Immutable.Set<Immutable.Set<string | Course>>();
+  let combined = Immutable.Set<Immutable.Set<PrerequisiteTuple>>();
   const listA = listsOfLists[0];
   const listB = listsOfLists[1];
 
@@ -33,47 +38,68 @@ function _allCombinations(
   return _allCombinations([combined, ...listsOfLists.slice(2)]);
 }
 
+export function disjunctiveNormalForm(
+  prerequisite: Model.Prerequisite | undefined,
+  catalog: Catalog,
+): Immutable.Set<Immutable.Set<PrerequisiteTuple>> {
+  if (!prerequisite) return Immutable.Set();
+
+  if (Model.isStringPrerequisite(prerequisite)) {
+    return Immutable.Set<Immutable.Set<PrerequisiteTuple>>().add(
+      Immutable.Set<PrerequisiteTuple>().add(
+        new PrerequisiteTuple({ course: prerequisite, canTakeConcurrently: false }),
+      ),
+    );
+  }
+
+  if (Model.isCoursePrerequisite(prerequisite)) {
+    const [subjectCode, courseNumber, previousOrConcurrent] = prerequisite;
+    const course = catalog.getCourse(subjectCode, courseNumber);
+    const canTakeConcurrently = previousOrConcurrent === 'CONCURRENT';
+
+    if (!course) {
+      const courseAsString = `${subjectCode} ${courseNumber}`.toUpperCase();
+      return Immutable.Set<Immutable.Set<PrerequisiteTuple>>().add(
+        Immutable.Set<PrerequisiteTuple>().add(
+          new PrerequisiteTuple({
+            course: courseAsString,
+            canTakeConcurrently,
+          }),
+        ),
+      );
+    }
+
+    return Immutable.Set<Immutable.Set<PrerequisiteTuple>>().add(
+      Immutable.Set<PrerequisiteTuple>().add(
+        new PrerequisiteTuple({
+          course,
+          canTakeConcurrently,
+        }),
+      ),
+    );
+  }
+
+  if (Model.isAndPrerequisite(prerequisite)) {
+    return allCombinations(
+      prerequisite.and.map(subPrerequisite => disjunctiveNormalForm(subPrerequisite, catalog)),
+    );
+  }
+
+  if (Model.isOrPrerequisite(prerequisite)) {
+    return prerequisite.or
+      .map(subPrerequisite => disjunctiveNormalForm(subPrerequisite, catalog))
+      .reduce((combinedSetsOfSets, disjunct) =>
+        disjunct.reduce((combined, set) => combined.add(set), combinedSetsOfSets),
+      );
+  }
+
+  throw new Error('Unmet case when calculating disjunctive normal form.');
+}
+
 function flattenPrerequisites(
   prerequisite: Model.Prerequisite,
   catalog: Catalog,
 ): Immutable.Set<Immutable.Set<string | Course>> {
-  if (!prerequisite) {
-    return Immutable.Set<Immutable.Set<string | Course>>();
-  }
-  if (typeof prerequisite === 'string') {
-    return Immutable.Set<Immutable.Set<string | Course>>().add(
-      Immutable.Set<string | Course>().add(prerequisite),
-    );
-  }
-  if (Array.isArray(prerequisite)) {
-    const subjectCode = prerequisite[0];
-    const courseNumber = prerequisite[1];
-    const course =
-      catalog.getCourse(subjectCode, courseNumber) ||
-      `${subjectCode} ${courseNumber}`.toUpperCase();
-
-    return Immutable.Set<Immutable.Set<string | Course>>().add(
-      Immutable.Set<string | Course>().add(course),
-    );
-  }
-  if (typeof prerequisite === 'object') {
-    if ((prerequisite as any).and) {
-      const and = (prerequisite as any).and as Model.Prerequisite[];
-      const operandsPrerequisites = and.map(operand => flattenPrerequisites(operand, catalog));
-      return allCombinations(operandsPrerequisites);
-    } else if ((prerequisite as any).or) {
-      const or = (prerequisite as any).or as Model.Prerequisite[];
-      const operandSetsFlattened = or
-        .map(operand => flattenPrerequisites(operand, catalog))
-        .reduce(
-          (combinedSetOfSets, flattenedOperand) =>
-            flattenedOperand.reduce((combinedSet, set) => combinedSet.add(set), combinedSetOfSets),
-          Immutable.Set<Immutable.Set<string | Course>>(),
-        );
-      return operandSetsFlattened;
-    }
-  }
-
   throw new Error(`Could not flatten prerequisite because its type could not be matched.`);
 }
 
@@ -439,6 +465,7 @@ export class Course
           }
         }
       }
+
       if (maxDepthOfAllCourses < minDepthOfAllOptions) {
         minDepthOfAllOptions = maxDepthOfAllCourses;
       }
