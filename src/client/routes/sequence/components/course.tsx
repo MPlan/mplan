@@ -21,6 +21,7 @@ const Container = styled(View)`
   width: 6rem;
   min-width: 6rem;
   padding: ${styles.space(-1)};
+  min-height: 3.6rem;
 `;
 const SimpleName = styled(Text)``;
 const NameCompact = styled(ActionableText)`
@@ -30,10 +31,14 @@ const NameCompact = styled(ActionableText)`
   text-overflow: ellipsis;
 `;
 const Critical = styled(View)``;
+const HighlightMessage = styled(Text)`
+  margin-top: ${styles.space(-2)};
+`;
 
 export interface SequenceCourseProps {
+  selectedCourseName: string;
   course: string | Model.Course;
-  highlighted: boolean;
+  highlighted: 'CONCURRENT' | 'PREVIOUS' | 'NEXT' | undefined;
   focused: boolean;
   dimmed: boolean;
   onMouseOver: () => void;
@@ -46,14 +51,20 @@ export function courseIdClassName(course: string | Model.Course) {
   return `course-id-${createClassName(course instanceof Model.Course ? course.id : course)}`;
 }
 
+const backgroundColorMap = {
+  PREVIOUS: '#E5FAFF',
+  CONCURRENT: '#EAFFEC',
+  NEXT: '#F5F1FF',
+};
+
 export class Course extends React.PureComponent<SequenceCourseProps, {}> {
   get style() {
     return {
       backgroundColor: /*if*/ this.props.focused
-        ? styles.highlightBlue
+        ? styles.white
         : /*if*/ this.props.highlighted
-          ? styles.highlight
-          : styles.white,
+          ? backgroundColorMap[this.props.highlighted] || styles.white
+          : '#fff',
       outline: /*if*/ this.props.focused
         ? `${styles.borderWidth} solid ${styles.focusBorderColor}`
         : 'none',
@@ -69,6 +80,26 @@ export class Course extends React.PureComponent<SequenceCourseProps, {}> {
     const { course } = this.props;
     if (typeof course === 'string') return course;
     return course.simpleName;
+  }
+
+  get highlightMessage() {
+    const { highlighted, selectedCourseName } = this.props;
+    if (highlighted === 'PREVIOUS') {
+      return `Take ${this.courseName} before taking ${selectedCourseName}`;
+    }
+
+    if (highlighted === 'CONCURRENT') {
+      if (selectedCourseName === this.courseName) {
+        return `Take ${selectedCourseName} before or same time as ${this.courseName}`;
+      }
+      return `Take ${this.courseName} before or same time as ${selectedCourseName}`;
+    }
+
+    if (highlighted === 'NEXT') {
+      return `Take ${this.courseName} after taking ${selectedCourseName}`;
+    }
+
+    return undefined;
   }
 
   goToCatalog = () => {
@@ -102,20 +133,26 @@ export class Course extends React.PureComponent<SequenceCourseProps, {}> {
       >
         <View>
           <SimpleName strong>{course.simpleName}</SimpleName>
-          <NameCompact>
-            <ActionableText small onClick={this.goToCatalog}>
-              {course.name}
-            </ActionableText>
-          </NameCompact>
-          <Critical>
-            {/*if*/ course.criticalLevel() <= 0 ? (
-              <Text color={styles.red} small>
-                Critical
-              </Text>
-            ) : (
-              <Text small>Can move {course.criticalLevel()} later</Text>
-            )}
-          </Critical>
+          {this.highlightMessage ? (
+            <HighlightMessage small>{this.highlightMessage}</HighlightMessage>
+          ) : (
+            <React.Fragment>
+              <NameCompact>
+                <ActionableText small onClick={this.goToCatalog}>
+                  {course.name}
+                </ActionableText>
+              </NameCompact>
+              <Critical>
+                {course.criticalLevel() <= 0 ? (
+                  <Text color={styles.red} small>
+                    Critical
+                  </Text>
+                ) : (
+                  <Text small>Can move {course.criticalLevel()} later</Text>
+                )}
+              </Critical>
+            </React.Fragment>
+          )}
         </View>
       </Container>
     );
