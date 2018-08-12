@@ -8,19 +8,24 @@ import { pointer } from './pointer';
 import { App } from './app';
 import { flatten } from 'lodash';
 
+class PrerequisiteTuple extends Immutable.Record({
+  course: '' as string | Course,
+  canTakeConcurrently: false,
+}) {}
+
 export function allCombinations(
-  listsOfLists: Array<Immutable.Set<Immutable.Set<string | Course>>>,
+  listsOfLists: Array<Immutable.Set<Immutable.Set<PrerequisiteTuple>>>,
 ) {
   return _allCombinations(listsOfLists)[0];
 }
 
 function _allCombinations(
-  listsOfLists: Array<Immutable.Set<Immutable.Set<string | Course>>>,
-): Array<Immutable.Set<Immutable.Set<string | Course>>> {
+  listsOfLists: Array<Immutable.Set<Immutable.Set<PrerequisiteTuple>>>,
+): Array<Immutable.Set<Immutable.Set<PrerequisiteTuple>>> {
   if (listsOfLists.length <= 1) {
     return listsOfLists;
   }
-  let combined = Immutable.Set<Immutable.Set<string | Course>>();
+  let combined = Immutable.Set<Immutable.Set<PrerequisiteTuple>>();
   const listA = listsOfLists[0];
   const listB = listsOfLists[1];
 
@@ -33,48 +38,62 @@ function _allCombinations(
   return _allCombinations([combined, ...listsOfLists.slice(2)]);
 }
 
-function flattenPrerequisites(
-  prerequisite: Model.Prerequisite,
+export function disjunctiveNormalForm(
+  prerequisite: Model.Prerequisite | undefined,
   catalog: Catalog,
-): Immutable.Set<Immutable.Set<string | Course>> {
-  if (!prerequisite) {
-    return Immutable.Set<Immutable.Set<string | Course>>();
-  }
-  if (typeof prerequisite === 'string') {
-    return Immutable.Set<Immutable.Set<string | Course>>().add(
-      Immutable.Set<string | Course>().add(prerequisite),
-    );
-  }
-  if (Array.isArray(prerequisite)) {
-    const subjectCode = prerequisite[0];
-    const courseNumber = prerequisite[1];
-    const course =
-      catalog.getCourse(subjectCode, courseNumber) ||
-      `${subjectCode} ${courseNumber}`.toUpperCase();
+): Immutable.Set<Immutable.Set<PrerequisiteTuple>> {
+  if (!prerequisite) return Immutable.Set();
 
-    return Immutable.Set<Immutable.Set<string | Course>>().add(
-      Immutable.Set<string | Course>().add(course),
+  if (Model.isStringPrerequisite(prerequisite)) {
+    return Immutable.Set<Immutable.Set<PrerequisiteTuple>>().add(
+      Immutable.Set<PrerequisiteTuple>().add(
+        new PrerequisiteTuple({ course: prerequisite, canTakeConcurrently: false }),
+      ),
     );
   }
-  if (typeof prerequisite === 'object') {
-    if ((prerequisite as any).and) {
-      const and = (prerequisite as any).and as Model.Prerequisite[];
-      const operandsPrerequisites = and.map(operand => flattenPrerequisites(operand, catalog));
-      return allCombinations(operandsPrerequisites);
-    } else if ((prerequisite as any).or) {
-      const or = (prerequisite as any).or as Model.Prerequisite[];
-      const operandSetsFlattened = or
-        .map(operand => flattenPrerequisites(operand, catalog))
-        .reduce(
-          (combinedSetOfSets, flattenedOperand) =>
-            flattenedOperand.reduce((combinedSet, set) => combinedSet.add(set), combinedSetOfSets),
-          Immutable.Set<Immutable.Set<string | Course>>(),
-        );
-      return operandSetsFlattened;
+
+  if (Model.isCoursePrerequisite(prerequisite)) {
+    const [subjectCode, courseNumber, previousOrConcurrent] = prerequisite;
+    const course = catalog.getCourse(subjectCode, courseNumber);
+    const canTakeConcurrently = previousOrConcurrent === 'CONCURRENT';
+
+    if (!course) {
+      const courseAsString = `${subjectCode} ${courseNumber}`.toUpperCase();
+      return Immutable.Set<Immutable.Set<PrerequisiteTuple>>().add(
+        Immutable.Set<PrerequisiteTuple>().add(
+          new PrerequisiteTuple({
+            course: courseAsString,
+            canTakeConcurrently,
+          }),
+        ),
+      );
     }
+
+    return Immutable.Set<Immutable.Set<PrerequisiteTuple>>().add(
+      Immutable.Set<PrerequisiteTuple>().add(
+        new PrerequisiteTuple({
+          course,
+          canTakeConcurrently,
+        }),
+      ),
+    );
   }
 
-  throw new Error(`Could not flatten prerequisite because its type could not be matched.`);
+  if (Model.isAndPrerequisite(prerequisite)) {
+    return allCombinations(
+      prerequisite.and.map(subPrerequisite => disjunctiveNormalForm(subPrerequisite, catalog)),
+    );
+  }
+
+  if (Model.isOrPrerequisite(prerequisite)) {
+    return prerequisite.or
+      .map(subPrerequisite => disjunctiveNormalForm(subPrerequisite, catalog))
+      .reduce((combinedSetsOfSets, disjunct) =>
+        disjunct.reduce((combined, set) => combined.add(set), combinedSetsOfSets),
+      );
+  }
+
+  throw new Error('Unmet case when calculating disjunctive normal form.');
 }
 
 export class Course
@@ -129,6 +148,7 @@ export class Course
 
   static optionsMemo = new Map<any, any>();
   static bestOptionMemo = new Map<any, any>();
+  static bestOptionWithPrerequisitesMemo = new Map<any, any>();
   static intersectionMemo = new Map<any, any>();
   static depthMemo = new Map<any, any>();
   static minDepthMemo = new Map<any, any>();
@@ -237,28 +257,39 @@ export class Course
    * calculates all possible options of prerequisites. e.g. for CIS 350, you can take either
    * (CIS 200 and CIS 275 and MATH 115) or (IMSE 200 and CIS 275 and MATH 115)
    */
-  options(): Immutable.Set<Immutable.Set<string | Course>> {
+  options(): Immutable.Set<Immutable.Set<PrerequisiteTuple>> {
     const catalog = this.root.catalog;
     const hash = hashObjects({ catalog, course: this });
     if (Course.optionsMemo.has(hash)) {
       return Course.optionsMemo.get(hash);
     }
-    if (!this.prerequisites) return Immutable.Set<Immutable.Set<string | Course>>();
-    const flattened = flattenPrerequisites(this.prerequisites, catalog);
-    Course.optionsMemo.set(hash, flattened);
-    return flattened;
+    if (!this.prerequisites) return Immutable.Set<Immutable.Set<PrerequisiteTuple>>();
+    const disjuncts = disjunctiveNormalForm(this.prerequisites, catalog);
+    Course.optionsMemo.set(hash, disjuncts);
+    return disjuncts;
+  }
+
+  bestOption(): Immutable.Set<string | Course> {
+    const bestOptionWithConcurrent = this.bestOptionWithConcurrent();
+    const hash = hashObjects({ bestOptionWithConcurrent });
+    if (Course.bestOptionMemo.has(hash)) {
+      return Course.bestOptionMemo.get(hash);
+    }
+    const value = this.bestOptionWithConcurrent().map(tuple => tuple.course);
+    Course.bestOptionMemo.set(hash, value);
+    return value;
   }
 
   /**
    * given a set of preferred courses, this will return the best option has the most preferred
    * courses
    */
-  bestOption(): Immutable.Set<string | Course> {
+  bestOptionWithConcurrent(): Immutable.Set<PrerequisiteTuple> {
     const catalog = this.root.catalog;
     const preferredCourses = this.root.user.degree.preferredCourses();
     const hash = hashObjects({ catalog, preferredCourses, course: this });
-    if (Course.bestOptionMemo.has(hash)) {
-      return Course.bestOptionMemo.get(hash);
+    if (Course.bestOptionWithPrerequisitesMemo.has(hash)) {
+      return Course.bestOptionWithPrerequisitesMemo.get(hash);
     }
 
     if (typeof preferredCourses.intersect !== 'function') {
@@ -273,7 +304,7 @@ export class Course
        * `preferredCourses` in its closure.
        */
       const intersection = option
-        .map(course => {
+        .map(({ course }) => {
           let intersection = Immutable.Set<string | Course>();
           if (preferredCourses.has(course)) {
             intersection = intersection.add(course);
@@ -289,7 +320,7 @@ export class Course
       const intersectionCount = intersection.count();
 
       const maxDepth = option
-        .map(course => {
+        .map(({ course }) => {
           if (typeof course === 'string') {
             return 0;
           }
@@ -297,7 +328,7 @@ export class Course
         })
         .reduce((max, next) => (/*if*/ next > max ? next : max), 0);
 
-      const closure = option.reduce((fullClosure, course) => {
+      const closure = option.reduce((fullClosure, { course }) => {
         if (course instanceof Course) {
           return fullClosure.add(course).union(course.closure());
         }
@@ -314,12 +345,12 @@ export class Course
     );
 
     if (!bestOptionResult) {
-      return Immutable.Set<string | Course>();
+      return Immutable.Set<PrerequisiteTuple>();
     }
 
     const bestOption = bestOptionResult.option;
 
-    Course.bestOptionMemo.set(hash, bestOption);
+    Course.bestOptionWithPrerequisitesMemo.set(hash, bestOption);
     return bestOption;
   }
 
@@ -342,7 +373,7 @@ export class Course
     }
 
     for (const option of options) {
-      for (const course of option) {
+      for (const { course } of option) {
         if (preferredCourses.has(course)) {
           foundCourses = foundCourses.add(course);
         }
@@ -370,7 +401,7 @@ export class Course
     const options = this.options();
 
     for (const option of options) {
-      for (const course of option) {
+      for (const { course } of option) {
         mutableClosure.add(course);
         if (course instanceof Course) {
           const subClosure = course.fullClosure();
@@ -398,12 +429,12 @@ export class Course
       return Course.depthMemo.get(hash);
     }
 
-    const bestOption = this.bestOption();
+    const bestOption = this.bestOptionWithConcurrent();
 
     let maxDepth = 0;
-    for (const course of bestOption) {
+    for (const { course, canTakeConcurrently } of bestOption) {
       if (course instanceof Course) {
-        const courseDepth = course.depth();
+        const courseDepth = course.depth() - (canTakeConcurrently ? 1 : 0);
         if (courseDepth > maxDepth) {
           maxDepth = courseDepth;
         }
@@ -429,16 +460,19 @@ export class Course
     }
 
     let minDepthOfAllOptions = 9999;
+
     for (const option of options) {
       let maxDepthOfAllCourses = 0;
-      for (const course of option) {
+
+      for (const { course, canTakeConcurrently } of option) {
         if (course instanceof Course) {
-          const courseDepth = course.minDepth();
+          const courseDepth = course.minDepth() - (canTakeConcurrently ? 1 : 0);
           if (courseDepth > maxDepthOfAllCourses) {
             maxDepthOfAllCourses = courseDepth;
           }
         }
       }
+
       if (maxDepthOfAllCourses < minDepthOfAllOptions) {
         minDepthOfAllOptions = maxDepthOfAllCourses;
       }
@@ -487,7 +521,7 @@ export class Course
     const options = this.options();
     if (options.isEmpty()) return true;
     for (const option of options) {
-      if (option.every(course => previousCourses.has(course))) {
+      if (option.every(({ course }) => previousCourses.has(course))) {
         return true;
       }
     }

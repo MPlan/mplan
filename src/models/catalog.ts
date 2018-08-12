@@ -11,6 +11,10 @@ export class Catalog extends Record.define({
     return pointer.store.current();
   }
 
+  addCourse(course: Course) {
+    return this.update('courseMap', courseMap => courseMap.set(course.catalogId, course));
+  }
+
   getCourse(subjectCode: string, courseNumber: string) {
     return this.courseMap.get(`${subjectCode}__|__${courseNumber}`.toUpperCase());
   }

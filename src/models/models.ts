@@ -1,7 +1,24 @@
 import * as Mongo from 'mongodb';
-import { Prerequisite, Corequisite } from 'sync/catalog-umd-umich/models';
-export { Prerequisite, Corequisite };
-import { Section as _Section } from 'sync/selfservice-umd-umich/sections';
+
+import {
+  Prerequisite,
+  Corequisite,
+  isAndPrerequisite,
+  isCoursePrerequisite,
+  isOrPrerequisite,
+  isStringPrerequisite,
+} from '../sync/catalog-umd-umich/models';
+
+export {
+  Prerequisite,
+  Corequisite,
+  isAndPrerequisite,
+  isCoursePrerequisite,
+  isOrPrerequisite,
+  isStringPrerequisite,
+};
+
+import { Section as _Section } from '../sync/selfservice-umd-umich/sections';
 
 export interface Section extends _Section, DbSynced {}
 

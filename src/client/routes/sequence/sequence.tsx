@@ -191,12 +191,13 @@ export class Sequence extends React.PureComponent<SequenceProps, SequenceState> 
 
         const parentRect = parentElement.getBoundingClientRect();
         const rect = sequenceCourseElement.getBoundingClientRect();
+        const middleY = rect.top + rect.height / 2 - parentRect.top;
         const left = {
-          y: (rect.top + rect.height / 2 - parentRect.top) / parentRect.height,
+          y: middleY / parentRect.height,
           x: (rect.left - parentRect.left) / parentRect.width,
         };
         const right = {
-          y: (rect.top + rect.height / 2 - parentRect.top) / parentRect.height,
+          y: middleY / parentRect.height,
           x: (rect.left + rect.width - parentRect.left) / parentRect.width,
         };
 
@@ -239,7 +240,7 @@ export class Sequence extends React.PureComponent<SequenceProps, SequenceState> 
                   .add(option)
                   .add(course);
                 return { key, x1, y1, x2, y2, nodes };
-              } else {
+              } else if (depth > courseDepth) {
                 const x1 = coursePoints.right.x;
                 const y1 = coursePoints.right.y;
                 const x2 = optionPoints.left.x;
@@ -292,28 +293,45 @@ export class Sequence extends React.PureComponent<SequenceProps, SequenceState> 
   };
 
   courseHighlighted(course: string | Model.Course) {
-    if (typeof course === 'string') return false;
-    const bestOption = course.bestOption();
-    if (this.state.mouseOverCourse === undefined) {
-      const selectedCourse = this.state.selectedCourse;
-      if (bestOption.contains(selectedCourse || '')) return true;
-      if (
-        selectedCourse instanceof Model.Course &&
-        selectedCourse.bestOption().contains(course || '')
-      ) {
-        return true;
-      }
-      return false;
+    if (typeof course === 'string') return undefined;
+
+    const focusedCourse = this.state.mouseOverCourse
+      ? this.state.mouseOverCourse
+      : this.state.selectedCourse;
+
+    const thisCourseBestOption = course.bestOptionWithConcurrent();
+
+    const thisCourseConcurrent = thisCourseBestOption
+      .filter(tuple => tuple.canTakeConcurrently)
+      .map(tuple => tuple.course);
+
+    const thisCoursePrevious = thisCourseBestOption
+      .filter(tuple => !tuple.canTakeConcurrently)
+      .map(tuple => tuple.course);
+
+    if (thisCourseConcurrent.contains(focusedCourse || '')) {
+      return 'CONCURRENT_NEXT';
     }
-    if (bestOption.contains(this.state.mouseOverCourse || '')) return true;
-    const selectedCourse = this.state.mouseOverCourse;
-    if (
-      selectedCourse instanceof Model.Course &&
-      selectedCourse.bestOption().contains(course || '')
-    ) {
-      return true;
+
+    if (thisCoursePrevious.contains(focusedCourse || '')) {
+      // this course has the focused course as a prerequisite
+      return 'NEXT';
     }
-    return false;
+
+    if (focusedCourse instanceof Model.Course) {
+      const focusedCourseBestOption = focusedCourse.bestOptionWithConcurrent();
+      const focusedCourseConcurrent = focusedCourseBestOption
+        .filter(tuple => tuple.canTakeConcurrently)
+        .map(tuple => tuple.course);
+      const focusedCoursePrevious = focusedCourseBestOption
+        .filter(tuple => !tuple.canTakeConcurrently)
+        .map(tuple => tuple.course);
+
+      if (focusedCourseConcurrent.contains(course)) return 'CONCURRENT_BEFORE';
+      if (focusedCoursePrevious.contains(course)) return 'PREVIOUS';
+    }
+
+    return undefined;
   }
 
   courseFocused(course: string | Model.Course) {
@@ -344,6 +362,9 @@ export class Sequence extends React.PureComponent<SequenceProps, SequenceState> 
     const graphWidth = this.state.graphWrapperWidth;
     const graphHeight = this.state.graphWrapperHeight;
     const masteredDegree = this.props.degree.masteredDegree();
+    const focusedCourse = this.state.mouseOverCourse
+      ? this.state.mouseOverCourse
+      : this.state.selectedCourse;
     return (
       <Page title={`${masteredDegree.name} Sequence`} renderSubtitle={this.renderSubtitle}>
         <GraphContainer
@@ -361,6 +382,11 @@ export class Sequence extends React.PureComponent<SequenceProps, SequenceState> 
                     .map(course => (
                       <Course
                         key={/*if*/ course instanceof Model.Course ? course.id : course}
+                        selectedCourseName={
+                          (focusedCourse instanceof Model.Course
+                            ? focusedCourse.simpleName
+                            : focusedCourse) || ''
+                        }
                         course={course}
                         onMouseOver={() => this.handleCourseMouseOver(course)}
                         onMouseExit={() => this.handleCourseMouseExit()}
