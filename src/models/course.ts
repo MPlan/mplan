@@ -499,6 +499,15 @@ export class Course
       coursesInClosure = coursesInClosure.add(course);
       if (course instanceof Course) {
         coursesInClosure = coursesInClosure.union(course.closure());
+
+        // if (course.corequisites) {
+        //   coursesInClosure = course.corequisites.reduce((coursesInClosure, corequisite) => {
+        //     const [subjectCode, courseNumber] = corequisite;
+        //     const corequisiteCourse = catalog.getCourse(subjectCode, courseNumber);
+        //     if (!corequisiteCourse) return coursesInClosure.add(`${subjectCode} ${courseNumber}`);
+        //     return coursesInClosure.add(corequisiteCourse);
+        //   }, coursesInClosure);
+        // }
       }
     }
 

@@ -110,6 +110,16 @@ class CourseDetail extends React.PureComponent<CourseDetailProps, CourseDetailSt
             <Prerequisite prerequisite={course.prerequisites} />
           </Row>
         )}
+        {course.corequisites && (
+          <Row>
+            <Key>Corequisites:</Key>
+            <Text>
+              {course.corequisites
+                .map(([subjectCode, courseNumber]) => `${subjectCode} ${courseNumber}`)
+                .join(', ')}
+            </Text>
+          </Row>
+        )}
         {course.crossList && (
           <Row>
             <Key>Cross-listed with:</Key>
