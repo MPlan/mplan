@@ -71,6 +71,7 @@ export interface PrerequisiteEditorProps {
   open: boolean;
   course: Model.Course;
   catalog: Model.Catalog;
+  onClose: () => void;
 }
 interface PrerequisiteEditorState {
   prerequisite: Model.Prerequisite | undefined;
@@ -99,7 +100,7 @@ export class PrerequisiteEditor extends React.PureComponent<
   };
 
   render() {
-    const { course, open } = this.props;
+    const { course, open, onClose } = this.props;
     const { prerequisite, textareaEmpty } = this.state;
     return (
       <Modal
@@ -107,6 +108,7 @@ export class PrerequisiteEditor extends React.PureComponent<
         open={open}
         size="extra-large"
         minHeight={35}
+        onBlurCancel={onClose}
       >
         <Container>
           <Instructions>
@@ -149,7 +151,7 @@ export class PrerequisiteEditor extends React.PureComponent<
           </Disclaimer>
           <Actions>
             <ClearOverride>Remove Override</ClearOverride>
-            <Button>Cancel</Button>
+            <Button onClick={onClose}>Cancel</Button>
             <Button>Save</Button>
           </Actions>
         </Container>

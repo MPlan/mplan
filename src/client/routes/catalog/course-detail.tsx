@@ -73,14 +73,22 @@ class CourseDetail extends React.PureComponent<CourseDetailProps, CourseDetailSt
       prerequisiteEditorOpen: true,
     };
   }
+
   handleBackClick = () => {
-    history.push('/catalog');
+    history.goBack();
   };
 
   handleEditPrerequisites = () => {
     this.setState(previousState => ({
       ...previousState,
       prerequisiteEditorOpen: true,
+    }));
+  };
+
+  handlePrerequisiteEditorClose = () => {
+    this.setState(previousState => ({
+      ...previousState,
+      prerequisiteEditorOpen: false,
     }));
   };
 
@@ -95,18 +103,18 @@ class CourseDetail extends React.PureComponent<CourseDetailProps, CourseDetailSt
     if (!course) return null;
     return (
       <Container>
+        <Row>
+          <Button onClick={this.handleBackClick}>
+            <Icon icon="arrowLeft" />
+            Back
+          </Button>
+        </Row>
         <Header>
           <Title>{course.simpleName}</Title>
           <FullName>{course.name}</FullName>
         </Header>
         <Row>
           <Text>{course.creditHoursFullString}</Text>
-        </Row>
-        <Row>
-          <Button onClick={this.handleBackClick}>
-            <Icon icon="arrowLeft" />
-            Catalog
-          </Button>
         </Row>
         <Row>
           <Text>{course.description}</Text>
@@ -161,7 +169,11 @@ class CourseDetail extends React.PureComponent<CourseDetailProps, CourseDetailSt
             </Text>
           </Row>
         )}
-        <PrerequisiteEditor course={course} open={this.state.prerequisiteEditorOpen} />
+        <PrerequisiteEditor
+          course={course}
+          open={this.state.prerequisiteEditorOpen}
+          onClose={this.handlePrerequisiteEditorClose}
+        />
       </Container>
     );
   }
