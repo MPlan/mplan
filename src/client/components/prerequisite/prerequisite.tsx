@@ -1,9 +1,9 @@
 import * as React from 'react';
-import * as Model from '../../models/models';
-import { View } from './view';
-import { Text } from './text';
+import * as Model from 'models/models';
+import { View } from 'components/view';
+import { Text } from 'components/text';
 import styled from 'styled-components';
-import * as styles from '../styles';
+import * as styles from 'styles';
 
 const Operator = styled(Text)`
   font-size: ${styles.space(-1)};
