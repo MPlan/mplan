@@ -36,16 +36,19 @@ const Backdrop = styled(View)`
   left: 0;
 `;
 interface CardProps extends ViewProps {
-  size?: 'fit' | 'small' | 'medium' | 'large';
+  size?: 'fit' | 'small' | 'medium' | 'large' | 'extra-large';
+  minHeight?: number;
 }
 const Card = styled<CardProps>(View)`
   background-color: ${styles.white};
   box-shadow: ${styles.boxShadow(1)};
   max-width: 100vw;
+  ${props => (props.minHeight ? `min-height: ${props.minHeight}rem;` : '')};
   ${props => {
     if (props.size === 'small') return 'width: 20rem;';
     if (props.size === 'medium') return 'width: 30rem;';
     if (props.size === 'large') return 'width: 50rem;';
+    if (props.size === 'extra-large') return 'width: 70rem;';
     return '';
   }};
   overflow: auto;
@@ -63,14 +66,16 @@ interface BodyProps extends ViewProps {
 const Body = styled<BodyProps>(View)`
   ${props => (props.noPadding ? '' : `padding: 0 ${styles.space(1)}`)};
   margin-bottom: ${styles.space(1)};
+  flex: 1 1 auto;
 `;
 
 export interface ModalProps {
   open: boolean;
   title: string;
-  size?: 'small' | 'medium' | 'large';
+  size?: 'small' | 'medium' | 'large' | 'extra-large';
   noPadding?: boolean;
   children?: any;
+  minHeight?: number;
   onBlurCancel?: () => void;
 }
 
@@ -95,7 +100,7 @@ export class Modal extends React.PureComponent<ModalProps, {}> {
       <Container open={this.props.open} style={{ opacity: this.props.open ? 1 : 0 }}>
         <Backdrop onClick={this.props.onBlurCancel} />
         <Content>
-          <Card size={this.props.size}>
+          <Card size={this.props.size} minHeight={this.props.minHeight}>
             <Title>{this.props.title}</Title>
             <Body noPadding={this.props.noPadding}>{this.props.children}</Body>
           </Card>

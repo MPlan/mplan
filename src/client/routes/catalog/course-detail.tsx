@@ -10,7 +10,9 @@ import { Text } from 'components/text';
 import { Button } from 'components/button';
 import { Prerequisite } from 'components/prerequisite';
 import { PreferredPrerequisite } from 'components/preferred-prerequisite';
+import { ActionableText } from 'components/actionable-text';
 import { Fa } from 'components/fa';
+import { PrerequisiteEditor } from 'components/prerequisite-editor';
 
 const Container = styled(View)`
   margin: auto;
@@ -60,11 +62,26 @@ const StyledLink = styled(Link)`
 interface CourseDetailProps {
   course: Model.Course | undefined;
 }
-interface CourseDetailState {}
+interface CourseDetailState {
+  prerequisiteEditorOpen: boolean;
+}
 
 class CourseDetail extends React.PureComponent<CourseDetailProps, CourseDetailState> {
+  constructor(props: CourseDetailProps) {
+    super(props);
+    this.state = {
+      prerequisiteEditorOpen: true,
+    };
+  }
   handleBackClick = () => {
     history.push('/catalog');
+  };
+
+  handleEditPrerequisites = () => {
+    this.setState(previousState => ({
+      ...previousState,
+      prerequisiteEditorOpen: true,
+    }));
   };
 
   renderSubtitle = () => {
@@ -111,11 +128,12 @@ class CourseDetail extends React.PureComponent<CourseDetailProps, CourseDetailSt
               <Text>Take:</Text>
               <Prerequisite prerequisite={course.prerequisites} />
               {course.prerequisitesContainConcurrent() ? (
-                <Text small>* means you can take this class concurrently.</Text>
+                <Text small>* can be taken concurrently</Text>
               ) : null}
             </View>
           </Row>
         )}
+        <ActionableText onClick={this.handleEditPrerequisites}>Edit prerequisites</ActionableText>
         {course.corequisites && (
           <Row>
             <Key>Corequisites:</Key>
@@ -143,6 +161,7 @@ class CourseDetail extends React.PureComponent<CourseDetailProps, CourseDetailSt
             </Text>
           </Row>
         )}
+        <PrerequisiteEditor course={course} open={this.state.prerequisiteEditorOpen} />
       </Container>
     );
   }
