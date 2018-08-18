@@ -1,9 +1,12 @@
 import * as React from 'react';
 import * as Model from 'models/models';
+import { Catalog } from 'models';
 import { View } from 'components/view';
 import { Text } from 'components/text';
 import styled from 'styled-components';
 import * as styles from 'styles';
+import { ActionableText } from 'components/actionable-text';
+import { history } from 'client/history';
 
 const Operator = styled(Text)`
   font-size: ${styles.space(-1)};
@@ -25,6 +28,7 @@ const StringPrerequisite = styled(Text)`
 
 export interface PrerequisiteProps {
   prerequisite: Model.Prerequisite;
+  catalog: Catalog;
 }
 
 const PrerequisiteContainer = styled(View)`
@@ -42,8 +46,12 @@ const OperandsContainer = styled(View)`
 `;
 
 export class Prerequisite extends React.PureComponent<PrerequisiteProps, {}> {
+  handleCourseClick(subjectCode: string, courseNumber: string) {
+    history.push(`/catalog/${subjectCode}/${courseNumber}`);
+  }
+
   render(): JSX.Element | null {
-    const { prerequisite } = this.props;
+    const { prerequisite, catalog } = this.props;
     if (prerequisite === undefined) return null;
     if (prerequisite === null) return null;
     if (typeof prerequisite === 'string') {
@@ -51,15 +59,19 @@ export class Prerequisite extends React.PureComponent<PrerequisiteProps, {}> {
     }
 
     if (Array.isArray(prerequisite)) {
-      const subjectCode = prerequisite[0];
-      const courseNumber = prerequisite[1];
+      const subjectCode = prerequisite[0].toUpperCase();
+      const courseNumber = prerequisite[1].toUpperCase();
       const concurrent = prerequisite[2] === 'CONCURRENT';
 
-      return (
-        <StringPrerequisite>
-          {subjectCode} {courseNumber}
-          {concurrent ? '*' : ''}
-        </StringPrerequisite>
+      const courseInCatalog = !!catalog.getCourse(subjectCode, courseNumber);
+      const courseString = `${subjectCode} ${courseNumber}${concurrent ? '*' : ''}`;
+
+      return courseInCatalog ? (
+        <ActionableText onClick={() => this.handleCourseClick(subjectCode, courseNumber)}>
+          {courseString}
+        </ActionableText>
+      ) : (
+        <StringPrerequisite>{courseString}</StringPrerequisite>
       );
     }
 
@@ -76,7 +88,7 @@ export class Prerequisite extends React.PureComponent<PrerequisiteProps, {}> {
         <Operator>{logicGate}</Operator>
         <OperandsContainer>
           {operators.map((p, i) => (
-            <Prerequisite key={i} prerequisite={p} />
+            <Prerequisite key={i} prerequisite={p} catalog={catalog} />
           ))}
         </OperandsContainer>
       </PrerequisiteContainer>
