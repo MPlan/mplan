@@ -91,7 +91,7 @@ export class PrerequisiteEditor extends React.PureComponent<
     const { prerequisite, textareaEmpty } = this.state;
     return (
       <Modal
-        title={`Editing prerequisite for ${course.simpleName}`}
+        title={`Editing prerequisites for ${course.simpleName}`}
         open={open}
         size="extra-large"
         minHeight={35}
@@ -132,8 +132,8 @@ export class PrerequisiteEditor extends React.PureComponent<
               <em>does not</em>
             </strong>{' '}
             change them in the school information system. You may need to submit a{' '}
-            <NewTabLink href={petitionLink}>student petition</NewTabLink> in order to register.
-            Please contact your advisor if you have any questions.
+            <NewTabLink href={petitionLink}>student petition</NewTabLink> or submit a correction in
+            order to register. Please contact your advisor if you have any questions.
           </Disclaimer>
           <Actions>
             <ClearOverride>Remove Override</ClearOverride>
