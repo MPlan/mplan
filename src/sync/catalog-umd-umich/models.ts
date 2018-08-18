@@ -31,7 +31,7 @@ export function isAndPrerequisite(
 
 export function isOrPrerequisite(
   prerequisite: Prerequisite,
-): prerequisite is { and: Prerequisite[] } {
+): prerequisite is { or: Prerequisite[] } {
   return !!(prerequisite as any).or;
 }
 

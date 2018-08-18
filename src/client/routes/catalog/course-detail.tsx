@@ -107,7 +107,13 @@ class CourseDetail extends React.PureComponent<CourseDetailProps, CourseDetailSt
         {course.prerequisites && (
           <Row>
             <Key>Prerequisites:</Key>
-            <Prerequisite prerequisite={course.prerequisites} />
+            <View>
+              <Text>Take:</Text>
+              <Prerequisite prerequisite={course.prerequisites} />
+              {course.prerequisitesContainConcurrent() ? (
+                <Text small>* means you can take this class concurrently.</Text>
+              ) : null}
+            </View>
           </Row>
         )}
         {course.corequisites && (

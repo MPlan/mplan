@@ -159,6 +159,7 @@ export class Course
   static priorityMemo = new Map<any, any>();
   static prerequisitesSatisfiedMemo = new Map<any, any>();
   static taughtByMemo = new Map<any, any>();
+  static prerequisitesContainsConcurrentMemo = new Map<any, any>();
 
   historicallyTaughtBy(): string[] {
     if (Course.taughtByMemo.has(this)) {
@@ -513,6 +514,36 @@ export class Course
 
     Course.closureMemo.set(hash, coursesInClosure);
     return coursesInClosure;
+  }
+
+  prerequisitesContainConcurrent(): boolean {
+    if (!this.prerequisites) return false;
+
+    if (Course.prerequisitesContainsConcurrentMemo.has(this)) {
+      return Course.prerequisitesContainsConcurrentMemo.get(this);
+    }
+
+    const value = this._prerequisitesContainConcurrent(this.prerequisites);
+    Course.prerequisitesContainsConcurrentMemo.set(this, value);
+    return value;
+  }
+
+  _prerequisitesContainConcurrent(prerequisite: Model.Prerequisite) {
+    if (Model.isStringPrerequisite(prerequisite)) return false;
+    if (Model.isCoursePrerequisite(prerequisite)) {
+      if (prerequisite[2] === 'CONCURRENT') return true;
+    }
+    const operands = Model.isAndPrerequisite(prerequisite)
+      ? prerequisite.and
+      : Model.isOrPrerequisite(prerequisite)
+        ? prerequisite.or
+        : [];
+
+    if (operands.some(operand => this._prerequisitesContainConcurrent(operand))) {
+      return true;
+    }
+
+    return false;
   }
 
   prerequisitesSatisfied(previousCourses: Immutable.Set<string | Course>): boolean {
