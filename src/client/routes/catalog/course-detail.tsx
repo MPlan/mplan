@@ -58,6 +58,9 @@ const StyledLink = styled(Link)`
     color: ${styles.linkActive};
   }
 `;
+const EditPrerequisites = styled(ActionableText)`
+  margin: ${styles.space(-1)} 0;
+`;
 
 interface CourseDetailProps {
   course: Model.Course | undefined;
@@ -70,7 +73,7 @@ class CourseDetail extends React.PureComponent<CourseDetailProps, CourseDetailSt
   constructor(props: CourseDetailProps) {
     super(props);
     this.state = {
-      prerequisiteEditorOpen: true,
+      prerequisiteEditorOpen: false,
     };
   }
 
@@ -141,7 +144,9 @@ class CourseDetail extends React.PureComponent<CourseDetailProps, CourseDetailSt
             </View>
           </Row>
         )}
-        <ActionableText onClick={this.handleEditPrerequisites}>Edit prerequisites</ActionableText>
+        <EditPrerequisites onClick={this.handleEditPrerequisites}>
+          Edit prerequisites
+        </EditPrerequisites>
         {course.corequisites && (
           <Row>
             <Key>Corequisites:</Key>
@@ -157,11 +162,8 @@ class CourseDetail extends React.PureComponent<CourseDetailProps, CourseDetailSt
             <Key>Cross-listed with:</Key>
             <Text>
               {course.crossList.map(([subjectCode, courseNumber]) => (
-                <React.Fragment>
-                  <StyledLink
-                    key={`${subjectCode} ${courseNumber}`}
-                    to={`/catalog/${subjectCode}/${courseNumber}`}
-                  >
+                <React.Fragment key={`${subjectCode} ${courseNumber}`}>
+                  <StyledLink to={`/catalog/${subjectCode}/${courseNumber}`}>
                     {subjectCode} {courseNumber}
                   </StyledLink>{' '}
                 </React.Fragment>

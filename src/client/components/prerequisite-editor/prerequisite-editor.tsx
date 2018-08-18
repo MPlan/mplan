@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as Model from 'models';
+import { isAndPrerequisite, isOrPrerequisite, isCoursePrerequisite } from 'models/models';
 import * as styles from 'styles';
 import styled from 'styled-components';
 import { parsePrerequisiteString } from 'sync/catalog-umd-umich/courses/parse/prerequisites';
@@ -10,8 +11,38 @@ import { Modal } from 'components/modal';
 import { Prerequisite } from 'components/prerequisite';
 import { NewTabLink } from 'components/new-tab-link';
 import { Button } from 'components/button';
+import { ActionableText } from 'components/actionable-text';
 
-// function replaceCourseStringsWithRealCo
+function replaceCourseStrings(
+  prerequisite: Model.Prerequisite,
+  catalog: Model.Catalog,
+): Model.Prerequisite {
+  if (isAndPrerequisite(prerequisite) || isOrPrerequisite(prerequisite)) {
+    const operands = isAndPrerequisite(prerequisite) ? prerequisite.and : prerequisite.or;
+    const transformedOperands = operands.map(operand => replaceCourseStrings(operand, catalog));
+    return isAndPrerequisite(prerequisite)
+      ? { and: transformedOperands }
+      : { or: transformedOperands };
+  }
+  if (isCoursePrerequisite(prerequisite)) return prerequisite;
+  if (typeof prerequisite !== 'string') return prerequisite;
+
+  const match = /(\w*) (\w*)(\*)?/.exec(prerequisite.toUpperCase().trim());
+  if (!match) return prerequisite;
+
+  const subjectCode = match[1];
+  const courseNumber = match[2];
+  const previousOrConcurrent = (match[3] || '').includes('*') ? 'CONCURRENT' : 'PREVIOUS';
+
+  const courseInCatalog = !!catalog.getCourse(subjectCode, courseNumber);
+  if (!courseInCatalog) return prerequisite;
+
+  return [subjectCode, courseNumber, previousOrConcurrent] as [
+    string,
+    string,
+    'PREVIOUS' | 'CONCURRENT'
+  ];
+}
 
 function safeParsePrerequisiteString(prerequisiteString: string) {
   try {
@@ -38,6 +69,7 @@ const TextArea = styled.textarea`
 `;
 const Instructions = styled(Text)`
   margin-bottom: ${styles.space(-1)};
+  max-width: 42rem;
 `;
 const TextAreaColumn = styled(View)`
   flex: 2 0 auto;
@@ -92,10 +124,14 @@ export class PrerequisiteEditor extends React.PureComponent<
 
   handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.currentTarget.value;
+
+    const parsed = safeParsePrerequisiteString(value);
+    const parsedWithCourses = parsed ? replaceCourseStrings(parsed, this.props.catalog) : undefined;
+
     this.setState(previousState => ({
       ...previousState,
       textareaEmpty: !value,
-      prerequisite: safeParsePrerequisiteString(value),
+      prerequisite: parsedWithCourses,
     }));
   };
 
@@ -114,8 +150,21 @@ export class PrerequisiteEditor extends React.PureComponent<
           <Instructions>
             To edit this course's prerequisites, type them out using <Code>AND</Code>
             s, <Code>OR</Code>
-            s, and <Code>()</Code> parenthesis. The interpreted results will be displayed on the
-            left.
+            s, and parenthesis <Code>()</Code>:
+            <ul>
+              <li>
+                The interpreted results will be displayed on the left. A term will turn{' '}
+                <ActionableText>blue</ActionableText> if it matches with a course that exists in the
+                catalog.
+              </li>
+              <li>
+                Add an asterisk <Code>*</Code> to denote that a course can be taken concurrently.
+              </li>
+              <li>
+                You may use more parenthesis <Code>()</Code> if the interpreted results are not what
+                you expect.
+              </li>
+            </ul>
           </Instructions>
           <Row>
             <TextAreaColumn>
