@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as Model from 'models';
 import * as styles from 'styles';
 import styled from 'styled-components';
-import { oneLine } from 'common-tags';
+import { parsePrerequisiteString } from 'sync/catalog-umd-umich/courses/parse/prerequisites';
 
 import { View } from 'components/view';
 import { Text } from 'components/text';
@@ -10,6 +10,16 @@ import { Modal } from 'components/modal';
 import { Prerequisite } from 'components/prerequisite';
 import { NewTabLink } from 'components/new-tab-link';
 import { Button } from 'components/button';
+
+// function replaceCourseStringsWithRealCo
+
+function safeParsePrerequisiteString(prerequisiteString: string) {
+  try {
+    return parsePrerequisiteString(prerequisiteString);
+  } catch {
+    return undefined;
+  }
+}
 
 const petitionLink =
   'https://umdearborn.edu/cecs/undergraduate-programs/advising/academic-policies-and-forms';
@@ -60,6 +70,7 @@ const ClearOverride = styled(Button)`
 export interface PrerequisiteEditorProps {
   open: boolean;
   course: Model.Course;
+  catalog: Model.Catalog;
 }
 interface PrerequisiteEditorState {
   prerequisite: Model.Prerequisite | undefined;
@@ -83,6 +94,7 @@ export class PrerequisiteEditor extends React.PureComponent<
     this.setState(previousState => ({
       ...previousState,
       textareaEmpty: !value,
+      prerequisite: safeParsePrerequisiteString(value),
     }));
   };
 

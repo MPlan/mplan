@@ -320,3 +320,11 @@ export function parsePrerequisites(prerequisiteElement: Element) {
   const simplifiedResult = simplifyPrerequisites(result);
   return simplifiedResult;
 }
+
+export function parsePrerequisiteString(prerequisiteString: string) {
+  const parseTree = transformParenthesesToTree(prerequisiteString);
+  const tokens = groupByOperator(parseTree.tree);
+  const result = buildPrerequisiteTree(tokens);
+  const simplifiedResult = simplifyPrerequisites(result);
+  return simplifiedResult;
+}
