@@ -11,6 +11,7 @@ const container = Model.store.connect({
   scopeTo: store => store.catalog,
   mapStateToProps: (catalog: Model.Catalog, ownProps: PrerequisiteEditorContainerProps) => ({
     catalog,
+    overrideAlreadyExists: false,
     ...ownProps,
   }),
   mapDispatchToProps: () => ({}),

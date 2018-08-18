@@ -101,6 +101,7 @@ const ClearOverride = styled(Button)`
 
 export interface PrerequisiteEditorProps {
   open: boolean;
+  overrideAlreadyExists: boolean;
   course: Model.Course;
   catalog: Model.Catalog;
   onClose: () => void;
@@ -136,7 +137,7 @@ export class PrerequisiteEditor extends React.PureComponent<
   };
 
   render() {
-    const { course, open, onClose } = this.props;
+    const { course, open, onClose, overrideAlreadyExists } = this.props;
     const { prerequisite, textareaEmpty } = this.state;
     return (
       <Modal
@@ -144,7 +145,6 @@ export class PrerequisiteEditor extends React.PureComponent<
         open={open}
         size="extra-large"
         minHeight={35}
-        onBlurCancel={onClose}
       >
         <Container>
           <Instructions>
@@ -185,7 +185,7 @@ export class PrerequisiteEditor extends React.PureComponent<
                   <Text>Failed to read expression.</Text>
                 )
               ) : (
-                <Prerequisite prerequisite={prerequisite} />
+                <Prerequisite prerequisite={prerequisite} disableLinks />
               )}
             </ResultsColumn>
           </Row>
@@ -199,7 +199,7 @@ export class PrerequisiteEditor extends React.PureComponent<
             order to register. Please contact your advisor if you have any questions.
           </Disclaimer>
           <Actions>
-            <ClearOverride>Remove Override</ClearOverride>
+            {overrideAlreadyExists && <ClearOverride>Remove Override</ClearOverride>}
             <Button onClick={onClose}>Cancel</Button>
             <Button>Save</Button>
           </Actions>

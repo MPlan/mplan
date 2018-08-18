@@ -4,6 +4,7 @@ import { Prerequisite } from './prerequisite';
 
 interface PrerequisiteContainerProps {
   prerequisite: Model.Prerequisite;
+  disableLinks?: boolean;
 }
 
 const container = Model.store.connect({

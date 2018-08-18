@@ -29,6 +29,7 @@ const StringPrerequisite = styled(Text)`
 export interface PrerequisiteProps {
   prerequisite: Model.Prerequisite;
   catalog: Catalog;
+  disableLinks?: boolean;
 }
 
 const PrerequisiteContainer = styled(View)`
@@ -47,11 +48,12 @@ const OperandsContainer = styled(View)`
 
 export class Prerequisite extends React.PureComponent<PrerequisiteProps, {}> {
   handleCourseClick(subjectCode: string, courseNumber: string) {
+    if (this.props.disableLinks) return;
     history.push(`/catalog/${subjectCode}/${courseNumber}`);
   }
 
   render(): JSX.Element | null {
-    const { prerequisite, catalog } = this.props;
+    const { prerequisite, catalog, disableLinks } = this.props;
     if (prerequisite === undefined) return null;
     if (prerequisite === null) return null;
     if (typeof prerequisite === 'string') {
@@ -88,7 +90,7 @@ export class Prerequisite extends React.PureComponent<PrerequisiteProps, {}> {
         <Operator>{logicGate}</Operator>
         <OperandsContainer>
           {operators.map((p, i) => (
-            <Prerequisite key={i} prerequisite={p} catalog={catalog} />
+            <Prerequisite key={i} prerequisite={p} catalog={catalog} disableLinks={disableLinks} />
           ))}
         </OperandsContainer>
       </PrerequisiteContainer>
