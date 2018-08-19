@@ -5,17 +5,17 @@ import { store } from '../../models/store';
 export { store };
 import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs/Observer';
-import { map, debounceTime, share, distinctUntilChanged, tap } from 'rxjs/operators';
+import { map, debounceTime, share, distinctUntilChanged, tap, filter } from 'rxjs/operators';
 import { Auth } from '../auth';
 
 export * from '../../models';
 
 function dispatchSaving() {
-  store.sendUpdate(store => store.update('ui', ui => ui.set('saving', true)));
+  store.sendUpdate(store => store.update('ui', ui => ui.update('saving', count => count + 1)));
 }
 
 function dispatchDoneSaving() {
-  store.sendUpdate(store => store.update('ui', ui => ui.set('saving', false)));
+  store.sendUpdate(store => store.update('ui', ui => ui.update('saving', count => count - 1)));
 }
 
 const user$ = Observable.create((observer: Observer<Record.App>) => {
@@ -69,19 +69,23 @@ const masteredDegrees$ = Observable.create((observer: Observer<Record.App>) => {
   distinctUntilChanged(),
 ) as Observable<Immutable.Map<string, Record.MasteredDegree>>;
 
-masteredDegrees$.pipe(debounceTime(3000)).subscribe(async user => {
-  console.log('sending degrees to server...');
-  const token = await Auth.token();
-  await fetch(`/api/degrees`, {
-    method: 'PUT',
-    headers: new Headers({
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    }),
-    body: JSON.stringify(user.toJS()),
+masteredDegrees$
+  .pipe(
+    tap(dispatchSaving),
+    debounceTime(3000),
+  )
+  .subscribe(async user => {
+    const token = await Auth.token();
+    await fetch(`/api/degrees`, {
+      method: 'PUT',
+      headers: new Headers({
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      }),
+      body: JSON.stringify(user.toJS()),
+    });
+    dispatchDoneSaving();
   });
-  console.log('finished sending degrees');
-});
 
 const admin$ = Observable.create((observer: Observer<Record.App>) => {
   store.subscribe(store => observer.next(store));
@@ -91,9 +95,24 @@ const admin$ = Observable.create((observer: Observer<Record.App>) => {
   distinctUntilChanged(),
 ) as Observable<string[]>;
 
-admin$.pipe(debounceTime(3000)).subscribe(async admins => {
-  console.log({ admins });
-});
+admin$
+  .pipe(
+    filter(admins => admins.length > 0),
+    tap(dispatchSaving),
+    debounceTime(3000),
+  )
+  .subscribe(async admins => {
+    const token = await Auth.token();
+    await fetch('/api/admins', {
+      method: 'PUT',
+      headers: new Headers({
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      }),
+      body: JSON.stringify(admins),
+    });
+    dispatchDoneSaving();
+  });
 
 async function fetchCatalog() {
   const token = await Auth.token();
@@ -145,18 +164,32 @@ async function fetchMasteredDegrees() {
   return map;
 }
 
+async function fetchAdmins() {
+  const token = await Auth.token();
+  const response = await fetch('/api/admins/', {
+    headers: new Headers({
+      Authorization: `Bearer ${token}`,
+    }),
+  });
+
+  const admins = (await response.json()) as string[];
+  return admins;
+}
+
 async function load() {
-  const [catalog, userFromServer, degrees] = await Promise.all([
+  const [catalog, userFromServer, degrees, admins] = await Promise.all([
     fetchCatalog(),
     fetchUser(),
     fetchMasteredDegrees(),
+    fetchAdmins(),
   ]);
   store.sendUpdate(store =>
     store
       .set('catalog', catalog)
       .set('user', userFromServer!)
       .set('masteredDegrees', degrees)
-      .updateUi(ui => ui.set('loaded', true)),
+      .set('admins', admins)
+      .updateUi(ui => ui.set('loaded', true).set('saving', 0)),
   );
 }
 

@@ -36,6 +36,9 @@ async function createMongoDbConnection() {
     get syncStatus() {
       return db.collection<Model.SyncStatus>('SyncStatus');
     },
+    get admins() {
+      return db.collection<{ uniqueName: string }>('Admins');
+    },
     close: client.close.bind(client) as (force?: boolean) => Promise<void>,
   };
 
@@ -45,7 +48,7 @@ async function createMongoDbConnection() {
     { termCode: 1, courseRegistrationNumber: 1, subjectCode: 1, courseNumber: 1, season: 1 },
     { unique: true },
   );
-  collections.sections.createIndex({ courseId: 1 });
+  collections.admins.createIndex({ uniqueName: 1 }, { unique: true });
 
   return collections;
 }

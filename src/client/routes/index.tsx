@@ -4,6 +4,7 @@ import { Sequence } from './sequence';
 import { Degree } from './degree';
 import { DegreeEditor } from './degree-editor';
 import { Catalog } from './catalog';
+import { Admin } from './admin';
 import { Settings } from './settings';
 import { View } from 'components/view';
 import { Text } from 'components/text';
@@ -37,6 +38,7 @@ export const Routes = [
   { path: '/catalog', name: 'Catalog', icon: 'book', component: Catalog },
   { path: '/degree-editor', name: 'Degree editor', icon: 'edit', component: DegreeEditor },
   { path: '/students', name: 'Act as student', icon: 'user', component: Wip },
+  { path: '/admin', name: 'Manage Admins', icon: 'userEdit', component: Admin },
 ];
 
 export const BottomRoutes = [

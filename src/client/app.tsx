@@ -81,7 +81,7 @@ function handleShowHideToolbox() {
 }
 
 export function _AuthenticatedRoute(
-  props: RouteComponentProps<any> & { loaded: boolean; saving: boolean },
+  props: RouteComponentProps<any> & { loaded: boolean; saving: number },
 ) {
   return !props.loaded ? (
     <Loading />
@@ -97,7 +97,8 @@ export function _AuthenticatedRoute(
         <HeaderContent>
           <Saving>
             <SavingText>{props.saving ? 'Saving...' : 'All changes saved'}</SavingText>
-            {props.saving && <Fa icon="spinner" pulse size="2x" />}
+            {!!props.saving && <Fa icon="spinner" pulse size="2x" />}
+            <Text small>{props.saving}</Text>
           </Saving>
           <User>
             <Fa icon="user" size="2x" />

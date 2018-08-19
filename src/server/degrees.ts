@@ -40,7 +40,7 @@ degrees.put('/', async (req, res) => {
       }
     }
 
-    res.sendStatus(HttpStatus.OK);
+    res.sendStatus(HttpStatus.NO_CONTENT);
   } catch (e) {
     console.error(e);
     res.sendStatus(HttpStatus.INTERNAL_SERVER_ERROR);

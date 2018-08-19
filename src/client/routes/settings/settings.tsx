@@ -95,7 +95,8 @@ export class Settings extends React.PureComponent<SettingsProps, {}> {
         <Block title="Logout of MPlan">
           <Row>
             <Button onClick={this.handleLogout}>
-              <SignOut icon="signOut" />Click here to Logout
+              <SignOut icon="signOut" />
+              Click here to Logout
             </Button>
           </Row>
         </Block>
@@ -130,8 +131,8 @@ export class Settings extends React.PureComponent<SettingsProps, {}> {
           <Divider />
           <Description>
             You may also need a copy of the mastered degree programs created in this system by your
-            system administrators / university advisors. You can join this data with your user data to
-            get the names and validation for mastered degree.
+            system administrators / university advisors. You can join this data with your user data
+            to get the names and validation for mastered degree.
           </Description>
           <Row>
             <Button onClick={this.handleDownloadDegrees}>Download Mastered Degrees</Button>
