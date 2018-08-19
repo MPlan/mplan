@@ -1,4 +1,5 @@
 import * as Record from '../recordize';
+import * as Model from 'models';
 import { Catalog } from './catalog';
 import { User } from './user';
 import { Ui } from './ui';
@@ -11,6 +12,7 @@ import { CatalogUi } from './catalog-ui';
 import { DegreePage } from './degree-page';
 import { Search } from './search';
 import { ObjectId } from './';
+import { Course } from './course';
 
 export class App extends Record.define(
   {
@@ -22,8 +24,9 @@ export class App extends Record.define(
     degreePage: new DegreePage(),
     search: new Search(),
     admins: [] as string[],
+    prerequisiteOverrides: {} as { [courseKey: string]: Model.Prerequisite },
   },
-  ['admins'],
+  ['admins', 'prerequisiteOverrides'],
 ) {
   static masteredDegreeGroupsMemo = new WeakMap<any, any>();
 
@@ -85,5 +88,29 @@ export class App extends Record.define(
 
     App.masteredDegreeGroupsMemo.set(this.masteredDegrees, lookup);
     return lookup;
+  }
+
+  addPrerequisiteOverride(course: Course, prerequisite: Model.Prerequisite) {
+    return this.update('prerequisiteOverrides', prerequisiteOverrides => ({
+      ...prerequisiteOverrides,
+      [course.catalogId]: prerequisite,
+    }));
+  }
+
+  removePrerequisiteOverride(course: Course) {
+    const courseKeyToRemove = course.catalogId;
+    return this.update('prerequisiteOverrides', prerequisiteOverrides => {
+      return Object.entries(prerequisiteOverrides)
+        .filter(([courseKey]) => courseKey !== courseKeyToRemove)
+        .reduce(
+          (acc, [courseKey, prerequisite]) => {
+            acc[courseKey] = prerequisite;
+            return acc;
+          },
+          {} as {
+            [courseKey: string]: Model.Prerequisite;
+          },
+        );
+    });
   }
 }

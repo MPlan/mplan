@@ -149,12 +149,16 @@ export class Course
   get prerequisitesConsideringOverrides() {
     const userOverride = this.root.user.userPrerequisiteOverrides[this.catalogId];
     if (userOverride) return userOverride;
+    const globalOverride = this.root.prerequisiteOverrides[this.catalogId];
+    if (globalOverride) return globalOverride;
     return this.prerequisites;
   }
 
   get prerequisiteOverrideType() {
     const userOverride = this.root.user.userPrerequisiteOverrides[this.catalogId];
     if (userOverride) return 'USER_OVERRIDE';
+    const globalOverride = this.root.prerequisiteOverrides[this.catalogId];
+    if (globalOverride) return 'GLOBAL_OVERRIDE';
     return undefined;
   }
 

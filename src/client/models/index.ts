@@ -182,19 +182,36 @@ async function fetchAdmins() {
   return admins;
 }
 
+async function fetchPrerequisitesOverrides() {
+  const token = await Auth.token();
+  const response = await fetch('/api/prerequisite-overrides/', {
+    headers: new Headers({
+      Authorization: `Bearer ${token}`,
+    }),
+  });
+
+  const prerequisiteOverrides = (await response.json()) as {
+    [courseKey: string]: Model.Prerequisite;
+  };
+  return prerequisiteOverrides;
+}
+
 async function load() {
-  const [catalog, userFromServer, degrees, admins] = await Promise.all([
+  const [catalog, userFromServer, degrees, admins, prerequisiteOverrides] = await Promise.all([
     fetchCatalog(),
     fetchUser(),
     fetchMasteredDegrees(),
     fetchAdmins(),
+    fetchPrerequisitesOverrides(),
   ]);
+
   store.sendUpdate(store =>
     store
       .set('catalog', catalog)
       .set('user', userFromServer!)
       .set('masteredDegrees', degrees)
       .set('admins', admins)
+      .set('prerequisiteOverrides', prerequisiteOverrides)
       .updateUi(ui =>
         ui
           .set('loaded', true)

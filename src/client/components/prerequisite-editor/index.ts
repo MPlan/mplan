@@ -11,7 +11,7 @@ const container = Model.store.connect({
   scopeTo: store => store,
   mapStateToProps: (store: Model.App, ownProps: PrerequisiteEditorContainerProps) => ({
     catalog: store.catalog,
-    globalOverrideExists: true,
+    globalOverrideExists: !!store.prerequisiteOverrides[ownProps.course.catalogId],
     localOverrideExists: !!store.user.userPrerequisiteOverrides[ownProps.course.catalogId],
     isAdmin: store.user.isAdmin,
     ...ownProps,
@@ -25,7 +25,9 @@ const container = Model.store.connect({
       Model.Course.clearMemos();
       Model.Degree.clearMemos();
     },
-    onSaveGlobal: (course: Model.Course, prerequisite: Model.Prerequisite) => {},
+    onSaveGlobal: (course: Model.Course, prerequisite: Model.Prerequisite) => {
+      dispatch(store => store.addPrerequisiteOverride(course, prerequisite));
+    },
     onRemoveUser: (course: Model.Course) => {
       dispatch(store => {
         const next = store.user.removePrerequisiteOverride(course);
@@ -34,7 +36,9 @@ const container = Model.store.connect({
       Model.Course.clearMemos();
       Model.Degree.clearMemos();
     },
-    onRemoveGlobal: (course: Model.Course) => {},
+    onRemoveGlobal: (course: Model.Course) => {
+      dispatch(store => store.removePrerequisiteOverride(course));
+    },
   }),
 })(PrerequisiteEditor);
 
