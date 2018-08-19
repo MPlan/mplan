@@ -24,8 +24,11 @@ const StringPrerequisite = styled(Text)`
     white-space: normal;
     overflow: visible;
   }
+  margin-left: ${styles.space(-1)};
 `;
-const StyledActionableText = styled(ActionableText)``;
+const StyledActionableText = styled(ActionableText)`
+  margin-left: ${styles.space(-1)};
+`;
 
 export interface PrerequisiteProps {
   prerequisite: Model.Prerequisite;
@@ -34,11 +37,9 @@ export interface PrerequisiteProps {
 }
 
 const PrerequisiteContainer = styled(View)`
-  /* border: 2px solid transparent; */
   border: 2px solid ${styles.grayLight};
   border-radius: 5px;
   margin: ${styles.space(-1)};
-  /* margin-bottom: ${styles.space(-1)}; */
   flex-direction: row;
   align-items: center;
 `;
