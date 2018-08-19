@@ -189,7 +189,12 @@ async function load() {
       .set('user', userFromServer!)
       .set('masteredDegrees', degrees)
       .set('admins', admins)
-      .updateUi(ui => ui.set('loaded', true).set('saving', 0)),
+      .updateUi(ui =>
+        ui
+          .set('loaded', true)
+          .set('saving', 0)
+          .set('isAdmin', userFromServer!.isAdmin),
+      ),
   );
 }
 

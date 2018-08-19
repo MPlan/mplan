@@ -15,14 +15,17 @@ users.get('/:username', async (req, res) => {
       res.sendStatus(HttpStatus.BAD_REQUEST);
       return;
     }
-    const { users } = await dbConnection;
+    const { users, admins } = await dbConnection;
     const user = await users.findOne({ username });
     if (!user) {
       console.warn(`request didnt find user ${username}`);
       res.sendStatus(HttpStatus.NOT_FOUND);
       return;
     }
-    res.json(user);
+
+    const isAdmin = !!(await admins.findOne({ uniqueName: username }));
+
+    res.json({ ...user, isAdmin });
     return;
   } catch {
     res.sendStatus(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -44,7 +47,8 @@ users.put('/:username', async (req, res) => {
     }
     const { users } = await dbConnection;
     const user = await users.findOne({ username });
-    const userFromRequest = req.body;
+    const _userFromRequest = req.body;
+    const { isAdmin, ...userFromRequest } = _userFromRequest;
     // console.log('user from request', req.body);
 
     if (!user) {

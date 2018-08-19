@@ -65,10 +65,13 @@ const NavContainer = styled(View)`
   overflow: auto;
 `;
 
-export function Nav() {
+export function Nav(props: { isAdmin: boolean }) {
   return (
     <NavContainer>
-      {Routes.map(route => (
+      {Routes.filter(route => {
+        if (props.isAdmin) return true;
+        return !route.admin;
+      }).map(route => (
         <NavButton key={route.path} to={route.path} name={route.name} icon={route.icon} />
       ))}
       <Spacer />

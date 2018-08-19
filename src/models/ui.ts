@@ -6,4 +6,5 @@ export class Ui extends Record.define({
   showToolbox: true,
   loaded: false,
   saving: 0,
+  isAdmin: false,
 }) {}

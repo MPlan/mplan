@@ -81,7 +81,7 @@ function handleShowHideToolbox() {
 }
 
 export function _AuthenticatedRoute(
-  props: RouteComponentProps<any> & { loaded: boolean; saving: number },
+  props: RouteComponentProps<any> & { loaded: boolean; saving: number; isAdmin: boolean },
 ) {
   return !props.loaded ? (
     <Loading />
@@ -98,7 +98,6 @@ export function _AuthenticatedRoute(
           <Saving>
             <SavingText>{props.saving ? 'Saving...' : 'All changes saved'}</SavingText>
             {!!props.saving && <Fa icon="spinner" pulse size="2x" />}
-            <Text small>{props.saving}</Text>
           </Saving>
           <User>
             <Fa icon="user" size="2x" />
@@ -111,10 +110,13 @@ export function _AuthenticatedRoute(
       </Header>
 
       <Body>
-        <Nav />
+        <Nav isAdmin={props.isAdmin} />
         <Content>
           <Switch>
-            {Routes.map(route => (
+            {Routes.filter(route => {
+              if (props.isAdmin) return true;
+              return !route.admin;
+            }).map(route => (
               <Route key={route.path} path={route.path} component={route.component} />
             ))}
             {BottomRoutes.map(route => (
@@ -135,6 +137,7 @@ const AuthenticatedRoute = Model.store.connect({
     ...ownProps,
     saving: scope.saving,
     loaded: scope.loaded,
+    isAdmin: scope.isAdmin,
   }),
   _debugName: 'auth route',
 })(_AuthenticatedRoute);

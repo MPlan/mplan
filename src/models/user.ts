@@ -19,6 +19,7 @@ export class User
     chosenDegree: false,
     plan: new Plan(),
     degree: new Degree(),
+    isAdmin: false,
   })
   implements Model.User {
   get root(): App {

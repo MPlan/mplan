@@ -31,14 +31,20 @@ function Wip() {
 }
 
 export const Routes = [
-  { path: '/dashboard', name: 'Dashboard', icon: 'chartLine', component: Wip },
-  { path: '/degree', name: 'Degree', icon: 'graduationCap', component: Degree },
-  { path: '/sequence', name: 'Sequence', icon: 'exchange', component: Sequence },
-  { path: '/timeline', name: 'Timeline', icon: 'codeCommit', component: Timeline },
-  { path: '/catalog', name: 'Catalog', icon: 'book', component: Catalog },
-  { path: '/degree-editor', name: 'Degree editor', icon: 'edit', component: DegreeEditor },
-  { path: '/students', name: 'Act as student', icon: 'user', component: Wip },
-  { path: '/admin', name: 'Manage Admins', icon: 'userEdit', component: Admin },
+  { path: '/dashboard', name: 'Dashboard', icon: 'chartLine', component: Wip, admin: false },
+  { path: '/degree', name: 'Degree', icon: 'graduationCap', component: Degree, admin: false },
+  { path: '/sequence', name: 'Sequence', icon: 'exchange', component: Sequence, admin: false },
+  { path: '/timeline', name: 'Timeline', icon: 'codeCommit', component: Timeline, admin: false },
+  { path: '/catalog', name: 'Catalog', icon: 'book', component: Catalog, admin: false },
+  {
+    path: '/degree-editor',
+    name: 'Degree editor',
+    icon: 'edit',
+    component: DegreeEditor,
+    admin: true,
+  },
+  { path: '/students', name: 'Act as student', icon: 'user', component: Wip, admin: true },
+  { path: '/admin', name: 'Manage Admins', icon: 'userEdit', component: Admin, admin: true },
 ];
 
 export const BottomRoutes = [

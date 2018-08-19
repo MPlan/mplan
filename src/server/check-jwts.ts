@@ -7,8 +7,6 @@ import * as jwt from 'jsonwebtoken';
 import { AccessTokenPayload } from 'models/token';
 
 const jwkUri = getOrThrow(process.env.JWK_URI);
-const audience = getOrThrow(process.env.CLIENT_ID);
-const issuer = getOrThrow(process.env.ISSUER);
 
 let publicKeyPem = undefined as undefined | string;
 export async function getPublicKeyFromJwk() {
@@ -24,7 +22,7 @@ export async function getPublicKeyFromJwk() {
 export async function checkJwts(req: Request, res: Response, next: NextFunction) {
   if (process.env.NODE_ENV !== 'production') {
     req.user = {
-      nickname: process.env.TEST_USERNAME
+      nickname: process.env.TEST_USERNAME,
     };
     next();
     return;
