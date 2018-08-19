@@ -2,6 +2,7 @@ import * as express from 'express';
 import * as HttpStatus from 'http-status';
 export const admins = express.Router();
 import { dbConnection } from './models/mongo';
+import { checkAdmin } from './check-admin';
 
 admins.get('/', async (_, res) => {
   const { admins } = await dbConnection;
@@ -11,7 +12,7 @@ admins.get('/', async (_, res) => {
   res.json(adminsArray);
 });
 
-admins.put('/', async (req, res) => {
+admins.put('/', checkAdmin, async (req, res) => {
   const body = req.body;
   if (!Array.isArray(body)) {
     res.sendStatus(HttpStatus.BAD_REQUEST);
