@@ -39,6 +39,11 @@ async function createMongoDbConnection() {
     get admins() {
       return db.collection<{ uniqueName: string }>('Admins');
     },
+    get prerequisiteOverrides() {
+      return db.collection<{ courseKey: string; prerequisites: Model.Prerequisite }>(
+        'PrerequisiteOverrides',
+      );
+    },
     close: client.close.bind(client) as (force?: boolean) => Promise<void>,
   };
 
@@ -49,6 +54,7 @@ async function createMongoDbConnection() {
     { unique: true },
   );
   collections.admins.createIndex({ uniqueName: 1 }, { unique: true });
+  collections.prerequisiteOverrides.createIndex({ courseKey: 1 }, { unique: true });
 
   return collections;
 }

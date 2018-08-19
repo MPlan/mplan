@@ -8,6 +8,7 @@ import { checkJwts } from './check-jwts';
 import { degrees } from './degrees';
 import { auth } from './auth';
 import { admins } from './admins';
+import { prerequisiteOverrides } from './prerequisite-overrides';
 
 let catalog: Model.JoinedCatalog | undefined;
 
@@ -53,3 +54,4 @@ api.get('/catalog', compression(), async (_, res) => {
 api.use('/users', users);
 api.use('/degrees', degrees);
 api.use('/admins', admins);
+api.use('/prerequisite-overrides', prerequisiteOverrides);
