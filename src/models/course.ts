@@ -146,6 +146,18 @@ export class Course
     return this.creditHours.toString();
   }
 
+  get prerequisitesConsideringOverrides() {
+    const userOverride = this.root.user.userPrerequisiteOverrides[this.catalogId];
+    if (userOverride) return userOverride;
+    return this.prerequisites;
+  }
+
+  get prerequisiteOverrideType() {
+    const userOverride = this.root.user.userPrerequisiteOverrides[this.catalogId];
+    if (userOverride) return 'USER_OVERRIDE';
+    return undefined;
+  }
+
   static optionsMemo = new Map<any, any>();
   static bestOptionMemo = new Map<any, any>();
   static bestOptionWithPrerequisitesMemo = new Map<any, any>();
@@ -160,6 +172,23 @@ export class Course
   static prerequisitesSatisfiedMemo = new Map<any, any>();
   static taughtByMemo = new Map<any, any>();
   static prerequisitesContainsConcurrentMemo = new Map<any, any>();
+
+  static clearMemos() {
+    this.optionsMemo.clear();
+    this.bestOptionMemo.clear();
+    this.bestOptionWithPrerequisitesMemo.clear();
+    this.intersectionMemo.clear();
+    this.depthMemo.clear();
+    this.minDepthMemo.clear();
+    this.levelsMemo.clear();
+    this.closureMemo.clear();
+    this.fullClosureMemo.clear();
+    this.criticalMemo.clear();
+    this.priorityMemo.clear();
+    this.prerequisitesSatisfiedMemo.clear();
+    this.taughtByMemo.clear();
+    this.prerequisitesContainsConcurrentMemo.clear();
+  }
 
   historicallyTaughtBy(): string[] {
     if (Course.taughtByMemo.has(this)) {
@@ -264,8 +293,9 @@ export class Course
     if (Course.optionsMemo.has(hash)) {
       return Course.optionsMemo.get(hash);
     }
-    if (!this.prerequisites) return Immutable.Set<Immutable.Set<PrerequisiteTuple>>();
-    const disjuncts = disjunctiveNormalForm(this.prerequisites, catalog);
+    if (!this.prerequisitesConsideringOverrides)
+      return Immutable.Set<Immutable.Set<PrerequisiteTuple>>();
+    const disjuncts = disjunctiveNormalForm(this.prerequisitesConsideringOverrides, catalog);
     Course.optionsMemo.set(hash, disjuncts);
     return disjuncts;
   }
@@ -517,13 +547,13 @@ export class Course
   }
 
   prerequisitesContainConcurrent(): boolean {
-    if (!this.prerequisites) return false;
+    if (!this.prerequisitesConsideringOverrides) return false;
 
     if (Course.prerequisitesContainsConcurrentMemo.has(this)) {
       return Course.prerequisitesContainsConcurrentMemo.get(this);
     }
 
-    const value = this._prerequisitesContainConcurrent(this.prerequisites);
+    const value = this._prerequisitesContainConcurrent(this.prerequisitesConsideringOverrides);
     Course.prerequisitesContainsConcurrentMemo.set(this, value);
     return value;
   }

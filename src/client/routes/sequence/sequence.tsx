@@ -96,7 +96,6 @@ export class Sequence extends React.PureComponent<SequenceProps, SequenceState> 
 
   mounted = false;
   reflowEvents$ = new Subject<void>();
-  static edgesMemo = new Map<any, any>();
 
   graphWrapperRef = React.createRef<HTMLElement>();
 
@@ -177,9 +176,6 @@ export class Sequence extends React.PureComponent<SequenceProps, SequenceState> 
     const degree = this.props.degree;
 
     const hash = Model.hashObjects({ catalog, degree });
-    if (Sequence.edgesMemo.has(hash)) {
-      return Sequence.edgesMemo.get(hash);
-    }
 
     const pointMap = degree
       .closure()
@@ -283,9 +279,7 @@ export class Sequence extends React.PureComponent<SequenceProps, SequenceState> 
       x2: edge.x2 - minX,
     }));
 
-    const value = adjustedEdges;
-    Sequence.edgesMemo.set(hash, value);
-    return value;
+    return adjustedEdges;
   }
 
   reflowTrigger = () => {

@@ -128,6 +128,12 @@ export class Degree extends Record.define({
   static closureMemo = new Map<any, any>();
   static levelsMemo = new Map<any, any>();
 
+  static clearMemos() {
+    this.preferredCoursesMemo.clear();
+    this.closureMemo.clear();
+    this.levelsMemo.clear();
+  }
+
   get root(): App {
     return pointer.store.current();
   }

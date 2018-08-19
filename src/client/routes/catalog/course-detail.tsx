@@ -126,18 +126,19 @@ class CourseDetail extends React.PureComponent<CourseDetailProps, CourseDetailSt
           <Key>Previous instructors:</Key>
           <Text>{course.historicallyTaughtBy().join(', ')}</Text>
         </Row>
-        {course.prerequisites && (
+        {course.prerequisitesConsideringOverrides && (
           <Row>
             <Key>Preferred prerequisites:</Key>
             <PreferredPrerequisite course={course} />
           </Row>
         )}
-        {course.prerequisites && (
+        {!!course.prerequisiteOverrideType && <Text>Override applied</Text>}
+        {course.prerequisitesConsideringOverrides && (
           <Row>
             <Key>Prerequisites:</Key>
             <View>
               <Text>Take:</Text>
-              <Prerequisite prerequisite={course.prerequisites} />
+              <Prerequisite prerequisite={course.prerequisitesConsideringOverrides} />
               {course.prerequisitesContainConcurrent() ? (
                 <Text small>* can be taken concurrently</Text>
               ) : null}

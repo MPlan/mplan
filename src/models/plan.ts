@@ -12,6 +12,7 @@ export class Plan extends Record.define({
 }) {
   static unplacedCoursesMemo = new Map<any, any>();
   static warningsNotOfferedDuringSeason = new Map<any, any>();
+
   get root(): App {
     return pointer.store.current();
   }

@@ -94,7 +94,7 @@ describe('Course', () => {
         .addCourse(comp220)
         .addCourse(cis375);
 
-      const result = disjunctiveNormalForm(cis375.prerequisites, catalog);
+      const result = disjunctiveNormalForm(cis375.prerequisitesConsideringOverrides, catalog);
 
       const readableResults = result
         .map(disjunct =>

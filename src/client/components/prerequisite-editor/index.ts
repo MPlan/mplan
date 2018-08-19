@@ -22,6 +22,8 @@ const container = Model.store.connect({
         const next = store.user.setPrerequisiteOverride(course, prerequisite);
         return Model.User.updateStore(store, next);
       });
+      Model.Course.clearMemos();
+      Model.Degree.clearMemos();
     },
     onSaveGlobal: (course: Model.Course, prerequisite: Model.Prerequisite) => {},
     onRemoveUser: (course: Model.Course) => {
@@ -29,6 +31,8 @@ const container = Model.store.connect({
         const next = store.user.removePrerequisiteOverride(course);
         return Model.User.updateStore(store, next);
       });
+      Model.Course.clearMemos();
+      Model.Degree.clearMemos();
     },
     onRemoveGlobal: (course: Model.Course) => {},
   }),
