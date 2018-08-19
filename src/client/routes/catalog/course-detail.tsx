@@ -172,11 +172,9 @@ class CourseDetail extends React.PureComponent<CourseDetailProps, CourseDetailSt
             </Text>
           </Row>
         )}
-        <PrerequisiteEditor
-          course={course}
-          open={this.state.prerequisiteEditorOpen}
-          onClose={this.handlePrerequisiteEditorClose}
-        />
+        {this.state.prerequisiteEditorOpen && (
+          <PrerequisiteEditor course={course} open onClose={this.handlePrerequisiteEditorClose} />
+        )}
       </Container>
     );
   }
