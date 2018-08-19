@@ -6,8 +6,13 @@ const container = Model.store.connect({
   scopeTo: store => store,
   mapStateToProps: (store: Model.App) => ({ admins: store.admins }),
   mapDispatchToProps: dispatch => ({
-    onAdd: (admin: string) => {
-      dispatch(store => store.update('admins', admins => [...admins, admin.toLowerCase()]));
+    onAdd: (adminToAdd: string) => {
+      dispatch(store =>
+        store.update('admins', admins => [
+          ...admins.filter(admin => admin !== adminToAdd),
+          adminToAdd.toLowerCase().trim(),
+        ]),
+      );
     },
     onRemove: (adminToRemove: string) => {
       dispatch(store =>
