@@ -67,12 +67,22 @@ const ShowHideToolbox = styled.button`
     color: ${styles.linkHover};
   }
 `;
+const Saving = styled(View)`
+  flex-direction: row;
+  align-items: center;
+  margin-right: ${styles.space(0)};
+`;
+const SavingText = styled(Text)`
+  margin-right: ${styles.space(0)};
+`;
 
 function handleShowHideToolbox() {
   Model.store.sendUpdate(store => store.updateUi(ui => ui.update('showToolbox', show => !show)));
 }
 
-export function _AuthenticatedRoute(props: RouteComponentProps<any> & { loaded: boolean }) {
+export function _AuthenticatedRoute(
+  props: RouteComponentProps<any> & { loaded: boolean; saving: boolean },
+) {
   return !props.loaded ? (
     <Loading />
   ) : (
@@ -85,6 +95,10 @@ export function _AuthenticatedRoute(props: RouteComponentProps<any> & { loaded: 
         </View>
 
         <HeaderContent>
+          <Saving>
+            <SavingText>{props.saving ? 'Saving...' : 'All changes saved'}</SavingText>
+            {props.saving && <Fa icon="spinner" pulse size="2x" />}
+          </Saving>
           <User>
             <Fa icon="user" size="2x" />
             <UserName>{Auth.userDisplayName() || ''}</UserName>
@@ -118,6 +132,7 @@ const AuthenticatedRoute = Model.store.connect({
   mapDispatchToProps: () => ({}),
   mapStateToProps: (scope: Model.Ui, ownProps: RouteComponentProps<any>) => ({
     ...ownProps,
+    saving: scope.saving,
     loaded: scope.loaded,
   }),
   _debugName: 'auth route',

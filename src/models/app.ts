@@ -12,15 +12,19 @@ import { DegreePage } from './degree-page';
 import { Search } from './search';
 import { ObjectId } from './';
 
-export class App extends Record.define({
-  catalog: new Catalog(),
-  user: new User(),
-  ui: new Ui(),
-  masteredDegrees: Record.MapOf(MasteredDegree),
-  catalogUi: new CatalogUi(),
-  degreePage: new DegreePage(),
-  search: new Search(),
-}) {
+export class App extends Record.define(
+  {
+    catalog: new Catalog(),
+    user: new User(),
+    ui: new Ui(),
+    masteredDegrees: Record.MapOf(MasteredDegree),
+    catalogUi: new CatalogUi(),
+    degreePage: new DegreePage(),
+    search: new Search(),
+    admins: [] as string[],
+  },
+  ['admins'],
+) {
   static masteredDegreeGroupsMemo = new WeakMap<any, any>();
 
   get root(): App {
@@ -78,7 +82,7 @@ export class App extends Record.define({
       },
       {} as { [key: string]: MasteredDegreeGroup },
     );
-    
+
     App.masteredDegreeGroupsMemo.set(this.masteredDegrees, lookup);
     return lookup;
   }
