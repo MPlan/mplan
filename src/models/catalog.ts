@@ -33,7 +33,7 @@ export class Catalog extends Record.define({
     });
   }
 
-  search(query: string, dontRemove = false) {
+  search(query: string) {
     if (query === '') {
       return Immutable.Seq([]);
     }

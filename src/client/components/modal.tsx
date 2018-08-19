@@ -42,7 +42,7 @@ interface CardProps extends ViewProps {
 const Card = styled<CardProps>(View)`
   background-color: ${styles.white};
   box-shadow: ${styles.boxShadow(1)};
-  max-width: 100vw;
+  max-width: calc(100vw - 4rem);
   ${props => (props.minHeight ? `min-height: ${props.minHeight}rem;` : '')};
   ${props => {
     if (props.size === 'small') return 'width: 20rem;';

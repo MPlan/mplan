@@ -10,7 +10,7 @@ import { Text } from 'components/text';
 import { Modal } from 'components/modal';
 import { Prerequisite } from 'components/prerequisite';
 import { NewTabLink } from 'components/new-tab-link';
-import { Button } from 'components/button';
+import { Button, DangerButton } from 'components/button';
 import { ActionableText } from 'components/actionable-text';
 
 function replaceCourseStrings(
@@ -87,6 +87,7 @@ const Code = styled.code`
 `;
 const Disclaimer = styled(Text)`
   margin: ${styles.space(0)} 0;
+  max-width: 42rem;
 `;
 const Actions = styled(View)`
   flex-direction: row;
@@ -95,16 +96,23 @@ const Actions = styled(View)`
     margin-left: ${styles.space(0)};
   }
 `;
-const ClearOverride = styled(Button)`
+const ClearOverride = styled(View)`
   margin-right: auto;
+  flex-direction: row;
 `;
 
 export interface PrerequisiteEditorProps {
   open: boolean;
-  overrideAlreadyExists: boolean;
+  globalOverrideExists: boolean;
+  localOverrideExists: boolean;
   course: Model.Course;
   catalog: Model.Catalog;
   onClose: () => void;
+  isAdmin: boolean;
+  onSaveUser: (course: Model.Course, prerequisites: Model.Prerequisite) => void;
+  onSaveGlobal: (course: Model.Course, prerequisites: Model.Prerequisite) => void;
+  onRemoveUser: (course: Model.Course) => void;
+  onRemoveGlobal: (course: Model.Course) => void;
 }
 interface PrerequisiteEditorState {
   prerequisite: Model.Prerequisite | undefined;
@@ -136,8 +144,43 @@ export class PrerequisiteEditor extends React.PureComponent<
     }));
   };
 
+  handleSaveLocally = () => {
+    const prerequisite = this.state.prerequisite;
+    if (!prerequisite) return;
+
+    this.props.onSaveUser(this.props.course, prerequisite);
+    this.props.onClose();
+  };
+
+  handleSaveGlobally = () => {
+    const prerequisite = this.state.prerequisite;
+    if (!prerequisite) return;
+
+    this.props.onSaveGlobal(this.props.course, prerequisite);
+    this.props.onClose();
+  };
+
+  handleRemoveGlobally = () => {
+    this.props.onRemoveGlobal(this.props.course);
+    this.props.onClose();
+  };
+
+  handleRemoveLocally = () => {
+    this.props.onRemoveUser(this.props.course);
+    this.props.onClose();
+  };
+
   render() {
-    const { course, open, onClose, overrideAlreadyExists } = this.props;
+    const {
+      course,
+      open,
+      onClose,
+      globalOverrideExists,
+      localOverrideExists,
+      isAdmin,
+      onRemoveGlobal,
+      onRemoveUser,
+    } = this.props;
     const { prerequisite, textareaEmpty } = this.state;
     return (
       <Modal
@@ -145,6 +188,7 @@ export class PrerequisiteEditor extends React.PureComponent<
         open={open}
         size="extra-large"
         minHeight={35}
+        onBlurCancel={onClose}
       >
         <Container>
           <Instructions>
@@ -194,14 +238,39 @@ export class PrerequisiteEditor extends React.PureComponent<
             <strong>
               <em>does not</em>
             </strong>{' '}
-            change them in the school information system. You may need to submit a{' '}
-            <NewTabLink href={petitionLink}>student petition</NewTabLink> or submit a correction in
-            order to register. Please contact your advisor if you have any questions.
+            change them in the school information system.{' '}
+            {isAdmin ? (
+              <React.Fragment>
+                As an admin you can choose apply prerequisite overrides globally across MPlan
+                (visible to all user of MPlan) or specifically on your account (only visible to
+                you).
+              </React.Fragment>
+            ) : (
+              <React.Fragment>
+                <strong>Note that these edits are only visible to you</strong>. You may need to
+                submit a <NewTabLink href={petitionLink}>student petition</NewTabLink> in order to
+                register. Please contact your advisor if you have any questions.
+              </React.Fragment>
+            )}
           </Disclaimer>
           <Actions>
-            {overrideAlreadyExists && <ClearOverride>Remove Override</ClearOverride>}
+            <ClearOverride>
+              {isAdmin ? (
+                globalOverrideExists ? (
+                  <DangerButton onClick={this.handleRemoveGlobally}>
+                    Remove Global Override
+                  </DangerButton>
+                ) : null
+              ) : null}
+              {localOverrideExists && (
+                <DangerButton onClick={this.handleRemoveLocally}>
+                  Remove {isAdmin ? 'Local' : ''} Override
+                </DangerButton>
+              )}
+            </ClearOverride>
             <Button onClick={onClose}>Cancel</Button>
-            <Button>Save</Button>
+            {isAdmin && <Button onClick={this.handleSaveGlobally}>Save Globally</Button>}
+            <Button onClick={this.handleSaveLocally}>Save {isAdmin ? 'Locally' : ''}</Button>
           </Actions>
         </Container>
       </Modal>

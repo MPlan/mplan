@@ -5,22 +5,27 @@ import { Degree } from './degree';
 import { Plan } from './plan';
 import { pointer } from './pointer';
 import { App } from './app';
+import { Course } from './course';
 
 export class User
-  extends Record.define({
-    _id: ObjectId(),
-    username: '',
-    name: '',
-    picture: '',
-    registerDate: 0,
-    lastLoginDate: 0,
-    lastUpdateDate: 0,
-    lastTermCode: '',
-    chosenDegree: false,
-    plan: new Plan(),
-    degree: new Degree(),
-    isAdmin: false,
-  })
+  extends Record.define(
+    {
+      _id: ObjectId(),
+      username: '',
+      name: '',
+      picture: '',
+      registerDate: 0,
+      lastLoginDate: 0,
+      lastUpdateDate: 0,
+      lastTermCode: '',
+      chosenDegree: false,
+      plan: new Plan(),
+      degree: new Degree(),
+      isAdmin: false,
+      userPrerequisiteOverrides: {} as { [courseKey: string]: Model.Prerequisite },
+    },
+    ['userPrerequisiteOverrides'],
+  )
   implements Model.User {
   get root(): App {
     return pointer.store.current();
@@ -42,12 +47,24 @@ export class User
     return this.set('degree', new Degree()).set('chosenDegree', false);
   }
 
-  // TODO
-  validate() {
-    // const validationErrors = [] as string[];
-    // if (!this.username) validationErrors.push('User name was falsy');
-    // if (!this.name) validationErrors.push('Name was falsy');
-    // if (!this.registerDate) validationErrors.push('Register date was falsy');
-    // if (!this.lastLoginDate) validationErrors.push('lastLoginDate was falsy');
+  setPrerequisiteOverride(course: Course, prerequisite: Model.Prerequisite) {
+    return this.update('userPrerequisiteOverrides', overrides => ({
+      ...overrides,
+      [course.catalogId]: prerequisite,
+    }));
+  }
+
+  removePrerequisiteOverride(course: Course) {
+    return this.update('userPrerequisiteOverrides', overrides => {
+      return Object.entries(overrides)
+        .filter(([key]) => course.catalogId !== key)
+        .reduce(
+          (newOverrides, [key, value]) => {
+            newOverrides[key] = value;
+            return newOverrides;
+          },
+          {} as { [courseKey: string]: Model.Prerequisite },
+        );
+    });
   }
 }
