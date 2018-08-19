@@ -12,7 +12,7 @@ const Operator = styled(Text)`
   font-size: ${styles.space(-1)};
   font-style: italic;
   font-weight: bold;
-  margin-left: ${styles.space(-1)};
+  padding-left: ${styles.space(-1)};
   width: 2.5rem;
 `;
 const StringPrerequisite = styled(Text)`
@@ -25,6 +25,7 @@ const StringPrerequisite = styled(Text)`
     overflow: visible;
   }
 `;
+const StyledActionableText = styled(ActionableText)``;
 
 export interface PrerequisiteProps {
   prerequisite: Model.Prerequisite;
@@ -69,9 +70,9 @@ export class Prerequisite extends React.PureComponent<PrerequisiteProps, {}> {
       const courseString = `${subjectCode} ${courseNumber}${concurrent ? '*' : ''}`;
 
       return courseInCatalog ? (
-        <ActionableText onClick={() => this.handleCourseClick(subjectCode, courseNumber)}>
+        <StyledActionableText onClick={() => this.handleCourseClick(subjectCode, courseNumber)}>
           {courseString}
-        </ActionableText>
+        </StyledActionableText>
       ) : (
         <StringPrerequisite>{courseString}</StringPrerequisite>
       );

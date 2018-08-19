@@ -150,7 +150,7 @@ export class PrerequisiteEditor extends React.PureComponent<
           <Instructions>
             To edit this course's prerequisites, type them out using <Code>AND</Code>
             s, <Code>OR</Code>
-            s, and parenthesis <Code>()</Code>:
+            s, and parentheses <Code>()</Code>:
             <ul>
               <li>
                 The interpreted results will be displayed on the left. A term will turn{' '}
@@ -161,7 +161,7 @@ export class PrerequisiteEditor extends React.PureComponent<
                 Add an asterisk <Code>*</Code> to denote that a course can be taken concurrently.
               </li>
               <li>
-                You may use more parenthesis <Code>()</Code> if the interpreted results are not what
+                You may use more parentheses <Code>()</Code> if the interpreted results are not what
                 you expect.
               </li>
             </ul>
