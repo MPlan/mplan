@@ -123,7 +123,7 @@ export class Settings extends React.PureComponent<SettingsProps, {}> {
           <Divider />
           <Description>
             You can also download a copy of catalog this system uses. This catalog contains all the
-            course data we have available in the system including historical course offerings.
+            course data we have available in the system besides historical course offerings.
           </Description>
           <Row>
             <Button onClick={this.handleDownloadCatalog}>Download Catalog</Button>
