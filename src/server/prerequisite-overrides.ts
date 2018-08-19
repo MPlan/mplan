@@ -58,11 +58,12 @@ prerequisiteOverrides.put('/:courseKey', checkAdmin, async (req, res) => {
     res.sendStatus(HttpStatus.BAD_REQUEST);
     return;
   }
-  const prerequisites = req.body;
-  if (!prerequisites) {
+  const body = req.body;
+  if (!body.prerequisites) {
     res.sendStatus(HttpStatus.BAD_REQUEST);
     return;
   }
+  const prerequisites = body.prerequisites;
 
   const { prerequisiteOverrides } = await dbConnection;
 

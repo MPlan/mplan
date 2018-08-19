@@ -5,16 +5,16 @@ import { store } from '../../models/store';
 export { store };
 import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs/Observer';
-import { map, debounceTime, share, distinctUntilChanged, tap, filter } from 'rxjs/operators';
+import { map, debounceTime, share, distinctUntilChanged, tap, filter, scan } from 'rxjs/operators';
 import { Auth } from '../auth';
 
 export * from '../../models';
 
-function dispatchSaving() {
+export function dispatchSaving() {
   store.sendUpdate(store => store.update('ui', ui => ui.update('saving', count => count + 1)));
 }
 
-function dispatchDoneSaving() {
+export function dispatchDoneSaving() {
   store.sendUpdate(store => store.update('ui', ui => ui.update('saving', count => count - 1)));
 }
 

@@ -140,9 +140,9 @@ export interface PrerequisiteEditorProps {
   onClose: () => void;
   isAdmin: boolean;
   onSaveUser: (course: Model.Course, prerequisites: Model.Prerequisite) => void;
-  onSaveGlobal: (course: Model.Course, prerequisites: Model.Prerequisite) => void;
+  onSaveGlobal: (course: Model.Course, prerequisites: Model.Prerequisite) => Promise<void>;
   onRemoveUser: (course: Model.Course) => void;
-  onRemoveGlobal: (course: Model.Course) => void;
+  onRemoveGlobal: (course: Model.Course) => Promise<void>;
 }
 interface PrerequisiteEditorState {
   prerequisite: Model.Prerequisite | undefined;

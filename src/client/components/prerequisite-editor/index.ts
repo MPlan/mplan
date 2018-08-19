@@ -1,5 +1,41 @@
 import * as Model from 'models';
 import { PrerequisiteEditor } from './prerequisite-editor';
+import { Auth } from 'client/auth';
+import { dispatchSaving, dispatchDoneSaving } from 'client/models';
+
+async function addOverride(course: Model.Course, prerequisites: Model.Prerequisite) {
+  const token = await Auth.token();
+  const prerequisiteOverridesResponse = await fetch('/api/prerequisite-overrides/', {
+    headers: new Headers({
+      Authorization: `Bearer ${token}`,
+    }),
+  });
+  const currentPrerequisiteOverrides = (await prerequisiteOverridesResponse.json()) as {
+    [catalogId: string]: Model.Prerequisite;
+  };
+
+  const courseExists = !!currentPrerequisiteOverrides[course.catalogId];
+
+  if (courseExists) {
+    await fetch(`/api/prerequisite-overrides/${course.catalogId}`, {
+      method: 'PUT',
+      headers: new Headers({
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      }),
+      body: JSON.stringify({ courseKey: course.catalogId, prerequisites }),
+    });
+  } else {
+    await fetch(`/api/prerequisite-overrides/`, {
+      method: 'POST',
+      headers: new Headers({
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      }),
+      body: JSON.stringify({ courseKey: course.catalogId, prerequisites }),
+    });
+  }
+}
 
 interface PrerequisiteEditorContainerProps {
   course: Model.Course;
@@ -25,8 +61,11 @@ const container = Model.store.connect({
       Model.Course.clearMemos();
       Model.Degree.clearMemos();
     },
-    onSaveGlobal: (course: Model.Course, prerequisite: Model.Prerequisite) => {
+    onSaveGlobal: async (course: Model.Course, prerequisite: Model.Prerequisite) => {
       dispatch(store => store.addPrerequisiteOverride(course, prerequisite));
+      dispatchSaving();
+      await addOverride(course, prerequisite);
+      dispatchDoneSaving();
     },
     onRemoveUser: (course: Model.Course) => {
       dispatch(store => {
@@ -36,7 +75,7 @@ const container = Model.store.connect({
       Model.Course.clearMemos();
       Model.Degree.clearMemos();
     },
-    onRemoveGlobal: (course: Model.Course) => {
+    onRemoveGlobal: async (course: Model.Course) => {
       dispatch(store => store.removePrerequisiteOverride(course));
     },
   }),
