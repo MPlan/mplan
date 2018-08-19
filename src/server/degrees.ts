@@ -2,6 +2,7 @@ import * as express from 'express';
 import * as HttpStatus from 'http-status';
 export const degrees = express.Router();
 import { dbConnection } from './models/mongo';
+import { checkAdmin } from './check-admin';
 
 degrees.get('/', async (req, res) => {
   try {
@@ -25,7 +26,7 @@ degrees.get('/', async (req, res) => {
   }
 });
 
-degrees.put('/', async (req, res) => {
+degrees.put('/', checkAdmin, async (req, res) => {
   try {
     const degreesFromClient = Object.values(req.body).filter((d: any) => !!d._id) as any[];
     console.log(degreesFromClient);

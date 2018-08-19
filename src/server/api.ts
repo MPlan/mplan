@@ -52,5 +52,5 @@ api.get('/catalog', compression(), async (_, res) => {
 });
 
 api.use('/users', users);
-api.use('/degrees', checkAdmin, degrees);
+api.use('/degrees', degrees);
 api.use('/admins', checkAdmin, admins);
