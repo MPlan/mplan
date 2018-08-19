@@ -222,7 +222,6 @@ export class PrerequisiteEditor extends React.PureComponent<
         open={open}
         size="extra-large"
         minHeight={35}
-        onBlurCancel={onClose}
       >
         <Container>
           <Instructions>
@@ -279,7 +278,7 @@ export class PrerequisiteEditor extends React.PureComponent<
             {isAdmin ? (
               <React.Fragment>
                 As an admin you can choose apply prerequisite overrides globally across MPlan
-                (visible to all user of MPlan) or specifically on your account (only visible to
+                (visible to all users of MPlan) or specifically on your account (only visible to
                 you).
               </React.Fragment>
             ) : (
@@ -306,8 +305,10 @@ export class PrerequisiteEditor extends React.PureComponent<
               )}
             </ClearOverride>
             <Button onClick={onClose}>Cancel</Button>
-            {isAdmin && <Button onClick={this.handleSaveGlobally}>Save Globally</Button>}
-            <Button onClick={this.handleSaveLocally}>Save {isAdmin ? 'Locally' : ''}</Button>
+            {isAdmin && (
+              <DangerButton onClick={this.handleSaveGlobally}>Save For Everyone</DangerButton>
+            )}
+            <Button onClick={this.handleSaveLocally}>Save {isAdmin ? 'For Yourself' : ''}</Button>
           </Actions>
         </Container>
       </Modal>
