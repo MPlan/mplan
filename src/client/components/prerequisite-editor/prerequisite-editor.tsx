@@ -1,6 +1,11 @@
 import * as React from 'react';
 import * as Model from 'models';
-import { isAndPrerequisite, isOrPrerequisite, isCoursePrerequisite } from 'models/models';
+import {
+  isAndPrerequisite,
+  isOrPrerequisite,
+  isCoursePrerequisite,
+  isStringPrerequisite,
+} from 'models/models';
 import * as styles from 'styles';
 import styled from 'styled-components';
 import { parsePrerequisiteString } from 'sync/catalog-umd-umich/courses/parse/prerequisites';
@@ -101,6 +106,31 @@ const ClearOverride = styled(View)`
   flex-direction: row;
 `;
 
+function transformPrerequisiteToString(prerequisite: Model.Prerequisite | undefined): string {
+  if (!prerequisite) return '';
+
+  if (isStringPrerequisite(prerequisite)) return prerequisite;
+  if (isCoursePrerequisite(prerequisite)) {
+    const [subjectCode, courseNumber, previousOrConcurrent] = prerequisite;
+    return `${subjectCode} ${courseNumber}${previousOrConcurrent === 'CONCURRENT' ? '*' : ''}`;
+  }
+
+  if (isAndPrerequisite(prerequisite)) {
+    const joined = prerequisite.and
+      .map(operand => transformPrerequisiteToString(operand))
+      .join(' AND ');
+    return `(${joined})`;
+  }
+
+  if (isOrPrerequisite(prerequisite)) {
+    const joined = prerequisite.or
+      .map(operand => transformPrerequisiteToString(operand))
+      .join(' OR ');
+    return `(${joined})`;
+  }
+  throw new Error('Unmet prerequisite case when transforming prerequisite to a string');
+}
+
 export interface PrerequisiteEditorProps {
   open: boolean;
   globalOverrideExists: boolean;
@@ -125,8 +155,14 @@ export class PrerequisiteEditor extends React.PureComponent<
 > {
   constructor(props: PrerequisiteEditorProps) {
     super(props);
+
+    const parsed = safeParsePrerequisiteString(
+      transformPrerequisiteToString(props.course.prerequisitesConsideringOverrides),
+    );
+    const parsedWithCourses = parsed ? replaceCourseStrings(parsed, props.catalog) : undefined;
+
     this.state = {
-      prerequisite: undefined,
+      prerequisite: parsedWithCourses,
       textareaEmpty: true,
     };
   }
@@ -178,8 +214,6 @@ export class PrerequisiteEditor extends React.PureComponent<
       globalOverrideExists,
       localOverrideExists,
       isAdmin,
-      onRemoveGlobal,
-      onRemoveUser,
     } = this.props;
     const { prerequisite, textareaEmpty } = this.state;
     return (
@@ -214,6 +248,9 @@ export class PrerequisiteEditor extends React.PureComponent<
             <TextAreaColumn>
               <ColumnTitle>Enter prerequisite expression here:</ColumnTitle>
               <TextArea
+                defaultValue={transformPrerequisiteToString(
+                  course.prerequisitesConsideringOverrides,
+                )}
                 onChange={this.handleChange}
                 placeholder={
                   'e.g.\n(MATH 115 or MPLS with a score of 116) and\n(CIS 150 or IMSE 150 or CCM 150)'
