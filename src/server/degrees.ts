@@ -8,13 +8,16 @@ degrees.get('/', async (req, res) => {
     const { degrees } = await dbConnection;
     const allDegrees = await degrees.find({}).toArray();
 
-    const combinedDegrees = allDegrees.reduce((combined, next) => {
-      combined[next._id] = next;
-      return combined;
-    }, {} as any);
+    const combinedDegrees = allDegrees.reduce(
+      (combined, next) => {
+        combined[next._id] = next;
+        return combined;
+      },
+      {} as any,
+    );
 
     res.json(combinedDegrees);
-    
+
     return;
   } catch (e) {
     console.error(e);
@@ -36,6 +39,8 @@ degrees.put('/', async (req, res) => {
         await degrees.findOneAndReplace({ _id: degreeFromClient._id }, degreeFromClient);
       }
     }
+
+    res.sendStatus(HttpStatus.OK);
   } catch (e) {
     console.error(e);
     res.sendStatus(HttpStatus.INTERNAL_SERVER_ERROR);
