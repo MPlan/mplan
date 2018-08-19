@@ -22,7 +22,7 @@ const Container = styled(View)`
   max-height: 80vh;
 `;
 const SearchHalf = styled(View)`
-  flex: 1 1 auto;
+  flex: 1 0 50%;
 `;
 const Form = styled.form`
   margin-right: ${styles.space(0)};
@@ -42,14 +42,12 @@ const SearchLabel = styled.label`
 `;
 const SearchResults = styled(View)`
   overflow: auto;
-  & > * {
-    flex-shrink: 0;
-  }
+  flex: 1 1 auto;
   margin-bottom: ${styles.space(0)};
 `;
 const Count = styled(Text)``;
 const CurrentList = styled(View)`
-  flex: 1 1 auto;
+  flex: 1 0 50%;
 `;
 const CurrentListLabel = styled(Text)`
   margin-bottom: ${styles.space(-1)};
@@ -131,10 +129,25 @@ class _CourseSearch extends React.PureComponent<CourseSearchProps, CourseSearchS
   };
 
   handleAddClick = (courseToAdd: Model.Course) => {
-    this.setState(previousState => ({
-      ...previousState,
-      currentCourses: [...previousState.currentCourses, courseToAdd],
-    }));
+    this.setState(previousState => {
+      const courseAlreadyAdded = !!previousState.currentCourses.find(
+        course => course.catalogId === courseToAdd.catalogId,
+      );
+
+      if (courseAlreadyAdded) {
+        return {
+          ...previousState,
+          currentCourses: previousState.currentCourses.filter(
+            currentCourse => currentCourse.catalogId !== courseToAdd.catalogId,
+          ),
+        };
+      }
+
+      return {
+        ...previousState,
+        currentCourses: [...previousState.currentCourses, courseToAdd],
+      };
+    });
   };
 
   handleDeleteClick = (courseToDelete: Model.Course) => {
@@ -170,6 +183,11 @@ class _CourseSearch extends React.PureComponent<CourseSearchProps, CourseSearchS
                     key={course.id}
                     course={course}
                     onClick={() => this.handleAddClick(course)}
+                    added={
+                      !!this.state.currentCourses.find(
+                        currentCourse => currentCourse.catalogId === course.catalogId,
+                      )
+                    }
                   />
                 ))}
               </SearchResults>
