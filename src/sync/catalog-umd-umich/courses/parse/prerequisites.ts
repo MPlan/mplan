@@ -234,6 +234,10 @@ export function buildPrerequisiteTree(tokens: ParseTree | Prerequisite): Prerequ
 
   const rankedOperators = transformedTokens
     .map((token, index) => ({ token, index }))
+    .map(({ token, index }) => ({
+      token: typeof token === 'string' ? token.toLowerCase() : token,
+      index,
+    }))
     .filter(({ token }) => {
       if (token === 'and') return true;
       if (token === 'or') return true;
