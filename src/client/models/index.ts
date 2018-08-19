@@ -61,7 +61,9 @@ user$
 
 const masteredDegrees$ = Observable.create((observer: Observer<Record.App>) => {
   store.subscribe(store => {
-    observer.next(store);
+    if (store.user.isAdmin) {
+      observer.next(store);
+    }
   });
 }).pipe(
   share(),
@@ -88,7 +90,11 @@ masteredDegrees$
   });
 
 const admin$ = Observable.create((observer: Observer<Record.App>) => {
-  store.subscribe(store => observer.next(store));
+  store.subscribe(store => {
+    if (store.user.isAdmin) {
+      observer.next(store);
+    }
+  });
 }).pipe(
   share(),
   map((store: Record.App) => store.admins),
