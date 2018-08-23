@@ -18,7 +18,6 @@ import { CourseSearchItem } from './course-search-item';
 const INPUT_DEBOUNCE_TIME = 250;
 
 const Container = styled(View)`
-  width: 50rem;
   max-height: 80vh;
 `;
 const SearchHalf = styled(View)`
@@ -165,7 +164,12 @@ class _CourseSearch extends React.PureComponent<CourseSearchProps, CourseSearchS
 
   render() {
     return (
-      <Modal title={this.props.title} open={this.state.open} onBlurCancel={this.props.onCancel}>
+      <Modal
+        title={this.props.title}
+        open={this.state.open}
+        onBlurCancel={this.props.onCancel}
+        size="extra-large"
+      >
         <Container>
           <Split>
             <SearchHalf>
