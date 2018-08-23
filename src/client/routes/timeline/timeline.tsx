@@ -77,9 +77,50 @@ const NavigationLabel = styled(Text)`
   }
   padding: ${styles.space(-1)};
 `;
-const ScheduleForm = styled.form``;
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+`;
 const ReorderSemester = styled(View)`
   padding: ${styles.space(0)} ${styles.space(1)};
+`;
+const Actions = styled(View)`
+  flex-direction: row;
+  justify-content: flex-end;
+  & ${Button} {
+    margin-left: ${styles.space(0)};
+  }
+  margin-top: ${styles.space(-1)};
+`;
+const AnchorDescription = styled(Text)`
+  margin-bottom: ${styles.space(-1)};
+`;
+const AnchorYearInput = styled.input`
+  font-family: ${styles.fontFamily};
+  padding: ${styles.space(-1)};
+  margin-left: ${styles.space(0)};
+`;
+const AnchorYearLabel = styled.label`
+  font-family: ${styles.fontFamily};
+  margin-bottom: ${styles.space(-1)};
+  font-weight: bold;
+`;
+const AnchorRadioRow = styled(View)`
+  flex-direction: row;
+  margin-bottom: ${styles.space(-1)};
+`;
+const AnchorSemesterRadioLabel = styled.label`
+  font-family: ${styles.fontFamily};
+  flex: 1 1 auto;
+`;
+const AnchorSemesterRadio = styled.input`
+  margin-right: ${styles.space(-1)};
+  font-family: ${styles.fontFamily};
+`;
+const StartingSeason = styled(Text)`
+  margin-right: ${styles.space(-1)};
+  font-weight: bold;
 `;
 
 const actions = {
@@ -92,6 +133,10 @@ const actions = {
     text: 'Reorder semesters',
     icon: 'bars',
   },
+  anchor: {
+    text: 'Change plan starting point',
+    icon: 'play',
+  },
 };
 
 export interface TimelineProps {
@@ -99,6 +144,9 @@ export interface TimelineProps {
   onCreateNewSemester: () => void;
   onGeneratePlan: (planOptions: Model.PlanOptions) => void;
   onReorderSemesters: SortEndHandler;
+  onChangeAnchor: (year: number, season: 'fall' | 'winter' | 'summer') => void;
+  anchorYear: number;
+  anchorSeason: 'fall' | 'winter' | 'summer';
 }
 
 export interface TimelineState {
@@ -106,6 +154,7 @@ export interface TimelineState {
   sliderLeft: number;
   scheduleModelOpen: boolean;
   reorderingSemesters: boolean;
+  anchorModalOpen: boolean;
 }
 
 export class Timeline extends React.PureComponent<TimelineProps, TimelineState> {
@@ -116,6 +165,7 @@ export class Timeline extends React.PureComponent<TimelineProps, TimelineState> 
       sliderLeft: 0,
       scheduleModelOpen: false,
       reorderingSemesters: false,
+      anchorModalOpen: false,
     };
   }
 
@@ -129,6 +179,11 @@ export class Timeline extends React.PureComponent<TimelineProps, TimelineState> 
 
     if (action === 'reorder') {
       this.handleOpenSemesterReorder();
+      return;
+    }
+
+    if (action === 'anchor') {
+      this.handleOpenChangeAnchor();
       return;
     }
   };
@@ -188,6 +243,47 @@ export class Timeline extends React.PureComponent<TimelineProps, TimelineState> 
       ...previousState,
       reorderingSemesters: false,
     }));
+  };
+
+  handleOpenChangeAnchor = () => {
+    this.setState(previousState => ({
+      ...previousState,
+      anchorModalOpen: true,
+    }));
+  };
+
+  handleCloseChangeAnchor = () => {
+    this.setState(previousState => ({
+      ...previousState,
+      anchorModalOpen: false,
+    }));
+  };
+
+  handleAnchorSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const yearElement = document.querySelector('.anchor-year') as HTMLInputElement | null;
+    if (!yearElement) return;
+    const fallElement = document.querySelector('.anchor-fall') as HTMLInputElement | null;
+    if (!fallElement) return;
+    const winterElement = document.querySelector('.anchor-winter') as HTMLInputElement | null;
+    if (!winterElement) return;
+    const summerElement = document.querySelector('.anchor-summer') as HTMLInputElement | null;
+    if (!summerElement) return;
+
+    const year = parseInt(yearElement.value, 10);
+    const season = fallElement.checked
+      ? 'fall'
+      : winterElement.checked
+        ? 'winter'
+        : summerElement.checked
+          ? 'summer'
+          : undefined;
+
+    if (!year) return;
+    if (!season) return;
+
+    this.handleCloseChangeAnchor();
+    this.props.onChangeAnchor(year, season);
   };
 
   renderSubtitle = () => {
@@ -254,7 +350,7 @@ export class Timeline extends React.PureComponent<TimelineProps, TimelineState> 
             </Navigator>
             <FloatingActionButton
               actions={actions}
-              message="Add..."
+              message="Actions..."
               onAction={this.handleActions}
             />
           </Page>
@@ -265,7 +361,7 @@ export class Timeline extends React.PureComponent<TimelineProps, TimelineState> 
           open={this.state.scheduleModelOpen}
           onBlurCancel={this.handleScheduleModalBlur}
         >
-          <ScheduleForm onSubmit={this.handleScheduleFormSubmit}>
+          <Form onSubmit={this.handleScheduleFormSubmit}>
             <label>
               Start from semester:
               <input className="schedule-start" type="text" />
@@ -277,8 +373,67 @@ export class Timeline extends React.PureComponent<TimelineProps, TimelineState> 
             <Checkbox className="consider-summer-classes" label="consider summer classes" />
             <Checkbox className="consider-historical-data" label="consider historical data" />
             <Button type="submit">Generate schedule...</Button>
-          </ScheduleForm>
+          </Form>
         </Modal>
+        {this.state.anchorModalOpen && (
+          <Modal
+            title="Changing plan starting point..."
+            open
+            onBlurCancel={this.handleCloseChangeAnchor}
+            size="medium"
+          >
+            <Form onSubmit={this.handleAnchorSubmit}>
+              <AnchorDescription>
+                A plan's starting point is the year and semester you'd like to start your MPlan at.
+                New semesters added to your plan will be based off this point.
+              </AnchorDescription>
+              <AnchorYearLabel>
+                Starting Year:
+                <AnchorYearInput
+                  type="number"
+                  className="anchor-year"
+                  defaultValue={this.props.anchorYear.toString()}
+                />
+              </AnchorYearLabel>
+              <AnchorRadioRow>
+                <StartingSeason>Staring Season:</StartingSeason>
+                <AnchorSemesterRadioLabel>
+                  <AnchorSemesterRadio
+                    type="radio"
+                    name="semester-anchor"
+                    className="anchor-fall"
+                    defaultChecked={this.props.anchorSeason === 'fall'}
+                  />
+                  Fall
+                </AnchorSemesterRadioLabel>
+                <AnchorSemesterRadioLabel>
+                  <AnchorSemesterRadio
+                    type="radio"
+                    name="semester-anchor"
+                    className="anchor-winter"
+                    defaultChecked={this.props.anchorSeason === 'winter'}
+                  />
+                  Winter
+                </AnchorSemesterRadioLabel>
+                <AnchorSemesterRadioLabel>
+                  <AnchorSemesterRadio
+                    type="radio"
+                    name="semester-anchor"
+                    className="anchor-summer"
+                    defaultChecked={this.props.anchorSeason === 'summer'}
+                  />
+                  Summer
+                </AnchorSemesterRadioLabel>
+              </AnchorRadioRow>
+              <Actions>
+                <Button onClick={this.handleCloseChangeAnchor} type="button">
+                  Cancel
+                </Button>
+                <Button>Save</Button>
+              </Actions>
+            </Form>
+          </Modal>
+        )}
         <Reorder
           title="Reordering semesters..."
           open={this.state.reorderingSemesters}

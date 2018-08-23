@@ -8,6 +8,8 @@ const container = Model.store.connect({
   mapStateToProps: (scope: Model.Plan) => {
     return {
       semesters: scope.semesters.toArray(),
+      anchorYear: scope.anchorYear,
+      anchorSeason: scope.anchorSeason,
     };
   },
   mapDispatchToProps: dispatch => {
@@ -39,6 +41,12 @@ const container = Model.store.connect({
 
           const newSemesters = Immutable.List(semestersWithNewIndex);
           const next = plan.set('semesters', newSemesters);
+          return Model.Plan.updateStore(store, next);
+        });
+      },
+      onChangeAnchor: (year: number, season: 'fall' | 'winter' | 'summer') => {
+        dispatch(store => {
+          const next = store.user.plan.set('anchorYear', year).set('anchorSeason', season);
           return Model.Plan.updateStore(store, next);
         });
       },
