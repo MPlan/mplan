@@ -108,6 +108,7 @@ export interface SemesterProps {
   onSortEnd: (e: SortChange) => void;
   onDeleteCourse: (course: Model.Course) => void;
   onAddCourses: (course: Model.Course[]) => void;
+  onClearCourses: () => void;
 }
 
 export interface SemesterState {
@@ -133,7 +134,15 @@ export class Semester extends React.PureComponent<SemesterProps, SemesterState> 
     );
   };
 
-  handleAction = (_: keyof typeof actions) => {};
+  handleAction = (action: keyof typeof actions) => {
+    if (action === 'add') {
+      this.handleOpenCoursePicker();
+      return;
+    }
+    if (action === 'clear') {
+      this.props.onClearCourses();
+    }
+  };
 
   handleOpenCoursePicker = () => {
     this.setState(previousState => ({

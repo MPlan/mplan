@@ -76,6 +76,10 @@ export class Semester extends Record.define({
     });
   }
 
+  clearCourses() {
+    return this.update('_courseIds', courseIds => courseIds.clear());
+  }
+
   private _previousSemesterSeason() {
     if (this.season === 'winter') {
       return 'fall';

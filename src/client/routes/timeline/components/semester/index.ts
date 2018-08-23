@@ -31,6 +31,15 @@ const container = Model.store.connect({
           ),
         );
       },
+      onClearCourses: () => {
+        dispatch(store => {
+          const next = store.user.plan.updateSemester(ownProps.semester.id, semester =>
+            semester.clearCourses(),
+          );
+
+          return Model.Plan.updateStore(store, next);
+        });
+      },
       onSortEnd: ({ fromDropzoneId, newIndex, oldIndex, toDropzoneId }: SortChange) => {
         dispatch(store =>
           store.updatePlan(plan => {
