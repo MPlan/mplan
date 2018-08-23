@@ -96,14 +96,14 @@ const actions = {
     text: 'Clear courses',
     icon: 'times',
   },
+  reorder: {
+    text: 'Reorder',
+    icon: 'bars',
+  },
   delete: {
     text: 'Delete semester',
     icon: 'trash',
     color: styles.red,
-  },
-  reorder: {
-    text: 'Reorder',
-    icon: 'bars',
   },
 };
 
