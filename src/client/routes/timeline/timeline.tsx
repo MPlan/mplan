@@ -291,13 +291,16 @@ export class Timeline extends React.PureComponent<TimelineProps, TimelineState> 
   };
 
   renderTitleLeft = () => {
+    const { semesters } = this.props;
+    const lastSemester = semesters[semesters.length - 1];
+    if (!lastSemester) return null;
     return (
       <View>
         <Text strong color={styles.textLight}>
           Expected Graduation:
         </Text>
         <Text strong large color={styles.textLight}>
-          April 2018
+          {lastSemester.name}
         </Text>
         <ActionableText onClick={this.handleGenerateClick}>Generate schedule...</ActionableText>
       </View>
