@@ -10,6 +10,7 @@ import { Dropzone, SortChange } from 'components/dropzone';
 import { DropdownMenu } from 'components/dropdown-menu';
 import { RightClickMenu, RightClickProps } from 'components/right-click-menu';
 import { ActionableText } from 'components/actionable-text';
+import { CourseSearch } from 'components/course-search';
 
 import { Course } from '../course';
 
@@ -106,9 +107,22 @@ export interface SemesterProps {
   semester: Model.Semester;
   onSortEnd: (e: SortChange) => void;
   onDeleteCourse: (course: Model.Course) => void;
+  onAddCourses: (course: Model.Course[]) => void;
 }
 
-export class Semester extends React.PureComponent<SemesterProps, {}> {
+export interface SemesterState {
+  coursePickerOpen: boolean;
+}
+
+export class Semester extends React.PureComponent<SemesterProps, SemesterState> {
+  constructor(props: SemesterProps) {
+    super(props);
+
+    this.state = {
+      coursePickerOpen: false,
+    };
+  }
+
   renderCourse = (course: Model.Course) => {
     return (
       <Course
@@ -120,6 +134,25 @@ export class Semester extends React.PureComponent<SemesterProps, {}> {
   };
 
   handleAction = (_: keyof typeof actions) => {};
+
+  handleOpenCoursePicker = () => {
+    this.setState(previousState => ({
+      ...previousState,
+      coursePickerOpen: true,
+    }));
+  };
+
+  handleCloseCoursePicker = () => {
+    this.setState(previousState => ({
+      ...previousState,
+      coursePickerOpen: false,
+    }));
+  };
+
+  handleSaveCourses = (courses: Model.Course[]) => {
+    this.handleCloseCoursePicker();
+    this.props.onAddCourses(courses);
+  };
 
   renderRightClickMenu = (rightClickProps: RightClickProps) => {
     const { semester } = this.props;
@@ -154,7 +187,7 @@ export class Semester extends React.PureComponent<SemesterProps, {}> {
             onChangeSort={this.props.onSortEnd}
             render={this.renderCourse}
           />
-          <AddCourse small onClick={() => {}}>
+          <AddCourse small onClick={this.handleOpenCoursePicker}>
             Add course to this semester...
           </AddCourse>
         </Card>
@@ -162,6 +195,13 @@ export class Semester extends React.PureComponent<SemesterProps, {}> {
           <Circle />
           <VerticalLine />
         </Marker>
+        <CourseSearch
+          title={`Editing courses in ${semester.name}`}
+          defaultCourses={semester.courseArray()}
+          onCancel={this.handleCloseCoursePicker}
+          open={this.state.coursePickerOpen}
+          onSaveCourses={this.handleSaveCourses}
+        />
       </Container>
     );
   };

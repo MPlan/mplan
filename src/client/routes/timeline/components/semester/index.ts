@@ -15,6 +15,15 @@ const container = Model.store.connect({
   },
   mapDispatchToProps: (dispatch, ownProps: SemesterContainerProps) => {
     return {
+      onAddCourses: (courses: Model.Course[]) => {
+        dispatch(store => {
+          const next = store.user.plan.updateSemester(ownProps.semester.id, semester =>
+            courses.reduce((semester, courseToAdd) => semester.addCourse(courseToAdd), semester),
+          );
+
+          return Model.Plan.updateStore(store, next);
+        });
+      },
       onDeleteCourse: (course: Model.Course) => {
         dispatch(store =>
           store.updatePlan(plan =>
