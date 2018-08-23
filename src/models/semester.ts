@@ -26,7 +26,9 @@ export class Semester extends Record.define({
   }
 
   get name() {
-    return `${this.season} ${this.year}`;
+    const seasonFirstLetter = this.season.substring(0, 1).toUpperCase();
+    const seasonRest = this.season.substring(1);
+    return `${seasonFirstLetter}${seasonRest} ${this.year}`;
   }
 
   get shortName() {
@@ -63,7 +65,9 @@ export class Semester extends Record.define({
   }
 
   addCourse(course: Course) {
-    return this.update('_courseIds', courseIds => courseIds.push(course.catalogId));
+    return this.update('_courseIds', courseIds =>
+      courseIds.filter(courseId => course.catalogId !== courseId).push(course.catalogId),
+    );
   }
 
   deleteCourse(courseToDelete: Course) {
