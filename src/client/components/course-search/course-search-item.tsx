@@ -37,6 +37,12 @@ export interface CourseSearchItemProps {
   added?: boolean;
 }
 
+function creditHoursString(creditHours: number | [number, number] | null | undefined) {
+  if (creditHours === null) return '0';
+  if (creditHours === undefined) return '0';
+  if (Array.isArray(creditHours)) return `${creditHours[0]}-${creditHours[1]}`;
+  return creditHours.toString();
+}
 export function CourseSearchItem(props: CourseSearchItemProps) {
   const { course } = props;
 
@@ -44,7 +50,7 @@ export function CourseSearchItem(props: CourseSearchItemProps) {
     <Container>
       <SimpleName>{course.simpleName}</SimpleName>
       <FullName>{course.name}</FullName>
-      <CreditHours>({course.creditHours})</CreditHours>
+      <CreditHours>({creditHoursString(course.creditHours)})</CreditHours>
       <Button onClick={props.onClick}>
         <Icon
           icon={props.delete ? 'trash' : props.added ? 'check' : 'plus'}
