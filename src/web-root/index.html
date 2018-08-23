@@ -19,6 +19,22 @@
 
     gtag('config', 'UA-124514301-1');
   </script>
+  <!-- begin Wootric code -->
+  <script type="text/javascript" src="https://cdn.wootric.com/wootric-sdk.js"></script>
+  <script type="text/javascript">
+    window.wootric_survey_immediately = true;
+
+    if (localStorage.unique_name && localStorage.created_at) {
+      window.wootricSettings = {
+        email: localStorage.unique_name + '@umich.edu',
+        created_at: Math.floor(parseInt(localStorage.created_at, 10) / 1000),
+        account_token: 'NPS-097d0bc8'
+      };
+      window.wootric('run');
+    }
+
+  </script>
+  <!-- end Wootric code -->
 
 </head>
 

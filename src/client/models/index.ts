@@ -154,7 +154,12 @@ async function fetchUser() {
       registerDate: Date.now(),
     });
   }
-  const user = Record.User.fromJS(await response.json());
+
+  const userJson = await response.json();
+  localStorage.setItem('created_at', userJson.registerDate);
+  localStorage.setItem('unique_name', userJson.username);
+
+  const user = Record.User.fromJS(userJson);
   return user;
 }
 
