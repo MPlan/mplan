@@ -83,3 +83,10 @@ export interface JoinedCatalog {
 export interface SyncStatus {
   lastSyncTimestamp: number;
 }
+
+export interface Warning {
+  group: string;
+  severity: number;
+  title: string;
+  description: string;
+}

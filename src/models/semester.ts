@@ -4,13 +4,11 @@ import { ObjectId } from './';
 import { Course } from './course';
 import { pointer } from './pointer';
 import { App } from './app';
+const { floor } = Math;
 
 export class Semester extends Record.define({
   _id: ObjectId(),
-  /** these are in the form `__subjectCode|courseNumber__` */
   _courseIds: Immutable.List<string>(),
-  season: 'fall' as 'fall' | 'winter' | 'summer',
-  year: 0,
 }) {
   get root(): App {
     return pointer.store.current();
@@ -19,10 +17,25 @@ export class Semester extends Record.define({
     return this._id.toHexString();
   }
 
-  get position() {
-    const seasonNumber =
-      /*if*/ this.season === 'winter' ? 0 : /*if*/ this.season === 'summer' ? 1 / 3 : 2 / 3;
-    return seasonNumber + this.year;
+  get season() {
+    const plan = this.root.user.plan;
+    const semesterIndex = plan.semesters.findIndex(semester => semester.id === this.id);
+    if (semesterIndex === -1) throw new Error('season not found in plan');
+
+    const seasonValue = (plan.anchorValue + semesterIndex) % 3;
+
+    if (seasonValue === 0) return 'winter';
+    if (seasonValue === 1) return 'summer';
+    if (seasonValue === 2) return 'fall';
+    throw new Error('unhit season case while trying to compute season for a semester');
+  }
+
+  get year() {
+    const plan = this.root.user.plan;
+    const semesterIndex = plan.semesters.findIndex(semester => semester.id === this.id);
+    if (semesterIndex === -1) throw new Error('season not found in plan');
+
+    return floor((plan.anchorValue + semesterIndex) / 3);
   }
 
   get name() {
@@ -32,7 +45,7 @@ export class Semester extends Record.define({
   }
 
   get shortName() {
-    return `${this.season.substring(0, 1)}${this.year}`;
+    return `${this.season.substring(0, 1).toUpperCase()}${this.year}`;
   }
 
   get courseCount() {
@@ -41,6 +54,7 @@ export class Semester extends Record.define({
     });
   }
 
+  // todo this should use the credit hours pickers eventually
   totalCredits() {
     return this.courses()
       .map(
@@ -78,57 +92,5 @@ export class Semester extends Record.define({
 
   clearCourses() {
     return this.update('_courseIds', courseIds => courseIds.clear());
-  }
-
-  private _previousSemesterSeason() {
-    if (this.season === 'winter') {
-      return 'fall';
-    }
-    if (this.season === 'fall') {
-      return 'summer';
-    }
-    if (this.season === 'summer') {
-      return 'winter';
-    }
-    throw new Error('season was neither Winter, Fall, or Summer');
-  }
-
-  private _previousSemesterYear() {
-    if (this.season === 'winter') {
-      return this.year - 1;
-    }
-    return this.year;
-  }
-
-  private _nextSemesterSeason() {
-    if (this.season === 'winter') {
-      return 'summer';
-    }
-    if (this.season === 'fall') {
-      return 'winter';
-    }
-    if (this.season === 'summer') {
-      return 'fall';
-    }
-    throw new Error('season was neither Winter, Fall, or Summer');
-  }
-
-  private _nextSemesterYear() {
-    if (this.season === 'fall') {
-      return this.year + 1;
-    }
-    return this.year;
-  }
-
-  previousSemester(): { season: 'fall' | 'winter' | 'summer'; year: number } {
-    const season = this._previousSemesterSeason();
-    const year = this._previousSemesterYear();
-    return { season, year };
-  }
-
-  nextSemester(): { season: 'fall' | 'winter' | 'summer'; year: number } {
-    const season = this._nextSemesterSeason();
-    const year = this._nextSemesterYear();
-    return { season, year };
   }
 }

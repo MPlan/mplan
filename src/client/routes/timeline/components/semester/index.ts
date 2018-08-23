@@ -4,6 +4,7 @@ import { SortChange } from 'components/dropzone';
 
 export interface SemesterContainerProps {
   semester: Model.Semester;
+  onReorder: () => void;
 }
 
 const container = Model.store.connect({
@@ -43,7 +44,7 @@ const container = Model.store.connect({
       onSortEnd: ({ fromDropzoneId, newIndex, oldIndex, toDropzoneId }: SortChange) => {
         dispatch(store =>
           store.updatePlan(plan => {
-            const semester = plan.semesterMap.get(fromDropzoneId);
+            const semester = plan.semesters.find(semester => semester.id === fromDropzoneId);
             if (fromDropzoneId === 'unplaced-courses') {
               const course = plan.unplacedCourses()[oldIndex];
               return plan.updateSemester(toDropzoneId, semester => {
@@ -71,6 +72,14 @@ const container = Model.store.connect({
           }),
         );
       },
+      onDeleteSelf: () => {
+        dispatch(store => {
+          const semestersId = ownProps.semester.id;
+          const next = store.user.plan.deleteSemester(semestersId);
+          return Model.Plan.updateStore(store, next);
+        });
+      },
+      onReorder: ownProps.onReorder,
     };
   },
 })(Semester);

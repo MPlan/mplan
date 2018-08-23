@@ -89,17 +89,6 @@ export class Toolbox extends React.PureComponent<ToolboxProps, ToolboxState> {
               render={this.renderCourse}
             />
           </Accordion>
-          <Accordion
-            header="Warnings"
-            onToggle={this.handleWarningsToggle}
-            open={this.state.warningsOpen}
-          >
-            {plan.warningsNotOfferedDuringSeason().map(warning => (
-              <Warning key={warning}>
-                <Text>{warning}</Text>
-              </Warning>
-            ))}
-          </Accordion>
         </Body>
       </Container>
     );

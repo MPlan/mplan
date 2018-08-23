@@ -101,6 +101,10 @@ const actions = {
     icon: 'trash',
     color: styles.red,
   },
+  reorder: {
+    text: 'Reorder',
+    icon: 'bars',
+  },
 };
 
 export interface SemesterProps {
@@ -109,6 +113,8 @@ export interface SemesterProps {
   onDeleteCourse: (course: Model.Course) => void;
   onAddCourses: (course: Model.Course[]) => void;
   onClearCourses: () => void;
+  onDeleteSelf: () => void;
+  onReorder: () => void;
 }
 
 export interface SemesterState {
@@ -141,6 +147,14 @@ export class Semester extends React.PureComponent<SemesterProps, SemesterState> 
     }
     if (action === 'clear') {
       this.props.onClearCourses();
+      return;
+    }
+    if (action === 'delete') {
+      this.props.onDeleteSelf();
+      return;
+    }
+    if (action === 'reorder') {
+      this.props.onReorder();
     }
   };
 

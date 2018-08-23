@@ -8,10 +8,23 @@ import { pointer } from './pointer';
 import { App } from './app';
 
 export class Plan extends Record.define({
-  semesterMap: Record.MapOf(Semester),
+  anchorSeason: 'fall' as 'fall' | 'winter' | 'summer',
+  anchorYear: new Date().getFullYear(),
+  semesters: Record.ListOf(Semester),
 }) {
   static unplacedCoursesMemo = new Map<any, any>();
   static warningsNotOfferedDuringSeason = new Map<any, any>();
+
+  get anchorValue() {
+    return this.anchorYear * 3 + this.anchorSeasonValue;
+  }
+
+  get anchorSeasonValue() {
+    if (this.anchorSeason === 'winter') return 0;
+    if (this.anchorSeason === 'summer') return 1;
+    if (this.anchorSeason === 'fall') return 2;
+    throw new Error('unhit anchor season value case');
+  }
 
   get root(): App {
     return pointer.store.current();
@@ -22,29 +35,20 @@ export class Plan extends Record.define({
   }
 
   updateSemester(id: string, updater: (semester: Semester) => Semester) {
-    return this.update('semesterMap', map => map.update(id, updater));
-  }
-
-  lastSemester() {
-    return this.semesterMap
-      .valueSeq()
-      .sortBy(semester => semester.position)
-      .reverse()
-      .first();
+    return this.update('semesters', list => {
+      const semesterIndexToUpdate = list.findIndex(semester => semester.id === id);
+      if (semesterIndexToUpdate === -1) return list;
+      return list.update(semesterIndexToUpdate, updater);
+    });
   }
 
   createNewSemester() {
-    const lastSemester = this.lastSemester();
-    if (!lastSemester) {
-      return this;
-    }
-    const nextSemester = lastSemester.nextSemester();
-    const newSemester = new Semester({
-      _id: ObjectId(),
-      year: nextSemester.year,
-      season: nextSemester.season,
-    });
-    return this.update('semesterMap', map => map.set(newSemester.id, newSemester));
+    const newSemester = new Semester({ _id: ObjectId() });
+    return this.update('semesters', semesters => semesters.push(newSemester));
+  }
+
+  deleteSemester(id: string) {
+    return this.update('semesters', semesters => semesters.filter(semester => semester.id !== id));
   }
 
   unplacedCourses(): Course[] {
@@ -58,7 +62,7 @@ export class Plan extends Record.define({
     const closure = degree.closure().filter(course => course instanceof Course) as Immutable.Set<
       Course
     >;
-    const coursesInPlan = this.semesterMap
+    const coursesInPlan = this.semesters
       .map(semester => semester.courses())
       .reduce((coursesInPlan, courses) => coursesInPlan.union(courses), Immutable.Set<Course>());
 
@@ -69,61 +73,4 @@ export class Plan extends Record.define({
     Plan.unplacedCoursesMemo.set(hash, unplacedCourses);
     return unplacedCourses;
   }
-
-  warningsNotOfferedDuringSeason(): string[] {
-    const catalog = this.root.catalog;
-    const hash = hashObjects({ plan: this, catalog });
-    if (Plan.warningsNotOfferedDuringSeason.has(hash)) {
-      return Plan.warningsNotOfferedDuringSeason.get(hash);
-    }
-
-    const allCourses = this.semesterMap
-      .valueSeq()
-      .map(semester =>
-        semester._courseIds
-          .map(courseId => ({
-            course: catalog.courseMap.get(courseId)!,
-            semester,
-          }))
-          .filter(({ course }) => !!course)
-          .map(({ course, semester }) => {
-            // debugger;
-            return {
-              course,
-              semester,
-              hasRanDuringSeason:
-                semester.season === 'winter'
-                  ? course.winterSections.count() > 0
-                  : semester.season === 'summer'
-                    ? course.summerSections.count() > 0
-                    : semester.season === 'fall'
-                      ? course.fallSections.count() > 0
-                      : false,
-            };
-          })
-          .filter(({ hasRanDuringSeason }) => !hasRanDuringSeason)
-          .map(
-            ({ course, semester }) =>
-              `Course ${course.simpleName} has never ran during the ${semester.season}`,
-          )
-          .toArray(),
-      )
-      .toArray();
-    const allWarningsFlattened = flatten(allCourses);
-
-    Plan.warningsNotOfferedDuringSeason.set(hash, allWarningsFlattened);
-    return allWarningsFlattened;
-  }
-
-  semesters() {
-    return this.semesterMap
-      .valueSeq()
-      .sortBy(semester => semester.position)
-      .toArray();
-  }
-
-  // TODO:
-  // validate() {
-
-  // }
 }

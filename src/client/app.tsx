@@ -51,7 +51,7 @@ const Content = styled(View)`
   overflow: auto;
 `;
 const Brand = styled(Text)`
-  color: ${styles.signatureBlue};
+  color: ${styles.deepCove};
 `;
 const ShowHideToolbox = styled.button`
   flex-direction: row;
@@ -90,7 +90,7 @@ export function _AuthenticatedRoute(
       <Header>
         <View>
           <Brand large strong>
-            MPlan
+            MPlan <Text color={styles.deepCove}>(beta)</Text>
           </Brand>
         </View>
 

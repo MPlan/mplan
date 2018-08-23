@@ -268,23 +268,15 @@ export class Degree extends Record.define({
 
   generatePlan(planOptions: PlanOptions) {
     const plan = generatePlans(this, planOptions);
-    const semesterMap = plan
-      .map(
-        (set, i) =>
-          new Semester({
-            _id: ObjectId(),
-            season: ['winter', 'summer', 'fall'][i % 3] as any,
-            year: Math.floor(i / 3) + 2018,
-            _courseIds: set.map(course => course.catalogId).toList(),
-          }),
-      )
-      .reduce((semesterMap, semester) => {
-        return semesterMap.set(semester.id, semester);
-      }, Immutable.Map<string, Semester>());
+    const semesters = plan.map(
+      (set, i) =>
+        new Semester({
+          _id: ObjectId(),
+          _courseIds: set.map(course => course.catalogId).toList(),
+        }),
+    );
 
-    return new Plan({
-      semesterMap,
-    });
+    return new Plan({ semesters });
   }
 
   addNewDegreeGroup() {

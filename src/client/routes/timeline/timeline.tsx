@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as Model from 'models';
 import * as styles from 'styles';
 import styled from 'styled-components';
+import { SortEndHandler } from 'react-sortable-hoc';
 
 import { View } from 'components/view';
 import { Text } from 'components/text';
@@ -11,6 +12,7 @@ import { Button } from 'components/button';
 import { ActionableText } from 'components/actionable-text';
 import { Modal } from 'components/modal';
 import { Checkbox } from 'components/checkbox';
+import { Reorder } from 'components/reorder';
 
 import { Toolbox } from './components/toolbox';
 import { Semester } from './components/semester';
@@ -76,6 +78,9 @@ const NavigationLabel = styled(Text)`
   padding: ${styles.space(-1)};
 `;
 const ScheduleForm = styled.form``;
+const ReorderSemester = styled(View)`
+  padding: ${styles.space(0)} ${styles.space(1)};
+`;
 
 const actions = {
   newSemester: {
@@ -83,18 +88,24 @@ const actions = {
     icon: 'plus',
     color: styles.blue,
   },
+  reorder: {
+    text: 'Reorder semesters',
+    icon: 'bars',
+  },
 };
 
 export interface TimelineProps {
   semesters: Model.Semester[];
   onCreateNewSemester: () => void;
   onGeneratePlan: (planOptions: Model.PlanOptions) => void;
+  onReorderSemesters: SortEndHandler;
 }
 
 export interface TimelineState {
   sliderWidth: number;
   sliderLeft: number;
   scheduleModelOpen: boolean;
+  reorderingSemesters: boolean;
 }
 
 export class Timeline extends React.PureComponent<TimelineProps, TimelineState> {
@@ -104,6 +115,7 @@ export class Timeline extends React.PureComponent<TimelineProps, TimelineState> 
       sliderWidth: 0,
       sliderLeft: 0,
       scheduleModelOpen: false,
+      reorderingSemesters: false,
     };
   }
 
@@ -112,6 +124,12 @@ export class Timeline extends React.PureComponent<TimelineProps, TimelineState> 
   handleActions = (action: keyof typeof actions) => {
     if (action === 'newSemester') {
       this.props.onCreateNewSemester();
+      return;
+    }
+
+    if (action === 'reorder') {
+      this.handleOpenSemesterReorder();
+      return;
     }
   };
 
@@ -158,6 +176,20 @@ export class Timeline extends React.PureComponent<TimelineProps, TimelineState> 
     });
   };
 
+  handleOpenSemesterReorder = () => {
+    this.setState(previousState => ({
+      ...previousState,
+      reorderingSemesters: true,
+    }));
+  };
+
+  handleCloseSemesterReorder = () => {
+    this.setState(previousState => ({
+      ...previousState,
+      reorderingSemesters: false,
+    }));
+  };
+
   renderSubtitle = () => {
     return <Text color={styles.textLight}>Create your MPlan here.</Text>;
   };
@@ -176,6 +208,22 @@ export class Timeline extends React.PureComponent<TimelineProps, TimelineState> 
     );
   };
 
+  renderSemesterReorder = (semester: Model.Semester) => {
+    const courses = semester.courseArray();
+    return (
+      <ReorderSemester>
+        <Text>
+          {courses.length <= 0
+            ? 'Empty semester'
+            : semester
+                .courseArray()
+                .map(course => course.simpleName)
+                .join(', ')}
+        </Text>
+      </ReorderSemester>
+    );
+  };
+
   render() {
     return (
       <Container>
@@ -187,7 +235,11 @@ export class Timeline extends React.PureComponent<TimelineProps, TimelineState> 
           >
             <SemestersContainer className="semesters-container">
               {this.props.semesters.map(semester => (
-                <Semester key={semester.id} semester={semester} />
+                <Semester
+                  key={semester.id}
+                  semester={semester}
+                  onReorder={this.handleOpenSemesterReorder}
+                />
               ))}
             </SemestersContainer>
             <Navigator>
@@ -227,6 +279,14 @@ export class Timeline extends React.PureComponent<TimelineProps, TimelineState> 
             <Button type="submit">Generate schedule...</Button>
           </ScheduleForm>
         </Modal>
+        <Reorder
+          title="Reordering semesters..."
+          open={this.state.reorderingSemesters}
+          elements={this.props.semesters}
+          onClose={this.handleCloseSemesterReorder}
+          render={this.renderSemesterReorder}
+          onReorder={this.props.onReorderSemesters}
+        />
       </Container>
     );
   }
