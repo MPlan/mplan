@@ -10,6 +10,8 @@ import { Auth } from '../auth';
 
 export * from '../../models';
 
+const SAVE_DEBOUNCE_TIME = 1000;
+
 export function dispatchSaving() {
   store.sendUpdate(store => store.update('ui', ui => ui.update('saving', count => count + 1)));
 }
@@ -31,14 +33,14 @@ const user$ = Observable.create((observer: Observer<Record.App>) => {
   }),
 ) as Observable<Record.User>;
 
-user$.pipe(debounceTime(300)).subscribe(user => {
-  localStorage.setItem('user_data', JSON.stringify(user.toJS()));
-});
+// user$.pipe(debounceTime(300)).subscribe(user => {
+//   localStorage.setItem('user_data', JSON.stringify(user.toJS()));
+// });
 
 user$
   .pipe(
+    debounceTime(SAVE_DEBOUNCE_TIME),
     tap(dispatchSaving),
-    debounceTime(3000),
   )
   .subscribe(async user => {
     console.log('sending to server...');
@@ -73,8 +75,8 @@ const masteredDegrees$ = Observable.create((observer: Observer<Record.App>) => {
 
 masteredDegrees$
   .pipe(
+    debounceTime(SAVE_DEBOUNCE_TIME),
     tap(dispatchSaving),
-    debounceTime(3000),
   )
   .subscribe(async user => {
     const token = await Auth.token();
@@ -104,8 +106,8 @@ const admin$ = Observable.create((observer: Observer<Record.App>) => {
 admin$
   .pipe(
     filter(admins => admins.length > 0),
+    debounceTime(SAVE_DEBOUNCE_TIME),
     tap(dispatchSaving),
-    debounceTime(3000),
   )
   .subscribe(async admins => {
     const token = await Auth.token();
