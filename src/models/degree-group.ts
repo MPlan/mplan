@@ -1,101 +1,83 @@
-import * as Immutable from 'immutable';
-import * as Record from '../recordize';
-import { ObjectId } from './';
+import { store } from './store';
+import { getMasteredDegree } from './degree';
 import { Course } from './course';
-import { pointer } from './pointer';
-import { App } from './app';
 
-export class DegreeGroup extends Record.define({
-  _id: ObjectId(),
-  masteredDegreeGroupId: undefined as string | undefined,
-  customName: '',
-  customDescription: '',
-  /** this can be either `subjectCode__|__courseNumber` or a string for placement exams */
-  _courseIds: Immutable.List<string>(),
-  completedCourseIds: Immutable.List<string>(),
-}) {
-  static updateStore(store: App, newThis: DegreeGroup) {
-    return store.update('user', user =>
-      user.update('degree', degree => degree.setDegreeGroup(newThis)),
-    );
-  }
-  get root(): App {
-    return pointer.store.current();
-  }
-  get id() {
-    return this._id.toHexString();
-  }
+export interface DegreeGroup {
+  id: string;
+  masteredDegreeGroupId?: string;
+  customName?: string;
+  courseIds: string[];
+  completedCourseIds: { [catalogId: string]: true };
+  position: number;
+}
 
-  get name() {
-    const masteredDegreeGroup = this.masteredDegreeGroup();
-    if (!masteredDegreeGroup) return this.customName;
-    return masteredDegreeGroup.name || this.customName;
-  }
+export function getMasteredDegreeGroup(self: DegreeGroup) {
+  const { masteredDegreeGroupId } = self;
+  if (!masteredDegreeGroupId) return undefined;
 
-  get descriptionHtml() {
-    const masteredDegreeGroup = this.masteredDegreeGroup();
-    if (!masteredDegreeGroup) return this.customDescription;
-    return masteredDegreeGroup.descriptionHtml || this.customDescription;
-  }
+  const { degree } = store.current.user;
 
-  get customGroup() {
-    return this.masteredDegreeGroupId === undefined;
-  }
+  const masteredDegree = getMasteredDegree(degree);
+  if (!masteredDegree) return undefined;
 
-  masteredDegreeGroup() {
-    if (!this.masteredDegreeGroupId) return undefined;
-    return this.root.getMasteredDegreeGroup(this.masteredDegreeGroupId);
-  }
+  const masteredDegreeGroup = masteredDegree.masteredDegreeGroups[masteredDegreeGroupId];
+  if (!masteredDegree) return undefined;
 
-  renameable() {
-    return !this.masteredDegreeGroupId;
-  }
+  return masteredDegreeGroup;
+}
 
-  addCourse(course: string | Course) {
-    if (this._courseIds.contains(course instanceof Course ? course.catalogId : course)) return this;
-    return this.update('_courseIds', courseIds =>
-      courseIds.push(course instanceof Course ? course.catalogId : course),
-    );
-  }
+export function getName(self: DegreeGroup) {
+  const masteredDegreeGroup = getMasteredDegreeGroup(self);
+  if (!masteredDegreeGroup) return 'Custom Group';
+  return masteredDegreeGroup.name;
+}
 
-  deleteCourse(course: string | Course) {
-    const idToDelete = course instanceof Course ? course.catalogId : course;
-    return this.update('_courseIds', courseIds =>
-      courseIds.filter(courseId => courseId !== idToDelete),
-    );
-  }
+export function getDescriptionHtml(self: DegreeGroup) {
+  const masteredDegreeGroup = getMasteredDegreeGroup(self);
+  // Description html should always say this for  custom group. custom group don't have mastered
+  // degree groups
+  if (!masteredDegreeGroup) return 'Custom group.';
+  return masteredDegreeGroup.name;
+}
 
-  courses() {
-    const catalog = this.root.catalog;
-    return this.getOrCalculate('courses', [catalog, this], () => {
-      return this._courseIds
-        .map(id => catalog.courseMap.get(id))
-        .filter(x => !!x)
-        .map(x => x!);
-    });
-  }
+export function getCourses(self: DegreeGroup) {
+  const { courseIds } = self;
+  const { catalog } = store.current;
 
-  hasCourse(course: string | Course) {
-    const id = course instanceof Course ? course.id : course;
-    return this._courseIds.includes(id);
-  }
+  return courseIds.map(courseId => catalog[courseId]);
+}
 
-  toggleCourseCompletion(course: string | Course) {
-    const id = course instanceof Course ? course.id : course;
-    if (this.completedCourseIds.includes(id)) {
-      return this.update('completedCourseIds', completedCourseIds =>
-        completedCourseIds.filter(i => i !== id),
-      );
-    }
-    return this.update('completedCourseIds', completedCourseIds => completedCourseIds.push(id));
-  }
+export function hasCourse(self: DegreeGroup, course: Course) {
+  const { courseIds } = self;
+  return courseIds.includes(course.id);
+}
 
-  reorderCourses(oldIndex: number, newIndex: number) {
-    const item = this._courseIds.get(oldIndex);
-    if (!item) return this;
-    const courseIdsWithout = this._courseIds.filter((_, index) => index !== oldIndex);
-    const newCourseIds = courseIdsWithout.insert(newIndex, item);
+export function addCourse(self: DegreeGroup, courseToAdd: Course): DegreeGroup {
+  const { courseIds } = self;
+  const newCourseIds = [...courseIds.filter(id => id !== courseToAdd.id), courseToAdd.id];
 
-    return this.set('_courseIds', newCourseIds);
-  }
+  return {
+    ...self,
+    courseIds: newCourseIds,
+  };
+}
+
+export function deleteCourse(self: DegreeGroup, courseToDelete: Course): DegreeGroup {
+  const { courseIds } = self;
+  const newCourseIds = courseIds.filter(id => id !== courseToDelete.id);
+
+  return {
+    ...self,
+    courseIds: newCourseIds,
+  };
+}
+
+export function toggleCourseCompletion(self: DegreeGroup, courseToToggle: Course) {
+  if (hasCourse(self, courseToToggle)) return deleteCourse(self, courseToToggle);
+  return addCourse(self, courseToToggle);
+}
+
+export function reorderCourses(self: DegreeGroup): DegreeGroup {
+  // TODO
+  return self;
 }
