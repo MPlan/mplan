@@ -1,96 +1,85 @@
-import * as Immutable from 'immutable';
-import * as Record from '../recordize';
-import { ObjectId } from './';
+import { store } from './store';
 import { Course } from './course';
-import { pointer } from './pointer';
-import { App } from './app';
-const { floor } = Math;
 
-export class Semester extends Record.define({
-  _id: ObjectId(),
-  _courseIds: Immutable.List<string>(),
-}) {
-  get root(): App {
-    return pointer.store.current();
-  }
-  get id() {
-    return this._id.toHexString();
-  }
+export interface Semester {
+  id: string;
+  courseIds: string[];
+}
 
-  get season() {
-    const plan = this.root.user.plan;
-    const semesterIndex = plan.semesters.findIndex(semester => semester.id === this.id);
-    if (semesterIndex === -1) throw new Error('season not found in plan');
+export function getSeason(self: Semester) {
+  // const plan = store.current
+  return '';
+}
 
-    const seasonValue = (plan.anchorValue + semesterIndex) % 3;
+export function getYear(self: Semester) {
+  return 0;
+}
 
-    if (seasonValue === 0) return 'winter';
-    if (seasonValue === 1) return 'summer';
-    if (seasonValue === 2) return 'fall';
-    throw new Error('unhit season case while trying to compute season for a semester');
-  }
+export function getName(self: Semester) {
+  const season = getSeason(self);
+  const year = getYear(self);
 
-  get year() {
-    const plan = this.root.user.plan;
-    const semesterIndex = plan.semesters.findIndex(semester => semester.id === this.id);
-    if (semesterIndex === -1) throw new Error('season not found in plan');
+  const seasonFirstLetter = season.substring(0, 1).toUpperCase();
+  const seasonRest = season.substring(1);
+  return `${seasonFirstLetter}${seasonRest} ${year}`;
+}
 
-    return floor((plan.anchorValue + semesterIndex) / 3);
-  }
+export function getShortName(self: Semester) {
+  const season = getSeason(self);
+  const year = getYear(self);
 
-  get name() {
-    const seasonFirstLetter = this.season.substring(0, 1).toUpperCase();
-    const seasonRest = this.season.substring(1);
-    return `${seasonFirstLetter}${seasonRest} ${this.year}`;
-  }
+  return `${season.substring(0, 1).toUpperCase()}${year}`;
+}
 
-  get shortName() {
-    return `${this.season.substring(0, 1).toUpperCase()}${this.year}`;
-  }
+export function getCourseCount(self: Semester) {
+  return self.courseIds.length;
+}
 
-  get courseCount() {
-    return this.getOrCalculate('courseCount', () => {
-      return this._courseIds.count();
-    });
-  }
+export function getCourses(self: Semester) {
+  const { catalog } = store.current;
+  const { courseIds } = self;
 
-  // todo this should use the credit hours pickers eventually
-  totalCredits() {
-    return this.courses()
-      .map(
-        course =>
-          Array.isArray(course.creditHours) ? course.creditHours[1] : course.creditHours || 0,
-      )
-      .reduce((sum, next) => sum + next, 0);
-  }
+  return courseIds.map(courseId => catalog[courseId]);
+}
 
-  courses() {
-    const catalog = this.root.catalog;
-    return this.getOrCalculate('courses', [catalog, this], () => {
-      return this._courseIds.map(courseId => catalog.courseMap.get(courseId)!);
-    });
-  }
+// TODO: this should use the credit hours pickers eventually
+export function getTotalCredits(self: Semester) {
+  const courses = getCourses(self);
 
-  courseArray() {
-    const catalog = this.root.catalog;
-    return this.getOrCalculate('courseArray', [catalog, this], () => {
-      return this._courseIds.map(courseId => catalog.courseMap.get(courseId)!).toArray();
-    });
-  }
+  return courses
+    .map(
+      course =>
+        Array.isArray(course.creditHours) ? course.creditHours[1] : course.creditHours || 0,
+    )
+    .reduce((sum, next) => sum + next, 0);
+}
 
-  addCourse(course: Course) {
-    return this.update('_courseIds', courseIds =>
-      courseIds.filter(courseId => course.catalogId !== courseId).push(course.catalogId),
-    );
-  }
+export function addCourse(self: Semester, courseToAdd: Course): Semester {
+  const { courseIds } = self;
 
-  deleteCourse(courseToDelete: Course) {
-    return this.update('_courseIds', courseIds => {
-      return courseIds.filter(courseId => courseToDelete.catalogId !== courseId);
-    });
-  }
+  const newCourseIds = [
+    ...courseIds.filter(courseId => courseId !== courseToAdd.id),
+    courseToAdd.id,
+  ];
 
-  clearCourses() {
-    return this.update('_courseIds', courseIds => courseIds.clear());
-  }
+  return {
+    ...self,
+    courseIds: newCourseIds,
+  };
+}
+
+export function deleteCourse(self: Semester, courseToDelete: Course): Semester {
+  const { courseIds } = self;
+
+  return {
+    ...self,
+    courseIds: courseIds.filter(courseId => courseId !== courseToDelete.id),
+  };
+}
+
+export function clearCourses(self: Semester): Semester {
+  return {
+    ...self,
+    courseIds: [],
+  };
 }
