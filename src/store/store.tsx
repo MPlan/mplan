@@ -63,5 +63,12 @@ export function createStore<State>(initialState: State) {
     };
   }
 
-  return { connect, subscribe, dispatch };
+  return {
+    connect,
+    subscribe,
+    dispatch,
+    get current() {
+      return currentState;
+    },
+  };
 }

@@ -1,11 +1,25 @@
-import * as Immutable from 'immutable';
-import * as Record from '../recordize';
-import { ObjectId, hashObjects } from './';
-import { Course } from './course';
-import { Semester } from './semester';
-import { flatten } from 'lodash';
-import { pointer } from './pointer';
-import { App } from './app';
+interface Plan {
+  anchorSeason: string;
+  anchorYear: number;
+  semesters: Semester[];
+}
+
+export function anchorValue(self: Plan) {
+  return self.anchorYear * 3 + self.anchorSeason;
+}
+
+export function anchorSeasonValue(self: Plan) {
+  if (self.anchorSeason === 'winter') return 0;
+  if (self.anchorSeason === 'summer') return 1;
+  if (self.anchorSeason === 'fall') return 2;
+  throw new Error('unhit anchor season value case');
+}
+
+export function updateSemester(
+  self: Plan,
+  semesterId: string,
+  updater: (semester: Semster) => Semester,
+): Plan {}
 
 export class Plan extends Record.define({
   anchorSeason: 'fall' as 'fall' | 'winter' | 'summer',
@@ -14,25 +28,6 @@ export class Plan extends Record.define({
 }) {
   static unplacedCoursesMemo = new Map<any, any>();
   static warningsNotOfferedDuringSeason = new Map<any, any>();
-
-  get anchorValue() {
-    return this.anchorYear * 3 + this.anchorSeasonValue;
-  }
-
-  get anchorSeasonValue() {
-    if (this.anchorSeason === 'winter') return 0;
-    if (this.anchorSeason === 'summer') return 1;
-    if (this.anchorSeason === 'fall') return 2;
-    throw new Error('unhit anchor season value case');
-  }
-
-  get root(): App {
-    return pointer.store.current();
-  }
-
-  static updateStore(store: App, newThis: Plan) {
-    return store.update('user', user => user.set('plan', newThis));
-  }
 
   updateSemester(id: string, updater: (semester: Semester) => Semester) {
     return this.update('semesters', list => {

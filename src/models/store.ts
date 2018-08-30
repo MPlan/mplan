@@ -1,7 +1,12 @@
 import { App } from './app';
-import { createStore } from '../recordize';
-import { pointer } from './pointer';
+import { createStore } from 'store';
 
-export const store = createStore(new App());
+const initialState: App = {
+  admins: [],
+  catalog: {},
+  masteredDegrees: {},
+  prerequisiteOverrides: {},
+  user: {},
+};
 
-pointer.store = store;
+export const store = createStore(initialState);
