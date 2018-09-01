@@ -150,7 +150,7 @@ export const getBestOptionWithConcurrent = memoizeAll(
         if (typeof course === 'string') return closure;
 
         closure.add(course);
-        const courseClosure = getClosure(course, catalog, degree);
+        const courseClosure = getClosureFromCourse(course, catalog, degree);
         for (const courseInClosure of courseClosure) {
           closure.add(courseInClosure);
         }
@@ -237,13 +237,13 @@ export function getMinDepth(self: Course, catalog: Catalog): number {
   return minDepthOfAllOptions + 1;
 }
 
-export function getClosure(self: Course, catalog: Catalog, degree: Degree): Set<Course> {
+export function getClosureFromCourse(self: Course, catalog: Catalog, degree: Degree): Set<Course> {
   const coursesInClosure = new Set<Course>();
 
   const bestOption = getBestOption(self, degree, catalog);
   for (const course of bestOption) {
     coursesInClosure.add(course);
-    for (const subCourse of getClosure(course, catalog, degree)) {
+    for (const subCourse of getClosureFromCourse(course, catalog, degree)) {
       coursesInClosure.add(subCourse);
     }
   }

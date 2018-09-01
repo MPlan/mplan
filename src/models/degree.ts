@@ -22,7 +22,7 @@ export function getMasteredDegree(self: Degree, masteredDegrees: MasteredDegrees
   return _getMasteredDegree(masteredDegrees, masteredDegreeId);
 }
 
-export function getName(self: Degree, masteredDegrees: MasteredDegrees) {
+export function getDegreeName(self: Degree, masteredDegrees: MasteredDegrees) {
   const masteredDegree = getMasteredDegree(self, masteredDegrees);
 
   if (masteredDegree) return masteredDegree.name;
@@ -44,7 +44,7 @@ export const getAllCourses = memoizeLast((self: Degree, catalog: Catalog) => {
   return courses;
 });
 
-export function getClosure(self: Degree) {}
+export function getClosureFromDegree(self: Degree) {}
 export function getLevels(self: Degree) {}
 export function getTotalCredits(self: Degree) {}
 export function getCompletedCredits(self: Degree) {}

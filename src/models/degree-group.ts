@@ -29,7 +29,7 @@ export function getMasteredDegreeGroup(
   return masteredDegreeGroup;
 }
 
-export function getName(self: DegreeGroup, degree: Degree, masteredDegrees: MasteredDegrees) {
+export function getDegreeGroupName(self: DegreeGroup, degree: Degree, masteredDegrees: MasteredDegrees) {
   const masteredDegreeGroup = getMasteredDegreeGroup(self, degree, masteredDegrees);
   if (!masteredDegreeGroup) return 'Custom Group';
   return masteredDegreeGroup.name;
