@@ -10,6 +10,7 @@ import { Catalog } from './catalog';
 import { User } from './user';
 import { Degree, getAllCourses, degreeHasCourse } from './degree';
 import { memoizeAll } from 'utilities/memoize-all';
+import { maxBy } from 'utilities/max-by';
 
 type PrerequisiteTuple = [Course | string, 'CONCURRENT' | 'PREVIOUS'];
 
@@ -90,10 +91,19 @@ export const getOptions = memoizeAll(
   },
 );
 
-export function getBestOption(self: Course) {}
+export function getBestOption(self: Course, degree: Degree, catalog: Catalog) {
+  const bestOptionWithConcurrent = getBestOptionWithConcurrent(self, degree, catalog);
+  const bestOption = new Set<Course>();
+  for (const [course] of bestOptionWithConcurrent) {
+    if (typeof course === 'string') continue;
+    bestOption.add(course);
+  }
+
+  return bestOption;
+}
 
 export const getBestOptionWithConcurrent = memoizeAll(
-  (self: Course, degree: Degree, catalog: Catalog) => {
+  (self: Course, degree: Degree, catalog: Catalog): Set<PrerequisiteTuple> => {
     const coursesInDegree = getAllCourses(degree, catalog);
     const options = getOptions(self, catalog);
 
@@ -129,8 +139,35 @@ export const getBestOptionWithConcurrent = memoizeAll(
         }, new Set<Course>());
       const intersectionCount = intersection.size;
 
-      const maxDepth = 0;
+      const maxDepth = Array.from(option.values())
+        .map(([course]) => {
+          if (typeof course === 'string') return 0;
+          return getMinDepth(course, catalog);
+        })
+        .reduce((max, next) => (/*if*/ next > max ? next : max), 0);
+
+      const closure = Array.from(option.values()).reduce((closure, [course]) => {
+        if (typeof course === 'string') return closure;
+
+        closure.add(course);
+        const courseClosure = getClosure(course, catalog, degree);
+        for (const courseInClosure of courseClosure) {
+          closure.add(courseInClosure);
+        }
+
+        return closure;
+      }, new Set<Course>());
+      const closureCount = closure.size;
+
+      return { maxDepth, intersectionCount, closureCount, option };
     });
+
+    const best = maxBy(bestOptionMapping, ({ maxDepth, intersectionCount, closureCount }) => {
+      return intersectionCount * 100000 - maxDepth * 1000 - closureCount;
+    });
+    if (!best) return new Set<PrerequisiteTuple>();
+
+    return best.option;
   },
 );
 
@@ -158,9 +195,59 @@ export const getFullClosure = memoizeAll(
 
 export function getDepth(self: Course) {}
 
-export function getMinDepth(self: Course) {}
+export function getMinDepth(self: Course, catalog: Catalog): number {
+  const options = getOptions(self, catalog);
+  if (options.size <= 0) return 1;
 
-export function getClosure(self: Course) {}
+  let minDepthOfAllOptions = 999999;
+  for (const option of options) {
+    let maxDepthOfAllCourses = 0;
+
+    for (const [course, previousOrConcurrent] of option) {
+      if (typeof course === 'string') continue;
+
+      const courseDepth =
+        getMinDepth(course, catalog) - (previousOrConcurrent === 'CONCURRENT' ? 1 : 0);
+      if (courseDepth > maxDepthOfAllCourses) {
+        maxDepthOfAllCourses = courseDepth;
+      }
+    }
+
+    if (maxDepthOfAllCourses < minDepthOfAllOptions) {
+      minDepthOfAllOptions = maxDepthOfAllCourses;
+    }
+  }
+
+  return minDepthOfAllOptions + 1;
+}
+
+export function getClosure(self: Course, catalog: Catalog, degree: Degree) {
+  const coursesInDegree = getAllCourses(degree, catalog);
+
+  const coursesInClosure = new Set<Course>();
+  coursesInClosure.add(self);
+  // coursesInClosure = coursesInClosure.add(this);
+
+  const bestOption = getBestOption(self, degree, catalog);
+  for (const course of bestOption) {
+    coursesInClosure = coursesInClosure.add(course);
+    if (course instanceof Course) {
+      coursesInClosure = coursesInClosure.union(course.closure());
+
+      // if (course.corequisites) {
+      //   coursesInClosure = course.corequisites.reduce((coursesInClosure, corequisite) => {
+      //     const [subjectCode, courseNumber] = corequisite;
+      //     const corequisiteCourse = catalog.getCourse(subjectCode, courseNumber);
+      //     if (!corequisiteCourse) return coursesInClosure.add(`${subjectCode} ${courseNumber}`);
+      //     return coursesInClosure.add(corequisiteCourse);
+      //   }, coursesInClosure);
+      // }
+    }
+  }
+
+  Course.closureMemo.set(hash, coursesInClosure);
+  return coursesInClosure;
+}
 
 export function getPrerequisiteContainsConcurrent(self: Course) {}
 
