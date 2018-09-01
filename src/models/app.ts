@@ -1,12 +1,12 @@
-import { Course } from './course';
-import { MasteredDegree } from './mastered-degree';
+import { MasteredDegrees } from './mastered-degrees';
 import { User } from './user';
 import { Prerequisite } from './prerequisite';
+import { Catalog } from './catalog';
 
 export interface App {
-  catalog: { [courseId: string]: Course };
+  catalog: Catalog;
   user: User | undefined;
-  masteredDegrees: { [masteredDegreeId: string]: MasteredDegree };
+  masteredDegrees: MasteredDegrees;
   admins: string[];
   prerequisiteOverrides: { [courseKey: string]: Prerequisite };
 }

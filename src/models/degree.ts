@@ -1,52 +1,48 @@
-import { store } from './store';
-import { MasteredDegree } from './mastered-degree';
+import { MasteredDegrees, getMasteredDegree as _getMasteredDegree } from './mastered-degrees';
 import { DegreeGroup, getCourses } from './degree-group';
-import { createMultimap } from 'utilities/multimap';
 import { flatten } from 'lodash';
 import { Course, getCatalogId } from './course';
+import { memoizeLast } from 'utilities/memoize-last';
+import { Catalog } from './catalog';
 
 export interface Degree {
   masteredDegreeId?: string;
   degreeGroupData: { [degreeGroupId: string]: DegreeGroup };
 }
 
-export function getMasteredDegree(self: Degree) {
-  const { masteredDegrees } = store.current;
-  const { masteredDegreeId } = self;
-  if (!masteredDegreeId) return undefined;
-  return masteredDegrees[masteredDegreeId] as MasteredDegree | undefined;
+export function degreeHasCourse(self: Degree, course: Course, catalog: Catalog) {
+  const allCourses = getAllCourses(self, catalog);
+  const courseCatalogId = getCatalogId(course);
+  return !!allCourses[courseCatalogId];
 }
 
-export function getName(self: Degree) {
-  const masteredDegree = getMasteredDegree(self);
+export function getMasteredDegree(self: Degree, masteredDegrees: MasteredDegrees) {
+  const { masteredDegreeId } = self;
+  if (!masteredDegreeId) return undefined;
+  return _getMasteredDegree(masteredDegrees, masteredDegreeId);
+}
+
+export function getName(self: Degree, masteredDegrees: MasteredDegrees) {
+  const masteredDegree = getMasteredDegree(self, masteredDegrees);
 
   if (masteredDegree) return masteredDegree.name;
   return '';
 }
 
-const allCoursesMemo = createMultimap<{ [catalogId: string]: Course }>();
-export function getAllCourses(self: Degree) {
+export const getAllCourses = memoizeLast((self: Degree, catalog: Catalog) => {
   const { degreeGroupData } = self;
-  const { catalog } = store.current;
-
-  const valueFromMemo = allCoursesMemo.get([catalog, degreeGroupData]);
-  if (valueFromMemo) return valueFromMemo;
 
   const courseArr = flatten(
-    Object.values(degreeGroupData).map(degreeGroup => getCourses(degreeGroup)),
+    Object.values(degreeGroupData).map(degreeGroup => getCourses(degreeGroup, catalog)),
   );
 
-  const courses = courseArr.reduce(
-    (courses, course) => {
-      courses[getCatalogId(course)] = course;
-      return courses;
-    },
-    {} as { [catalogId: string]: Course },
-  );
+  const courses = new Set<Course>();
+  for (const course of courseArr) {
+    courses.add(course);
+  }
 
-  allCoursesMemo.set([catalog, degreeGroupData], courses);
   return courses;
-}
+});
 
 export function getClosure(self: Degree) {}
 export function getLevels(self: Degree) {}

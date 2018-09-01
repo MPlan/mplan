@@ -2,7 +2,10 @@ export type Prerequisite =
   | { and: Prerequisite[] }
   | { or: Prerequisite[] }
   | [string, string, 'CONCURRENT' | 'PREVIOUS']
-  | string;
+  | string
+  | undefined;
+
+export type PrerequisiteOverrides = { [courseKey: string]: Prerequisite };
 
 export function isAndPrerequisite(
   prerequisite: Prerequisite,

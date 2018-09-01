@@ -1,6 +1,7 @@
-import { store } from './store';
-import { getMasteredDegree } from './degree';
+import { Degree, getMasteredDegree } from './degree';
 import { Course } from './course';
+import { MasteredDegrees } from './mastered-degrees';
+import { Catalog } from './catalog';
 
 export interface DegreeGroup {
   id: string;
@@ -11,13 +12,15 @@ export interface DegreeGroup {
   position: number;
 }
 
-export function getMasteredDegreeGroup(self: DegreeGroup) {
+export function getMasteredDegreeGroup(
+  self: DegreeGroup,
+  degree: Degree,
+  masteredDegrees: MasteredDegrees,
+) {
   const { masteredDegreeGroupId } = self;
   if (!masteredDegreeGroupId) return undefined;
 
-  const { degree } = store.current.user;
-
-  const masteredDegree = getMasteredDegree(degree);
+  const masteredDegree = getMasteredDegree(degree, masteredDegrees);
   if (!masteredDegree) return undefined;
 
   const masteredDegreeGroup = masteredDegree.masteredDegreeGroups[masteredDegreeGroupId];
@@ -26,23 +29,26 @@ export function getMasteredDegreeGroup(self: DegreeGroup) {
   return masteredDegreeGroup;
 }
 
-export function getName(self: DegreeGroup) {
-  const masteredDegreeGroup = getMasteredDegreeGroup(self);
+export function getName(self: DegreeGroup, degree: Degree, masteredDegrees: MasteredDegrees) {
+  const masteredDegreeGroup = getMasteredDegreeGroup(self, degree, masteredDegrees);
   if (!masteredDegreeGroup) return 'Custom Group';
   return masteredDegreeGroup.name;
 }
 
-export function getDescriptionHtml(self: DegreeGroup) {
-  const masteredDegreeGroup = getMasteredDegreeGroup(self);
+export function getDescriptionHtml(
+  self: DegreeGroup,
+  degree: Degree,
+  masteredDegrees: MasteredDegrees,
+) {
+  const masteredDegreeGroup = getMasteredDegreeGroup(self, degree, masteredDegrees);
   // Description html should always say this for  custom group. custom group don't have mastered
   // degree groups
   if (!masteredDegreeGroup) return 'Custom group.';
   return masteredDegreeGroup.name;
 }
 
-export function getCourses(self: DegreeGroup) {
+export function getCourses(self: DegreeGroup, catalog: Catalog) {
   const { courseIds } = self;
-  const { catalog } = store.current;
 
   return courseIds.map(courseId => catalog[courseId]);
 }
