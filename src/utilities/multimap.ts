@@ -1,7 +1,7 @@
 export function createMultimap<T>() {
   const topMap = new Map<any, any>();
 
-  function save(keys: any[], value: T) {
+  function set(keys: any[], value: T) {
     let returnValue: any = topMap;
     for (let i = 0; i < keys.length - 1; i += 1) {
       const key = keys[i];
