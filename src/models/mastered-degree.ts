@@ -1,5 +1,6 @@
 import { ObjectId } from 'utilities/object-id';
 import { MasteredDegreeGroup } from './mastered-degree-group';
+import { maxBy } from 'utilities/max-by';
 
 export interface MasteredDegree {
   id: string;
@@ -8,6 +9,15 @@ export interface MasteredDegree {
   minimumCredits: number;
   published: boolean;
   masteredDegreeGroups: { [groupId: string]: MasteredDegreeGroup };
+}
+
+export function getNewDegreeGroupPosition(self: MasteredDegree, column: 1 | 2 | 3) {
+  const { masteredDegreeGroups } = self;
+  const degreeGroupPositions = Object.values(masteredDegreeGroups).filter(
+    group => group.column === column,
+  );
+  const lastGroup = maxBy(degreeGroupPositions, group => group.position);
+  return lastGroup.position + 1;
 }
 
 export function createNewGroup(self: MasteredDegree): MasteredDegree {
@@ -20,9 +30,11 @@ export function createNewGroup(self: MasteredDegree): MasteredDegree {
     descriptionHtml: 'No description provided',
     id: ObjectId(),
     name: 'New Degree Group',
+    column: 1,
+    position: getNewDegreeGroupPosition(self, 1),
   };
 
-  const newMasteredDegreeGroups = [...masteredDegreeGroups, newGroup];
+  const newMasteredDegreeGroups = { ...masteredDegreeGroups, [newGroup.id]: newGroup };
 
   return {
     ...self,
@@ -36,9 +48,17 @@ export function deleteGroup(
 ): MasteredDegree {
   const { masteredDegreeGroups } = self;
 
-  const newMasteredDegreeGroups = masteredDegreeGroups.filter(
-    group => group.id !== groupToDelete.id,
-  );
+  const newMasteredDegreeGroups = Object.entries(masteredDegreeGroups)
+    .filter(([groupId]) => groupId !== groupToDelete.id)
+    .reduce(
+      (newMasteredDegreeGroups, [groupId, value]) => {
+        newMasteredDegreeGroups[groupId] = value;
+        return newMasteredDegreeGroups;
+      },
+      {} as {
+        [groupId: string]: MasteredDegreeGroup;
+      },
+    );
 
   return {
     ...self,

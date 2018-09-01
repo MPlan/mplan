@@ -13,7 +13,7 @@ export interface Degree {
 export function degreeHasCourse(self: Degree, course: Course, catalog: Catalog) {
   const allCourses = getAllCourses(self, catalog);
   const courseCatalogId = getCatalogId(course);
-  return !!allCourses[courseCatalogId];
+  return !!Array.from(allCourses.values()).find(course => getCatalogId(course) === courseCatalogId);
 }
 
 export function getMasteredDegree(self: Degree, masteredDegrees: MasteredDegrees) {

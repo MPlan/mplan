@@ -1,5 +1,5 @@
-import { store } from './store';
 import { Course } from './course';
+import { Catalog } from './catalog';
 
 export interface MasteredDegreeGroup {
   id: string;
@@ -13,16 +13,14 @@ export interface MasteredDegreeGroup {
   column: 1 | 2 | 3;
 }
 
-export function getDefaultCourses(self: MasteredDegreeGroup) {
+export function getDefaultCourses(self: MasteredDegreeGroup, catalog: Catalog) {
   const { defaultIds } = self;
-  const { catalog } = store.current;
 
   return defaultIds.map(id => catalog[id]);
 }
 
-export function getAllowedCourses(self: MasteredDegreeGroup) {
+export function getAllowedCourses(self: MasteredDegreeGroup, catalog: Catalog) {
   const { allowListIds } = self;
-  const { catalog } = store.current;
 
   return allowListIds.map(id => catalog[id]);
 }
