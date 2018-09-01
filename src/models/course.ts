@@ -251,7 +251,31 @@ export function getClosure(self: Course, catalog: Catalog, degree: Degree): Set<
   return coursesInClosure;
 }
 
-export function getPrerequisiteContainsConcurrent(self: Course) {}
+export function getPrerequisiteContainsConcurrent(
+  self: Course,
+  user: User,
+  prerequisiteOverrides: PrerequisiteOverrides,
+) {
+  const prerequisites = getPrerequisitesConsideringOverrides(self, user, prerequisiteOverrides);
+  return _getPrerequisiteContainsConcurrent(prerequisites);
+}
+
+function _getPrerequisiteContainsConcurrent(prerequisite: Prerequisite): boolean {
+  if (!prerequisite) return false;
+  if (isStringPrerequisite(prerequisite)) return false;
+  if (isCoursePrerequisite(prerequisite)) {
+    if (prerequisite[2] === 'CONCURRENT') return true;
+  }
+
+  const operands = isAndPrerequisite(prerequisite)
+    ? prerequisite.and
+    : isOrPrerequisite(prerequisite)
+      ? prerequisite.or
+      : [];
+
+  if (operands.some(operand => _getPrerequisiteContainsConcurrent(operand))) return false;
+  return false;
+}
 
 export function getPrerequisiteSatisfied(self: Course) {}
 
