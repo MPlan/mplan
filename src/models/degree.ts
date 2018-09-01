@@ -1,323 +1,62 @@
-import * as Immutable from 'immutable';
-import * as Record from '../recordize';
-import { ObjectId, hashObjects } from './';
-import { Course } from './course';
-import { Semester } from './semester';
-import { DegreeGroup } from './degree-group';
-import { Plan } from './plan';
-import { pointer } from './pointer';
-import { App } from './app';
-import { SortEnd } from 'react-sortable-hoc';
+import { store } from './store';
 import { MasteredDegree } from './mastered-degree';
+import { DegreeGroup, getCourses } from './degree-group';
+import { createMultimap } from 'utilities/multimap';
+import { flatten } from 'lodash';
+import { Course, getCatalogId } from './course';
 
-const emptyDegreeId = '5b2f1c7d2889270190a73af8';
-const emptyDegree = new MasteredDegree({
-  name: 'Custom Degree',
-  descriptionHtml: 'Custom Degree',
-  _id: ObjectId(emptyDegreeId),
-});
-
-export function printSchedule(schedule: Immutable.List<Immutable.Set<Course>>) {
-  const totalCourses = schedule.reduce((total, semester) => total + semester.count(), 0);
-  console.log('semesters:', schedule.count(), 'course count:', totalCourses);
-
-  const prettySchedule = schedule
-    .map(semester =>
-      semester
-        .map(
-          course =>
-            /*if*/ course instanceof Course
-              ? `${course.simpleName} (${course.creditHoursString})`
-              : course,
-        )
-        .join(', '),
-    )
-    .join('\n');
-
-  console.log(prettySchedule);
-  console.log('-------');
+export interface Degree {
+  masteredDegreeId?: string;
+  degreeGroupData: { [degreeGroupId: string]: DegreeGroup };
 }
 
-export interface PlanOptions {
-  creditHourCap: number;
-  startFromSeason: 'Winter' | 'Summer' | 'Fall';
-  startFromYear: number;
-  includeSummerCourses: boolean;
-  considerHistoricalData: boolean;
+export function getMasteredDegree(self: Degree) {
+  const { masteredDegrees } = store.current;
+  const { masteredDegreeId } = self;
+  if (!masteredDegreeId) return undefined;
+  return masteredDegrees[masteredDegreeId] as MasteredDegree | undefined;
 }
 
-export function generatePlans(degree: Degree, options: PlanOptions) {
-  // === DEFINE CONSTANTS ===
-  const creditHourCap = options.creditHourCap;
-  const semesterCap = 15;
+export function getName(self: Degree) {
+  const masteredDegree = getMasteredDegree(self);
 
-  // === DEFINE STATE VARIABLES ===
-  let currentSchedule = Immutable.List<Immutable.Set<Course>>();
-  let currentSemester = Immutable.Set<Course>();
-  let processedCourses = Immutable.Set<string | Course>();
-  let unplacedCourses = Immutable.Set<Course>();
-
-  // === INITIALIZE WITH INITIAL STATE ===
-  const closure = degree.closure();
-  processedCourses = closure.filter(prerequisite => typeof prerequisite === 'string');
-  unplacedCourses = closure
-    .filter(prerequisite => prerequisite instanceof Course)
-    .map(c => c as Course);
-
-  /**
-   * returns whether a course can be placed in a semester
-   */
-  function canPlace(course: Course, semester: Immutable.Set<Course>) {
-    const totalCredits = semester.reduce(
-      (sum, course) =>
-        sum + (Array.isArray(course.creditHours) ? course.creditHours[1] : course.creditHours || 0),
-      0,
-    );
-    const newCourseCredits = Array.isArray(course.creditHours)
-      ? course.creditHours[1]
-      : course.creditHours || 0;
-
-    if (totalCredits + newCourseCredits > creditHourCap) return false;
-    if (!course.prerequisitesSatisfied(processedCourses)) return false;
-    return true;
-  }
-
-  /**
-   * the recursive backtracking function
-   */
-  function _generatePlan(): boolean {
-    const unplacedCount = unplacedCourses.count();
-    if (unplacedCount <= 0) {
-      currentSchedule = currentSchedule.push(currentSemester);
-      return true;
-    }
-
-    const unplacedCoursesSorted = unplacedCourses.toList().sortBy(c => c.priority());
-    for (let i = 0; i < unplacedCount; i += 1) {
-      const course = unplacedCoursesSorted.get(i)!;
-      if (canPlace(course, currentSemester)) {
-        currentSemester = currentSemester.add(course);
-        unplacedCourses = unplacedCourses.remove(course);
-
-        if (_generatePlan()) return true;
-      }
-    }
-
-    if (currentSchedule.count() < semesterCap) {
-      const oldSemester = currentSemester;
-      processedCourses = processedCourses.union(oldSemester);
-      currentSchedule = currentSchedule.push(oldSemester);
-      currentSemester = Immutable.Set<Course>();
-
-      if (_generatePlan()) return true;
-    }
-
-    return false;
-  }
-
-  _generatePlan();
-
-  return currentSchedule;
+  if (masteredDegree) return masteredDegree.name;
+  return '';
 }
 
-export class Degree extends Record.define({
-  masteredDegreeId: emptyDegreeId,
-  degreeGroups: Record.ListOf(DegreeGroup),
-}) {
-  static preferredCoursesMemo = new Map<any, any>();
-  static closureMemo = new Map<any, any>();
-  static levelsMemo = new Map<any, any>();
+const allCoursesMemo = createMultimap<{ [catalogId: string]: Course }>();
+export function getAllCourses(self: Degree) {
+  const { degreeGroupData } = self;
+  const { catalog } = store.current;
 
-  static clearMemos() {
-    this.preferredCoursesMemo.clear();
-    this.closureMemo.clear();
-    this.levelsMemo.clear();
-  }
+  const valueFromMemo = allCoursesMemo.get([catalog, degreeGroupData]);
+  if (valueFromMemo) return valueFromMemo;
 
-  get root(): App {
-    return pointer.store.current();
-  }
+  const courseArr = flatten(
+    Object.values(degreeGroupData).map(degreeGroup => getCourses(degreeGroup)),
+  );
 
-  static updateStore(store: App, newThis: Degree) {
-    return store.update('user', user => user.set('degree', newThis));
-  }
+  const courses = courseArr.reduce(
+    (courses, course) => {
+      courses[getCatalogId(course)] = course;
+      return courses;
+    },
+    {} as { [catalogId: string]: Course },
+  );
 
-  get name() {
-    return this.masteredDegree().name || '';
-  }
-
-  masteredDegree() {
-    const masteredDegree = this.root.masteredDegrees.get(this.masteredDegreeId);
-    if (!masteredDegree) return emptyDegree;
-    return masteredDegree;
-  }
-
-  preferredCourses() {
-    const catalog = this.root.catalog;
-    const hash = hashObjects({
-      degree: this,
-      catalog,
-    });
-    if (Degree.preferredCoursesMemo.has(hash)) {
-      return Degree.preferredCoursesMemo.get(hash) as Immutable.Set<string | Course>;
-    }
-
-    const combined = this.degreeGroups.reduce(
-      (combined, group) => combined.union(group.courses()),
-      Immutable.Set<string | Course>(),
-    );
-    Degree.preferredCoursesMemo.set(hash, combined);
-    return combined;
-  }
-
-  closure(): Immutable.Set<string | Course> {
-    const catalog = this.root.catalog;
-    const hash = hashObjects({ catalog, degree: this });
-    if (Degree.closureMemo.has(hash)) {
-      return Degree.closureMemo.get(hash);
-    }
-
-    const preferredCourses = this.preferredCourses();
-
-    const closure = preferredCourses
-      .map(
-        course =>
-          /*if*/ course instanceof Course
-            ? course.closure()
-            : Immutable.Set<string | Course>().add(course),
-      )
-      .reduce(
-        (closure, courseClosure) => closure.union(courseClosure),
-        Immutable.Set<string | Course>(),
-      );
-
-    Degree.closureMemo.set(hash, closure);
-    return closure;
-  }
-
-  levels(): Immutable.List<Immutable.Set<string | Course>> {
-    const catalog = this.root.catalog;
-    const hash = hashObjects({ degree: this, catalog });
-    if (Degree.levelsMemo.has(hash)) {
-      return Degree.levelsMemo.get(hash);
-    }
-
-    const closure = this.closure();
-    const levelsMutable = [] as Array<Set<string | Course>>;
-
-    for (const course of closure) {
-      if (course instanceof Course) {
-        const depth = course.depth();
-        const set = levelsMutable[depth] || new Set<string | Course>();
-        set.add(course);
-        levelsMutable[depth] = set;
-      }
-    }
-
-    const levels = levelsMutable.reduce(
-      (levelsImmutable, mutableLevel) =>
-        levelsImmutable.push(Immutable.Set<string | Course>(mutableLevel)),
-      Immutable.List<Immutable.Set<string | Course>>(),
-    );
-
-    Degree.levelsMemo.set(hash, levels);
-    return levels;
-  }
-
-  totalCredits(): number {
-    const catalog = this.root.catalog;
-    return this.getOrCalculate('totalCredits', [catalog, this], () => {
-      return this.degreeGroups.reduce(
-        (totalCredits, group) =>
-          totalCredits +
-          group.courses().reduce(
-            (totalCredits, course) =>
-              totalCredits +
-              // TODO use picked credit hours
-              (course instanceof Course
-                ? Array.isArray(course.creditHours)
-                  ? course.creditHours[1]
-                  : course.creditHours || 0
-                : 0),
-            0,
-          ),
-        0,
-      );
-    });
-  }
-
-  completedCredits(): number {
-    return this.degreeGroups.reduce((completedCredits, group) => {
-      const courses = group.courses();
-      const completedCourses = group.completedCourseIds
-        .map(id => courses.find(course => course.id === id)!)
-        .filter(x => x);
-      const nextCredits = completedCourses
-        .map(
-          course =>
-            Array.isArray(course.creditHours) ? course.creditHours[1] : course.creditHours || 0,
-        )
-        .reduce((sum, next) => sum + next, 0);
-      return completedCredits + nextCredits;
-    }, 0);
-  }
-
-  percentComplete() {
-    return ((this.completedCredits() * 100) / this.totalCredits()).toFixed(2) + '%';
-  }
-
-  generatePlan(planOptions: PlanOptions) {
-    const plan = generatePlans(this, planOptions);
-    const semesters = plan.map(
-      (set, i) =>
-        new Semester({
-          _id: ObjectId(),
-          _courseIds: set.map(course => course.catalogId).toList(),
-        }),
-    );
-
-    return new Plan({ semesters });
-  }
-
-  addNewDegreeGroup() {
-    return this.addDegreeGroup(
-      new DegreeGroup({
-        _id: ObjectId(),
-        customName: 'New Degree Group',
-        customDescription: 'Custom group',
-      }),
-    );
-  }
-
-  addDegreeGroup(group: DegreeGroup) {
-    return this.update('degreeGroups', groups => groups.push(group));
-  }
-
-  deleteDegreeGroup(group: DegreeGroup) {
-    return this.update('degreeGroups', groups => groups.filter(g => g !== group));
-  }
-
-  updateDegreeGroup(group: DegreeGroup, update: (group: DegreeGroup) => DegreeGroup) {
-    return this.update('degreeGroups', groups => {
-      const index = groups.findIndex(g => g.id === group.id);
-      return groups.update(index, update);
-    });
-  }
-
-  setDegreeGroup(group: DegreeGroup) {
-    return this.update('degreeGroups', groups => {
-      const index = groups.findIndex(g => g.id === group.id);
-      return groups.set(index, group);
-    });
-  }
-
-  reorderDegreeGroups({ oldIndex, newIndex }: SortEnd) {
-    const degreeGroup = this.degreeGroups.get(oldIndex);
-    if (!degreeGroup) return this;
-    return this.update('degreeGroups', degreeGroups => {
-      const degreeGroupsWithoutOld = degreeGroups.filter((_, index) => index !== oldIndex);
-      const degreeGroupWithNew = degreeGroupsWithoutOld.insert(newIndex, degreeGroup);
-      return degreeGroupWithNew;
-    });
-  }
+  allCoursesMemo.set([catalog, degreeGroupData], courses);
+  return courses;
 }
+
+export function getClosure(self: Degree) {}
+export function getLevels(self: Degree) {}
+export function getTotalCredits(self: Degree) {}
+export function getCompletedCredits(self: Degree) {}
+export function getPercentComplete(self: Degree) {}
+// export function generatePlan()
+export function addNewDegreeGroup(self: Degree) {}
+export function addDegreeGroup(self: Degree) {}
+export function deleteDegreeGroup(self: Degree) {}
+export function updateDegreeGroup(self: Degree) {}
+export function setDegreeGroup(self: Degree) {}
+export function reorderDegreeGroups(self: Degree) {}

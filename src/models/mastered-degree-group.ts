@@ -1,67 +1,76 @@
-import * as Immutable from 'immutable';
-import * as Record from '../recordize';
-import { ObjectId } from './';
+import { store } from './store';
 import { Course } from './course';
-import { pointer } from './pointer';
-import { App } from './app';
 
-export class MasteredDegreeGroup extends Record.define({
-  _id: ObjectId(),
-  name: '',
-  descriptionHtml: '',
-  /** catalog ids */
-  defaultIds: Immutable.List<string>(),
-  /** catalog ids */
-  allowListIds: Immutable.List<string>(),
-  creditMinimum: 0,
-  creditMaximum: 0,
-}) {
-  get root(): App {
-    return pointer.store.current();
-  }
-  get id() {
-    return this._id.toHexString();
-  }
+export interface MasteredDegreeGroup {
+  id: string;
+  name: string;
+  descriptionHtml: string;
+  defaultIds: string[];
+  allowListIds: string[];
+  creditMinimum: number;
+  creditMaximum: number;
+  position: number;
+  column: 1 | 2 | 3;
+}
 
-  defaultCourses() {
-    const catalog = this.root.catalog;
-    return this.defaultIds
-      .map(id => catalog.courseMap.get(id)!)
-      .filter(x => !!x)
-      .toArray();
-  }
+export function getDefaultCourses(self: MasteredDegreeGroup) {
+  const { defaultIds } = self;
+  const { catalog } = store.current;
 
-  allowedCourses() {
-    const catalog = this.root.catalog;
-    return this.allowListIds
-      .map(id => catalog.courseMap.get(id)!)
-      .filter(x => !!x)
-      .toArray();
-  }
+  return defaultIds.map(id => catalog[id]);
+}
 
-  addToDefaults(course: string | Course) {
-    const id = course instanceof Course ? course.catalogId : course;
-    if (this.defaultIds.includes(id)) {
-      return this;
-    }
-    return this.update('defaultIds', defaults => defaults.push(id));
-  }
+export function getAllowedCourses(self: MasteredDegreeGroup) {
+  const { allowListIds } = self;
+  const { catalog } = store.current;
 
-  deleteFromDefaults(course: string | Course) {
-    const idToDelete = course instanceof Course ? course.catalogId : course;
-    return this.update('defaultIds', defaults => defaults.filter(id => id !== idToDelete));
-  }
+  return allowListIds.map(id => catalog[id]);
+}
 
-  addToAllowList(course: string | Course) {
-    const id = course instanceof Course ? course.catalogId : course;
-    if (this.allowListIds.includes(id)) {
-      return this;
-    }
-    return this.update('allowListIds', allowList => allowList.push(id));
-  }
+export function addToDefaults(self: MasteredDegreeGroup, courseToAdd: Course) {
+  const { defaultIds } = self;
 
-  deleteFromAllowList(course: string | Course) {
-    const idToDelete = course instanceof Course ? course.catalogId : course;
-    return this.update('allowListIds', allowList => allowList.filter(id => id !== idToDelete));
-  }
+  const newDefaultIds = [...defaultIds.filter(id => id !== courseToAdd.id), courseToAdd.id];
+
+  const newSelf: MasteredDegreeGroup = {
+    ...self,
+    defaultIds: newDefaultIds,
+  };
+  return newSelf;
+}
+
+export function deleteFromDefaults(self: MasteredDegreeGroup, courseToDelete: Course) {
+  const { defaultIds } = self;
+
+  const newDefaultIds = defaultIds.filter(id => id !== courseToDelete.id);
+
+  const newSelf: MasteredDegreeGroup = {
+    ...self,
+    defaultIds: newDefaultIds,
+  };
+  return newSelf;
+}
+
+export function adddToAllowList(self: MasteredDegreeGroup, courseToAdd: Course) {
+  const { allowListIds } = self;
+
+  const newAllowListIds = [...allowListIds.filter(id => id !== courseToAdd.id), courseToAdd.id];
+
+  const newSelf: MasteredDegreeGroup = {
+    ...self,
+    allowListIds: newAllowListIds,
+  };
+  return newSelf;
+}
+
+export function deleteFromAllowList(self: MasteredDegreeGroup, courseToDelete: Course) {
+  const { allowListIds } = self;
+
+  const newAllowListIds = allowListIds.filter(id => id !== courseToDelete.id);
+
+  const newSelf: MasteredDegreeGroup = {
+    ...self,
+    allowListIds: newAllowListIds,
+  };
+  return newSelf;
 }

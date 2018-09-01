@@ -26,5 +26,5 @@ export function createMultimap<T>() {
     return map;
   }
 
-  return { save, get };
+  return { set, get };
 }

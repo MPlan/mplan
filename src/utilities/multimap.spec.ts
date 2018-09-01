@@ -10,7 +10,7 @@ describe('multimap', () => {
     const value = 'test value';
     const keys = [objA, objB, objC];
 
-    multimap.save(keys, value);
+    multimap.set(keys, value);
 
     const valueFromMultimap = multimap.get(keys);
 
@@ -27,9 +27,9 @@ describe('multimap', () => {
     const valueCBA = 'cba';
     const valueAAB = 'aab';
 
-    multimap.save([a, b, c], valueABC);
-    multimap.save([c, b, a], valueCBA);
-    multimap.save([a, a, b], valueAAB);
+    multimap.set([a, b, c], valueABC);
+    multimap.set([c, b, a], valueCBA);
+    multimap.set([a, a, b], valueAAB);
 
     expect(multimap.get([a, b, c])).toBe(valueABC);
     expect(multimap.get([c, b, a])).toBe(valueCBA);

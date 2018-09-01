@@ -1,63 +1,47 @@
-import * as Record from '../recordize';
-import { ObjectId } from './';
+import { ObjectId } from 'utilities/object-id';
 import { MasteredDegreeGroup } from './mastered-degree-group';
-import { pointer } from './pointer';
-import { App } from './app';
 
-export class MasteredDegree extends Record.define({
-  _id: ObjectId(),
-  name: '',
-  descriptionHtml: '',
-  minimumCredits: 0,
-  masteredDegreeGroups: Record.ListOf(MasteredDegreeGroup),
-  published: false,
-}) {
-  get root(): App {
-    return pointer.store.current();
-  }
+export interface MasteredDegree {
+  id: string;
+  name: string;
+  descriptionHtml: string;
+  minimumCredits: number;
+  published: boolean;
+  masteredDegreeGroups: { [groupId: string]: MasteredDegreeGroup };
+}
 
-  static updateStore(store: App, newThis: MasteredDegree) {
-    return store.update('masteredDegrees', masteredDegrees => {
-      const thisMasteredDegree = masteredDegrees.get(newThis.id);
-      if (!thisMasteredDegree) {
-        console.warn(`could nto find mastered degree with id "${newThis.id}"`);
-        return masteredDegrees;
-      }
-      return masteredDegrees.set(thisMasteredDegree.id, newThis);
-    });
-  }
+export function createNewGroup(self: MasteredDegree): MasteredDegree {
+  const { masteredDegreeGroups } = self;
+  const newGroup: MasteredDegreeGroup = {
+    allowListIds: [],
+    creditMaximum: 6,
+    creditMinimum: 6,
+    defaultIds: [],
+    descriptionHtml: 'No description provided',
+    id: ObjectId(),
+    name: 'New Degree Group',
+  };
 
-  get id() {
-    return this._id.toHexString();
-  }
+  const newMasteredDegreeGroups = [...masteredDegreeGroups, newGroup];
 
-  createNewGroup() {
-    return this.update('masteredDegreeGroups', masteredDegreeGroups =>
-      masteredDegreeGroups.push(
-        new MasteredDegreeGroup({
-          _id: ObjectId(),
-          name: 'New degree group',
-          descriptionHtml: 'No description provided.',
-          creditMaximum: 6,
-          creditMinimum: 6,
-        }),
-      ),
-    );
-  }
+  return {
+    ...self,
+    masteredDegreeGroups: newMasteredDegreeGroups,
+  };
+}
 
-  addGroup(group: MasteredDegreeGroup) {
-    if (this.masteredDegreeGroups.includes(group)) {
-      return this;
-    }
-    return this.update('masteredDegreeGroups', groups => groups.push(group));
-  }
+export function deleteGroup(
+  self: MasteredDegree,
+  groupToDelete: MasteredDegreeGroup,
+): MasteredDegree {
+  const { masteredDegreeGroups } = self;
 
-  deleteGroup(groupToDelete: MasteredDegreeGroup) {
-    return this.update('masteredDegreeGroups', groups =>
-      groups.filter(group => group !== groupToDelete),
-    );
-  }
+  const newMasteredDegreeGroups = masteredDegreeGroups.filter(
+    group => group.id !== groupToDelete.id,
+  );
 
-  // TODO:
-  warnings() {}
+  return {
+    ...self,
+    masteredDegreeGroups: newMasteredDegreeGroups,
+  };
 }

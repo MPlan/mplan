@@ -1,71 +1,71 @@
-interface Plan {
+import { ObjectId } from 'utilities/object-id';
+import { Semester } from './semester';
+
+export interface Plan {
   anchorSeason: string;
   anchorYear: number;
   semesters: Semester[];
 }
 
-export function anchorValue(self: Plan) {
+export function getAnchorValue(self: Plan) {
   return self.anchorYear * 3 + self.anchorSeason;
 }
 
-export function anchorSeasonValue(self: Plan) {
+export function getAnchorSeasonValue(self: Plan) {
   if (self.anchorSeason === 'winter') return 0;
   if (self.anchorSeason === 'summer') return 1;
   if (self.anchorSeason === 'fall') return 2;
   throw new Error('unhit anchor season value case');
 }
 
+export function getUnplacedCourses(self: Plan) {
+  return [];
+}
+
 export function updateSemester(
   self: Plan,
   semesterId: string,
-  updater: (semester: Semster) => Semester,
-): Plan {}
+  updater: (semester: Semester) => Semester,
+): Plan {
+  const { semesters } = self;
 
-export class Plan extends Record.define({
-  anchorSeason: 'fall' as 'fall' | 'winter' | 'summer',
-  anchorYear: new Date().getFullYear(),
-  semesters: Record.ListOf(Semester),
-}) {
-  static unplacedCoursesMemo = new Map<any, any>();
-  static warningsNotOfferedDuringSeason = new Map<any, any>();
+  const semesterToUpdateIndex = semesters.findIndex(semester => semester.id === semesterId);
+  if (semesterToUpdateIndex === -1) return self;
 
-  updateSemester(id: string, updater: (semester: Semester) => Semester) {
-    return this.update('semesters', list => {
-      const semesterIndexToUpdate = list.findIndex(semester => semester.id === id);
-      if (semesterIndexToUpdate === -1) return list;
-      return list.update(semesterIndexToUpdate, updater);
-    });
-  }
+  const updatedSemester = updater(semesters[semesterToUpdateIndex]);
 
-  createNewSemester() {
-    const newSemester = new Semester({ _id: ObjectId() });
-    return this.update('semesters', semesters => semesters.push(newSemester));
-  }
+  const newSemesters = [
+    ...semesters.slice(0, semesterToUpdateIndex),
+    updatedSemester,
+    ...semesters.slice(semesterToUpdateIndex + 1, semesters.length),
+  ];
 
-  deleteSemester(id: string) {
-    return this.update('semesters', semesters => semesters.filter(semester => semester.id !== id));
-  }
+  return {
+    ...self,
+    semesters: newSemesters,
+  };
+}
 
-  unplacedCourses(): Course[] {
-    const degree = this.root.user.degree;
-    const catalog = this.root.catalog;
-    const hash = hashObjects({ plan: this, degree, catalog });
-    if (Plan.unplacedCoursesMemo.has(hash)) {
-      return Plan.unplacedCoursesMemo.get(hash);
-    }
+export function createNewSemester(self: Plan): Plan {
+  const { semesters } = self;
+  const newSemester: Semester = {
+    id: ObjectId(),
+    courseIds: [],
+  };
 
-    const closure = degree.closure().filter(course => course instanceof Course) as Immutable.Set<
-      Course
-    >;
-    const coursesInPlan = this.semesters
-      .map(semester => semester.courses())
-      .reduce((coursesInPlan, courses) => coursesInPlan.union(courses), Immutable.Set<Course>());
+  return {
+    ...self,
+    semesters: [...semesters, newSemester],
+  };
+}
 
-    const unplacedCourses = closure
-      .subtract(coursesInPlan)
-      .sortBy(c => c.priority())
-      .toArray();
-    Plan.unplacedCoursesMemo.set(hash, unplacedCourses);
-    return unplacedCourses;
-  }
+export function deleteSemester(self: Plan, semesterToDelete: Semester): Plan {
+  const { semesters } = self;
+
+  const newSemesters = semesters.filter(semester => semester.id !== semesterToDelete.id);
+
+  return {
+    ...self,
+    semesters: newSemesters,
+  };
 }
