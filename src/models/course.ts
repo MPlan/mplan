@@ -91,7 +91,7 @@ export const getOptions = memoizeAll(
   },
 );
 
-export function getBestOption(self: Course, degree: Degree, catalog: Catalog) {
+export const getBestOption = memoizeAll((self: Course, degree: Degree, catalog: Catalog) => {
   const bestOptionWithConcurrent = getBestOptionWithConcurrent(self, degree, catalog);
   const bestOption = new Set<Course>();
   for (const [course] of bestOptionWithConcurrent) {
@@ -100,7 +100,7 @@ export function getBestOption(self: Course, degree: Degree, catalog: Catalog) {
   }
 
   return bestOption;
-}
+});
 
 export const getBestOptionWithConcurrent = memoizeAll(
   (self: Course, degree: Degree, catalog: Catalog): Set<PrerequisiteTuple> => {
@@ -193,7 +193,23 @@ export const getFullClosure = memoizeAll(
   },
 );
 
-export function getDepth(self: Course) {}
+export const getDepth = memoizeAll(
+  (self: Course, catalog: Catalog, degree: Degree): number => {
+    const bestOption = getBestOptionWithConcurrent(self, degree, catalog);
+
+    let maxDepth = 0;
+    for (const [course, previousOrConcurrent] of bestOption) {
+      if (typeof course === 'string') continue;
+      const courseDepth =
+        getDepth(course, catalog, degree) - (previousOrConcurrent === 'CONCURRENT' ? 1 : 0);
+      if (courseDepth > maxDepth) {
+        maxDepth = courseDepth;
+      }
+    }
+
+    return maxDepth + 1;
+  },
+);
 
 export function getMinDepth(self: Course, catalog: Catalog): number {
   const options = getOptions(self, catalog);
@@ -221,31 +237,17 @@ export function getMinDepth(self: Course, catalog: Catalog): number {
   return minDepthOfAllOptions + 1;
 }
 
-export function getClosure(self: Course, catalog: Catalog, degree: Degree) {
-  const coursesInDegree = getAllCourses(degree, catalog);
-
+export function getClosure(self: Course, catalog: Catalog, degree: Degree): Set<Course> {
   const coursesInClosure = new Set<Course>();
-  coursesInClosure.add(self);
-  // coursesInClosure = coursesInClosure.add(this);
 
   const bestOption = getBestOption(self, degree, catalog);
   for (const course of bestOption) {
-    coursesInClosure = coursesInClosure.add(course);
-    if (course instanceof Course) {
-      coursesInClosure = coursesInClosure.union(course.closure());
-
-      // if (course.corequisites) {
-      //   coursesInClosure = course.corequisites.reduce((coursesInClosure, corequisite) => {
-      //     const [subjectCode, courseNumber] = corequisite;
-      //     const corequisiteCourse = catalog.getCourse(subjectCode, courseNumber);
-      //     if (!corequisiteCourse) return coursesInClosure.add(`${subjectCode} ${courseNumber}`);
-      //     return coursesInClosure.add(corequisiteCourse);
-      //   }, coursesInClosure);
-      // }
+    coursesInClosure.add(course);
+    for (const subCourse of getClosure(course, catalog, degree)) {
+      coursesInClosure.add(subCourse);
     }
   }
 
-  Course.closureMemo.set(hash, coursesInClosure);
   return coursesInClosure;
 }
 
