@@ -9,6 +9,7 @@ import { NewDegreeModal } from './components/new-degree-modal';
 
 interface DegreeEditorProps {
   masteredDegrees: Model.MasteredDegree.Model[];
+  onCreateDegree: (degreeName: string) => void;
 }
 
 interface DegreeEditorState {

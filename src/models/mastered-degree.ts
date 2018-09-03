@@ -9,6 +9,7 @@ interface MasteredDegree {
   minimumCredits: number;
   published: boolean;
   masteredDegreeGroups: { [groupId: string]: MasteredDegreeGroup.Model };
+  position: number;
 }
 export { MasteredDegree as Model };
 
