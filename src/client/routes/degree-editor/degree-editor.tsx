@@ -8,11 +8,13 @@ import { View } from 'components/view';
 import { Text } from 'components/text';
 import { PrimaryButton } from 'components/button';
 import { NewDegreeModal } from './components/new-degree-modal';
-import { DegreeList as _DegreeList } from './components/degree-list';
+import { DegreeList } from './components/degree-list';
 
-const Content = styled(View)``;
-const DegreeList =  styled(_DegreeList)`
-  margin: auto;
+const Content = styled(View)`
+  margin: ${styles.space(1)} auto;
+  width: 50rem;
+  max-width: 100%;
+  flex: 1 1 auto;
 `;
 
 interface DegreeEditorProps {

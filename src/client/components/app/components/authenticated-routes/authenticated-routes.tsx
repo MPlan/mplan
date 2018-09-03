@@ -16,6 +16,7 @@ const Body = styled(View)`
 `;
 const Content = styled(View)`
   flex: 1 1 auto;
+  max-width: calc(100% - 5rem);
 `;
 
 interface AuthenticatedRoutesProps {

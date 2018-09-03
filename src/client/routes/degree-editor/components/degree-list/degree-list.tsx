@@ -10,7 +10,9 @@ import { Fa } from 'components/fa';
 import { DegreeListItem } from './degree-list-item';
 
 const Root = styled(Card)`
-  width: 50rem;
+  flex: 1 1 auto;
+  margin: 0 ${styles.space(1)};
+  margin-bottom: ${styles.space(0)};
 `;
 const SearchRow = styled(View)`
   flex-direction: row;
