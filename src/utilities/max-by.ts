@@ -10,5 +10,5 @@ export function maxBy<T>(list: T[], by: (t: T) => number) {
     }
   }
 
-  return list[maxIndex];
+  return list[maxIndex] as T | undefined;
 }

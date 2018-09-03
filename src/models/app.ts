@@ -10,6 +10,7 @@ interface App {
   admins: string[];
   prerequisiteOverrides: { [courseKey: string]: Prerequisite.Model };
   loaded: boolean;
+  saveCount: number;
 }
 
 export { App as Model };

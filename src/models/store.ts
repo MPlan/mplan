@@ -8,6 +8,7 @@ const initialState: App.Model = {
   prerequisiteOverrides: {},
   user: undefined,
   loaded: false,
+  saveCount: 0,
 };
 
 export const store = createStore(initialState);

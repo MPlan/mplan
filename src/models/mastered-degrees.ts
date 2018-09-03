@@ -11,21 +11,18 @@ export function getMasteredDegree(self: MasteredDegrees, masteredDegreeId: strin
   return self[masteredDegreeId] as MasteredDegree.Model | undefined;
 }
 
-export function createNewMasteredDegree(self: MasteredDegrees, newDegreeName: string) {
-  const lastPosition = maxBy(Object.values(self), masteredDegree => masteredDegree.position)
-    .position;
-  const newDegree: MasteredDegree.Model = {
-    descriptionHtml: 'No description provided.',
-    id: ObjectId(),
-    masteredDegreeGroups: {},
-    minimumCredits: 120,
-    name: newDegreeName,
-    published: false,
-    position: Math.ceil(lastPosition) + 2,
-  };
+export function getLastPosition(self: MasteredDegrees) {
+  const lastMasteredDegree = maxBy(Object.values(self), masteredDegree => masteredDegree.position);
+  if (!lastMasteredDegree) return 0;
+  return lastMasteredDegree.position;
+}
 
+export function addMasteredDegree(
+  self: MasteredDegrees,
+  masteredDegree: MasteredDegree.Model,
+): MasteredDegrees {
   return {
     ...self,
-    [newDegree.id]: newDegree,
+    [masteredDegree.id]: masteredDegree,
   };
 }

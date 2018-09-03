@@ -57,12 +57,12 @@ export function getPercentComplete(self: Degree) {}
 // export function generatePlan()
 export function addNewDegreeGroup(self: Degree): Degree {
   const lastGroup = maxBy(Object.values(self.degreeGroupData), group => group.position);
-  const position = lastGroup.position;
+  const position = (lastGroup && lastGroup.position) || 0;
   const newDegreeGroup: DegreeGroup.Model = {
     completedCourseIds: {},
     courseIds: [],
     id: ObjectId(),
-    position,
+    position: Math.ceil(position) + 2,
   };
 
   return {

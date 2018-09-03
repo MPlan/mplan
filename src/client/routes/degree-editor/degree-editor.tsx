@@ -11,7 +11,6 @@ interface DegreeEditorProps {
   masteredDegrees: Model.MasteredDegree.Model[];
   onCreateDegree: (degreeName: string) => void;
 }
-
 interface DegreeEditorState {
   newDegreeModalOpen: boolean;
 }
@@ -28,12 +27,9 @@ export class DegreeEditor extends React.PureComponent<DegreeEditorProps, DegreeE
   handleNewDegreeOpen = () => {
     this.setState({ newDegreeModalOpen: true });
   };
-
   handleNewDegreeClose = () => {
     this.setState({ newDegreeModalOpen: false });
   };
-
-  handleCreateNewDegree = () => {};
 
   render() {
     const { newDegreeModalOpen } = this.state;
@@ -46,7 +42,7 @@ export class DegreeEditor extends React.PureComponent<DegreeEditorProps, DegreeE
         <NewDegreeModal
           open={newDegreeModalOpen}
           onClose={this.handleNewDegreeClose}
-          onCreateNewDegree={this.handleCreateNewDegree}
+          onCreateNewDegree={this.props.onCreateDegree}
         />
       </Page>
     );

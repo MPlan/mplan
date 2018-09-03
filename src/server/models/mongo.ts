@@ -25,7 +25,7 @@ async function createMongoDbConnection() {
       return db.collection<Model.User.Model>('Users');
     },
     get degrees() {
-      return db.collection<any>('Degrees');
+      return db.collection<Model.MasteredDegree.Model>('Degrees');
     },
     get admins() {
       return db.collection<{ uniqueName: string }>('Admins');
@@ -46,6 +46,7 @@ async function createMongoDbConnection() {
   );
   collections.admins.createIndex({ uniqueName: 1 }, { unique: true });
   collections.prerequisiteOverrides.createIndex({ courseKey: 1 }, { unique: true });
+  collections.degrees.createIndex({ id: 1 }, { unique: true });
 
   return collections;
 }

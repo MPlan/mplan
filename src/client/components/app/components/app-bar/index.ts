@@ -8,7 +8,7 @@ const Container = Model.store.connect({
       process.env.NODE_ENV !== 'production'
         ? 'Local Test User'
         : get(state, _ => _.user.username, ''),
-    saving: false,
+    saving: state.saveCount > 0,
   }),
   mapDispatchToProps: state => ({}),
 })(AppBar);

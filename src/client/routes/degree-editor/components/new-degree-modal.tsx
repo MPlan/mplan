@@ -33,10 +33,12 @@ export class NewDegreeModal extends React.PureComponent<NewDegreeModalProps, New
       degreeName: '',
     };
   }
+
   handleClickCreate = () => {
     const { onClose, onCreateNewDegree } = this.props;
     onCreateNewDegree(this.state.degreeName);
     onClose();
+    this.setState({ degreeName: '' });
   };
 
   handleDegreeNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {

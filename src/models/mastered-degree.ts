@@ -13,13 +13,28 @@ interface MasteredDegree {
 }
 export { MasteredDegree as Model };
 
+export function createNewMasteredDegree(degreeName: string, lastPosition: number): MasteredDegree {
+  const newDegree: MasteredDegree = {
+    descriptionHtml: 'No description provided.',
+    id: ObjectId(),
+    masteredDegreeGroups: {},
+    minimumCredits: 120,
+    name: degreeName,
+    published: false,
+    position: Math.ceil(lastPosition) + 2,
+  };
+
+  return newDegree;
+}
+
 export function getNewDegreeGroupPosition(self: MasteredDegree, column: 1 | 2 | 3) {
   const { masteredDegreeGroups } = self;
   const degreeGroupPositions = Object.values(masteredDegreeGroups).filter(
     group => group.column === column,
   );
   const lastGroup = maxBy(degreeGroupPositions, group => group.position);
-  return lastGroup.position + 1;
+  if (!lastGroup) return 0;
+  return Math.ceil(lastGroup.position) + 2;
 }
 
 export function createNewGroup(self: MasteredDegree): MasteredDegree {
