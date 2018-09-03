@@ -214,10 +214,7 @@ export class Dropdown<T extends { [P in keyof T]: MenuItem }> extends React.Pure
   render() {
     return (
       <Container innerRef={this.containerRef} onBlur={this.handleContainerBlur}>
-        <Menu
-          className="menu"
-          style={{ display: this.props.open ? 'flex' : 'none' }}
-        >
+        <Menu className="menu" style={{ display: this.props.open ? 'flex' : 'none' }}>
           <Header>
             <Text style={{ color: styles.text }} strong>
               {this.props.header}
@@ -242,7 +239,9 @@ export class Dropdown<T extends { [P in keyof T]: MenuItem }> extends React.Pure
                   onFocus={() => this.handleActionFocus(action)}
                   className={
                     this.state.currentAction === action
-                      ? this.state.spaceDown ? 'focus active' : 'focus'
+                      ? this.state.spaceDown
+                        ? 'focus active'
+                        : 'focus'
                       : ''
                   }
                 >

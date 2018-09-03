@@ -1,7 +1,12 @@
 import { fetchUser } from './user';
 import { fetchCatalog } from './catalog';
+import { fetchMasteredDegrees } from './mastered-degrees';
 
 export async function fetchInitial() {
-  const [user, catalog] = await Promise.all([fetchUser(), fetchCatalog()]);
-  return { user, catalog };
+  const [user, catalog, masteredDegrees] = await Promise.all([
+    fetchUser(),
+    fetchCatalog(),
+    fetchMasteredDegrees(),
+  ]);
+  return { user, catalog, masteredDegrees };
 }

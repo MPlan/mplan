@@ -48,3 +48,23 @@ export const DangerButton = styled(Button)`
     background-color: ${darken(0.2, styles.danger)};
   }
 `;
+
+export const PrimaryButton = styled(Button)`
+  color: ${styles.whiteTer};
+  background-color: ${styles.blue};
+  & * {
+    color: ${styles.whiteTer} !important;
+  }
+
+  &:hover,
+  &:focus {
+    color: ${styles.white} !important;
+    background-color: ${darken(0.15, styles.blue)};
+  }
+
+  &:active {
+    color: ${styles.white} !important;
+    background-color: ${darken(0.2, styles.blue)};
+  }
+`;
+

@@ -6,12 +6,13 @@ const Container = Model.store.connect({
   mapStateToProps: () => ({}),
   mapDispatchToProps: dispatch => ({
     onMount: async () => {
-      const { user, catalog } = await fetchInitial();
+      const { user, catalog, masteredDegrees } = await fetchInitial();
 
       dispatch(state => ({
         ...state,
         catalog,
         user,
+        masteredDegrees,
         loaded: true,
       }));
     },
