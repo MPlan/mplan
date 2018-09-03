@@ -20,16 +20,11 @@ const Content = styled(View)`
 
 interface AuthenticatedRoutesProps {
   loaded: boolean;
-  onMount: () => any;
   isAdmin: boolean;
   routes: RouteDefinition[];
 }
 
 export class AuthenticatedRoutes extends React.Component<AuthenticatedRoutesProps, {}> {
-  componentDidMount() {
-    this.props.onMount();
-  }
-
   render() {
     const { loaded, routes, isAdmin } = this.props;
     if (!loaded) return <Loading />;

@@ -11,19 +11,7 @@ const Container = Model.store.connect({
     isAdmin: get(state, _ => _.user.isAdmin, false),
     routes: [...Routes, ...BottomRoutes],
   }),
-  mapDispatchToProps: dispatch => ({
-    onMount: async () => {
-      const username = await Auth.username();
-      if (!username) return;
-      const user = await fetchUser(username);
-
-      dispatch(store => ({
-        ...store,
-        user,
-        loaded: true,
-      }));
-    },
-  }),
+  mapDispatchToProps: dispatch => ({}),
 })(AuthenticatedRoutes);
 
 export { Container as AuthenticatedRoutes };

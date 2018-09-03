@@ -33,7 +33,11 @@ const AppContent = styled<AppContentProps>(View)`
   overflow: hidden;
 `;
 
-export class App extends React.Component<{}, {}> {
+interface AppProps {
+  onMount: () => any;
+}
+
+export class App extends React.Component<AppProps, {}> {
   componentDidMount() {
     (window as any).Intercom('boot', {
       app_id: 'zpvusrfo',
@@ -42,6 +46,8 @@ export class App extends React.Component<{}, {}> {
     history.listen(() => {
       (window as any).Intercom('update');
     });
+
+    this.props.onMount();
   }
 
   render() {
