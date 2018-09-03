@@ -33,16 +33,28 @@ const AppContent = styled<AppContentProps>(View)`
   overflow: hidden;
 `;
 
-export function App() {
-  return (
-    <AppContent>
-      <Router history={history}>
-        <Switch>
-          <Route path="/callback" component={Callback} />
-          <Route path="/login" render={renderLanding} />
-          <Route render={renderApp} />
-        </Switch>
-      </Router>
-    </AppContent>
-  );
+export class App extends React.Component<{}, {}> {
+  componentDidMount() {
+    (window as any).Intercom('boot', {
+      app_id: 'zpvusrfo',
+    });
+
+    history.listen(() => {
+      (window as any).Intercom('update');
+    });
+  }
+
+  render() {
+    return (
+      <AppContent>
+        <Router history={history}>
+          <Switch>
+            <Route path="/callback" component={Callback} />
+            <Route path="/login" render={renderLanding} />
+            <Route render={renderApp} />
+          </Switch>
+        </Router>
+      </AppContent>
+    );
+  }
 }
