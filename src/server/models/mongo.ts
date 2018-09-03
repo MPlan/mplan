@@ -1,6 +1,6 @@
 import * as Mongo from 'mongodb';
 import { log, getOrThrow } from '../../utilities/utilities';
-import * as Model from '../../models/models';
+import * as Model from 'models';
 
 const mongoUri = getOrThrow(process.env.MONGODB_URI);
 
@@ -16,31 +16,22 @@ async function createMongoDbConnection() {
 
   const collections = {
     get courses() {
-      return db.collection<Model.Course>('Courses');
+      return db.collection<Model.Course.Model>('Courses');
     },
     get sections() {
-      return db.collection<Model.Section>('Sections');
+      return db.collection<Model.Section.Model>('Sections');
     },
     get users() {
-      return db.collection<Model.User>('Users');
+      return db.collection<Model.User.Model>('Users');
     },
     get degrees() {
       return db.collection<any>('Degrees');
-    },
-    get syncErrors() {
-      return db.collection<Model.Report>('SyncErrors');
-    },
-    get syncReports() {
-      return db.collection<Model.Report>('SyncReports');
-    },
-    get syncStatus() {
-      return db.collection<Model.SyncStatus>('SyncStatus');
     },
     get admins() {
       return db.collection<{ uniqueName: string }>('Admins');
     },
     get prerequisiteOverrides() {
-      return db.collection<{ courseKey: string; prerequisites: Model.Prerequisite }>(
+      return db.collection<{ courseKey: string; prerequisites: Model.Prerequisite.Model }>(
         'PrerequisiteOverrides',
       );
     },

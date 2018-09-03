@@ -14,7 +14,7 @@ const CallbackContainer = styled(View)`
 
 export function Callback() {
   Auth.handleCallback().then(() => {
-    history.push('/timeline');
+    history.replace('/timeline');
   });
 
   return (

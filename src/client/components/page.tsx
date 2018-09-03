@@ -36,29 +36,23 @@ const Body = styled<BodyProps>(View)`
 
 interface PageProps {
   title: string;
-  // TODO: these should just be nodes
-  renderSubtitle?: React.ComponentType<any>;
-  renderTitleLeft?: React.ComponentType<any>;
+  subtitle?: React.ReactNode;
+  titleLeft?: React.ReactNode;
   children?: any;
   addPadding?: boolean;
 }
 
 export class Page extends React.PureComponent<PageProps, any> {
   render() {
-    const TitleLeft = this.props.renderTitleLeft;
-    const Subtitle = this.props.renderSubtitle;
+    const { title, subtitle, titleLeft } = this.props;
     return (
       <Container>
         <TitleRow>
           <TitleContainer>
-            <Title>{this.props.title}</Title>
-            {Subtitle && <Subtitle />}
+            <Title>{title}</Title>
+            {subtitle}
           </TitleContainer>
-          {TitleLeft && (
-            <TitleLeftContainer>
-              <TitleLeft />
-            </TitleLeftContainer>
-          )}
+          {titleLeft && <TitleLeftContainer>{titleLeft}</TitleLeftContainer>}
         </TitleRow>
         <Body addPadding={this.props.addPadding}>{this.props.children}</Body>
       </Container>

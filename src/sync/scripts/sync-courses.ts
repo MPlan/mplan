@@ -2,37 +2,21 @@ if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
 
-import * as Model from 'models';
 import { fetchCourses, fetchSubjects } from 'sync';
 import { dbConnection } from 'server/models/mongo';
 import { sequentially } from 'utilities/utilities';
-import { RemoveProps } from 'utilities/typings';
 import { flatten } from 'lodash';
 const { floor } = Math;
 
 async function main() {
-  const { courses, syncErrors, syncReports } = await dbConnection;
-  const jobTimestamp = Date.now();
+  const { courses } = await dbConnection;
 
   function errorLogger(message: string) {
     console.warn(message);
-    const report: RemoveProps<Model.Report, '_id'> = {
-      message,
-      timestamp: Date.now(),
-      jobTimestamp,
-    };
-    syncErrors.insertOne(report);
   }
 
   function logger(message: string) {
     console.log(message);
-
-    const report: RemoveProps<Model.Report, '_id'> = {
-      message,
-      timestamp: Date.now(),
-      jobTimestamp,
-    };
-    syncReports.insertOne(report);
   }
 
   logger('Fetching subjects...');

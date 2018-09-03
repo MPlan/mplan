@@ -10,7 +10,7 @@ import { flatten } from 'lodash';
 import * as Model from 'models';
 
 async function main() {
-  const { courses, sections, syncErrors, syncReports, syncStatus } = await dbConnection;
+  const { courses, sections } = await dbConnection;
 
   await wait(10 * 1000);
   const jobTimestamp = Date.now();
@@ -21,24 +21,10 @@ async function main() {
 
   function logger(message: string) {
     console.log(message);
-
-    const report: RemoveProps<Model.Report, '_id'> = {
-      message,
-      timestamp: Date.now(),
-      jobTimestamp,
-    };
-    syncReports.insertOne(report);
   }
 
   function errorLogger(message: string) {
     console.warn(message);
-
-    const report: RemoveProps<Model.Report, '_id'> = {
-      message,
-      timestamp: Date.now(),
-      jobTimestamp,
-    };
-    syncErrors.insertOne(report);
   }
 
   logger(`Started job to sync sections from terms: ${termCodes.join(', ')} at ${jobTimestamp}`);
@@ -107,12 +93,13 @@ async function main() {
   logger(`Done syncing sections from terms: ${termCodes.join(', ')}`);
 
   logger(`Updating sync status...`);
-  const status = await syncStatus.findOne({});
-  if (!status) {
-    await syncStatus.insertOne({ lastSyncTimestamp: Date.now() });
-  } else {
-    await syncStatus.findOneAndReplace({}, { lastSyncTimestamp: Date.now() });
-  }
+  // TODO
+  // const status = await syncStatus.findOne({});
+  // if (!status) {
+  //   await syncStatus.insertOne({ lastSyncTimestamp: Date.now() });
+  // } else {
+  //   await syncStatus.findOneAndReplace({}, { lastSyncTimestamp: Date.now() });
+  // }
 }
 
 main()

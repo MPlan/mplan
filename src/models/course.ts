@@ -34,6 +34,15 @@ export function makeCatalogId(subjectCode: string, courseNumber: string) {
   return `${subjectCode}__|__${courseNumber}`;
 }
 
+export function parseCourseKey(courseKey: string) {
+  const match = /(.*)__\|__(.*)/.exec(courseKey);
+  if (!match) return undefined;
+  const subjectCode = match[1];
+  const courseNumber = match[2];
+
+  return { subjectCode, courseNumber };
+}
+
 export function getCatalogId(self: Course) {
   const { subjectCode, courseNumber } = self;
   return makeCatalogId(subjectCode, courseNumber);

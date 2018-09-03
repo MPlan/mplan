@@ -2,7 +2,7 @@ if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
 
-import * as Model from 'models/models';
+import * as Model from 'models';
 import { dbConnection } from 'server/models/mongo';
 const { max, floor } = Math;
 
@@ -16,7 +16,7 @@ async function main() {
   console.log('Calculating terms and seats remaining...');
   const sectionsLookup = sectionsFromDb.reduce(
     (lookup, section) => {
-      const courseKey = Model.courseKey(section);
+      const courseKey = Model.Section.getCatalogId(section);
       const course = lookup[courseKey] || {};
       const previousSeatsRemaining =
         (course[section.termCode] && course[section.termCode].seatsRemaining) || 0;
@@ -34,7 +34,7 @@ async function main() {
   let index = 0;
   for (const [courseKey, sectionsSummary] of lookupEntries) {
     const percentage = floor((index * 100) / (lookupEntries.length - 1));
-    const parseResult = Model.parseCourseKey(courseKey);
+    const parseResult = Model.Course.parseCourseKey(courseKey);
     if (!parseResult) throw new Error(`Failed to parse course key "${courseKey}"`);
     const { courseNumber, subjectCode } = parseResult;
     try {

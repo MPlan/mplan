@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Modal } from 'components/modal';
 import { createScene } from 'utilities/scene';
 import { View } from 'components/view';
-import { Paragraph } from 'components/paragraph';
+import { Text } from 'components/text';
 import { Button, DangerButton } from 'components/button';
 import { Fa } from 'components/fa';
 import styled from 'styled-components';
@@ -18,6 +18,9 @@ const ButtonRow = styled(View)`
 `;
 const ConfirmButton = styled(DangerButton)`
   margin-left: ${styles.space(-1)};
+`;
+const Paragraph = styled(Text)`
+  margin-bottom: ${styles.space(-1)};
 `;
 
 interface AreYouSureState {

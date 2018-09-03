@@ -13,7 +13,7 @@ prerequisiteOverrides.get('/', async (_, res) => {
       acc[next.courseKey] = next.prerequisites;
       return acc;
     },
-    {} as { [courseKey: string]: Model.Prerequisite },
+    {} as { [courseKey: string]: Model.Prerequisite.Model },
   );
 
   res.json(overridesObject);
@@ -32,7 +32,7 @@ prerequisiteOverrides.post('/', checkAdmin, async (req, res) => {
     return;
   }
   const courseKeyToInsert = body.courseKey as string;
-  const prerequisitesToInsert = body.prerequisites as Model.Prerequisite;
+  const prerequisitesToInsert = body.prerequisites as Model.Prerequisite.Model;
 
   const exists = prerequisiteOverrides.findOne({
     courseKey: courseKeyToInsert,

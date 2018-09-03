@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import 'normalize.css';
-import { App } from './app';
+import { App } from 'components/app';
 
 const bootstrap = document.createElement('div');
 document.body.appendChild(bootstrap);
