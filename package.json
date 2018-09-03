@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "NODE_PATH=./src jest",
-    "start": "npm run server & npm run start:client",
+    "start": "npm run start:client",
     "start:server": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server/index.ts",
     "start:client": "webpack-dev-server",
     "server": "NODE_PATH=./src ts-node ./src/server/index.ts",
@@ -23,10 +23,14 @@
   "author": "Rico Kahler",
   "license": "MIT",
   "devDependencies": {
+    "@babel/core": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
     "@types/jest": "^23.3.0",
     "@types/react-test-renderer": "^16.0.1",
     "@types/webpack": "^3.8.1",
     "awesome-typescript-loader": "^5.0.0",
+    "babel-loader": "^8.0.2",
+    "babel-plugin-styled-components": "^1.6.0",
     "css-loader": "^0.28.7",
     "dotenv": "^5.0.0",
     "jest": "^23.4.1",
@@ -35,7 +39,7 @@
     "style-loader": "^0.19.1",
     "ts-jest": "^23.0.1",
     "typescript": "^2.9.2",
-    "webpack": "^4.9.1",
+    "webpack": "^4.17.2",
     "webpack-cli": "^2.1.4",
     "webpack-dev-server": "^3.1.4"
   },
@@ -67,6 +71,7 @@
     "@types/recompose": "^0.26.4",
     "@types/throng": "^4.0.2",
     "@types/uuid": "^3.4.3",
+    "babel-polyfill": "^6.26.0",
     "base-64": "^0.1.0",
     "bson": "^1.0.4",
     "classnames": "^2.2.6",
@@ -120,5 +125,10 @@
       "jsx"
     ],
     "testEnvironment": "node"
+  },
+  "babel": {
+    "plugins": [
+      "babel-plugin-styled-components"
+    ]
   }
 }

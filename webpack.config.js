@@ -8,14 +8,26 @@ if (process.env.NODE_ENV !== 'production') {
 /** @type {webpack.Configuration} */
 const webpackConfig = {
   mode: process.env.NODE_ENV || 'production',
-  entry: './src/client/index.tsx',
+  entry: ['babel-polyfill', './src/client/index.tsx'],
   output: {
     path: path.resolve(__dirname, './src/web-root'),
     filename: 'mplan.js',
   },
   module: {
     rules: [
-      { test: /\.tsx?$/, loader: 'awesome-typescript-loader' },
+      {
+        test: /\.tsx?$/,
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: ['@babel/preset-env'],
+              plugins: [require('babel-plugin-styled-components')],
+            },
+          },
+          { loader: 'awesome-typescript-loader' },
+        ],
+      },
       {
         test: /\.css/,
         use: [{ loader: 'style-loader' }, { loader: 'css-loader', options: { minimize: true } }],
