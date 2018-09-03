@@ -1,9 +1,9 @@
-import { Course, disjunctiveNormalForm, getCatalogId, isCourse, getSimpleName } from './course';
+import * as Course from './course';
 import { ObjectId } from 'utilities/object-id';
 
 describe('course', () => {
   describe('disjunctiveNormalForm', () => {
-    const cis375: Course = {
+    const cis375: Course.Model = {
       id: ObjectId(),
       name: 'Software Engineering I',
       subjectCode: 'CIS',
@@ -37,7 +37,7 @@ describe('course', () => {
       ]}
     };
 
-    const comp270: Course = {
+    const comp270: Course.Model = {
       id: ObjectId(),
       name: 'Technical Writing for Engineers',
       subjectCode: 'COMP',
@@ -45,7 +45,7 @@ describe('course', () => {
       lastUpdateDate: Date.now(),
     };
 
-    const comp106: Course = {
+    const comp106: Course.Model = {
       id: ObjectId(),
       name: 'Writing and Rhetoric II',
       subjectCode: 'COMP',
@@ -53,7 +53,7 @@ describe('course', () => {
       lastUpdateDate: Date.now(),
     };
 
-    const comp220: Course = {
+    const comp220: Course.Model = {
       id: ObjectId(),
       name: 'Honors Writing and Rhetoric II',
       subjectCode: 'COMP',
@@ -61,7 +61,7 @@ describe('course', () => {
       lastUpdateDate: Date.now(),
     };
 
-    const cis350: Course = {
+    const cis350: Course.Model = {
       id: ObjectId(),
       name: 'Data Structures and Algorithms',
       subjectCode: 'CIS',
@@ -69,7 +69,7 @@ describe('course', () => {
       lastUpdateDate: Date.now(),
     };
 
-    const cis3501: Course = {
+    const cis3501: Course.Model = {
       id: ObjectId(),
       name: 'Data Structures and Algorithms for Software Engineers',
       subjectCode: 'CIS',
@@ -77,7 +77,7 @@ describe('course', () => {
       lastUpdateDate: Date.now(),
     };
 
-    const imse350: Course = {
+    const imse350: Course.Model = {
       id: ObjectId(),
       name: 'Data Structures',
       subjectCode: 'IMSE',
@@ -85,7 +85,7 @@ describe('course', () => {
       lastUpdateDate: Date.now(),
     };
 
-    const ece370: Course = {
+    const ece370: Course.Model = {
       id: ObjectId(),
       name: 'Adv Soft Techn in Comp Engr',
       subjectCode: 'ECE',
@@ -93,7 +93,7 @@ describe('course', () => {
       lastUpdateDate: Date.now(),
     };
 
-    const math276: Course = {
+    const math276: Course.Model = {
       id: ObjectId(),
       name: 'Discrete Math Meth Comptr Engr',
       subjectCode: 'MATH',
@@ -101,7 +101,7 @@ describe('course', () => {
       lastUpdateDate: Date.now(),
     };
 
-    const ece276: Course = {
+    const ece276: Course.Model = {
       id: ObjectId(),
       name: 'Discrete Math in Computer Engr',
       subjectCode: 'ECE',
@@ -109,24 +109,24 @@ describe('course', () => {
       lastUpdateDate: Date.now(),
     };
 
-    const catalog: { [catalogId: string]: Course } = {
-      [getCatalogId(cis375)]: cis375,
-      [getCatalogId(comp270)]: comp270,
-      [getCatalogId(comp106)]: comp106,
-      [getCatalogId(comp220)]: comp220,
-      [getCatalogId(cis350)]: cis350,
-      [getCatalogId(cis3501)]: cis3501,
-      [getCatalogId(imse350)]: imse350,
-      [getCatalogId(ece370)]: ece370,
-      [getCatalogId(math276)]: math276,
-      [getCatalogId(ece276)]: ece276,
+    const catalog: { [catalogId: string]: Course.Model } = {
+      [Course.getCatalogId(cis375)]: cis375,
+      [Course.getCatalogId(comp270)]: comp270,
+      [Course.getCatalogId(comp106)]: comp106,
+      [Course.getCatalogId(comp220)]: comp220,
+      [Course.getCatalogId(cis350)]: cis350,
+      [Course.getCatalogId(cis3501)]: cis3501,
+      [Course.getCatalogId(imse350)]: imse350,
+      [Course.getCatalogId(ece370)]: ece370,
+      [Course.getCatalogId(math276)]: math276,
+      [Course.getCatalogId(ece276)]: ece276,
     };
 
     it('calculates DNF', () => {
-      const result = disjunctiveNormalForm(cis375.prerequisites, catalog);
+      const result = Course.disjunctiveNormalForm(cis375.prerequisites, catalog);
       const readableResult = Array.from(result.values()).map(option =>
         Array.from(option.values()).map(
-          ([course]) => (isCourse(course) ? getSimpleName(course) : course),
+          ([course]) => (Course.isCourse(course) ? Course.getSimpleName(course) : course),
         ),
       );
 

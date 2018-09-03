@@ -1,16 +1,17 @@
-import { Plan } from './plan';
-import { Degree } from './degree';
-import { Prerequisite } from './prerequisite';
+import * as Plan from './plan';
+import * as Degree from './degree';
+import * as Prerequisite from './prerequisite';
 
-export interface User {
+interface User {
   id: string;
   username: string;
   registerDate: number;
   lastLoginDate: number;
   lastUpdateDate: number;
   chosenDegree: boolean;
-  plan: Plan;
-  degree: Degree;
+  plan: Plan.Model;
+  degree: Degree.Model;
   isAdmin: boolean;
-  userPrerequisiteOverrides: { [catalogId: string]: Prerequisite };
+  userPrerequisiteOverrides: { [catalogId: string]: Prerequisite.Model };
 }
+export { User as Model };

@@ -1,11 +1,12 @@
 import { ObjectId } from 'utilities/object-id';
-import { Semester } from './semester';
+import * as Semester from './semester';
 
-export interface Plan {
+interface Plan {
   anchorSeason: string;
   anchorYear: number;
-  semesters: Semester[];
+  semesters: Semester.Model[];
 }
+export { Plan as Model };
 
 export function getAnchorValue(self: Plan) {
   return self.anchorYear * 3 + self.anchorSeason;
@@ -25,7 +26,7 @@ export function getUnplacedCourses(self: Plan) {
 export function updateSemester(
   self: Plan,
   semesterId: string,
-  updater: (semester: Semester) => Semester,
+  updater: (semester: Semester.Model) => Semester.Model,
 ): Plan {
   const { semesters } = self;
 
@@ -48,7 +49,7 @@ export function updateSemester(
 
 export function createNewSemester(self: Plan): Plan {
   const { semesters } = self;
-  const newSemester: Semester = {
+  const newSemester: Semester.Model = {
     id: ObjectId(),
     courseIds: [],
   };
@@ -59,7 +60,7 @@ export function createNewSemester(self: Plan): Plan {
   };
 }
 
-export function deleteSemester(self: Plan, semesterToDelete: Semester): Plan {
+export function deleteSemester(self: Plan, semesterToDelete: Semester.Model): Plan {
   const { semesters } = self;
 
   const newSemesters = semesters.filter(semester => semester.id !== semesterToDelete.id);

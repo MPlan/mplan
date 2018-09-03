@@ -1,15 +1,16 @@
 import { ObjectId } from 'utilities/object-id';
-import { MasteredDegreeGroup } from './mastered-degree-group';
+import * as MasteredDegreeGroup from './mastered-degree-group';
 import { maxBy } from 'utilities/max-by';
 
-export interface MasteredDegree {
+interface MasteredDegree {
   id: string;
   name: string;
   descriptionHtml: string;
   minimumCredits: number;
   published: boolean;
-  masteredDegreeGroups: { [groupId: string]: MasteredDegreeGroup };
+  masteredDegreeGroups: { [groupId: string]: MasteredDegreeGroup.Model };
 }
+export { MasteredDegree as Model };
 
 export function getNewDegreeGroupPosition(self: MasteredDegree, column: 1 | 2 | 3) {
   const { masteredDegreeGroups } = self;
@@ -22,7 +23,7 @@ export function getNewDegreeGroupPosition(self: MasteredDegree, column: 1 | 2 | 
 
 export function createNewGroup(self: MasteredDegree): MasteredDegree {
   const { masteredDegreeGroups } = self;
-  const newGroup: MasteredDegreeGroup = {
+  const newGroup: MasteredDegreeGroup.Model = {
     allowListIds: [],
     creditMaximum: 6,
     creditMinimum: 6,
@@ -44,7 +45,7 @@ export function createNewGroup(self: MasteredDegree): MasteredDegree {
 
 export function deleteGroup(
   self: MasteredDegree,
-  groupToDelete: MasteredDegreeGroup,
+  groupToDelete: MasteredDegreeGroup.Model,
 ): MasteredDegree {
   const { masteredDegreeGroups } = self;
 
@@ -56,7 +57,7 @@ export function deleteGroup(
         return newMasteredDegreeGroups;
       },
       {} as {
-        [groupId: string]: MasteredDegreeGroup;
+        [groupId: string]: MasteredDegreeGroup.Model;
       },
     );
 

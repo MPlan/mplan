@@ -1,20 +1,13 @@
-import {
-  Prerequisite,
-  PrerequisiteOverrides,
-  isStringPrerequisite,
-  isCoursePrerequisite,
-  isAndPrerequisite,
-  isOrPrerequisite,
-} from './prerequisite';
-import { Catalog } from './catalog';
-import { User } from './user';
-import { Degree, getAllCourses, degreeHasCourse } from './degree';
+import * as Prerequisite from './prerequisite';
+import * as Catalog from './catalog';
+import * as User from './user';
+import * as Degree from './degree';
 import { memoizeAll } from 'utilities/memoize-all';
 import { maxBy } from 'utilities/max-by';
 
 type PrerequisiteTuple = [Course | string, 'CONCURRENT' | 'PREVIOUS'];
 
-export interface Course {
+interface Course {
   id: string;
   name: string;
   subjectCode: string;
@@ -22,11 +15,12 @@ export interface Course {
   description?: string;
   creditHours?: number | [number, number];
   restrictions?: string[];
-  prerequisites?: Prerequisite;
+  prerequisites?: Prerequisite.Model;
   corequisites?: [string, string][];
   crossList?: [string, string][];
   lastUpdateDate: number;
 }
+export { Course as Model };
 
 export function isCourse(maybe: any): maybe is Course {
   if (!maybe) return false;
@@ -68,7 +62,7 @@ export function getCreditHoursString(self: Course) {
 }
 
 export const getPrerequisitesConsideringOverrides = memoizeAll(
-  (self: Course, user: User, prerequisiteOverrides: PrerequisiteOverrides) => {
+  (self: Course, user: User.Model, prerequisiteOverrides: Prerequisite.Overrides) => {
     const userPrerequisiteOverride = user.userPrerequisiteOverrides[getCatalogId(self)];
     if (userPrerequisiteOverride) return userPrerequisiteOverride;
 
@@ -86,25 +80,27 @@ export function getPriority(self: Course) {}
 export function getCriticalLevel(self: Course) {}
 
 export const getOptions = memoizeAll(
-  (self: Course, catalog: Catalog): Set<Set<PrerequisiteTuple>> => {
+  (self: Course, catalog: Catalog.Model): Set<Set<PrerequisiteTuple>> => {
     return disjunctiveNormalForm(self.prerequisites, catalog);
   },
 );
 
-export const getBestOption = memoizeAll((self: Course, degree: Degree, catalog: Catalog) => {
-  const bestOptionWithConcurrent = getBestOptionWithConcurrent(self, degree, catalog);
-  const bestOption = new Set<Course>();
-  for (const [course] of bestOptionWithConcurrent) {
-    if (typeof course === 'string') continue;
-    bestOption.add(course);
-  }
+export const getBestOption = memoizeAll(
+  (self: Course, degree: Degree.Model, catalog: Catalog.Model) => {
+    const bestOptionWithConcurrent = getBestOptionWithConcurrent(self, degree, catalog);
+    const bestOption = new Set<Course>();
+    for (const [course] of bestOptionWithConcurrent) {
+      if (typeof course === 'string') continue;
+      bestOption.add(course);
+    }
 
-  return bestOption;
-});
+    return bestOption;
+  },
+);
 
 export const getBestOptionWithConcurrent = memoizeAll(
-  (self: Course, degree: Degree, catalog: Catalog): Set<PrerequisiteTuple> => {
-    const coursesInDegree = getAllCourses(degree, catalog);
+  (self: Course, degree: Degree.Model, catalog: Catalog.Model): Set<PrerequisiteTuple> => {
+    const coursesInDegree = Degree.getAllCourses(degree, catalog);
     const options = getOptions(self, catalog);
 
     const bestOptionMapping = Array.from(options.values()).map(option => {
@@ -120,7 +116,7 @@ export const getBestOptionWithConcurrent = memoizeAll(
           if (typeof course === 'string') return new Set<Course>();
 
           const intersection = new Set<Course>();
-          if (degreeHasCourse(degree, course, catalog)) {
+          if (Degree.hasCourse(degree, course, catalog)) {
             intersection.add(course);
           }
 
@@ -174,7 +170,7 @@ export const getBestOptionWithConcurrent = memoizeAll(
 export function getIntersection(self: Course) {}
 
 export const getFullClosure = memoizeAll(
-  (self: Course, catalog: Catalog): Set<Course> => {
+  (self: Course, catalog: Catalog.Model): Set<Course> => {
     const fullClosure = new Set<Course>();
     const options = getOptions(self, catalog);
 
@@ -194,7 +190,7 @@ export const getFullClosure = memoizeAll(
 );
 
 export const getDepth = memoizeAll(
-  (self: Course, catalog: Catalog, degree: Degree): number => {
+  (self: Course, catalog: Catalog.Model, degree: Degree.Model): number => {
     const bestOption = getBestOptionWithConcurrent(self, degree, catalog);
 
     let maxDepth = 0;
@@ -211,7 +207,7 @@ export const getDepth = memoizeAll(
   },
 );
 
-export function getMinDepth(self: Course, catalog: Catalog): number {
+export function getMinDepth(self: Course, catalog: Catalog.Model): number {
   const options = getOptions(self, catalog);
   if (options.size <= 0) return 1;
 
@@ -237,7 +233,11 @@ export function getMinDepth(self: Course, catalog: Catalog): number {
   return minDepthOfAllOptions + 1;
 }
 
-export function getClosureFromCourse(self: Course, catalog: Catalog, degree: Degree): Set<Course> {
+export function getClosureFromCourse(
+  self: Course,
+  catalog: Catalog.Model,
+  degree: Degree.Model,
+): Set<Course> {
   const coursesInClosure = new Set<Course>();
 
   const bestOption = getBestOption(self, degree, catalog);
@@ -253,23 +253,23 @@ export function getClosureFromCourse(self: Course, catalog: Catalog, degree: Deg
 
 export function getPrerequisiteContainsConcurrent(
   self: Course,
-  user: User,
-  prerequisiteOverrides: PrerequisiteOverrides,
+  user: User.Model,
+  prerequisiteOverrides: Prerequisite.Overrides,
 ) {
   const prerequisites = getPrerequisitesConsideringOverrides(self, user, prerequisiteOverrides);
   return _getPrerequisiteContainsConcurrent(prerequisites);
 }
 
-function _getPrerequisiteContainsConcurrent(prerequisite: Prerequisite): boolean {
+function _getPrerequisiteContainsConcurrent(prerequisite: Prerequisite.Model): boolean {
   if (!prerequisite) return false;
-  if (isStringPrerequisite(prerequisite)) return false;
-  if (isCoursePrerequisite(prerequisite)) {
+  if (Prerequisite.isStringPrerequisite(prerequisite)) return false;
+  if (Prerequisite.isCoursePrerequisite(prerequisite)) {
     if (prerequisite[2] === 'CONCURRENT') return true;
   }
 
-  const operands = isAndPrerequisite(prerequisite)
+  const operands = Prerequisite.isAndPrerequisite(prerequisite)
     ? prerequisite.and
-    : isOrPrerequisite(prerequisite)
+    : Prerequisite.isOrPrerequisite(prerequisite)
       ? prerequisite.or
       : [];
 
@@ -280,18 +280,18 @@ function _getPrerequisiteContainsConcurrent(prerequisite: Prerequisite): boolean
 export function getPrerequisiteSatisfied(self: Course) {}
 
 export function disjunctiveNormalForm(
-  prerequisite: Prerequisite,
+  prerequisite: Prerequisite.Model,
   catalog: { [catalogId: string]: Course },
 ): Set<Set<PrerequisiteTuple>> {
   if (!prerequisite) return new Set<Set<PrerequisiteTuple>>();
 
-  if (isStringPrerequisite(prerequisite)) {
+  if (Prerequisite.isStringPrerequisite(prerequisite)) {
     return new Set<Set<PrerequisiteTuple>>().add(
       new Set<PrerequisiteTuple>().add([prerequisite, 'PREVIOUS']),
     );
   }
 
-  if (isCoursePrerequisite(prerequisite)) {
+  if (Prerequisite.isCoursePrerequisite(prerequisite)) {
     const [subjectCode, courseNumber, previousOrConcurrent] = prerequisite;
     const catalogId = makeCatalogId(subjectCode, courseNumber);
     const course = catalog[catalogId];
@@ -309,13 +309,13 @@ export function disjunctiveNormalForm(
     );
   }
 
-  if (isAndPrerequisite(prerequisite)) {
+  if (Prerequisite.isAndPrerequisite(prerequisite)) {
     return allCombinations(
       prerequisite.and.map(subPrerequisite => disjunctiveNormalForm(subPrerequisite, catalog)),
     );
   }
 
-  if (isOrPrerequisite(prerequisite)) {
+  if (Prerequisite.isOrPrerequisite(prerequisite)) {
     return prerequisite.or
       .map(subPrerequisite => disjunctiveNormalForm(subPrerequisite, catalog))
       .reduce((combinedSetsOfSets, disjunct) =>

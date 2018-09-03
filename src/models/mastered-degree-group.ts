@@ -1,7 +1,7 @@
-import { Course } from './course';
-import { Catalog } from './catalog';
+import * as Course from './course';
+import * as Catalog from './catalog';
 
-export interface MasteredDegreeGroup {
+interface MasteredDegreeGroup {
   id: string;
   name: string;
   descriptionHtml: string;
@@ -12,20 +12,21 @@ export interface MasteredDegreeGroup {
   position: number;
   column: 1 | 2 | 3;
 }
+export { MasteredDegreeGroup as Model };
 
-export function getDefaultCourses(self: MasteredDegreeGroup, catalog: Catalog) {
+export function getDefaultCourses(self: MasteredDegreeGroup, catalog: Catalog.Model) {
   const { defaultIds } = self;
 
   return defaultIds.map(id => catalog[id]);
 }
 
-export function getAllowedCourses(self: MasteredDegreeGroup, catalog: Catalog) {
+export function getAllowedCourses(self: MasteredDegreeGroup, catalog: Catalog.Model) {
   const { allowListIds } = self;
 
   return allowListIds.map(id => catalog[id]);
 }
 
-export function addToDefaults(self: MasteredDegreeGroup, courseToAdd: Course) {
+export function addToDefaults(self: MasteredDegreeGroup, courseToAdd: Course.Model) {
   const { defaultIds } = self;
 
   const newDefaultIds = [...defaultIds.filter(id => id !== courseToAdd.id), courseToAdd.id];
@@ -37,7 +38,7 @@ export function addToDefaults(self: MasteredDegreeGroup, courseToAdd: Course) {
   return newSelf;
 }
 
-export function deleteFromDefaults(self: MasteredDegreeGroup, courseToDelete: Course) {
+export function deleteFromDefaults(self: MasteredDegreeGroup, courseToDelete: Course.Model) {
   const { defaultIds } = self;
 
   const newDefaultIds = defaultIds.filter(id => id !== courseToDelete.id);
@@ -49,7 +50,7 @@ export function deleteFromDefaults(self: MasteredDegreeGroup, courseToDelete: Co
   return newSelf;
 }
 
-export function adddToAllowList(self: MasteredDegreeGroup, courseToAdd: Course) {
+export function adddToAllowList(self: MasteredDegreeGroup, courseToAdd: Course.Model) {
   const { allowListIds } = self;
 
   const newAllowListIds = [...allowListIds.filter(id => id !== courseToAdd.id), courseToAdd.id];
@@ -61,7 +62,7 @@ export function adddToAllowList(self: MasteredDegreeGroup, courseToAdd: Course) 
   return newSelf;
 }
 
-export function deleteFromAllowList(self: MasteredDegreeGroup, courseToDelete: Course) {
+export function deleteFromAllowList(self: MasteredDegreeGroup, courseToDelete: Course.Model) {
   const { allowListIds } = self;
 
   const newAllowListIds = allowListIds.filter(id => id !== courseToDelete.id);

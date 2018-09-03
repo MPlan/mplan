@@ -1,12 +1,15 @@
-import { MasteredDegrees } from './mastered-degrees';
-import { User } from './user';
-import { Prerequisite } from './prerequisite';
-import { Catalog } from './catalog';
+import * as MasteredDegrees from './mastered-degrees';
+import * as User from './user';
+import * as Prerequisite from './prerequisite';
+import * as Catalog from './catalog';
 
-export interface App {
-  catalog: Catalog;
-  user: User | undefined;
-  masteredDegrees: MasteredDegrees;
+interface App {
+  catalog: Catalog.Model;
+  user: User.Model | undefined;
+  masteredDegrees: MasteredDegrees.Model;
   admins: string[];
-  prerequisiteOverrides: { [courseKey: string]: Prerequisite };
+  prerequisiteOverrides: { [courseKey: string]: Prerequisite.Model };
+  loaded: boolean;
 }
+
+export { App as Model };

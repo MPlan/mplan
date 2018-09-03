@@ -1,44 +1,47 @@
-import { MasteredDegrees, getMasteredDegree as _getMasteredDegree } from './mastered-degrees';
-import { DegreeGroup, getCourses } from './degree-group';
+import * as MasteredDegrees from './mastered-degrees';
+import * as DegreeGroup from './degree-group';
+import * as Catalog from './catalog';
+import * as Course from './course';
 import { flatten } from 'lodash';
-import { Course, getCatalogId } from './course';
 import { memoizeLast } from 'utilities/memoize-last';
-import { Catalog } from './catalog';
 import { ObjectId } from 'utilities/object-id';
 import { maxBy } from 'utilities/max-by';
 
-export interface Degree {
+interface Degree {
   masteredDegreeId?: string;
-  degreeGroupData: { [degreeGroupId: string]: DegreeGroup };
+  degreeGroupData: { [degreeGroupId: string]: DegreeGroup.Model };
 }
+export { Degree as Model };
 
-export function degreeHasCourse(self: Degree, course: Course, catalog: Catalog) {
+export function hasCourse(self: Degree, course: Course.Model, catalog: Catalog.Model) {
   const allCourses = getAllCourses(self, catalog);
-  const courseCatalogId = getCatalogId(course);
-  return !!Array.from(allCourses.values()).find(course => getCatalogId(course) === courseCatalogId);
+  const courseCatalogId = Course.getCatalogId(course);
+  return !!Array.from(allCourses.values()).find(
+    course => Course.getCatalogId(course) === courseCatalogId,
+  );
 }
 
-export function getMasteredDegree(self: Degree, masteredDegrees: MasteredDegrees) {
+export function getMasteredDegree(self: Degree, masteredDegrees: MasteredDegrees.Model) {
   const { masteredDegreeId } = self;
   if (!masteredDegreeId) return undefined;
-  return _getMasteredDegree(masteredDegrees, masteredDegreeId);
+  return MasteredDegrees.getMasteredDegree(masteredDegrees, masteredDegreeId);
 }
 
-export function getDegreeName(self: Degree, masteredDegrees: MasteredDegrees) {
+export function getDegreeName(self: Degree, masteredDegrees: MasteredDegrees.Model) {
   const masteredDegree = getMasteredDegree(self, masteredDegrees);
 
   if (masteredDegree) return masteredDegree.name;
   return '';
 }
 
-export const getAllCourses = memoizeLast((self: Degree, catalog: Catalog) => {
+export const getAllCourses = memoizeLast((self: Degree, catalog: Catalog.Model) => {
   const { degreeGroupData } = self;
 
   const courseArr = flatten(
-    Object.values(degreeGroupData).map(degreeGroup => getCourses(degreeGroup, catalog)),
+    Object.values(degreeGroupData).map(degreeGroup => DegreeGroup.getCourses(degreeGroup, catalog)),
   );
 
-  const courses = new Set<Course>();
+  const courses = new Set<Course.Model>();
   for (const course of courseArr) {
     courses.add(course);
   }
@@ -55,7 +58,7 @@ export function getPercentComplete(self: Degree) {}
 export function addNewDegreeGroup(self: Degree): Degree {
   const lastGroup = maxBy(Object.values(self.degreeGroupData), group => group.position);
   const position = lastGroup.position;
-  const newDegreeGroup: DegreeGroup = {
+  const newDegreeGroup: DegreeGroup.Model = {
     completedCourseIds: {},
     courseIds: [],
     id: ObjectId(),
@@ -79,7 +82,7 @@ export function deleteDegreeGroup(self: Degree, degreeGroupIdToDelete: string): 
         degreeGroupData[degreeGroupId] = degreeGroup;
         return degreeGroupData;
       },
-      {} as { [catalogId: string]: DegreeGroup },
+      {} as { [catalogId: string]: DegreeGroup.Model },
     );
 
   return {
@@ -91,7 +94,7 @@ export function deleteDegreeGroup(self: Degree, degreeGroupIdToDelete: string): 
 export function updateDegreeGroup(
   self: Degree,
   degreeGroupIdToUpdate: string,
-  update: (degreeGroup: DegreeGroup) => DegreeGroup,
+  update: (degreeGroup: DegreeGroup.Model) => DegreeGroup.Model,
 ): Degree {
   const degreeGroupToUpdate = self.degreeGroupData[degreeGroupIdToUpdate];
   if (!degreeGroupIdToUpdate) return self;

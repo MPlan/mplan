@@ -1,10 +1,11 @@
-import { store } from './store';
-import { Course } from './course';
+import * as Course from './course';
+import * as Catalog from './catalog';
 
-export interface Semester {
+interface Semester {
   id: string;
   courseIds: string[];
 }
+export { Semester as Model };
 
 export function getSeason(self: Semester) {
   // const plan = store.current
@@ -35,16 +36,15 @@ export function getCourseCount(self: Semester) {
   return self.courseIds.length;
 }
 
-export function getCourses(self: Semester) {
-  const { catalog } = store.current;
+export function getCourses(self: Semester, catalog: Catalog.Model) {
   const { courseIds } = self;
 
   return courseIds.map(courseId => catalog[courseId]);
 }
 
 // TODO: this should use the credit hours pickers eventually
-export function getTotalCredits(self: Semester) {
-  const courses = getCourses(self);
+export function getTotalCredits(self: Semester, catalog: Catalog.Model) {
+  const courses = getCourses(self, catalog);
 
   return courses
     .map(
@@ -54,7 +54,7 @@ export function getTotalCredits(self: Semester) {
     .reduce((sum, next) => sum + next, 0);
 }
 
-export function addCourse(self: Semester, courseToAdd: Course): Semester {
+export function addCourse(self: Semester, courseToAdd: Course.Model): Semester {
   const { courseIds } = self;
 
   const newCourseIds = [
@@ -68,7 +68,7 @@ export function addCourse(self: Semester, courseToAdd: Course): Semester {
   };
 }
 
-export function deleteCourse(self: Semester, courseToDelete: Course): Semester {
+export function deleteCourse(self: Semester, courseToDelete: Course.Model): Semester {
   const { courseIds } = self;
 
   return {

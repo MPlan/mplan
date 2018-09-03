@@ -1,11 +1,12 @@
-export type Prerequisite =
+type Prerequisite =
   | { and: Prerequisite[] }
   | { or: Prerequisite[] }
   | [string, string, 'CONCURRENT' | 'PREVIOUS']
   | string
   | undefined;
+export { Prerequisite as Model };
 
-export type PrerequisiteOverrides = { [courseKey: string]: Prerequisite };
+export type Overrides = { [courseKey: string]: Prerequisite };
 
 export function isAndPrerequisite(
   prerequisite: Prerequisite,

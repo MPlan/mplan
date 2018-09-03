@@ -1,9 +1,9 @@
-import { Degree, getMasteredDegree } from './degree';
-import { Course } from './course';
-import { MasteredDegrees } from './mastered-degrees';
-import { Catalog } from './catalog';
+import * as Degree from './degree';
+import * as Course from './course';
+import * as MasteredDegrees from './mastered-degrees';
+import * as Catalog from './catalog';
 
-export interface DegreeGroup {
+interface DegreeGroup {
   id: string;
   masteredDegreeGroupId?: string;
   customName?: string;
@@ -11,16 +11,17 @@ export interface DegreeGroup {
   completedCourseIds: { [catalogId: string]: true };
   position: number;
 }
+export { DegreeGroup as Model };
 
 export function getMasteredDegreeGroup(
   self: DegreeGroup,
-  degree: Degree,
-  masteredDegrees: MasteredDegrees,
+  degree: Degree.Model,
+  masteredDegrees: MasteredDegrees.Model,
 ) {
   const { masteredDegreeGroupId } = self;
   if (!masteredDegreeGroupId) return undefined;
 
-  const masteredDegree = getMasteredDegree(degree, masteredDegrees);
+  const masteredDegree = Degree.getMasteredDegree(degree, masteredDegrees);
   if (!masteredDegree) return undefined;
 
   const masteredDegreeGroup = masteredDegree.masteredDegreeGroups[masteredDegreeGroupId];
@@ -29,7 +30,11 @@ export function getMasteredDegreeGroup(
   return masteredDegreeGroup;
 }
 
-export function getDegreeGroupName(self: DegreeGroup, degree: Degree, masteredDegrees: MasteredDegrees) {
+export function getDegreeGroupName(
+  self: DegreeGroup,
+  degree: Degree.Model,
+  masteredDegrees: MasteredDegrees.Model,
+) {
   const masteredDegreeGroup = getMasteredDegreeGroup(self, degree, masteredDegrees);
   if (!masteredDegreeGroup) return 'Custom Group';
   return masteredDegreeGroup.name;
@@ -37,8 +42,8 @@ export function getDegreeGroupName(self: DegreeGroup, degree: Degree, masteredDe
 
 export function getDescriptionHtml(
   self: DegreeGroup,
-  degree: Degree,
-  masteredDegrees: MasteredDegrees,
+  degree: Degree.Model,
+  masteredDegrees: MasteredDegrees.Model,
 ) {
   const masteredDegreeGroup = getMasteredDegreeGroup(self, degree, masteredDegrees);
   // Description html should always say this for  custom group. custom group don't have mastered
@@ -47,18 +52,18 @@ export function getDescriptionHtml(
   return masteredDegreeGroup.name;
 }
 
-export function getCourses(self: DegreeGroup, catalog: Catalog) {
+export function getCourses(self: DegreeGroup, catalog: Catalog.Model) {
   const { courseIds } = self;
 
   return courseIds.map(courseId => catalog[courseId]);
 }
 
-export function hasCourse(self: DegreeGroup, course: Course) {
+export function hasCourse(self: DegreeGroup, course: Course.Model) {
   const { courseIds } = self;
   return courseIds.includes(course.id);
 }
 
-export function addCourse(self: DegreeGroup, courseToAdd: Course): DegreeGroup {
+export function addCourse(self: DegreeGroup, courseToAdd: Course.Model): DegreeGroup {
   const { courseIds } = self;
   const newCourseIds = [...courseIds.filter(id => id !== courseToAdd.id), courseToAdd.id];
 
@@ -68,7 +73,7 @@ export function addCourse(self: DegreeGroup, courseToAdd: Course): DegreeGroup {
   };
 }
 
-export function deleteCourse(self: DegreeGroup, courseToDelete: Course): DegreeGroup {
+export function deleteCourse(self: DegreeGroup, courseToDelete: Course.Model): DegreeGroup {
   const { courseIds } = self;
   const newCourseIds = courseIds.filter(id => id !== courseToDelete.id);
 
@@ -78,7 +83,7 @@ export function deleteCourse(self: DegreeGroup, courseToDelete: Course): DegreeG
   };
 }
 
-export function toggleCourseCompletion(self: DegreeGroup, courseToToggle: Course) {
+export function toggleCourseCompletion(self: DegreeGroup, courseToToggle: Course.Model) {
   if (hasCourse(self, courseToToggle)) return deleteCourse(self, courseToToggle);
   return addCourse(self, courseToToggle);
 }

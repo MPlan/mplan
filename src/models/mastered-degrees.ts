@@ -1,9 +1,10 @@
-import { MasteredDegree } from './mastered-degree';
+import * as MasteredDegree from './mastered-degree';
 
-export interface MasteredDegrees {
-  [masteredDegreeId: string]: MasteredDegree;
+interface MasteredDegrees {
+  [masteredDegreeId: string]: MasteredDegree.Model;
 }
+export { MasteredDegrees as Model };
 
 export function getMasteredDegree(self: MasteredDegrees, masteredDegreeId: string) {
-  return self[masteredDegreeId] as MasteredDegree | undefined;
+  return self[masteredDegreeId] as MasteredDegree.Model | undefined;
 }
