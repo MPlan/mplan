@@ -8,6 +8,6 @@ interface DegreeEditorProps {
 
 export class DegreeEditor extends React.PureComponent<DegreeEditorProps, {}> {
   render() {
-    return <Page title="Degree Editor" subtitle="Edit degrees here" />;
+    return <Page title="Degree Editor" subtitle="Edit degrees here">test</Page>;
   }
 }

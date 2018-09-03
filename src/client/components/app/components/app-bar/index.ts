@@ -1,9 +1,13 @@
 import * as Model from 'models';
 import { AppBar } from './app-bar';
+import { get } from 'utilities/get';
 
 const Container = Model.store.connect({
   mapStateToProps: state => ({
-    username: '',
+    username:
+      process.env.NODE_ENV !== 'production'
+        ? 'Local Test User'
+        : get(state, _ => _.user.username, ''),
     saving: false,
   }),
   mapDispatchToProps: state => ({}),

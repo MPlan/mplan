@@ -1,8 +1,12 @@
 import * as express from 'express';
-export const auth = express.Router();
+import * as Model from '../models';
+import * as jwtDecode from 'jwt-decode';
 import * as HttpStatus from 'http-status';
 import axios from 'axios';
 import { encode, getOrThrow } from '../utilities/utilities';
+import { dbConnection } from './models/mongo';
+import { ObjectId } from 'utilities/object-id';
+export const auth = express.Router();
 
 const tokenUri = getOrThrow(process.env.TOKEN_URI);
 const clientId = getOrThrow(process.env.CLIENT_ID);
@@ -36,16 +40,42 @@ auth.post('/token', async (req, res) => {
   if (!code) return res.sendStatus(HttpStatus.BAD_REQUEST);
   if (!redirectUri) return res.sendStatus(HttpStatus.BAD_REQUEST);
 
-  try {
-    const tokenResponse = await exchangeForToken(code, redirectUri);
-    res.json({
-      id_token: tokenResponse.id_token,
-      refresh_token: tokenResponse.refresh_token,
-      access_token: tokenResponse.access_token
-    });
-  } catch (e) {
-    console.error(e);
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR);
-    res.send('Could not exchange code for token');
+  const tokenResponse = await exchangeForToken(code, redirectUri);
+  const decoded = jwtDecode(tokenResponse.access_token) as Model.AccessTokenPayload;
+  const username = decoded.sub;
+
+  const { users } = await dbConnection;
+  const user = await users.findOne({ username });
+
+  if (!user) {
+    const id = ObjectId();
+    const newUser: Model.User.Model & { _id: any } = {
+      _id: id,
+      id: id,
+      chosenDegree: false,
+      degree: {
+        degreeGroupData: {},
+        masteredDegreeId: undefined,
+      },
+      isAdmin: false,
+      lastLoginDate: Date.now(),
+      lastUpdateDate: Date.now(),
+      plan: {
+        anchorSeason: 'fall',
+        anchorYear: new Date().getFullYear(),
+        semesters: [],
+      },
+      registerDate: Date.now(),
+      username,
+      userPrerequisiteOverrides: {},
+    };
+
+    await users.insertOne(newUser);
   }
+
+  res.json({
+    id_token: tokenResponse.id_token,
+    refresh_token: tokenResponse.refresh_token,
+    access_token: tokenResponse.access_token,
+  });
 });

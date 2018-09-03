@@ -16,6 +16,7 @@
     "sync-sections": "NODE_PATH=./src ts-node ./src/sync/scripts/sync-sections",
     "update-courses-from-sections": "NODE_PATH=./src ts-node ./src/sync/scripts/update-courses-from-sections",
     "update-cross-list": "NODE_PATH=./src ts-node ./src/sync/scripts/update-cross-list",
+    "create-user": "NODE_PATH=./src ts-node ./src/sync/scripts/create-user",
     "sloc": "sloc --exclude \"(.html|mplan.js)$\" ./src"
   },
   "private": true,

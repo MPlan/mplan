@@ -1,7 +1,7 @@
-import { history } from 'client/history';
 import * as jwtDecode from 'jwt-decode';
+import * as Model from 'models';
+import { history } from 'client/history';
 import { encode } from '../utilities/utilities';
-import { AccessTokenPayload } from '../models/token';
 import { wait } from 'utilities/utilities';
 
 const authorizeUrl = 'https://shibboleth.umich.edu/idp/profile/oidc/authorize';
@@ -28,16 +28,12 @@ function loggedIn() {
   if (process.env.NODE_ENV !== 'production') return true;
 
   const accessToken = localStorage.getItem('accessToken');
-  if (!accessToken) {
-    return false;
-  }
-  const decoded = jwtDecode(accessToken) as AccessTokenPayload;
-  if (!decoded) {
-    return false;
-  }
-  if (new Date().getTime() >= decoded.exp * 1000) {
-    return false;
-  }
+  if (!accessToken) return false;
+
+  const decoded = jwtDecode(accessToken) as Model.AccessTokenPayload;
+  if (!decoded) return false;
+
+  if (new Date().getTime() >= decoded.exp * 1000) return false;
   return true;
 }
 
@@ -45,13 +41,11 @@ function userDisplayName() {
   if (process.env.NODE_ENV !== 'production') return 'Local Test User';
 
   const accessToken = localStorage.getItem('accessToken');
-  if (!accessToken) {
-    return undefined;
-  }
+  if (!accessToken) return undefined;
+
   const decoded = jwtDecode(accessToken) as any;
-  if (!decoded) {
-    return undefined;
-  }
+  if (!decoded) return undefined;
+
   return decoded.sub || undefined;
 }
 
@@ -59,13 +53,11 @@ function username() {
   if (process.env.NODE_ENV !== 'production') return process.env.TEST_USERNAME;
 
   const accessToken = localStorage.getItem('accessToken');
-  if (!accessToken) {
-    return undefined;
-  }
-  const decoded = jwtDecode(accessToken) as AccessTokenPayload;
-  if (!decoded) {
-    return undefined;
-  }
+  if (!accessToken) return undefined;
+
+  const decoded = jwtDecode(accessToken) as Model.AccessTokenPayload;
+  if (!decoded) return undefined;
+
   return decoded.sub || undefined;
 }
 

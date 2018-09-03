@@ -14,4 +14,5 @@ interface User {
   isAdmin: boolean;
   userPrerequisiteOverrides: { [catalogId: string]: Prerequisite.Model };
 }
+
 export { User as Model };
