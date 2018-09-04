@@ -103,7 +103,7 @@ export class ActionMenu<T extends { [key: string]: MenuItem }> extends React.Pur
           </Actions>
           <ButtonRow>
             <PrimaryButton onClick={this.handleToggleOpen}>
-              {open ? <ButtonFa icon="angleUp" /> : <ButtonFa icon="angleDown" />}
+              {open ? <ButtonFa icon="check" /> : <ButtonFa icon="angleDown" />}
               {open ? 'Done' : 'Actions Menu'}
             </PrimaryButton>
           </ButtonRow>
