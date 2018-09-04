@@ -2,12 +2,18 @@ import * as React from 'react';
 import * as Model from 'models';
 import * as styles from 'styles';
 import styled from 'styled-components';
+import { searchList } from 'utilities/search-list';
 
 import { View } from 'components/view';
 import { Card } from 'components/card';
-import { Fa } from 'components/fa';
+import { Input } from 'components/input';
+import { NoResults } from 'components/no-results';
 
 import { DegreeListItem } from './degree-list-item';
+
+const Search = styled(Input)`
+  margin-bottom: ${styles.space(0)};
+`;
 
 const Root = styled(Card)`
   flex: 1 1 auto;
@@ -16,10 +22,6 @@ const Root = styled(Card)`
 `;
 const SearchRow = styled(View)`
   flex-direction: row;
-`;
-const Search = styled.input`
-  font-family: ${styles.fontFamily};
-  flex: 1 1 auto;
 `;
 const List = styled(View)`
   flex: 1 1 auto;
@@ -41,24 +43,39 @@ export class DegreeList extends React.PureComponent<DegreeListProps, DegreeListS
     };
   }
 
+  filteredMasteredDegrees() {
+    return searchList(
+      this.props.masteredDegrees,
+      masteredDegree => masteredDegree.name,
+      this.state.search,
+    );
+  }
+
   handleDegreeClick = (masteredDegreeId: string) => {};
+  handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const search = e.currentTarget.value;
+    this.setState({ search });
+  };
 
   render() {
-    const { masteredDegrees } = this.props;
+    const masteredDegrees = this.filteredMasteredDegrees();
+    const shouldShowNoResults = masteredDegrees.length <= 0;
+
     return (
       <Root>
-        <SearchRow>
-          <Search />
-          <Fa icon="search" />
-        </SearchRow>
+        <Search placeholder="Search for a degree..." onChange={this.handleSearch} />
         <List>
-          {masteredDegrees.map(masteredDegree => (
-            <DegreeListItem
-              key={masteredDegree.id}
-              masteredDegree={masteredDegree}
-              onClick={() => this.handleDegreeClick(masteredDegree.id)}
-            />
-          ))}
+          {shouldShowNoResults ? (
+            <NoResults query={this.state.search} />
+          ) : (
+            masteredDegrees.map(masteredDegree => (
+              <DegreeListItem
+                key={masteredDegree.id}
+                masteredDegree={masteredDegree}
+                onClick={() => this.handleDegreeClick(masteredDegree.id)}
+              />
+            ))
+          )}
         </List>
       </Root>
     );

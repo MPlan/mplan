@@ -1,11 +1,15 @@
-import { ObjectId } from 'utilities/object-id';
 import * as MasteredDegree from './mastered-degree';
 import { maxBy } from 'utilities/max-by';
+import { memoizeLast } from 'utilities/memoize-last';
 
 interface MasteredDegrees {
   [masteredDegreeId: string]: MasteredDegree.Model;
 }
 export { MasteredDegrees as Model };
+
+export const getAsArray = memoizeLast((self: MasteredDegrees) => {
+  return Object.values(self).sort((a, b) => a.position - b.position);
+});
 
 export function getMasteredDegree(self: MasteredDegrees, masteredDegreeId: string) {
   return self[masteredDegreeId] as MasteredDegree.Model | undefined;
