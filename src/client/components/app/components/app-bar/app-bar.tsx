@@ -6,6 +6,7 @@ import { Text } from 'components/text';
 import { Fa } from 'components/fa';
 
 const Root = styled(View)`
+  flex: 0 0 auto;
   padding: ${styles.space(0)};
   flex-direction: row;
   background-color: ${styles.white};

@@ -11,22 +11,21 @@ import { NoResults } from 'components/no-results';
 
 import { DegreeListItem } from './degree-list-item';
 
-const Search = styled(Input)`
-  margin-bottom: ${styles.space(0)};
-`;
-
 const Root = styled(Card)`
   flex: 1 1 auto;
   margin: 0 ${styles.space(1)};
   margin-bottom: ${styles.space(0)};
+  overflow: hidden;
 `;
-const SearchRow = styled(View)`
-  flex-direction: row;
+const Search = styled(Input)`
+  margin: 0 ${styles.space(0)};
+  margin-bottom: ${styles.space(0)};
 `;
 const List = styled(View)`
   flex: 1 1 auto;
   overflow: auto;
 `;
+
 interface DegreeListProps {
   masteredDegrees: Model.MasteredDegree.Model[];
 }

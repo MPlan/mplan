@@ -6,6 +6,7 @@ import { Text } from 'components/text';
 
 const Container = styled(View)`
   flex: 1 1 auto;
+  overflow: hidden;
 `;
 const TitleRow = styled(View)`
   flex-direction: row;
@@ -31,6 +32,7 @@ interface BodyProps extends ViewProps {
 }
 const Body = styled<BodyProps>(View)`
   flex: 1 1 auto;
+  overflow: hidden;
   ${props => (props.addPadding ? `padding: 0 ${styles.space(1)};` : '')};
 `;
 

@@ -64,7 +64,8 @@ function NavButton(props: NavButtonProps) {
   );
 }
 
-const NavContainer = styled(View)`
+const Root = styled(View)`
+  flex: 0 0 auto;
   width: 5rem;
   min-width: 5rem;
   background-color: ${styles.deepCove};
@@ -76,7 +77,7 @@ export class Nav extends React.PureComponent<NavProps, {}> {
   render() {
     const { isAdmin, routes, bottomRoutes } = this.props;
     return (
-      <NavContainer>
+      <Root>
         {routes
           .filter(route => {
             if (isAdmin) return true;
@@ -94,7 +95,7 @@ export class Nav extends React.PureComponent<NavProps, {}> {
           .map(route => (
             <NavButton key={route.path} to={route.path} name={route.name} icon={route.icon} />
           ))}
-      </NavContainer>
+      </Root>
     );
   }
 }

@@ -9,10 +9,12 @@ import { Route, Switch } from 'react-router';
 
 const Root = styled(View)`
   flex: 1 1 auto;
+  overflow: hidden;
 `;
 const Body = styled(View)`
   flex-direction: row;
   flex: 1 1 auto;
+  overflow: hidden;
 `;
 const Content = styled(View)`
   flex: 1 1 auto;
