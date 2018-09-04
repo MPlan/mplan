@@ -40,6 +40,7 @@ export class InlineEdit extends React.Component<InlineEditProps, {}> {
     if (!inputElement) return;
     if (inputElement === this.inputElement) return;
     inputElement.focus();
+    inputElement.select();
     this.inputElement = inputElement;
   }
 
