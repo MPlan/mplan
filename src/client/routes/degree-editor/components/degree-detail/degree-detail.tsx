@@ -15,6 +15,8 @@ import { ActionMenu } from 'components/action-menu';
 import { InlineEdit } from 'components/inline-edit';
 import { RightClickMenu } from 'components/right-click-menu';
 
+import { PublishUnpublish } from './components/publish-unpublish';
+
 const Root = styled(View)`
   flex: 1 1 auto;
   flex-direction: row;
@@ -53,6 +55,7 @@ const ArrowLeft = styled(Fa)`
 const TitleRow = styled(View)`
   flex-direction: row;
   align-items: flex-end;
+  margin-bottom: ${styles.space(0)};
 `;
 const Title = styled(Text)`
   color: ${styles.textLight};
@@ -164,6 +167,7 @@ export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetai
                 </TitleRow>
               )}
             </RightClickMenu>
+            <PublishUnpublish />
           </Content>
         </Body>
       </Root>
