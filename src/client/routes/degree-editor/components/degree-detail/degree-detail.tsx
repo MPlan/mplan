@@ -13,6 +13,7 @@ import { Divider } from 'components/divider';
 import { DropdownMenu } from 'components/dropdown-menu';
 import { ActionMenu } from 'components/action-menu';
 import { InlineEdit } from 'components/inline-edit';
+import { RightClickMenu } from 'components/right-click-menu';
 
 const Root = styled(View)`
   flex: 1 1 auto;
@@ -113,12 +114,19 @@ export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetai
     this.props.onEditDegreeName(value);
   };
 
+  handleActions = (key: 'rename') => {
+    if (key === 'rename') {
+      this.handleDegreeNameEdit();
+      return;
+    }
+  };
+
   render() {
     const { onBackClick, masteredDegree } = this.props;
     const { editingDegreeName } = this.state;
     return (
       <Root>
-        <ActionMenu actions={this.degreeDropdownAction} onAction={() => {}} />
+        <ActionMenu actions={this.degreeDropdownAction} onAction={this.handleActions} />
         <Sidebar>
           <BackToDegreeButton onClick={onBackClick}>
             <ArrowLeft icon="angleLeft" />
@@ -130,24 +138,32 @@ export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetai
         </Sidebar>
         <Body>
           <Content>
-            <TitleRow>
-              <InlineEdit
-                value={masteredDegree.name}
-                renderDisplay={props => <Title {...props} />}
-                renderInput={props => (
-                  <TitleInput {...props} onChange={this.handleDegreeNameChange} />
-                )}
-                editing={editingDegreeName}
-                onBlur={this.handleDegreeNameBlur}
-                onEdit={this.handleDegreeNameEdit}
-              />
-              <VerticalBar />
-              <DropdownMenu
-                header={masteredDegree.name}
-                actions={this.degreeDropdownAction}
-                onAction={() => {}}
-              />
-            </TitleRow>
+            <RightClickMenu
+              header={masteredDegree.name}
+              actions={this.degreeDropdownAction}
+              onAction={this.handleActions}
+            >
+              {props => (
+                <TitleRow {...props}>
+                  <InlineEdit
+                    value={masteredDegree.name}
+                    renderDisplay={props => <Title {...props} />}
+                    renderInput={props => (
+                      <TitleInput {...props} onChange={this.handleDegreeNameChange} />
+                    )}
+                    editing={editingDegreeName}
+                    onBlur={this.handleDegreeNameBlur}
+                    onEdit={this.handleDegreeNameEdit}
+                  />
+                  <VerticalBar />
+                  <DropdownMenu
+                    header={masteredDegree.name}
+                    actions={this.degreeDropdownAction}
+                    onAction={this.handleActions}
+                  />
+                </TitleRow>
+              )}
+            </RightClickMenu>
           </Content>
         </Body>
       </Root>

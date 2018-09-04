@@ -1,11 +1,13 @@
 import * as React from 'react';
-import { View } from './view';
-import { Text } from './text';
+import * as styles from 'styles';
 import styled from 'styled-components';
-import { Fa } from './fa';
-import * as styles from '../styles';
-import { Dropdown } from './dropdown';
-import { MenuItem } from './menu-item';
+
+import { View } from 'components/view';
+import { Text } from 'components/text';
+import { Fa } from 'components/fa';
+import { Dropdown } from 'components/dropdown';
+import { MenuItem } from 'components/menu-item';
+import { ClickAwayListener } from 'components/click-away-listener';
 
 const Container = styled(View)`
   position: relative;
@@ -105,14 +107,16 @@ export class DropdownMenu<T extends { [P in keyof T]: MenuItem }> extends React.
         <EllipsisButton onClick={this.handleEllipsisClick} onBlur={this.handleEllipsisBlur}>
           <Fa icon="ellipsisH" size="lg" />
         </EllipsisButton>
-        <Dropdown
-          header={this.props.header}
-          ref={this.dropdownRef}
-          open={this.state.open}
-          onBlur={this.handleDropdownBlur}
-          actions={this.props.actions}
-          onAction={this.props.onAction}
-        />
+        <ClickAwayListener onClickAway={this.handleDropdownBlur}>
+          <Dropdown
+            header={this.props.header}
+            ref={this.dropdownRef}
+            open={this.state.open}
+            onBlur={this.handleDropdownBlur}
+            actions={this.props.actions}
+            onAction={this.props.onAction}
+          />
+        </ClickAwayListener>
       </Container>
     );
   }

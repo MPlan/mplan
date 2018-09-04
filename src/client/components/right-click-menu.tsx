@@ -57,7 +57,7 @@ export interface RightClickMenuProps<T extends { [P in keyof T]: MenuItem }> {
   actions: T;
   onAction: (action: keyof T) => void;
   header: string;
-  render: (props: RightClickProps) => JSX.Element;
+  children: (props: RightClickProps) => JSX.Element;
 }
 
 interface RightClickMenuState {
@@ -165,7 +165,7 @@ export class RightClickMenu<T extends { [P in keyof T]: MenuItem }> extends Reac
           >
             <Backdrop onClick={this.handleDropdownBlur} onContextMenu={this.handleDropdownBlur} />
             <ClickAwayListener onClickAway={this.handleDropdownBlur}>
-              <DropdownContainer style={{ top: this.state.y, left: this.state.x }}>
+              <DropdownContainer style={{ top: this.state.y - 1, left: this.state.x - 1 }}>
                 <Dropdown
                   header={this.props.header}
                   actions={this.props.actions}
@@ -178,7 +178,7 @@ export class RightClickMenu<T extends { [P in keyof T]: MenuItem }> extends Reac
           </Container>,
           this.overlayElement,
         )}
-        {this.props.render(this.rightClickProps)}
+        {this.props.children(this.rightClickProps)}
       </React.Fragment>
     );
   }
