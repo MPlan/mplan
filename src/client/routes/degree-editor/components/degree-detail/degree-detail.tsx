@@ -75,7 +75,7 @@ export class DegreeDetail extends React.PureComponent<DegreeDetailProps, {}> {
   degreeDropdownAction = {
     rename: {
       icon: 'pencil',
-      text: 'Rename',
+      text: 'Rename degree',
     },
   };
 
@@ -83,7 +83,7 @@ export class DegreeDetail extends React.PureComponent<DegreeDetailProps, {}> {
     const { onBackClick, masteredDegree } = this.props;
     return (
       <Root>
-        <ActionMenu />
+        <ActionMenu actions={this.degreeDropdownAction} onAction={() => {}} />
         <Sidebar>
           <BackToDegreeButton onClick={onBackClick}>
             <ArrowLeft icon="angleLeft" />
@@ -99,7 +99,7 @@ export class DegreeDetail extends React.PureComponent<DegreeDetailProps, {}> {
               <Title>{masteredDegree.name}</Title>
               <VerticalBar />
               <DropdownMenu
-                header="Degree"
+                header={masteredDegree.name}
                 actions={this.degreeDropdownAction}
                 onAction={() => {}}
               />

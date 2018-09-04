@@ -6,6 +6,8 @@ import { View, ViewProps } from 'components/view';
 import { Text } from 'components/text';
 import { PrimaryButton } from 'components/button';
 import { Fa } from 'components/fa';
+import { MenuItem } from 'components/menu-item';
+import { ClickAwayListener } from 'components/click-away-listener';
 
 const Root = styled(View)`
   position: absolute;
@@ -29,6 +31,7 @@ const Actions = styled(View)`
   overflow: hidden;
 `;
 const Action = styled(View)`
+  flex-direction: row;
   &:hover,
   &:focus {
     background-color: ${styles.whiteTer};
@@ -38,51 +41,74 @@ const Action = styled(View)`
   }
   height: 3rem;
   padding: 0 ${styles.space(0)};
-  justify-content: center;
+  align-items: center;
   transition: all 200ms;
 `;
 
-interface ActionMenuProps {}
+interface ActionMenuProps<T extends { [key: string]: MenuItem }> {
+  actions: T;
+  onAction: (action: keyof T) => void;
+}
 interface ActionMenuState {
   open: boolean;
 }
 
-export class ActionMenu extends React.PureComponent<ActionMenuProps, ActionMenuState> {
-  constructor(props: ActionMenuProps) {
+export class ActionMenu<T extends { [key: string]: MenuItem }> extends React.PureComponent<
+  ActionMenuProps<T>,
+  ActionMenuState
+> {
+  constructor(props: ActionMenuProps<T>) {
     super(props);
     this.state = {
       open: false,
     };
   }
 
+  menuItems() {
+    const { actions } = this.props;
+    return Object.entries(actions).map(([key, menuItem]) => ({ key, ...menuItem }));
+  }
+
   handleToggleOpen = () => {
     this.setState(previousState => ({ open: !previousState.open }));
   };
 
+  handleClose = () => {
+    this.setState({ open: false });
+  };
+
+  handleOnAction(key: keyof T) {
+    this.props.onAction(key);
+    this.handleClose();
+  }
+
   render() {
     const { open } = this.state;
+    const menuItems = this.menuItems();
     return (
-      <Root>
-        <Actions
-          style={{
-            height: open ? `${2 * 3 + 1}rem` : 0,
-            opacity: open ? 1 : 0,
-          }}
-        >
-          <Action>
-            <Text>+ Do something</Text>
-          </Action>
-          <Action>
-            <Text>+ Do something else</Text>
-          </Action>
-        </Actions>
-        <ButtonRow>
-          <PrimaryButton onClick={this.handleToggleOpen}>
-            {open ? <ButtonFa icon="angleUp" /> : <ButtonFa icon="angleDown" />}
-            {open ? 'Done' : 'Actions Menu'}
-          </PrimaryButton>
-        </ButtonRow>
-      </Root>
+      <ClickAwayListener onClickAway={this.handleClose}>
+        <Root>
+          <Actions
+            style={{
+              height: open ? `${menuItems.length * 3 + 1}rem` : 0,
+              opacity: open ? 1 : 0,
+            }}
+          >
+            {menuItems.map(({ key, color, icon, text }) => (
+              <Action key={key} onClick={() => this.handleOnAction(key)}>
+                <ButtonFa color={color} icon={icon} />
+                <Text>{text}</Text>
+              </Action>
+            ))}
+          </Actions>
+          <ButtonRow>
+            <PrimaryButton onClick={this.handleToggleOpen}>
+              {open ? <ButtonFa icon="angleUp" /> : <ButtonFa icon="angleDown" />}
+              {open ? 'Done' : 'Actions Menu'}
+            </PrimaryButton>
+          </ButtonRow>
+        </Root>
+      </ClickAwayListener>
     );
   }
 }
