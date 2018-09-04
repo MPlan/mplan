@@ -13,9 +13,10 @@ import { DegreeListItem } from './degree-list-item';
 
 const Root = styled(Card)`
   flex: 1 1 auto;
-  margin: 0 ${styles.space(1)};
+  margin: 0 auto;
   margin-bottom: ${styles.space(0)};
   overflow: hidden;
+  width: 50rem;
 `;
 const Search = styled(Input)`
   margin: 0 ${styles.space(0)};
@@ -28,6 +29,7 @@ const List = styled(View)`
 
 interface DegreeListProps {
   masteredDegrees: Model.MasteredDegree.Model[];
+  onMasteredDegreeClick: (masteredDegreeId: string) => void;
 }
 interface DegreeListState {
   search: string;
@@ -50,7 +52,6 @@ export class DegreeList extends React.PureComponent<DegreeListProps, DegreeListS
     );
   }
 
-  handleDegreeClick = (masteredDegreeId: string) => {};
   handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const search = e.currentTarget.value;
     this.setState({ search });
@@ -71,7 +72,7 @@ export class DegreeList extends React.PureComponent<DegreeListProps, DegreeListS
               <DegreeListItem
                 key={masteredDegree.id}
                 masteredDegree={masteredDegree}
-                onClick={() => this.handleDegreeClick(masteredDegree.id)}
+                onClick={() => this.props.onMasteredDegreeClick(masteredDegree.id)}
               />
             ))
           )}

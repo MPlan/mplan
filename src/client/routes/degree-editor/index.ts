@@ -1,6 +1,7 @@
 import * as Model from 'models';
 import { DegreeEditor } from './degree-editor';
 import { saveMasteredDegree } from 'client/fetch/mastered-degrees';
+import { history } from 'client/history';
 
 const Container = Model.store.connect({
   mapStateToProps: state => ({
@@ -25,6 +26,9 @@ const Container = Model.store.connect({
           saveCount: state.saveCount + 1,
         };
       });
+    },
+    onMasteredDegreeClick: (masteredDegreeId: string) => {
+      history.push(`/degree-editor/${masteredDegreeId}`);
     },
   }),
 })(DegreeEditor);

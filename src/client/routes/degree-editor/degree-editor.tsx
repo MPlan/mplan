@@ -2,25 +2,46 @@ import * as React from 'react';
 import * as Model from 'models';
 import * as styles from 'styles';
 import styled from 'styled-components';
+import { Route, RouteComponentProps } from 'react-router';
+import { get } from 'utilities/get';
 
 import { Page } from 'components/page';
-import { View } from 'components/view';
+import { View, ViewProps } from 'components/view';
 import { Text } from 'components/text';
 import { PrimaryButton } from 'components/button';
 import { NewDegreeModal } from './components/new-degree-modal';
 import { DegreeList } from './components/degree-list';
+import { DegreeDetail } from './components/degree-detail';
 
 const Content = styled(View)`
-  margin: ${styles.space(1)} auto;
-  width: 50rem;
+  margin: ${styles.space(1)} 0;
   max-width: 100%;
   flex: 1 1 auto;
   overflow: hidden;
+  position: relative;
+`;
+interface SlideProps extends ViewProps {
+  slid?: boolean;
+}
+const SlideLeft = styled<SlideProps>(View)`
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: ${props => (props.slid ? '-100%' : '0')};
+  transition: all 500ms;
+`;
+const SlideRight = styled<SlideProps>(View)`
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: ${props => (props.slid ? '100%' : '0')};
+  transition: all 500ms;
 `;
 
 interface DegreeEditorProps {
   masteredDegrees: Model.MasteredDegree.Model[];
   onCreateDegree: (degreeName: string) => void;
+  onMasteredDegreeClick: (masteredDegreeId: string) => void;
 }
 interface DegreeEditorState {
   newDegreeModalOpen: boolean;
@@ -42,8 +63,29 @@ export class DegreeEditor extends React.PureComponent<DegreeEditorProps, DegreeE
     this.setState({ newDegreeModalOpen: false });
   };
 
+  renderDegreeList = (props: RouteComponentProps<any>) => {
+    const { masteredDegrees, onMasteredDegreeClick } = this.props;
+
+    return (
+      <SlideLeft slid={!get(props, _ => _.match.isExact, false)}>
+        <DegreeList
+          masteredDegrees={masteredDegrees}
+          onMasteredDegreeClick={onMasteredDegreeClick}
+        />
+      </SlideLeft>
+    );
+  };
+
+  renderDegreeDetail = (props: RouteComponentProps<{ masteredDegreeId: string }>) => {
+    const masteredDegreeId = get(props, _ => _.match.params.masteredDegreeId);
+    const degreeDetail = masteredDegreeId ? (
+      <DegreeDetail masteredDegreeId={masteredDegreeId} />
+    ) : null;
+
+    return <SlideRight slid={!props.match}>{degreeDetail}</SlideRight>;
+  };
+
   render() {
-    const { masteredDegrees } = this.props;
     const { newDegreeModalOpen } = this.state;
     return (
       <Page
@@ -52,7 +94,8 @@ export class DegreeEditor extends React.PureComponent<DegreeEditorProps, DegreeE
         titleLeft={<PrimaryButton onClick={this.handleNewDegreeOpen}>+ New Degree</PrimaryButton>}
       >
         <Content>
-          <DegreeList masteredDegrees={masteredDegrees} />
+          <Route path="/degree-editor" children={this.renderDegreeList} />
+          <Route path="/degree-editor/:masteredDegreeId" children={this.renderDegreeDetail} />
         </Content>
 
         <NewDegreeModal
