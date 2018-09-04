@@ -1,4 +1,6 @@
+// https://www.w3schools.com/howto/howto_css_switch.asp
 import * as React from 'react';
+import * as styles from 'styles';
 import styled from 'styled-components';
 
 const Slider = styled.span`
@@ -8,8 +10,8 @@ const Slider = styled.span`
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #ccc;
-  transition: 0.4s;
+  background-color: ${styles.grayLighter};
+  transition: all 400ms;
   border-radius: 99999px;
 
   &:before {
@@ -21,24 +23,25 @@ const Slider = styled.span`
     bottom: 4px;
     background-color: white;
     border-radius: 50%;
-    transition: 0.4s;
+    transition: all 400ms;
   }
 `;
 const SwitchInput = styled.input`
   display: none;
 `;
 const Root = styled.label`
+  flex: 0 0 auto;
   position: relative;
   display: inline-block;
   width: 60px;
   height: 34px;
 
   ${SwitchInput}:checked + ${Slider} {
-    background-color: #2196f3;
+    background-color: ${styles.blue};
   }
 
   ${SwitchInput}:focus + ${Slider} {
-    box-shadow: 0 0 1px #2196f3;
+    box-shadow: 0 0 1px ${styles.blue};
   }
 
   ${SwitchInput}:checked + ${Slider}:before {
