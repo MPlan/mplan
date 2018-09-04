@@ -22,7 +22,12 @@ const Container = Model.store.connect({
       masteredDegree,
     };
   },
-  mapDispatchToProps: () => ({}),
+  mapDispatchToProps: () => ({
+    onBackClick: () => {
+      if (history.length <= 0) return;
+      history.goBack();
+    },
+  }),
 })(DegreeDetail);
 
 export { Container as DegreeDetail };
