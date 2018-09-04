@@ -21,6 +21,22 @@ export function getLastPosition(self: MasteredDegrees) {
   return lastMasteredDegree.position;
 }
 
+export function updatedMasteredDegree(
+  self: MasteredDegrees,
+  masteredDegreeId: string,
+  update: (masteredDegree: MasteredDegree.Model) => MasteredDegree.Model,
+): MasteredDegrees {
+  const masteredDegreeToUpdate = getMasteredDegree(self, masteredDegreeId);
+  if (!masteredDegreeToUpdate) return self;
+
+  const updatedMasteredDegree = update(masteredDegreeToUpdate);
+
+  return {
+    ...self,
+    [updatedMasteredDegree.id]: updatedMasteredDegree,
+  };
+}
+
 export function addMasteredDegree(
   self: MasteredDegrees,
   masteredDegree: MasteredDegree.Model,

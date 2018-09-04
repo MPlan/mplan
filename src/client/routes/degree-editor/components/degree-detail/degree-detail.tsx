@@ -12,6 +12,7 @@ import { Fa } from 'components/fa';
 import { Divider } from 'components/divider';
 import { DropdownMenu } from 'components/dropdown-menu';
 import { ActionMenu } from 'components/action-menu';
+import { InlineEdit } from 'components/inline-edit';
 
 const Root = styled(View)`
   flex: 1 1 auto;
@@ -58,9 +59,19 @@ const Title = styled(Text)`
   font-weight: ${styles.bold};
   margin-right: ${styles.space(0)};
 `;
+const TitleInput = styled(Input)`
+  color: ${styles.textLight};
+  font-size: ${styles.space(2)};
+  font-weight: ${styles.bold};
+  margin-right: ${styles.space(0)};
+  background-color: transparent;
+  border: 1px solid ${styles.grayLight};
+  outline: none;
+  padding: 0;
+`;
 const VerticalBar = styled.div`
   flex: 0 0 auto;
-  border-right: 2px solid ${styles.grayLight};
+  border-right: 1px solid ${styles.grayLight};
   width: 2px;
   margin-right: ${styles.space(0)};
   align-self: stretch;
@@ -69,9 +80,13 @@ const VerticalBar = styled.div`
 interface DegreeDetailProps {
   masteredDegree: Model.MasteredDegree.Model;
   onBackClick: () => void;
+  onEditDegreeName: (newName: string) => void;
+}
+interface DegreeDetailState {
+  editingDegreeName: boolean;
 }
 
-export class DegreeDetail extends React.PureComponent<DegreeDetailProps, {}> {
+export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetailState> {
   degreeDropdownAction = {
     rename: {
       icon: 'pencil',
@@ -79,8 +94,28 @@ export class DegreeDetail extends React.PureComponent<DegreeDetailProps, {}> {
     },
   };
 
+  constructor(props: DegreeDetailProps) {
+    super(props);
+
+    this.state = {
+      editingDegreeName: false,
+    };
+  }
+
+  handleDegreeNameBlur = () => {
+    this.setState({ editingDegreeName: false });
+  };
+  handleDegreeNameEdit = () => {
+    this.setState({ editingDegreeName: true });
+  };
+  handleDegreeNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.currentTarget.value;
+    this.props.onEditDegreeName(value);
+  };
+
   render() {
     const { onBackClick, masteredDegree } = this.props;
+    const { editingDegreeName } = this.state;
     return (
       <Root>
         <ActionMenu actions={this.degreeDropdownAction} onAction={() => {}} />
@@ -96,7 +131,16 @@ export class DegreeDetail extends React.PureComponent<DegreeDetailProps, {}> {
         <Body>
           <Content>
             <TitleRow>
-              <Title>{masteredDegree.name}</Title>
+              <InlineEdit
+                value={masteredDegree.name}
+                renderDisplay={props => <Title {...props} />}
+                renderInput={props => (
+                  <TitleInput {...props} onChange={this.handleDegreeNameChange} />
+                )}
+                editing={editingDegreeName}
+                onBlur={this.handleDegreeNameBlur}
+                onEdit={this.handleDegreeNameEdit}
+              />
               <VerticalBar />
               <DropdownMenu
                 header={masteredDegree.name}

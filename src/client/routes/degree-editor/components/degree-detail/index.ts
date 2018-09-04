@@ -22,10 +22,24 @@ const Container = Model.store.connect({
       masteredDegree,
     };
   },
-  mapDispatchToProps: () => ({
+  mapDispatchToProps: (dispatch, ownProps: DegreeEditorContainerProps) => ({
     onBackClick: () => {
       if (history.length <= 0) return;
       history.goBack();
+    },
+    onEditDegreeName: (newName: string) => {
+      dispatch(state => {
+        const newState = {
+          ...state,
+          masteredDegrees: Model.MasteredDegrees.updatedMasteredDegree(
+            state.masteredDegrees,
+            ownProps.masteredDegreeId,
+            masteredDegree => ({ ...masteredDegree, name: newName }),
+          ),
+        };
+        console.log(newState);
+        return newState;
+      });
     },
   }),
 })(DegreeDetail);
