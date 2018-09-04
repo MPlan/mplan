@@ -1,5 +1,6 @@
 import * as Model from 'models';
 import { DegreeDetail } from './degree-detail';
+import { history } from 'client/history';
 
 interface DegreeEditorContainerProps {
   masteredDegreeId: string;
@@ -13,7 +14,8 @@ const Container = Model.store.connect({
     );
 
     if (!masteredDegree) {
-      throw new Error(`could not find mastered degree with id ${ownProps.masteredDegreeId}`);
+      history.replace('/degree-editor');
+      return;
     }
 
     return {

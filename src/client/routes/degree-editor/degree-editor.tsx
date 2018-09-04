@@ -14,7 +14,6 @@ import { DegreeList } from './components/degree-list';
 import { DegreeDetail } from './components/degree-detail';
 
 const Content = styled(View)`
-  margin: ${styles.space(1)} 0;
   max-width: 100%;
   flex: 1 1 auto;
   overflow: hidden;
@@ -68,10 +67,16 @@ export class DegreeEditor extends React.PureComponent<DegreeEditorProps, DegreeE
 
     return (
       <SlideLeft slid={!get(props, _ => _.match.isExact, false)}>
-        <DegreeList
-          masteredDegrees={masteredDegrees}
-          onMasteredDegreeClick={onMasteredDegreeClick}
-        />
+        <Page
+          title="Degree Editor"
+          subtitle={<Text color={styles.textLight}>Edit degrees here</Text>}
+          titleLeft={<PrimaryButton onClick={this.handleNewDegreeOpen}>+ New Degree</PrimaryButton>}
+        >
+          <DegreeList
+            masteredDegrees={masteredDegrees}
+            onMasteredDegreeClick={onMasteredDegreeClick}
+          />
+        </Page>
       </SlideLeft>
     );
   };
@@ -88,11 +93,7 @@ export class DegreeEditor extends React.PureComponent<DegreeEditorProps, DegreeE
   render() {
     const { newDegreeModalOpen } = this.state;
     return (
-      <Page
-        title="Degree Editor"
-        subtitle={<Text color={styles.textLight}>Edit degrees here</Text>}
-        titleLeft={<PrimaryButton onClick={this.handleNewDegreeOpen}>+ New Degree</PrimaryButton>}
-      >
+      <React.Fragment>
         <Content>
           <Route path="/degree-editor" children={this.renderDegreeList} />
           <Route path="/degree-editor/:masteredDegreeId" children={this.renderDegreeDetail} />
@@ -103,7 +104,7 @@ export class DegreeEditor extends React.PureComponent<DegreeEditorProps, DegreeE
           onClose={this.handleNewDegreeClose}
           onCreateNewDegree={this.props.onCreateDegree}
         />
-      </Page>
+      </React.Fragment>
     );
   }
 }
