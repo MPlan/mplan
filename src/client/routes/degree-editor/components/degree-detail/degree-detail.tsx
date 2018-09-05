@@ -90,6 +90,27 @@ const VerticalBar = styled.div`
   margin-right: ${styles.space(0)};
   align-self: stretch;
 `;
+const PreviewButtonWrapper = styled(View)`
+  margin-left: auto;
+  align-items: flex-end;
+`;
+const PreviewButton = styled(PrimaryButton)`
+  margin-bottom: ${styles.space(-1)};
+`;
+const IconRight = styled(Fa)`
+  margin-left: ${styles.space(-1)};
+`;
+const ChangesSaveAutomatically = styled(Text)`
+  font-size: 14px;
+`;
+const LastRow = styled(View)`
+  flex-direction: row;
+  justify-content: flex-end;
+  margin-bottom: ${styles.space(0)};
+`;
+const DividerWithMargin = styled(Divider)`
+  margin-bottom: ${styles.space(0)};
+`;
 
 interface DegreeDetailProps {
   masteredDegree: Model.MasteredDegree.Model;
@@ -186,12 +207,31 @@ export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetai
                     actions={this.degreeDropdownAction}
                     onAction={this.handleActions}
                   />
+                  <PreviewButtonWrapper>
+                    <PreviewButton>
+                      Preview Degree <IconRight icon="angleRight" />
+                    </PreviewButton>
+                    <ChangesSaveAutomatically>
+                      (your changes save automatically)
+                    </ChangesSaveAutomatically>
+                  </PreviewButtonWrapper>
                 </TitleRow>
               )}
             </RightClickMenu>
             <PublishUnlist />
             <DescriptionEditor />
             <CreditHourMinimum />
+            <DividerWithMargin />
+            <LastRow>
+              <PreviewButtonWrapper>
+                <PreviewButton>
+                  Preview Degree <IconRight icon="angleRight" />
+                </PreviewButton>
+                <ChangesSaveAutomatically>
+                  (your changes save automatically)
+                </ChangesSaveAutomatically>
+              </PreviewButtonWrapper>
+            </LastRow>
           </Content>
         </Body>
       </Root>
