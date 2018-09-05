@@ -7,12 +7,13 @@ import { View } from 'components/view';
 import { Text } from 'components/text';
 import { Card } from 'components/card';
 import { Input } from 'components/input';
-import { Button, PrimaryButton, TransparentButton } from 'components/button';
+import { PrimaryButton, TransparentButton } from 'components/button';
 import { Fa } from 'components/fa';
 import { Divider } from 'components/divider';
 import { DropdownMenu } from 'components/dropdown-menu';
 import { InlineEdit } from 'components/inline-edit';
 import { RightClickMenu } from 'components/right-click-menu';
+import { DescriptionEditor } from './components/description-editor';
 
 import { PublishUnlist } from './components/publish-unlist';
 
@@ -188,6 +189,7 @@ export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetai
               )}
             </RightClickMenu>
             <PublishUnlist />
+            <DescriptionEditor />
           </Content>
         </Body>
       </Root>
