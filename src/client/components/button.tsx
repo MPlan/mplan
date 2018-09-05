@@ -67,3 +67,7 @@ export const PrimaryButton = styled(Button)`
     background-color: ${darken(0.2, styles.blue)};
   }
 `;
+
+export const TransparentButton = styled(Button)`
+  background-color: transparent;
+`;

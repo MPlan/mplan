@@ -7,7 +7,7 @@ import { View } from 'components/view';
 import { Text } from 'components/text';
 import { Card } from 'components/card';
 import { Input } from 'components/input';
-import { Button } from 'components/button';
+import { Button, PrimaryButton, TransparentButton } from 'components/button';
 import { Fa } from 'components/fa';
 import { Divider } from 'components/divider';
 import { DropdownMenu } from 'components/dropdown-menu';
@@ -43,9 +43,15 @@ const DegreeGroupList = styled(View)`
   flex: 1 1 auto;
   overflow: auto;
 `;
-const BackToDegreeButton = styled(Button)`
+const BackToDegreeButton = styled(TransparentButton)`
   margin: 0 ${styles.space(0)};
-  margin-bottom: ${styles.space(0)};
+  font-size: 12px;
+  justify-content: flex-start;
+`;
+const AddCourseGroupButton = styled(PrimaryButton)`
+  margin: ${styles.space(0)};
+  border-radius: 999999px;
+  box-shadow: ${styles.boxShadow(-1)};
 `;
 const Search = styled(Input)`
   margin: 0 ${styles.space(0)};
@@ -146,6 +152,9 @@ export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetai
             <ArrowLeft icon="angleLeft" />
             Back to degrees
           </BackToDegreeButton>
+          <AddCourseGroupButton>
+            <ArrowLeft icon="plus" /> Course Group
+          </AddCourseGroupButton>
           <Search type="search" placeholder="Search for groups..." />
           <Divider />
           <DegreeGroupList>{}</DegreeGroupList>

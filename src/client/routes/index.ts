@@ -12,7 +12,7 @@ export interface RouteDefinition {
 export const Routes: RouteDefinition[] = [
   {
     path: '/degree-editor',
-    name: 'Degree editor',
+    name: 'Degree manager',
     icon: 'edit',
     component: DegreeEditor,
     requiresAdmin: true,
