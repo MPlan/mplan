@@ -29,6 +29,7 @@ const Menu = styled.ul`
   z-index: 50;
 `;
 const Item = styled.li`
+  display: flex;
   margin: 0;
   padding: ${styles.space(-1)} ${styles.space(0)};
   outline: none;

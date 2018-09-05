@@ -36,6 +36,9 @@ const Content = styled(View)`
   width: 50rem;
   max-width: 100%;
   margin: ${styles.space(1)} auto;
+  & > * {
+    flex: 0 0 auto;
+  }
 `;
 const DegreeGroupList = styled(View)`
   flex: 1 1 auto;
@@ -96,6 +99,16 @@ export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetai
       icon: 'pencil',
       text: 'Rename degree',
     },
+    add: {
+      icon: 'plus',
+      text: 'Add course group',
+      color: styles.blue,
+    },
+    delete: {
+      icon: 'trash',
+      color: styles.red,
+      text: 'Delete degree',
+    },
   };
 
   constructor(props: DegreeDetailProps) {
@@ -117,7 +130,7 @@ export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetai
     this.props.onEditDegreeName(value);
   };
 
-  handleActions = (key: 'rename') => {
+  handleActions = (key: any) => {
     if (key === 'rename') {
       this.handleDegreeNameEdit();
       return;
@@ -129,7 +142,6 @@ export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetai
     const { editingDegreeName } = this.state;
     return (
       <Root>
-        <ActionMenu actions={this.degreeDropdownAction} onAction={this.handleActions} />
         <Sidebar>
           <BackToDegreeButton onClick={onBackClick}>
             <ArrowLeft icon="angleLeft" />

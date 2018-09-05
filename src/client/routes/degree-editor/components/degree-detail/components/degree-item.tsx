@@ -10,10 +10,12 @@ import { DropdownMenu, DropdownMenuProps } from 'components/dropdown-menu';
 import { RightClickMenu, RightClickProps } from 'components/right-click-menu';
 
 const Root = styled(View)`
-  margin-bottom: ${styles.space(0)};
+  flex: 0 0 auto;
+  margin-bottom: ${styles.space(1)};
 `;
 const TitleRow = styled(View)`
   flex-direction: row;
+  margin-bottom: ${styles.space(-1)};
 `;
 const VerticalBar = styled(View)`
   width: 1px;
@@ -23,7 +25,6 @@ const Title = styled(Text)`
   color: ${styles.textLight};
   font-weight: ${styles.bold};
   font-size: ${styles.space(1)};
-  margin-bottom: ${styles.space(0)};
 `;
 
 interface DegreeItemProps<T extends { [key: string]: MenuItem }> {

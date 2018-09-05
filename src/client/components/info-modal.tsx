@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as styles from 'styles';
 import styled from 'styled-components';
-import { Modal as GenericModal, ModalProps } from 'components/modal';
+import { Modal as GenericModal } from 'components/modal';
 import { View } from 'components/view';
 import { Button } from 'components/button';
 import { createScene } from 'utilities/scene';
