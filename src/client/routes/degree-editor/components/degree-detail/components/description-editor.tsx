@@ -13,8 +13,9 @@ const Content = styled(View)`
   padding: 0 ${styles.space(0)};
 `;
 const ReactQuillWrapper = styled(View)`
-  display: box;
+  /* flex: 1 1 auto;  */
   padding: 0 ${styles.space(0)};
+  min-height: 15rem;
 `;
 
 interface DescriptionEditorProps {}
@@ -22,7 +23,7 @@ interface DescriptionEditorProps {}
 export class DescriptionEditor extends React.PureComponent<DescriptionEditorProps, {}> {
   render() {
     return (
-      <DegreeItem title="Degree description">
+      <DegreeItem title="Description">
         <Content>
           <Paragraph>Edit the description of this degree here.</Paragraph>
           <Paragraph>

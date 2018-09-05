@@ -1,10 +1,10 @@
 import * as React from 'react';
 
-interface DisplayProps {
+export interface DisplayProps {
   onClick: () => void;
   children: string;
 }
-interface InputProps {
+export interface InputProps {
   innerRef: React.RefObject<HTMLInputElement>;
   onBlur: () => void;
   value: string;

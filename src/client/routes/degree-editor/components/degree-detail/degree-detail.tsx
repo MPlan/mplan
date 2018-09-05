@@ -14,6 +14,7 @@ import { DropdownMenu } from 'components/dropdown-menu';
 import { InlineEdit } from 'components/inline-edit';
 import { RightClickMenu } from 'components/right-click-menu';
 import { DescriptionEditor } from './components/description-editor';
+import { CreditHourMinimum } from './components/credit-hour-minimum';
 
 import { PublishUnlist } from './components/publish-unlist';
 
@@ -190,6 +191,7 @@ export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetai
             </RightClickMenu>
             <PublishUnlist />
             <DescriptionEditor />
+            <CreditHourMinimum />
           </Content>
         </Body>
       </Root>
