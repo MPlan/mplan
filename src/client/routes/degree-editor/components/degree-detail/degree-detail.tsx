@@ -11,11 +11,10 @@ import { Button } from 'components/button';
 import { Fa } from 'components/fa';
 import { Divider } from 'components/divider';
 import { DropdownMenu } from 'components/dropdown-menu';
-import { ActionMenu } from 'components/action-menu';
 import { InlineEdit } from 'components/inline-edit';
 import { RightClickMenu } from 'components/right-click-menu';
 
-import { PublishUnpublish } from './components/publish-unpublish';
+import { PublishUnlist } from './components/publish-unlist';
 
 const Root = styled(View)`
   flex: 1 1 auto;
@@ -179,7 +178,7 @@ export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetai
                 </TitleRow>
               )}
             </RightClickMenu>
-            <PublishUnpublish />
+            <PublishUnlist />
           </Content>
         </Body>
       </Root>

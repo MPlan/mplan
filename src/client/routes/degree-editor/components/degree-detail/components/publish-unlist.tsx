@@ -26,7 +26,7 @@ const Question = styled(Text)`
 
 const Answer = styled(Text)``;
 
-export class PublishUnpublish extends React.PureComponent<{}, {}> {
+export class PublishUnlist extends React.PureComponent<{}, {}> {
   publishUnlistInfo = createInfoModal();
 
   render() {
