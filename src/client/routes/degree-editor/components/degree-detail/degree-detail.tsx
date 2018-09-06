@@ -13,10 +13,11 @@ import { Divider } from 'components/divider';
 import { DropdownMenu } from 'components/dropdown-menu';
 import { InlineEdit } from 'components/inline-edit';
 import { RightClickMenu } from 'components/right-click-menu';
+
 import { DescriptionEditor } from './components/description-editor';
 import { CreditHourMinimum } from './components/credit-hour-minimum';
-
 import { PublishUnlist } from './components/publish-unlist';
+import { CourseGroupSummary } from './components/course-group-summary';
 
 const Root = styled(View)`
   flex: 1 1 auto;
@@ -90,18 +91,12 @@ const VerticalBar = styled.div`
   margin-right: ${styles.space(0)};
   align-self: stretch;
 `;
-const PreviewButtonWrapper = styled(View)`
-  margin-left: auto;
-  align-items: flex-end;
-`;
 const PreviewButton = styled(PrimaryButton)`
+  margin-left: auto;
   margin-bottom: ${styles.space(-1)};
 `;
 const IconRight = styled(Fa)`
   margin-left: ${styles.space(-1)};
-`;
-const ChangesSaveAutomatically = styled(Text)`
-  font-size: 14px;
 `;
 const LastRow = styled(View)`
   flex-direction: row;
@@ -207,30 +202,20 @@ export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetai
                     actions={this.degreeDropdownAction}
                     onAction={this.handleActions}
                   />
-                  <PreviewButtonWrapper>
-                    <PreviewButton>
-                      Preview Degree <IconRight icon="angleRight" />
-                    </PreviewButton>
-                    <ChangesSaveAutomatically>
-                      (your changes save automatically)
-                    </ChangesSaveAutomatically>
-                  </PreviewButtonWrapper>
+                  <PreviewButton>
+                    Preview Degree <IconRight icon="angleRight" />
+                  </PreviewButton>
                 </TitleRow>
               )}
             </RightClickMenu>
             <PublishUnlist />
             <DescriptionEditor />
             <CreditHourMinimum />
-            <DividerWithMargin />
+            <CourseGroupSummary />
             <LastRow>
-              <PreviewButtonWrapper>
-                <PreviewButton>
-                  Preview Degree <IconRight icon="angleRight" />
-                </PreviewButton>
-                <ChangesSaveAutomatically>
-                  (your changes save automatically)
-                </ChangesSaveAutomatically>
-              </PreviewButtonWrapper>
+              <PreviewButton>
+                Preview Degree <IconRight icon="angleRight" />
+              </PreviewButton>
             </LastRow>
           </Content>
         </Body>
