@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { DegreeEditor } from './degree-editor';
+import { DegreeEditor } from './degree-manager';
 
 export interface RouteDefinition {
   path: string;
@@ -11,7 +11,7 @@ export interface RouteDefinition {
 
 export const Routes: RouteDefinition[] = [
   {
-    path: '/degree-editor',
+    path: '/degree-manager',
     name: 'Degree manager',
     icon: 'edit',
     component: DegreeEditor,

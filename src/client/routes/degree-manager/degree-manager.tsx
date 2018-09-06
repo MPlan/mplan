@@ -68,7 +68,7 @@ export class DegreeEditor extends React.PureComponent<DegreeEditorProps, DegreeE
     return (
       <SlideLeft slid={!get(props, _ => _.match.isExact, false)}>
         <Page
-          title="Degree Editor"
+          title="Degree Manager"
           subtitle={<Text color={styles.textLight}>Edit degrees here</Text>}
           titleLeft={<PrimaryButton onClick={this.handleNewDegreeOpen}>+ New Degree</PrimaryButton>}
         >
@@ -95,8 +95,8 @@ export class DegreeEditor extends React.PureComponent<DegreeEditorProps, DegreeE
     return (
       <React.Fragment>
         <Content>
-          <Route path="/degree-editor" children={this.renderDegreeList} />
-          <Route path="/degree-editor/:masteredDegreeId" children={this.renderDegreeDetail} />
+          <Route path="/degree-manager" children={this.renderDegreeList} />
+          <Route path="/degree-manager/:masteredDegreeId" children={this.renderDegreeDetail} />
         </Content>
 
         <NewDegreeModal

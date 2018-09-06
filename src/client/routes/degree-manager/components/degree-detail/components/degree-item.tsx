@@ -20,11 +20,13 @@ const TitleRow = styled(View)`
 const VerticalBar = styled(View)`
   width: 1px;
   border-right: 1px solid ${styles.grayLighter};
+  margin-right: ${styles.space(-1)};
 `;
 const Title = styled(Text)`
   color: ${styles.textLight};
   font-weight: ${styles.bold};
   font-size: ${styles.space(1)};
+  margin-right: ${styles.space(-1)};
 `;
 
 interface DegreeItemProps<T extends { [key: string]: MenuItem }> {

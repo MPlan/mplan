@@ -5,28 +5,24 @@ import styled from 'styled-components';
 
 import { View } from 'components/view';
 import { Text } from 'components/text';
-import { Card } from 'components/card';
 import { Input } from 'components/input';
 import { PrimaryButton, TransparentButton } from 'components/button';
 import { Fa } from 'components/fa';
-import { Divider } from 'components/divider';
 import { DropdownMenu } from 'components/dropdown-menu';
 import { InlineEdit } from 'components/inline-edit';
 import { RightClickMenu } from 'components/right-click-menu';
+import { Breadcrumbs as _Breadcrumbs } from 'components/breadcrumbs';
 
 import { DescriptionEditor } from './components/description-editor';
 import { CreditHourMinimum } from './components/credit-hour-minimum';
 import { PublishUnlist } from './components/publish-unlist';
 import { CourseGroupSummary } from './components/course-group-summary';
+import { DegreeSummary } from './components/degree-summary';
 
 const Root = styled(View)`
   flex: 1 1 auto;
-  flex-direction: row;
   overflow: hidden;
   position: relative;
-`;
-const Sidebar = styled(Card)`
-  width: 15rem;
 `;
 const Body = styled(View)`
   flex: 1 1 auto;
@@ -42,25 +38,16 @@ const Content = styled(View)`
     flex: 0 0 auto;
   }
 `;
-const DegreeGroupList = styled(View)`
-  flex: 1 1 auto;
-  overflow: auto;
-`;
 const BackToDegreeButton = styled(TransparentButton)`
-  margin: 0 ${styles.space(0)};
-  font-size: 12px;
+  margin: ${styles.space(-1)} ${styles.space(0)};
   justify-content: flex-start;
 `;
 const AddCourseGroupButton = styled(PrimaryButton)`
-  margin: ${styles.space(0)};
+  margin: ${styles.space(-1)} 0;
   border-radius: 999999px;
   box-shadow: ${styles.boxShadow(-1)};
 `;
-const Search = styled(Input)`
-  margin: 0 ${styles.space(0)};
-  margin-bottom: ${styles.space(0)};
-`;
-const ArrowLeft = styled(Fa)`
+const FaLeft = styled(Fa)`
   margin-right: ${styles.space(-1)};
 `;
 const TitleRow = styled(View)`
@@ -92,8 +79,9 @@ const VerticalBar = styled.div`
   align-self: stretch;
 `;
 const PreviewButton = styled(PrimaryButton)`
+  margin: ${styles.space(-1)} 0;
   margin-left: auto;
-  margin-bottom: ${styles.space(-1)};
+  margin-right: ${styles.space(0)};
 `;
 const IconRight = styled(Fa)`
   margin-left: ${styles.space(-1)};
@@ -103,7 +91,15 @@ const LastRow = styled(View)`
   justify-content: flex-end;
   margin-bottom: ${styles.space(0)};
 `;
-const DividerWithMargin = styled(Divider)`
+const ActionsBar = styled(View)`
+  flex: 0 0 auto;
+  flex-direction: row;
+  background-color: ${styles.white};
+  box-shadow: ${styles.boxShadow(-2)};
+  z-index: 1;
+`;
+const Breadcrumbs = styled(_Breadcrumbs)`
+  flex: 0 0 auto;
   margin-bottom: ${styles.space(0)};
 `;
 
@@ -165,20 +161,18 @@ export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetai
     const { editingDegreeName } = this.state;
     return (
       <Root>
-        <Sidebar>
+        <ActionsBar>
           <BackToDegreeButton onClick={onBackClick}>
-            <ArrowLeft icon="angleLeft" />
-            Back to degrees
+            <FaLeft icon="angleLeft" />
+            Back
           </BackToDegreeButton>
-          <AddCourseGroupButton>
-            <ArrowLeft icon="plus" /> Course Group
-          </AddCourseGroupButton>
-          <Search type="search" placeholder="Search for groups..." />
-          <Divider />
-          <DegreeGroupList>{}</DegreeGroupList>
-        </Sidebar>
+          <PreviewButton>
+            Preview Degree <IconRight icon="angleRight" />
+          </PreviewButton>
+        </ActionsBar>
         <Body>
           <Content>
+            <Breadcrumbs />
             <RightClickMenu
               header={masteredDegree.name}
               actions={this.degreeDropdownAction}
@@ -202,9 +196,6 @@ export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetai
                     actions={this.degreeDropdownAction}
                     onAction={this.handleActions}
                   />
-                  <PreviewButton>
-                    Preview Degree <IconRight icon="angleRight" />
-                  </PreviewButton>
                 </TitleRow>
               )}
             </RightClickMenu>
@@ -212,11 +203,7 @@ export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetai
             <DescriptionEditor />
             <CreditHourMinimum />
             <CourseGroupSummary />
-            <LastRow>
-              <PreviewButton>
-                Preview Degree <IconRight icon="angleRight" />
-              </PreviewButton>
-            </LastRow>
+            <DegreeSummary />
           </Content>
         </Body>
       </Root>

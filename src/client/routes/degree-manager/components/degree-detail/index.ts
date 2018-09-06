@@ -14,7 +14,7 @@ const Container = Model.store.connect({
     );
 
     if (!masteredDegree) {
-      history.replace('/degree-editor');
+      history.replace('/degree-manager');
       return;
     }
 
@@ -24,8 +24,7 @@ const Container = Model.store.connect({
   },
   mapDispatchToProps: (dispatch, ownProps: DegreeEditorContainerProps) => ({
     onBackClick: () => {
-      if (history.length <= 0) return;
-      history.goBack();
+      history.push('/degree-manager');
     },
     onEditDegreeName: (newName: string) => {
       dispatch(state => {

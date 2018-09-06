@@ -38,11 +38,26 @@ interface CourseGroupSummaryProps {}
 export class CourseGroupSummary extends React.PureComponent<CourseGroupSummaryProps, {}> {
   render() {
     return (
-      <DegreeItem title="Course groups">
+      <DegreeItem
+        title="Course groups"
+        dropdownMenuProps={{
+          header: 'Course groups',
+          actions: {
+            add: {
+              text: 'New course',
+              icon: 'plus',
+              color: styles.blue,
+            },
+          },
+          onAction: () => {},
+        }}
+      >
         <Columns>
           <Column>
             <ColumnHeader>Column one</ColumnHeader>
-            <CourseGroup>Written and Oral Communication <FaRight icon="angleRight"/></CourseGroup>
+            <CourseGroup>
+              Written and Oral Communication <FaRight icon="angleRight" />
+            </CourseGroup>
             <CourseGroup>Humanities and the Arts</CourseGroup>
             <CourseGroup>Social and Behavior Analysis</CourseGroup>
           </Column>

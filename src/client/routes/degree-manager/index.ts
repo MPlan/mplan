@@ -1,5 +1,5 @@
 import * as Model from 'models';
-import { DegreeEditor } from './degree-editor';
+import { DegreeEditor } from './degree-manager';
 import { saveMasteredDegree } from 'client/fetch/mastered-degrees';
 import { history } from 'client/history';
 
@@ -28,7 +28,7 @@ const Container = Model.store.connect({
       });
     },
     onMasteredDegreeClick: (masteredDegreeId: string) => {
-      history.push(`/degree-editor/${masteredDegreeId}`);
+      history.push(`/degree-manager/${masteredDegreeId}`);
     },
   }),
 })(DegreeEditor);
