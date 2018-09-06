@@ -13,9 +13,17 @@ const Content = styled(View)`
   padding: 0 ${styles.space(0)};
 `;
 const ReactQuillWrapper = styled(View)`
-  /* flex: 1 1 auto;  */
   padding: 0 ${styles.space(0)};
   min-height: 15rem;
+  .quill {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .ql-container {
+    flex: 1 1 auto;
+  }
 `;
 
 interface DescriptionEditorProps {}
