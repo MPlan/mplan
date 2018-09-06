@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as styles from 'styles';
 import styled from 'styled-components';
 
-import { View } from 'components/view';
+import { View, ViewProps } from 'components/view';
 import { Text } from 'components/text';
 import { Fa } from 'components/fa';
 
@@ -25,16 +25,16 @@ const CrumbText = styled(Text)`
   }
 `;
 
-interface BreadcrumbsProps {
+interface BreadcrumbsProps extends ViewProps {
   path: string[];
   onPathClick: (index: number) => void;
 }
 
 export class Breadcrumbs extends React.PureComponent<BreadcrumbsProps, {}> {
   render() {
-    const { path, onPathClick } = this.props;
+    const { path, onPathClick, ref, ...restOfProps } = this.props;
     return (
-      <Root>
+      <Root {...restOfProps}>
         {path.map((crumb, index) => (
           <Crumb key={index} onClick={() => onPathClick(index)}>
             <CrumbText>{crumb}</CrumbText>

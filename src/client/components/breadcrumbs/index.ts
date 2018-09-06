@@ -24,11 +24,11 @@ function convertPathToString(path: string, store: Model.App.Model) {
 }
 
 const Container = Model.store.connect({
-  mapStateToProps: store => {
+  mapStateToProps: (store, ownProps: any) => {
     const pathSplit = history.location.pathname.split('/').slice(1);
     const path = pathSplit.map(pathPart => convertPathToString(pathPart, store));
 
-    return { path };
+    return { path, ...ownProps };
   },
   mapDispatchToProps: () => {
     return {
