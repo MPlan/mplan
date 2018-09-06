@@ -20,20 +20,27 @@ const Content = styled(View)`
   position: relative;
 `;
 interface SlideProps extends ViewProps {
-  slid?: boolean;
+  slide?: number;
 }
-const SlideLeft = styled<SlideProps>(View)`
+const FirstSlide = styled<SlideProps>(View)`
   width: 100%;
   height: 100%;
   position: absolute;
-  left: ${props => (props.slid ? '-100%' : '0')};
+  left: ${props => `${-((props.slide || 0) - 0) * 100}%`};
   transition: all 500ms;
 `;
-const SlideRight = styled<SlideProps>(View)`
+const SecondSlide = styled<SlideProps>(View)`
   width: 100%;
   height: 100%;
   position: absolute;
-  left: ${props => (props.slid ? '100%' : '0')};
+  left: ${props => `${-((props.slide || 0) - 1) * 100}%`};
+  transition: all 500ms;
+`;
+const ThirdSlide = styled<SlideProps>(View)`
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: ${props => `${-((props.slide || 0) - 2) * 100}%`};
   transition: all 500ms;
 `;
 
@@ -64,9 +71,11 @@ export class DegreeEditor extends React.PureComponent<DegreeEditorProps, DegreeE
 
   renderDegreeList = (props: RouteComponentProps<any>) => {
     const { masteredDegrees, onMasteredDegreeClick } = this.props;
+    const slide = props.location.pathname.split('/').slice(1).length - 1;
+    console.log({ slide });
 
     return (
-      <SlideLeft slid={!get(props, _ => _.match.isExact, false)}>
+      <FirstSlide slide={slide}>
         <Page
           title="Degree Manager"
           subtitle={<Text color={styles.textLight}>Edit degrees here</Text>}
@@ -77,17 +86,25 @@ export class DegreeEditor extends React.PureComponent<DegreeEditorProps, DegreeE
             onMasteredDegreeClick={onMasteredDegreeClick}
           />
         </Page>
-      </SlideLeft>
+      </FirstSlide>
     );
   };
 
   renderDegreeDetail = (props: RouteComponentProps<{ masteredDegreeId: string }>) => {
+    const slide = props.location.pathname.split('/').slice(1).length - 1;
     const masteredDegreeId = get(props, _ => _.match.params.masteredDegreeId);
     const degreeDetail = masteredDegreeId ? (
       <DegreeDetail masteredDegreeId={masteredDegreeId} />
     ) : null;
 
-    return <SlideRight slid={!props.match}>{degreeDetail}</SlideRight>;
+    return <SecondSlide slide={slide}>{degreeDetail}</SecondSlide>;
+  };
+
+  renderDegreePreview = (props: RouteComponentProps<{ masteredDegreeId: string }>) => {
+    const slide = props.location.pathname.split('/').slice(1).length - 1;
+    return <ThirdSlide slide={slide}>
+      hello from the third slide
+    </ThirdSlide>;
   };
 
   render() {
@@ -97,6 +114,10 @@ export class DegreeEditor extends React.PureComponent<DegreeEditorProps, DegreeE
         <Content>
           <Route path="/degree-manager" children={this.renderDegreeList} />
           <Route path="/degree-manager/:masteredDegreeId" children={this.renderDegreeDetail} />
+          <Route
+            path="/degree-manager/:masteredDegreeId/preview"
+            children={this.renderDegreePreview}
+          />
         </Content>
 
         <NewDegreeModal

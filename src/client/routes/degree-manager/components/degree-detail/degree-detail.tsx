@@ -107,6 +107,7 @@ interface DegreeDetailProps {
   masteredDegree: Model.MasteredDegree.Model;
   onBackClick: () => void;
   onEditDegreeName: (newName: string) => void;
+  onPreview: () => void;
 }
 interface DegreeDetailState {
   editingDegreeName: boolean;
@@ -157,7 +158,7 @@ export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetai
   };
 
   render() {
-    const { onBackClick, masteredDegree } = this.props;
+    const { onBackClick, masteredDegree, onPreview } = this.props;
     const { editingDegreeName } = this.state;
     return (
       <Root>
@@ -166,7 +167,7 @@ export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetai
             <FaLeft icon="angleLeft" />
             Back
           </BackToDegreeButton>
-          <PreviewButton>
+          <PreviewButton onClick={onPreview}>
             Preview Degree <IconRight icon="angleRight" />
           </PreviewButton>
         </ActionsBar>

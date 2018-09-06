@@ -26,9 +26,12 @@ const Container = Model.store.connect({
     onBackClick: () => {
       history.push('/degree-manager');
     },
+    onPreview: () => {
+      history.push(`/degree-manager/${ownProps.masteredDegreeId}/preview`);
+    },
     onEditDegreeName: (newName: string) => {
       dispatch(state => {
-        const newState = {
+        const newState: Model.App.Model = {
           ...state,
           masteredDegrees: Model.MasteredDegrees.updatedMasteredDegree(
             state.masteredDegrees,
@@ -36,7 +39,6 @@ const Container = Model.store.connect({
             masteredDegree => ({ ...masteredDegree, name: newName }),
           ),
         };
-        console.log(newState);
         return newState;
       });
     },
