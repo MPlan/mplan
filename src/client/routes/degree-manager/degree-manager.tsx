@@ -12,36 +12,13 @@ import { PrimaryButton } from 'components/button';
 import { NewDegreeModal } from './components/new-degree-modal';
 import { DegreeList } from './components/degree-list';
 import { DegreeDetail } from './components/degree-detail';
+import { Slide } from './components/slide';
 
 const Content = styled(View)`
   max-width: 100%;
   flex: 1 1 auto;
   overflow: hidden;
   position: relative;
-`;
-interface SlideProps extends ViewProps {
-  slide?: number;
-}
-const FirstSlide = styled<SlideProps>(View)`
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  left: ${props => `${-((props.slide || 0) - 0) * 100}%`};
-  transition: all 500ms;
-`;
-const SecondSlide = styled<SlideProps>(View)`
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  left: ${props => `${-((props.slide || 0) - 1) * 100}%`};
-  transition: all 500ms;
-`;
-const ThirdSlide = styled<SlideProps>(View)`
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  left: ${props => `${-((props.slide || 0) - 2) * 100}%`};
-  transition: all 500ms;
 `;
 
 interface DegreeEditorProps {
@@ -71,11 +48,10 @@ export class DegreeEditor extends React.PureComponent<DegreeEditorProps, DegreeE
 
   renderDegreeList = (props: RouteComponentProps<any>) => {
     const { masteredDegrees, onMasteredDegreeClick } = this.props;
-    const slide = props.location.pathname.split('/').slice(1).length - 1;
-    console.log({ slide });
+    const currentSlide = props.location.pathname.split('/').slice(1).length - 1;
 
     return (
-      <FirstSlide slide={slide}>
+      <Slide currentSlide={currentSlide} slide={0}>
         <Page
           title="Degree Manager"
           subtitle={<Text color={styles.textLight}>Edit degrees here</Text>}
@@ -86,25 +62,31 @@ export class DegreeEditor extends React.PureComponent<DegreeEditorProps, DegreeE
             onMasteredDegreeClick={onMasteredDegreeClick}
           />
         </Page>
-      </FirstSlide>
+      </Slide>
     );
   };
 
   renderDegreeDetail = (props: RouteComponentProps<{ masteredDegreeId: string }>) => {
-    const slide = props.location.pathname.split('/').slice(1).length - 1;
+    const currentSlide = props.location.pathname.split('/').slice(1).length - 1;
     const masteredDegreeId = get(props, _ => _.match.params.masteredDegreeId);
     const degreeDetail = masteredDegreeId ? (
       <DegreeDetail masteredDegreeId={masteredDegreeId} />
     ) : null;
 
-    return <SecondSlide slide={slide}>{degreeDetail}</SecondSlide>;
+    return (
+      <Slide currentSlide={currentSlide} slide={1}>
+        {degreeDetail}
+      </Slide>
+    );
   };
 
   renderDegreePreview = (props: RouteComponentProps<{ masteredDegreeId: string }>) => {
-    const slide = props.location.pathname.split('/').slice(1).length - 1;
-    return <ThirdSlide slide={slide}>
-      hello from the third slide
-    </ThirdSlide>;
+    const currentSlide = props.location.pathname.split('/').slice(1).length - 1;
+    return (
+      <Slide currentSlide={currentSlide} slide={2}>
+        hello from the third slide
+      </Slide>
+    );
   };
 
   render() {
