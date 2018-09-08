@@ -6,13 +6,14 @@ import { Route, RouteComponentProps } from 'react-router';
 import { get } from 'utilities/get';
 
 import { Page } from 'components/page';
-import { View, ViewProps } from 'components/view';
+import { View } from 'components/view';
 import { Text } from 'components/text';
 import { PrimaryButton } from 'components/button';
 import { NewDegreeModal } from './components/new-degree-modal';
 import { DegreeList } from './components/degree-list';
 import { DegreeDetail } from './components/degree-detail';
 import { Slide } from './components/slide';
+import { DegreePreview } from './components/degree-preview';
 
 const Content = styled(View)`
   max-width: 100%;
@@ -82,9 +83,10 @@ export class DegreeEditor extends React.PureComponent<DegreeEditorProps, DegreeE
 
   renderDegreePreview = (props: RouteComponentProps<{ masteredDegreeId: string }>) => {
     const currentSlide = props.location.pathname.split('/').slice(1).length - 1;
+    const masteredDegreeId = get(props, _ => _.match.params.masteredDegreeId);
     return (
       <Slide currentSlide={currentSlide} slide={2}>
-        hello from the third slide
+        {masteredDegreeId && <DegreePreview masteredDegreeId={masteredDegreeId} />}
       </Slide>
     );
   };

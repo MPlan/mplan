@@ -15,4 +15,23 @@ interface User {
   userPrerequisiteOverrides: { [catalogId: string]: Prerequisite.Model };
 }
 
+export const emptyUser: User = {
+  id: '',
+  username: '',
+  registerDate: 0,
+  lastLoginDate: 0,
+  lastUpdateDate: 0,
+  chosenDegree: false,
+  plan: {
+    anchorSeason: '',
+    anchorYear: 0,
+    semesters: [],
+  },
+  degree: {
+    degreeGroupData: {},
+  },
+  isAdmin: false,
+  userPrerequisiteOverrides: {},
+};
+
 export { User as Model };
