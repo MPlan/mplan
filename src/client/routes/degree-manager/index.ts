@@ -5,6 +5,7 @@ import { history } from 'client/history';
 
 const Container = Model.store.connect({
   mapStateToProps: state => ({
+    locationPathname: history.location.pathname,
     masteredDegrees: Model.MasteredDegrees.getAsArray(state.masteredDegrees),
   }),
   mapDispatchToProps: dispatch => ({

@@ -2,18 +2,21 @@ import * as React from 'react';
 import * as Model from 'models';
 import * as styles from 'styles';
 import styled from 'styled-components';
-import { Route, RouteComponentProps } from 'react-router';
+import { RouteComponentProps } from 'react-router';
 import { get } from 'utilities/get';
 
+import { Route } from 'react-router';
 import { Page } from 'components/page';
 import { View } from 'components/view';
 import { Text } from 'components/text';
 import { PrimaryButton } from 'components/button';
+import { createSlides } from 'components/slides';
 import { NewDegreeModal } from './components/new-degree-modal';
 import { DegreeList } from './components/degree-list';
 import { DegreeDetail } from './components/degree-detail';
-import { Slide } from './components/slide';
 import { DegreePreview } from './components/degree-preview';
+
+const { Slide, Slides } = createSlides();
 
 const Content = styled(View)`
   max-width: 100%;
@@ -23,6 +26,7 @@ const Content = styled(View)`
 `;
 
 interface DegreeEditorProps {
+  locationPathname: string;
   masteredDegrees: Model.MasteredDegree.Model[];
   onCreateDegree: (degreeName: string) => void;
   onMasteredDegreeClick: (masteredDegreeId: string) => void;
@@ -40,6 +44,15 @@ export class DegreeEditor extends React.PureComponent<DegreeEditorProps, DegreeE
     };
   }
 
+  get currentSlide() {
+    const { locationPathname } = this.props;
+
+    if (/\/degree-manager\/.*\/preview/i.test(locationPathname)) return 2;
+    if (/\/degree-manager\/.*\/groups\/.*/i.test(locationPathname)) return 2;
+    if (/\/degree-manager\/.*/i.test(locationPathname)) return 1;
+    return 0;
+  }
+
   handleNewDegreeOpen = () => {
     this.setState({ newDegreeModalOpen: true });
   };
@@ -47,12 +60,11 @@ export class DegreeEditor extends React.PureComponent<DegreeEditorProps, DegreeE
     this.setState({ newDegreeModalOpen: false });
   };
 
-  renderDegreeList = (props: RouteComponentProps<any>) => {
+  renderDegreeManager = ({ match }: RouteComponentProps<any>) => {
     const { masteredDegrees, onMasteredDegreeClick } = this.props;
-    const currentSlide = props.location.pathname.split('/').slice(1).length - 1;
 
     return (
-      <Slide currentSlide={currentSlide} slide={0}>
+      <Slide slide={0} active>
         <Page
           title="Degree Manager"
           subtitle={<Text color={styles.textLight}>Edit degrees here</Text>}
@@ -68,24 +80,36 @@ export class DegreeEditor extends React.PureComponent<DegreeEditorProps, DegreeE
   };
 
   renderDegreeDetail = (props: RouteComponentProps<{ masteredDegreeId: string }>) => {
-    const currentSlide = props.location.pathname.split('/').slice(1).length - 1;
     const masteredDegreeId = get(props, _ => _.match.params.masteredDegreeId);
     const degreeDetail = masteredDegreeId ? (
       <DegreeDetail masteredDegreeId={masteredDegreeId} />
     ) : null;
 
     return (
-      <Slide currentSlide={currentSlide} slide={1}>
+      <Slide slide={1} active={!!degreeDetail}>
         {degreeDetail}
       </Slide>
     );
   };
 
-  renderDegreePreview = (props: RouteComponentProps<{ masteredDegreeId: string }>) => {
-    const currentSlide = props.location.pathname.split('/').slice(1).length - 1;
+  renderCourseGroup = (
+    props: RouteComponentProps<{ masteredDegreeId: string; courseGroupId: string }>,
+  ) => {
     const masteredDegreeId = get(props, _ => _.match.params.masteredDegreeId);
+    const groupId = get(props, _ => _.match.params.courseGroupId);
+
     return (
-      <Slide currentSlide={currentSlide} slide={2}>
+      <Slide slide={2} active={!!props.match}>
+        <Text>course group</Text>
+      </Slide>
+    );
+  };
+
+  renderDegreePreview = (props: RouteComponentProps<{ masteredDegreeId: string }>) => {
+    const masteredDegreeId = get(props, _ => _.match.params.masteredDegreeId);
+
+    return (
+      <Slide slide={2} active={!!masteredDegreeId}>
         {masteredDegreeId && <DegreePreview masteredDegreeId={masteredDegreeId} />}
       </Slide>
     );
@@ -93,16 +117,21 @@ export class DegreeEditor extends React.PureComponent<DegreeEditorProps, DegreeE
 
   render() {
     const { newDegreeModalOpen } = this.state;
+
     return (
       <React.Fragment>
-        <Content>
-          <Route path="/degree-manager" children={this.renderDegreeList} />
+        <Slides currentSlide={this.currentSlide}>
+          <Route path="/degree-manager" children={this.renderDegreeManager} />
           <Route path="/degree-manager/:masteredDegreeId" children={this.renderDegreeDetail} />
+          <Route
+            path="/degree-manager/:masteredDegreeId/groups/:courseGroupId"
+            children={this.renderCourseGroup}
+          />
           <Route
             path="/degree-manager/:masteredDegreeId/preview"
             children={this.renderDegreePreview}
           />
-        </Content>
+        </Slides>
 
         <NewDegreeModal
           open={newDegreeModalOpen}
