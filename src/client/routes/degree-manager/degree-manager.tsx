@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { RouteComponentProps } from 'react-router';
 import { get } from 'utilities/get';
 
-import { Route } from 'react-router';
+import { Route, Redirect } from 'react-router';
 import { Page } from 'components/page';
 import { View } from 'components/view';
 import { Text } from 'components/text';
@@ -81,9 +81,12 @@ export class DegreeEditor extends React.PureComponent<DegreeEditorProps, DegreeE
 
   renderDegreeDetail = (props: RouteComponentProps<{ masteredDegreeId: string }>) => {
     const masteredDegreeId = get(props, _ => _.match.params.masteredDegreeId);
-    const degreeDetail = masteredDegreeId ? (
-      <DegreeDetail masteredDegreeId={masteredDegreeId} />
-    ) : null;
+    const degreeDetail = masteredDegreeId && <DegreeDetail masteredDegreeId={masteredDegreeId} />;
+    const active = !!props.match;
+
+    if (active) {
+      if (!degreeDetail) return <Redirect to="/degree-manager" />;
+    }
 
     return (
       <Slide slide={1} active={!!degreeDetail}>
@@ -98,8 +101,14 @@ export class DegreeEditor extends React.PureComponent<DegreeEditorProps, DegreeE
     const masteredDegreeId = get(props, _ => _.match.params.masteredDegreeId);
     const groupId = get(props, _ => _.match.params.courseGroupId);
 
+    const active = !!props.match;
+    if (active) {
+      if (!masteredDegreeId) return <Redirect to="degree-manager" />;
+      if (!groupId) return <Redirect to={`/degree-manager/${masteredDegreeId}`} />;
+    }
+
     return (
-      <Slide slide={2} active={!!props.match}>
+      <Slide slide={2} active={active}>
         <Text>course group</Text>
       </Slide>
     );
