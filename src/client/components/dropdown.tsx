@@ -1,10 +1,11 @@
 import * as React from 'react';
+import * as styles from 'styles';
+
 import styled from 'styled-components';
-import { View } from './view';
-import { Text } from './text';
-import { Fa } from './fa';
-import { MenuItem } from './menu-item';
-import * as styles from '../styles';
+import { View } from 'components/view';
+import { Text } from 'components/text';
+import { Fa } from 'components/fa';
+import { MenuItem } from 'components/menu-item';
 
 const Container = styled(View)`
   position: relative;

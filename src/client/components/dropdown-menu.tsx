@@ -7,6 +7,7 @@ import { Text } from 'components/text';
 import { Fa } from 'components/fa';
 import { Dropdown } from 'components/dropdown';
 import { MenuItem } from 'components/menu-item';
+import { IconButton } from 'components/icon-button';
 import { ClickAwayListener } from 'components/click-away-listener';
 
 const Container = styled(View)`
@@ -16,29 +17,8 @@ const Container = styled(View)`
     color: ${styles.text};
   }
 `;
-const EllipsisButton = styled.button`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  width: ${styles.space(1)};
-  height: ${styles.space(1)};
-  border-radius: 99999px;
-  outline: none;
-  border: none;
-  margin-top: 0.2rem;
-  background-color: transparent;
-  cursor: pointer;
-  &:hover,
-  &:focus {
-    color: ${styles.blue};
-    background-color: ${styles.whiteTer};
-  }
-  &:active {
-    background-color: ${styles.grayLighter};
-  }
-  transition: all 0.2;
-`;
+
+export type Actions<T extends string> = { [P in T]: MenuItem };
 
 export interface DropdownMenuProps<T extends { [P in keyof T]: MenuItem }> {
   actions: T;
@@ -102,19 +82,20 @@ export class DropdownMenu<T extends { [P in keyof T]: MenuItem }> extends React.
   };
 
   render() {
+    const { actions, onAction, header, children, ...restOfProps } = this.props;
     return (
-      <Container>
-        <EllipsisButton onClick={this.handleEllipsisClick} onBlur={this.handleEllipsisBlur}>
+      <Container {...restOfProps}>
+        <IconButton onClick={this.handleEllipsisClick} onBlur={this.handleEllipsisBlur}>
           <Fa icon="ellipsisH" size="lg" />
-        </EllipsisButton>
+        </IconButton>
         <ClickAwayListener onClickAway={this.handleDropdownBlur}>
           <Dropdown
-            header={this.props.header}
+            header={header}
             ref={this.dropdownRef}
             open={this.state.open}
             onBlur={this.handleDropdownBlur}
-            actions={this.props.actions}
-            onAction={this.props.onAction}
+            actions={actions}
+            onAction={onAction}
           />
         </ClickAwayListener>
       </Container>
