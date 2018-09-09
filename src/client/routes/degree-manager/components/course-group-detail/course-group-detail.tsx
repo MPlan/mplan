@@ -17,6 +17,7 @@ import { Fa as _Fa } from 'components/fa';
 import { DegreeItem } from 'routes/degree-manager/components/degree-item';
 import { DescriptionAction } from 'routes/degree-manager/components/description-action';
 import { DescriptionEditor } from 'routes/degree-manager/components/description-editor';
+import { PageNav } from 'routes/degree-manager/components/page-nav';
 
 const Root = styled(View)`
   flex: 1 1 auto;
@@ -73,6 +74,7 @@ const ActionSubtitle = styled(Text)`
 interface CourseGroupDetailProps {
   name: string;
   onNameChange: (name: string) => void;
+  onBackClick: () => void;
 }
 interface CourseGroupDetailState {
   editingName: boolean;
@@ -105,14 +107,14 @@ export class CourseGroupDetail extends React.Component<
   };
 
   render() {
-    const { name } = this.props;
+    const { name, onBackClick } = this.props;
     const { editingName } = this.state;
 
     return (
       <Root>
         <Body>
           <Content>
-            <Breadcrumbs />
+            <PageNav backTitle="Back to degree" onBackClick={onBackClick} />
             <RightClickMenu
               header={name}
               actions={this.degreeDropdownAction}

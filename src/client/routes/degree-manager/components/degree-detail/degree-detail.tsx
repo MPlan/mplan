@@ -10,15 +10,13 @@ import { VerticalBar } from 'components/vertical-bar';
 import { DropdownMenu } from 'components/dropdown-menu';
 import { InlineEdit } from 'components/inline-edit';
 import { RightClickMenu } from 'components/right-click-menu';
-import { Breadcrumbs } from 'components/breadcrumbs';
-import { OutlineButton } from 'components/button';
-import { Fa as _Fa } from 'components/fa';
 
 import { DescriptionEditor } from 'routes/degree-manager/components/description-editor';
 import { CreditHourMinimum } from 'routes/degree-manager/components/credit-hour-minimum';
 import { PublishUnlist } from 'routes/degree-manager/components/publish-unlist';
 import { CourseGroupSummary } from 'routes/degree-manager/components/course-group-summary';
 import { DegreeSummary } from 'routes/degree-manager/components/degree-summary';
+import { PageNav } from 'routes/degree-manager/components/page-nav';
 
 const Root = styled(View)`
   flex: 1 1 auto;
@@ -65,13 +63,6 @@ const TitleInput = styled(Input)`
   border: 1px solid ${styles.grayLight};
   outline: none;
   padding: 0;
-`;
-const Fa = styled(_Fa)`
-  margin-right: ${styles.space(-1)};
-`;
-const BackButton = styled(OutlineButton)`
-  margin-right: ${styles.space(0)};
-  font-size: ${styles.space(-1)};
 `;
 
 interface DegreeDetailProps {
@@ -135,14 +126,7 @@ export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetai
       <Root>
         <Body>
           <Content>
-            <ButtonRow>
-              <BackButton onClick={onBackClick}>
-                <Fa icon="angleLeft" />
-                Back To Degrees
-              </BackButton>
-              <VerticalBar />
-              <Breadcrumbs />
-            </ButtonRow>
+            <PageNav backTitle="Back to degrees" onBackClick={onBackClick} />
             <RightClickMenu
               header={masteredDegree.name}
               actions={this.degreeDropdownAction}

@@ -110,7 +110,7 @@ export class DegreeEditor extends React.PureComponent<DegreeEditorProps, DegreeE
 
     return (
       <Slide slide={2} active={active}>
-        <CourseGroupDetail groupId={groupId!} />
+        <CourseGroupDetail groupId={groupId!} masteredDegreeId={masteredDegreeId!} />
       </Slide>
     );
   };
