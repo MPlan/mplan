@@ -19,7 +19,9 @@ const Container = Model.store.connect({
     }
 
     return {
-      masteredDegree,
+      id: ownProps.masteredDegreeId,
+      name: masteredDegree.name,
+      descriptionHtml: masteredDegree.descriptionHtml,
     };
   },
   mapDispatchToProps: (dispatch, ownProps: DegreeEditorContainerProps) => ({
@@ -40,6 +42,26 @@ const Container = Model.store.connect({
           ),
         };
         return newState;
+      });
+    },
+    onDescriptionChange: (description: string) => {
+      dispatch(state => {
+        const { masteredDegrees } = state;
+        const { masteredDegreeId } = ownProps;
+
+        const changeDescription = (mastedDegree: Model.MasteredDegree.Model) =>
+          Model.MasteredDegree.changeDescription(mastedDegree, description);
+
+        const newMasteredDegrees = Model.MasteredDegrees.updatedMasteredDegree(
+          masteredDegrees,
+          masteredDegreeId,
+          changeDescription,
+        );
+
+        return {
+          ...state,
+          masteredDegrees: newMasteredDegrees,
+        };
       });
     },
   }),

@@ -1,5 +1,6 @@
 import { history } from 'client/history';
 import { Breadcrumbs } from './breadcrumbs';
+import { returnPrevious } from 'utilities/return-previous-if-unchanged';
 import * as Model from 'models';
 
 function convertDashedCase(dashedCase: string) {
@@ -23,11 +24,14 @@ function convertPathToString(path: string, store: Model.App.Model) {
   return convertDashedCase(path);
 }
 
+const convertPathname = returnPrevious((pathname: string, store: Model.App.Model) => {
+  const pathSplit = pathname.split('/').slice(1);
+  return pathSplit.map(pathPart => convertPathToString(pathPart, store));
+});
+
 const Container = Model.store.connect({
   mapStateToProps: (store, ownProps: any) => {
-    const pathSplit = history.location.pathname.split('/').slice(1);
-    const path = pathSplit.map(pathPart => convertPathToString(pathPart, store));
-
+    const path = convertPathname(history.location.pathname, store);
     return { path, ...ownProps };
   },
   mapDispatchToProps: () => {

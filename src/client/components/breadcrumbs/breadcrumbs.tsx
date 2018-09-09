@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as styles from 'styles';
 import styled from 'styled-components';
+import { isEqual } from 'lodash';
 
 import { View, ViewProps } from 'components/view';
 import { Text } from 'components/text';
@@ -30,7 +31,15 @@ interface BreadcrumbsProps extends ViewProps {
   onPathClick: (index: number) => void;
 }
 
-export class Breadcrumbs extends React.PureComponent<BreadcrumbsProps, {}> {
+export class Breadcrumbs extends React.Component<BreadcrumbsProps, {}> {
+  shouldComponentUpdate(nextProps: BreadcrumbsProps) {
+    const currentPath = this.props.path;
+    const nextPath = nextProps.path;
+
+    if (isEqual(currentPath, nextPath)) return false;
+    return true;
+  }
+
   render() {
     const { path, onPathClick, ref, ...restOfProps } = this.props;
     return (

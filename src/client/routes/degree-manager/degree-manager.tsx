@@ -65,7 +65,7 @@ export class DegreeEditor extends React.PureComponent<DegreeEditorProps, DegreeE
     const { masteredDegrees, onMasteredDegreeClick } = this.props;
 
     return (
-      <Slide slide={0} active>
+      <Slide slide={0} active={this.currentSlide === 0}>
         <Page
           title="Degree Manager"
           subtitle={<Text color={styles.textLight}>Edit degrees here</Text>}

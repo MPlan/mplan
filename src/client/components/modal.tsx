@@ -1,8 +1,10 @@
 import * as React from 'react';
+import * as styles from 'styles';
+import styled from 'styled-components';
+
 import { View, ViewProps } from './view';
 import { Text } from './text';
-import styled from 'styled-components';
-import * as styles from '../styles';
+import shallowEqual from 'recompose/shallowEqual';
 
 interface ContainerProps extends ViewProps {
   open?: boolean;
@@ -79,7 +81,13 @@ export interface ModalProps {
   onBlurCancel?: () => void;
 }
 
-export class Modal extends React.PureComponent<ModalProps, {}> {
+export class Modal extends React.Component<ModalProps, {}> {
+  shouldComponentUpdate(nextProps: ModalProps) {
+    if (!this.props.open && !nextProps.open) return false;
+    if (shallowEqual(this.props, nextProps)) return false;
+    return true;
+  }
+
   handleKeydown = (e: KeyboardEvent) => {
     if (!this.props.open) return;
     if (e.key === 'Escape') {
@@ -96,6 +104,7 @@ export class Modal extends React.PureComponent<ModalProps, {}> {
   }
 
   render() {
+    console.log('modal render');
     return (
       <Container open={this.props.open} style={{ opacity: this.props.open ? 1 : 0 }}>
         <Backdrop onClick={this.props.onBlurCancel} />

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import shallowEqual from 'recompose/shallowEqual';
 
 interface ConnectParams<State, OwnProps, PropsFromMapState, PropsFromMapDispatch> {
   mapStateToProps: (state: State, ownProps: OwnProps) => PropsFromMapState;
@@ -42,6 +43,7 @@ export function createStore<State>(initialState: State) {
     type PropsFromMappings = PropsFromMapState & PropsFromMapDispatch;
     return (Component: React.ComponentType<PropsFromMappings>) => {
       class ConnectedComponent extends React.Component<OwnProps, {}> {
+        previousStoreState: State | undefined;
         constructor(props: OwnProps) {
           super(props);
           connectedComponents.add(this);
@@ -49,6 +51,10 @@ export function createStore<State>(initialState: State) {
 
         componentWillUnmount() {
           connectedComponents.delete(this);
+        }
+
+        componentDidUpdate() {
+          this.previousStoreState = currentState;
         }
 
         render() {

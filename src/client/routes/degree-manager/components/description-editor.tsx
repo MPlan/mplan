@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
-import { Paragraph } from 'components/paragraph';
 import { DegreeItem } from './degree-item';
 import { View } from 'components/view';
 
@@ -26,16 +25,19 @@ const ReactQuillWrapper = styled(View)`
   }
 `;
 
-interface DescriptionEditorProps {}
+interface DescriptionEditorProps {
+  descriptionHtml: string;
+  onChange: (description: string) => void;
+}
 
 export class DescriptionEditor extends React.PureComponent<DescriptionEditorProps, {}> {
   render() {
-    const { children, ...restOfProps } = this.props;
+    const { children, descriptionHtml, onChange, ...restOfProps } = this.props;
     return (
       <DegreeItem title="Description" {...restOfProps}>
         <Content>{children}</Content>
         <ReactQuillWrapper>
-          <ReactQuill onChange={() => {}} />
+          <ReactQuill value={descriptionHtml} onChange={onChange} />
         </ReactQuillWrapper>
       </DegreeItem>
     );

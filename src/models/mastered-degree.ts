@@ -82,3 +82,17 @@ export function deleteGroup(
     masteredDegreeGroups: newMasteredDegreeGroups,
   };
 }
+
+export function changeDescription(self: MasteredDegree, newDescription: string): MasteredDegree {
+  return {
+    ...self,
+    descriptionHtml: newDescription,
+  };
+}
+
+export function changeName(self: MasteredDegree, newName: string): MasteredDegree {
+  return {
+    ...self,
+    name: newName,
+  };
+}

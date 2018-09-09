@@ -67,10 +67,13 @@ const TitleInput = styled(Input)`
 `;
 
 interface DegreeDetailProps {
-  masteredDegree: Model.MasteredDegree.Model;
+  id: string;
+  name: string;
+  descriptionHtml: string;
   onBackClick: () => void;
   onEditDegreeName: (newName: string) => void;
   onPreview: () => void;
+  onDescriptionChange: (description: string) => void;
 }
 interface DegreeDetailState {
   editingDegreeName: boolean;
@@ -121,7 +124,7 @@ export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetai
   };
 
   render() {
-    const { onBackClick, masteredDegree, onPreview } = this.props;
+    const { id, name, onBackClick, descriptionHtml, onPreview, onDescriptionChange } = this.props;
     const { editingDegreeName } = this.state;
     return (
       <Root>
@@ -129,14 +132,14 @@ export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetai
           <Content>
             <PageNav backTitle="Back to degrees" onBackClick={onBackClick} />
             <RightClickMenu
-              header={masteredDegree.name}
+              header={name}
               actions={this.degreeDropdownAction}
               onAction={this.handleActions}
             >
               {props => (
                 <TitleRow {...props}>
                   <InlineEdit
-                    value={masteredDegree.name}
+                    value={name}
                     renderDisplay={props => <Title {...props} />}
                     renderInput={props => (
                       <TitleInput {...props} onChange={this.handleDegreeNameChange} />
@@ -147,7 +150,7 @@ export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetai
                   />
                   <VerticalBar />
                   <DropdownMenu
-                    header={masteredDegree.name}
+                    header={name}
                     actions={this.degreeDropdownAction}
                     onAction={this.handleActions}
                   />
@@ -155,7 +158,7 @@ export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetai
               )}
             </RightClickMenu>
             <PublishUnlist />
-            <DescriptionEditor>
+            <DescriptionEditor descriptionHtml={descriptionHtml} onChange={onDescriptionChange}>
               <Paragraph>Edit the description of this degree here.</Paragraph>
               <Paragraph>
                 The degree description will appear under the degree name on the student's degree
@@ -164,7 +167,7 @@ export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetai
               </Paragraph>
             </DescriptionEditor>
             <CreditHourMinimum />
-            <CourseGroupSummary masteredDegreeId={masteredDegree.id} />
+            <CourseGroupSummary masteredDegreeId={id} />
             <DegreeSummary />
           </Content>
         </Body>

@@ -143,7 +143,7 @@ export class CourseGroupDetail extends React.Component<
                 </TitleRow>
               )}
             </RightClickMenu>
-            <DescriptionEditor>
+            <DescriptionEditor descriptionHtml={''} onChange={() => {}}>
               <Paragraph>Edit the description of this course group here.</Paragraph>
               <Paragraph>
                 The description will appear when the student clicks the "More info" link under the

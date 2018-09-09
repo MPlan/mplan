@@ -41,6 +41,7 @@ export function createSlides() {
   const { Provider, Consumer } = React.createContext(0);
 
   let setSlide!: (slide: number) => void;
+  let getCurrentSlide!: () => number;
 
   class Slides extends React.Component<SlidesProps, SlidesState> {
     // allows the component to be controlled or uncontrolled
@@ -59,6 +60,7 @@ export function createSlides() {
         currentSlide: props.defaultSlide || 0,
       };
       setSlide = this.setSlide;
+      getCurrentSlide = () => this.state.currentSlide;
     }
 
     setSlide = (slide: number) => {
@@ -76,6 +78,11 @@ export function createSlides() {
   }
 
   class Slide extends React.Component<SlideProps, {}> {
+    shouldComponentUpdate(nextProps: SlideProps) {
+      if (!this.props.active && !nextProps.active) return false;
+      return true;
+    }
+
     render() {
       const { slide, ref, active, children, ...restOfProps } = this.props;
       return (
