@@ -14,11 +14,11 @@ import { Breadcrumbs } from 'components/breadcrumbs';
 import { OutlineButton } from 'components/button';
 import { Fa as _Fa } from 'components/fa';
 
-import { DescriptionEditor } from './components/description-editor';
-import { CreditHourMinimum } from './components/credit-hour-minimum';
-import { PublishUnlist } from './components/publish-unlist';
-import { CourseGroupSummary } from './components/course-group-summary';
-import { DegreeSummary } from './components/degree-summary';
+import { DescriptionEditor } from 'routes/degree-manager/components/description-editor';
+import { CreditHourMinimum } from 'routes/degree-manager/components/credit-hour-minimum';
+import { PublishUnlist } from 'routes/degree-manager/components/publish-unlist';
+import { CourseGroupSummary } from 'routes/degree-manager/components/course-group-summary';
+import { DegreeSummary } from 'routes/degree-manager/components/degree-summary';
 
 const Root = styled(View)`
   flex: 1 1 auto;

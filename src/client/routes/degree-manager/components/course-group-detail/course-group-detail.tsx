@@ -14,9 +14,9 @@ import { Paragraph } from 'components/paragraph';
 import { PrimaryButton } from 'components/button';
 import { Fa as _Fa } from 'components/fa';
 
-import { DegreeItem } from '../degree-detail/components/degree-item';
-import { DescriptionAction } from '../degree-detail/components/description-action';
-import { DescriptionEditor } from '../degree-detail/components/description-editor';
+import { DegreeItem } from 'routes/degree-manager/components/degree-item';
+import { DescriptionAction } from 'routes/degree-manager/components/description-action';
+import { DescriptionEditor } from 'routes/degree-manager/components/description-editor';
 
 const Root = styled(View)`
   flex: 1 1 auto;

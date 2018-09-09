@@ -6,9 +6,9 @@ import { View } from 'components/view';
 import { Text } from 'components/text';
 import { Fa } from 'components/fa';
 import { Actions } from 'components/dropdown-menu';
-import { DegreeItem } from '../degree-item';
 import { Divider } from 'components/divider';
 import { ActionableText } from 'components/actionable-text';
+import { DegreeItem } from 'routes/degree-manager/components/degree-item';
 import { CourseGroup } from './course-group';
 
 const Columns = styled(View)`
