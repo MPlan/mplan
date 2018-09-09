@@ -13,6 +13,7 @@ import { DropdownMenu } from 'components/dropdown-menu';
 import { Paragraph } from 'components/paragraph';
 import { PrimaryButton } from 'components/button';
 import { Fa as _Fa } from 'components/fa';
+import { Link } from 'components/link';
 
 import { DegreeItem } from 'routes/degree-manager/components/degree-item';
 import { DescriptionAction } from 'routes/degree-manager/components/description-action';
@@ -75,6 +76,7 @@ interface CourseGroupDetailProps {
   name: string;
   onNameChange: (name: string) => void;
   onBackClick: () => void;
+  onPreviewClick: () => void;
 }
 interface CourseGroupDetailState {
   editingName: boolean;
@@ -107,7 +109,7 @@ export class CourseGroupDetail extends React.Component<
   };
 
   render() {
-    const { name, onBackClick } = this.props;
+    const { name, onBackClick, onPreviewClick } = this.props;
     const { editingName } = this.state;
 
     return (
@@ -141,7 +143,14 @@ export class CourseGroupDetail extends React.Component<
                 </TitleRow>
               )}
             </RightClickMenu>
-            <DescriptionEditor />
+            <DescriptionEditor>
+              <Paragraph>Edit the description of this course group here.</Paragraph>
+              <Paragraph>
+                The description will appear when the student clicks the "More info" link under the
+                course group title. You can see how this looks this when you{' '}
+                <Link onClick={onPreviewClick}>preview the degree</Link>.
+              </Paragraph>
+            </DescriptionEditor>
             <DegreeItem title="Credit hours">
               <DescriptionAction description={<>fewfods</>}>tesfds</DescriptionAction>
             </DegreeItem>

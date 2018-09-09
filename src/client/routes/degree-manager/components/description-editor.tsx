@@ -30,16 +30,10 @@ interface DescriptionEditorProps {}
 
 export class DescriptionEditor extends React.PureComponent<DescriptionEditorProps, {}> {
   render() {
+    const { children, ...restOfProps } = this.props;
     return (
-      <DegreeItem title="Description">
-        <Content>
-          <Paragraph>Edit the description of this degree here.</Paragraph>
-          <Paragraph>
-            The degree description will appear under the degree name on the student's degree
-            worksheet. It is recommend to include a link to any official degree
-            curriculums/requirements here.
-          </Paragraph>
-        </Content>
+      <DegreeItem title="Description" {...restOfProps}>
+        <Content>{children}</Content>
         <ReactQuillWrapper>
           <ReactQuill onChange={() => {}} />
         </ReactQuillWrapper>

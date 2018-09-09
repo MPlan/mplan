@@ -13,6 +13,9 @@ const Container = withProps((ownProps: CourseGroupDetailContainerProps) => ({
   onBackClick: () => {
     history.push(`/degree-manager/${ownProps.masteredDegreeId}`);
   },
+  onPreviewClick: () => {
+    history.push(`/degree-manager/${ownProps.masteredDegreeId}/preview`);
+  },
 }))(CourseGroupDetail);
 
 export { Container as CourseGroupDetail };

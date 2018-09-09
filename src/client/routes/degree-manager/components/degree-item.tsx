@@ -40,10 +40,10 @@ export class DegreeItem<T extends { [key: string]: MenuItem }> extends React.Pur
   {}
 > {
   renderContent = (rightClickProps: RightClickProps | undefined) => {
-    const { title, children, dropdownMenuProps } = this.props;
+    const { title, children, dropdownMenuProps, ...restOfProps } = this.props;
 
     return (
-      <Root {...rightClickProps}>
+      <Root {...rightClickProps} {...restOfProps}>
         <TitleRow>
           <Title>{title}</Title>
           {dropdownMenuProps && (

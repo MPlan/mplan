@@ -10,6 +10,7 @@ import { VerticalBar } from 'components/vertical-bar';
 import { DropdownMenu } from 'components/dropdown-menu';
 import { InlineEdit } from 'components/inline-edit';
 import { RightClickMenu } from 'components/right-click-menu';
+import { Paragraph } from 'components/paragraph';
 
 import { DescriptionEditor } from 'routes/degree-manager/components/description-editor';
 import { CreditHourMinimum } from 'routes/degree-manager/components/credit-hour-minimum';
@@ -154,7 +155,14 @@ export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetai
               )}
             </RightClickMenu>
             <PublishUnlist />
-            <DescriptionEditor />
+            <DescriptionEditor>
+              <Paragraph>Edit the description of this degree here.</Paragraph>
+              <Paragraph>
+                The degree description will appear under the degree name on the student's degree
+                worksheet. It is recommend to include a link to any official degree
+                curriculums/requirements here.
+              </Paragraph>
+            </DescriptionEditor>
             <CreditHourMinimum />
             <CourseGroupSummary masteredDegreeId={masteredDegree.id} />
             <DegreeSummary />
