@@ -71,11 +71,11 @@ export class CourseGroup extends React.PureComponent<CourseGroupProps, {}> {
   handleActions = (action: keyof typeof actions) => {};
 
   render() {
-    const { title, courseCount, creditHours } = this.props;
+    const { title, courseCount, creditHours, onClick } = this.props;
     return (
       <RightClickMenu header={title} actions={actions} onAction={this.handleActions}>
         {rightClickProps => (
-          <Root {...rightClickProps}>
+          <Root onClick={onClick} {...rightClickProps}>
             <Summary>
               <Title>{title}</Title>
               <Details>

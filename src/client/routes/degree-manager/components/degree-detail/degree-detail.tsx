@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { View } from 'components/view';
 import { Text } from 'components/text';
 import { Input } from 'components/input';
+import { VerticalBar } from 'components/vertical-bar';
 import { PrimaryButton, TransparentButton } from 'components/button';
 import { Fa } from 'components/fa';
 import { DropdownMenu } from 'components/dropdown-menu';
@@ -22,7 +23,7 @@ import { DegreeSummary } from './components/degree-summary';
 const Root = styled(View)`
   flex: 1 1 auto;
   overflow: hidden;
-  position: relative;
+  /* position: relative; */
 `;
 const Body = styled(View)`
   flex: 1 1 auto;
@@ -71,13 +72,7 @@ const TitleInput = styled(Input)`
   outline: none;
   padding: 0;
 `;
-const VerticalBar = styled.div`
-  flex: 0 0 auto;
-  border-right: 1px solid ${styles.grayLight};
-  width: 2px;
-  margin-right: ${styles.space(0)};
-  align-self: stretch;
-`;
+
 const PreviewButton = styled(PrimaryButton)`
   margin: ${styles.space(-1)} 0;
   margin-left: auto;
@@ -203,7 +198,7 @@ export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetai
             <PublishUnlist />
             <DescriptionEditor />
             <CreditHourMinimum />
-            <CourseGroupSummary />
+            <CourseGroupSummary masteredDegreeId={masteredDegree.id} />
             <DegreeSummary />
           </Content>
         </Body>

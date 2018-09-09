@@ -14,6 +14,7 @@ const SlidesRoot = styled(View)`
 interface SlideRootProps extends ViewProps {
   currentSlide?: number;
   slide?: number;
+  active?: boolean;
 }
 const SlideRoot = styled<SlideRootProps>(View)`
   width: 100%;
@@ -21,6 +22,7 @@ const SlideRoot = styled<SlideRootProps>(View)`
   position: absolute;
   left: ${props => `${-((props.currentSlide || 0) - (props.slide || 0)) * 100}%`};
   transition: all 500ms;
+  z-index: ${props => (props.active ? 1 : 0)};
 `;
 
 interface SlideProps extends ViewProps {
@@ -79,7 +81,7 @@ export function createSlides() {
       return (
         <Consumer>
           {currentSlide => (
-            <SlideRoot slide={slide} currentSlide={currentSlide} {...restOfProps}>
+            <SlideRoot active={active} slide={slide} currentSlide={currentSlide} {...restOfProps}>
               {active && children}
             </SlideRoot>
           )}

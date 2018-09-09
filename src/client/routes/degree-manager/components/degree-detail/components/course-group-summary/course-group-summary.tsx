@@ -39,7 +39,9 @@ const Spacer = styled.div`
   height: ${styles.space(0)};
 `;
 
-interface CourseGroupSummaryProps {}
+interface CourseGroupSummaryProps {
+  onGroupClick: (groupId: string) => void;
+}
 
 const actions: Actions<'add' | 'rearrange'> = {
   add: {
@@ -72,7 +74,7 @@ export class CourseGroupSummary extends React.PureComponent<CourseGroupSummaryPr
               title="Written and Oral Communication"
               courseCount={5}
               creditHours="3 - 6 credits"
-              onClick={() => {}}
+              onClick={() => this.props.onGroupClick('test-group')}
             />
             <CourseGroup
               title="Humanities and the Arts"
