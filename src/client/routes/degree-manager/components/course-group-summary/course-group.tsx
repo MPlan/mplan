@@ -19,6 +19,7 @@ const Root = styled(View)`
   &:active {
     background-color: ${styles.grayLighter};
   }
+  transition: all 200ms;
 `;
 const Summary = styled(View)`
   margin-right: ${styles.space(-1)};
