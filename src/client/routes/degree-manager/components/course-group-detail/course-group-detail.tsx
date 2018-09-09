@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { View } from 'components/view';
 import { Text } from 'components/text';
 import { Input } from 'components/input';
-import { Breadcrumbs } from 'components/breadcrumbs';
+import { Breadcrumbs as _Breadcrumbs } from 'components/breadcrumbs';
 import { RightClickMenu } from 'components/right-click-menu';
 import { InlineEdit } from 'components/inline-edit';
 import { VerticalBar } from 'components/vertical-bar';
@@ -53,6 +53,10 @@ const TitleInput = styled(Input)`
   border: 1px solid ${styles.grayLight};
   outline: none;
   padding: 0;
+`;
+const Breadcrumbs = styled(_Breadcrumbs)`
+  flex: 0 0 auto;
+  margin-bottom: ${styles.space(0)};
 `;
 
 interface CourseGroupDetailProps {

@@ -129,7 +129,7 @@ export class DegreeEditor extends React.PureComponent<DegreeEditorProps, DegreeE
     const { newDegreeModalOpen } = this.state;
 
     return (
-      <React.Fragment>
+      <>
         <Slides currentSlide={this.currentSlide}>
           <Route path="/degree-manager" children={this.renderDegreeManager} />
           <Route path="/degree-manager/:masteredDegreeId" children={this.renderDegreeDetail} />
@@ -148,7 +148,7 @@ export class DegreeEditor extends React.PureComponent<DegreeEditorProps, DegreeE
           onClose={this.handleNewDegreeClose}
           onCreateNewDegree={this.props.onCreateDegree}
         />
-      </React.Fragment>
+      </>
     );
   }
 }

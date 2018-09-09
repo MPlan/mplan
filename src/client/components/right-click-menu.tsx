@@ -157,7 +157,7 @@ export class RightClickMenu<T extends { [P in keyof T]: MenuItem }> extends Reac
 
   render() {
     return (
-      <React.Fragment>
+      <>
         {ReactDom.createPortal(
           <Container
             onContextMenu={this.handleDropdownBlur}
@@ -179,7 +179,7 @@ export class RightClickMenu<T extends { [P in keyof T]: MenuItem }> extends Reac
           this.overlayElement,
         )}
         {this.props.children(this.rightClickProps)}
-      </React.Fragment>
+      </>
     );
   }
 }

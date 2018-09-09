@@ -32,11 +32,11 @@ export class PublishUnlist extends React.PureComponent<{}, {}> {
   render() {
     const PublishUnlistModal = this.publishUnlistInfo.Modal;
     return (
-      <React.Fragment>
+      <>
         <DegreeItem title="Publish or unlist">
           <DescriptionAction
             description={
-              <React.Fragment>
+              <>
                 <Paragraph>Degree programs can be either published or unlisted.</Paragraph>
                 <Paragraph>
                   It is recommended that you do not publish degrees until all information is
@@ -50,7 +50,7 @@ export class PublishUnlist extends React.PureComponent<{}, {}> {
                 <ActionableText onClick={this.publishUnlistInfo.open}>
                   Click here for more info.
                 </ActionableText>
-              </React.Fragment>
+              </>
             }
           >
             <ActionContainer>
@@ -84,7 +84,7 @@ export class PublishUnlist extends React.PureComponent<{}, {}> {
             students.
           </Answer>
         </PublishUnlistModal>
-      </React.Fragment>
+      </>
     );
   }
 }

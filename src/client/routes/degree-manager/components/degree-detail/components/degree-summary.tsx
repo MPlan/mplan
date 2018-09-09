@@ -15,13 +15,13 @@ export class DegreeSummary extends React.PureComponent<DegreeSummaryProps, {}> {
       <DegreeItem title="Summary">
         <DescriptionAction
           description={
-            <React.Fragment>
+            <>
               <Paragraph>Current Status: Unpublished</Paragraph>
               <Paragraph>Degree group count: 10</Paragraph>
               <Paragraph>Total credits allowed: 120</Paragraph>
               <Paragraph>Maximum credits: 120</Paragraph>
               <Paragraph>Maximum credits: 120</Paragraph>
-            </React.Fragment>
+            </>
           }
         >
           <PrimaryButton>Preview Degree</PrimaryButton>

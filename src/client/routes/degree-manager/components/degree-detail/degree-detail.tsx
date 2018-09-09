@@ -81,11 +81,6 @@ const PreviewButton = styled(PrimaryButton)`
 const IconRight = styled(Fa)`
   margin-left: ${styles.space(-1)};
 `;
-const LastRow = styled(View)`
-  flex-direction: row;
-  justify-content: flex-end;
-  margin-bottom: ${styles.space(0)};
-`;
 const ActionsBar = styled(View)`
   flex: 0 0 auto;
   flex-direction: row;

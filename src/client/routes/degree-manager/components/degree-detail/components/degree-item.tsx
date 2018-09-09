@@ -47,14 +47,14 @@ export class DegreeItem<T extends { [key: string]: MenuItem }> extends React.Pur
         <TitleRow>
           <Title>{title}</Title>
           {dropdownMenuProps && (
-            <React.Fragment>
+            <>
               <VerticalBar />
               <DropdownMenu
                 header={title}
                 actions={dropdownMenuProps.actions}
                 onAction={dropdownMenuProps.onAction}
               />
-            </React.Fragment>
+            </>
           )}
         </TitleRow>
 

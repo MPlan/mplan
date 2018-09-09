@@ -59,7 +59,7 @@ export class CreditHourMinimum extends React.PureComponent<
       <DegreeItem title="Credit hour minimum">
         <DescriptionAction
           description={
-            <React.Fragment>
+            <>
               <Paragraph>
                 All degree programs must have credit hour minimum. This number represents the
                 minimum amount of credit hours required in order to graduate with this degree.
@@ -72,7 +72,7 @@ export class CreditHourMinimum extends React.PureComponent<
                 <strong>Note:</strong> MPlan is <em>not</em> a degree audit. Though this credit hour
                 minimum provides some degree validation, it is not meant to be thorough.
               </Paragraph>
-            </React.Fragment>
+            </>
           }
         >
           <InlineEdit
