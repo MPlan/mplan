@@ -31,10 +31,10 @@ export const Button = styled.button`
 `;
 
 export const DangerButton = styled(Button)`
-  color: ${styles.whiteTer};
+  color: ${styles.white};
   background-color: ${styles.danger};
   & * {
-    color: ${styles.whiteTer} !important;
+    color: ${styles.white} !important;
   }
 
   &:hover,
@@ -50,10 +50,10 @@ export const DangerButton = styled(Button)`
 `;
 
 export const PrimaryButton = styled(Button)`
-  color: ${styles.whiteTer};
+  color: ${styles.white};
   background-color: ${styles.blue};
   & * {
-    color: ${styles.whiteTer} !important;
+    color: ${styles.white} !important;
   }
 
   &:hover,
@@ -70,4 +70,16 @@ export const PrimaryButton = styled(Button)`
 
 export const TransparentButton = styled(Button)`
   background-color: transparent;
+`;
+
+export const OutlineButton = styled(TransparentButton)`
+  border: 1px solid ${styles.grayLight};
+  &:hover,
+  &:focus {
+    border-color: ${styles.gray};
+  }
+
+  &:active {
+    border-color: ${styles.grayDark};
+  }
 `;

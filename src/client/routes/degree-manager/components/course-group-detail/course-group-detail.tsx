@@ -10,6 +10,9 @@ import { RightClickMenu } from 'components/right-click-menu';
 import { InlineEdit } from 'components/inline-edit';
 import { VerticalBar } from 'components/vertical-bar';
 import { DropdownMenu } from 'components/dropdown-menu';
+import { Paragraph } from 'components/paragraph';
+import { PrimaryButton } from 'components/button';
+import { Fa as _Fa } from 'components/fa';
 
 import { DegreeItem } from '../degree-detail/components/degree-item';
 import { DescriptionAction } from '../degree-detail/components/description-action';
@@ -57,6 +60,14 @@ const TitleInput = styled(Input)`
 const Breadcrumbs = styled(_Breadcrumbs)`
   flex: 0 0 auto;
   margin-bottom: ${styles.space(0)};
+`;
+const Fa = styled(_Fa)`
+  margin-right: ${styles.space(-1)};
+`;
+const ActionSubtitle = styled(Text)`
+  text-transform: uppercase;
+  font-size: ${styles.space(-1)};
+  margin-top: ${styles.space(-1)};
 `;
 
 interface CourseGroupDetailProps {
@@ -131,6 +142,24 @@ export class CourseGroupDetail extends React.Component<
             <DescriptionEditor />
             <DegreeItem title="Credit hours">
               <DescriptionAction description={<>fewfods</>}>tesfds</DescriptionAction>
+            </DegreeItem>
+            <DegreeItem title="Default courses">
+              <Paragraph>These are the courses that will appear initially.</Paragraph>
+            </DegreeItem>
+            <DegreeItem title="Allowed courses">
+              <Paragraph>
+                This is the allowed white-list of courses. These will be presented to the users as
+                options to choose from.
+              </Paragraph>
+            </DegreeItem>
+            <DegreeItem title="Summary">
+              <DescriptionAction description={<>test</>}>
+                <PrimaryButton>
+                  <Fa icon="angleLeft" />
+                  Back to degree
+                </PrimaryButton>
+                <ActionSubtitle>Your changes save automatically.</ActionSubtitle>
+              </DescriptionAction>
             </DegreeItem>
           </Content>
         </Body>

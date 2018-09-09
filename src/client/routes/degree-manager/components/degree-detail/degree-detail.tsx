@@ -7,12 +7,12 @@ import { View } from 'components/view';
 import { Text } from 'components/text';
 import { Input } from 'components/input';
 import { VerticalBar } from 'components/vertical-bar';
-import { PrimaryButton, TransparentButton } from 'components/button';
-import { Fa } from 'components/fa';
 import { DropdownMenu } from 'components/dropdown-menu';
 import { InlineEdit } from 'components/inline-edit';
 import { RightClickMenu } from 'components/right-click-menu';
-import { Breadcrumbs as _Breadcrumbs } from 'components/breadcrumbs';
+import { Breadcrumbs } from 'components/breadcrumbs';
+import { OutlineButton } from 'components/button';
+import { Fa as _Fa } from 'components/fa';
 
 import { DescriptionEditor } from './components/description-editor';
 import { CreditHourMinimum } from './components/credit-hour-minimum';
@@ -39,17 +39,11 @@ const Content = styled(View)`
     flex: 0 0 auto;
   }
 `;
-const BackToDegreeButton = styled(TransparentButton)`
-  margin: ${styles.space(-1)} ${styles.space(0)};
-  justify-content: flex-start;
-`;
-const AddCourseGroupButton = styled(PrimaryButton)`
-  margin: ${styles.space(-1)} 0;
-  border-radius: 999999px;
-  box-shadow: ${styles.boxShadow(-1)};
-`;
-const FaLeft = styled(Fa)`
-  margin-right: ${styles.space(-1)};
+const ButtonRow = styled(View)`
+  flex: 0 0 auto;
+  flex-direction: row;
+  margin-bottom: ${styles.space(0)};
+  align-items: center;
 `;
 const TitleRow = styled(View)`
   flex-direction: row;
@@ -72,25 +66,12 @@ const TitleInput = styled(Input)`
   outline: none;
   padding: 0;
 `;
-
-const PreviewButton = styled(PrimaryButton)`
-  margin: ${styles.space(-1)} 0;
-  margin-left: auto;
+const Fa = styled(_Fa)`
+  margin-right: ${styles.space(-1)};
+`;
+const BackButton = styled(OutlineButton)`
   margin-right: ${styles.space(0)};
-`;
-const IconRight = styled(Fa)`
-  margin-left: ${styles.space(-1)};
-`;
-const ActionsBar = styled(View)`
-  flex: 0 0 auto;
-  flex-direction: row;
-  background-color: ${styles.white};
-  box-shadow: ${styles.boxShadow(-2)};
-  z-index: 1;
-`;
-const Breadcrumbs = styled(_Breadcrumbs)`
-  flex: 0 0 auto;
-  margin-bottom: ${styles.space(0)};
+  font-size: ${styles.space(-1)};
 `;
 
 interface DegreeDetailProps {
@@ -152,18 +133,16 @@ export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetai
     const { editingDegreeName } = this.state;
     return (
       <Root>
-        <ActionsBar>
-          <BackToDegreeButton onClick={onBackClick}>
-            <FaLeft icon="angleLeft" />
-            Back
-          </BackToDegreeButton>
-          <PreviewButton onClick={onPreview}>
-            Preview Degree <IconRight icon="angleRight" />
-          </PreviewButton>
-        </ActionsBar>
         <Body>
           <Content>
-            <Breadcrumbs />
+            <ButtonRow>
+              <BackButton onClick={onBackClick}>
+                <Fa icon="angleLeft" />
+                Back To Degrees
+              </BackButton>
+              <VerticalBar />
+              <Breadcrumbs />
+            </ButtonRow>
             <RightClickMenu
               header={masteredDegree.name}
               actions={this.degreeDropdownAction}
