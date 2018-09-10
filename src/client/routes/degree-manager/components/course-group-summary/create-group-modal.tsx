@@ -56,13 +56,14 @@ export class CreateGroupModal extends React.PureComponent<
     const openNow = this.props.open;
 
     if (closedBefore && openNow) {
-      this.setState({ groupName: '' });
+      this.setState({ groupName: '', column: 1 });
     }
   }
 
   handleCreateClick = () => {
     const { groupName, column } = this.state;
     this.props.onCreateGroup(groupName, column);
+    this.props.onClose();
   };
   handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const groupName = e.currentTarget.value;
@@ -87,7 +88,9 @@ export class CreateGroupModal extends React.PureComponent<
         <SelectField label="Column" items={selectFieldItems} onChange={this.handleColumnChange} />
         <Actions>
           <Button onClick={onClose}>Cancel</Button>
-          <PrimaryButton onClick={this.handleCreateClick}>Create group</PrimaryButton>
+          <PrimaryButton disabled={!groupName} onClick={this.handleCreateClick}>
+            Create group
+          </PrimaryButton>
         </Actions>
       </Modal>
     );
