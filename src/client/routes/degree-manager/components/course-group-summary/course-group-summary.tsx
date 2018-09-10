@@ -2,18 +2,19 @@ import * as React from 'react';
 import * as styles from 'styles';
 import styled from 'styled-components';
 
+import { Link as _Link } from 'react-router-dom';
 import { View } from 'components/view';
 import { Text } from 'components/text';
 import { Paragraph } from 'components/paragraph';
-import { Fa } from 'components/fa';
+import { PrimaryButton } from 'components/button';
 import { Actions } from 'components/dropdown-menu';
 import { Divider } from 'components/divider';
 import { ActionableText } from 'components/actionable-text';
 import { createInfoModal } from 'components/info-modal';
-import { Link as _Link } from 'react-router-dom';
 import { DegreeItem } from 'routes/degree-manager/components/degree-item';
-import { CourseGroup } from './course-group';
 import { DescriptionAction } from 'routes/degree-manager/components/description-action';
+import { CreateGroupModal } from './create-group-modal';
+import { CourseGroup } from './course-group';
 
 const Columns = styled(View)`
   flex-direction: row;
@@ -59,6 +60,10 @@ const Link = styled(_Link)`
 
 interface CourseGroupSummaryProps {
   onGroupClick: (groupId: string) => void;
+  onCreateGroup: (groupName: string, column: 1 | 2 | 3) => void;
+}
+interface CourseGroupSummaryState {
+  createGroupModalOpen: boolean;
 }
 
 const actions: Actions<'add' | 'rearrange'> = {
@@ -73,135 +78,159 @@ const actions: Actions<'add' | 'rearrange'> = {
   },
 };
 
-export class CourseGroupSummary extends React.PureComponent<CourseGroupSummaryProps, {}> {
+export class CourseGroupSummary extends React.PureComponent<
+  CourseGroupSummaryProps,
+  CourseGroupSummaryState
+> {
   infoModal = createInfoModal();
+
+  constructor(props: CourseGroupSummaryProps) {
+    super(props);
+
+    this.state = {
+      createGroupModalOpen: false,
+    };
+  }
+
+  handleDropdownActions = (action: keyof typeof actions) => {};
+
+  dropdownProps = {
+    header: 'Course groups',
+    actions,
+    onAction: this.handleDropdownActions,
+  };
+
+  handleCreateGroupOpen = () => {
+    this.setState({ createGroupModalOpen: true });
+  };
+  handleCreateGroupClose = () => {
+    this.setState({ createGroupModalOpen: false });
+  };
+
   render() {
+    const { createGroupModalOpen } = this.state;
+    const { onCreateGroup } = this.props;
     const InfoModal = this.infoModal.Modal;
     return (
-      <DegreeItem
-        title="Course groups"
-        dropdownMenuProps={{
-          header: 'Course groups',
-          actions,
-          onAction: () => {},
-        }}
-      >
-        <DescriptionAction
-          description={
-            <TextContainer>
-              <Paragraph>
-                Course groups represent groups of courses that represent a particular requirement as
-                part of a degree program.
-              </Paragraph>
-              <Paragraph>
-                An example course group would be "Writing and Oral Communication" which would
-                include the courses <Link to="/catalog/comp-150">COMP 105</Link> and{' '}
-                <Link to="/catalog/comp-270">COMP 270</Link>.
-              </Paragraph>
-              <ActionableText onClick={this.infoModal.open}>
-                Click here for more info
-              </ActionableText>
-            </TextContainer>
-          }
-          children={<></>}
-        />
+      <>
+        <DegreeItem title="Course groups" dropdownMenuProps={this.dropdownProps}>
+          <DescriptionAction
+            description={
+              <TextContainer>
+                <Paragraph>
+                  Course groups represent groups of courses that represent a particular requirement
+                  as part of a degree program.
+                </Paragraph>
+                <Paragraph>
+                  An example course group would be "Writing and Oral Communication" which would
+                  include the courses <Link to="/catalog/comp-150">COMP 105</Link> and{' '}
+                  <Link to="/catalog/comp-270">COMP 270</Link>.
+                </Paragraph>
+                <ActionableText onClick={this.infoModal.open}>
+                  Click here for more info
+                </ActionableText>
+              </TextContainer>
+            }
+          >
+            <PrimaryButton onClick={this.handleCreateGroupOpen}>+ Create new group</PrimaryButton>
+          </DescriptionAction>
 
-        <Columns>
-          <Column>
-            <ColumnHeader>Column one</ColumnHeader>
-            <Divider />
-            <CourseGroup
-              title="Written and Oral Communication"
-              courseCount={5}
-              creditHours="3 - 6 credits"
-              onClick={() => this.props.onGroupClick('test-group')}
-            />
-            <CourseGroup
-              title="Humanities and the Arts"
-              courseCount={5}
-              creditHours="3 - 6 credits"
-              onClick={() => {}}
-            />
-            <CourseGroup
-              title="Social and Behavior Analysis"
-              courseCount={5}
-              creditHours="3 - 6 credits"
-              onClick={() => {}}
-            />
-            <Spacer />
-            <AddToActionableText>Create group in column one</AddToActionableText>
-          </Column>
-          <Column>
-            <ColumnHeader>Column two</ColumnHeader>
-            <Divider />
-            <CourseGroup
-              title="Mathematics and Statistics"
-              courseCount={5}
-              creditHours="3 - 6 credits"
-              onClick={() => {}}
-            />
-            <CourseGroup
-              title="Laboratory Science"
-              courseCount={5}
-              creditHours="3 - 6 credits"
-              onClick={() => {}}
-            />
-            <CourseGroup
-              title="Additional Science"
-              courseCount={5}
-              creditHours="3 - 6 credits"
-              onClick={() => {}}
-            />
-            <CourseGroup
-              title="Business Courses"
-              courseCount={5}
-              creditHours="3 - 6 credits"
-              onClick={() => {}}
-            />
-            <Spacer />
-            <AddToActionableText>Create group in column two</AddToActionableText>
-          </Column>
-          <Column>
-            <ColumnHeader>Column three</ColumnHeader>
-            <Divider />
-            <CourseGroup
-              title="CIS Courses"
-              courseCount={5}
-              creditHours="3 - 6 credits"
-              onClick={() => {}}
-            />
-            <CourseGroup
-              title="Required Courses for SE"
-              courseCount={5}
-              creditHours="3 - 6 credits"
-              onClick={() => {}}
-            />
-            <CourseGroup
-              title="Application Sequence"
-              courseCount={5}
-              creditHours="3 - 6 credits"
-              onClick={() => {}}
-            />
-            <CourseGroup
-              title="Technical Electives"
-              courseCount={5}
-              creditHours="3 - 6 credits"
-              onClick={() => {}}
-            />
-            <CourseGroup
-              title="General Electives"
-              courseCount={5}
-              creditHours="3 - 6 credits"
-              onClick={() => {}}
-            />
-            <Spacer />
-            <AddToActionableText>Create group in column three</AddToActionableText>
-          </Column>
-        </Columns>
+          <Columns>
+            <Column>
+              <ColumnHeader>Column one</ColumnHeader>
+              <Divider />
+              <CourseGroup
+                title="Written and Oral Communication"
+                courseCount={5}
+                creditHours="3 - 6 credits"
+                onClick={() => this.props.onGroupClick('test-group')}
+              />
+              <CourseGroup
+                title="Humanities and the Arts"
+                courseCount={5}
+                creditHours="3 - 6 credits"
+                onClick={() => {}}
+              />
+              <CourseGroup
+                title="Social and Behavior Analysis"
+                courseCount={5}
+                creditHours="3 - 6 credits"
+                onClick={() => {}}
+              />
+            </Column>
+            <Column>
+              <ColumnHeader>Column two</ColumnHeader>
+              <Divider />
+              <CourseGroup
+                title="Mathematics and Statistics"
+                courseCount={5}
+                creditHours="3 - 6 credits"
+                onClick={() => {}}
+              />
+              <CourseGroup
+                title="Laboratory Science"
+                courseCount={5}
+                creditHours="3 - 6 credits"
+                onClick={() => {}}
+              />
+              <CourseGroup
+                title="Additional Science"
+                courseCount={5}
+                creditHours="3 - 6 credits"
+                onClick={() => {}}
+              />
+              <CourseGroup
+                title="Business Courses"
+                courseCount={5}
+                creditHours="3 - 6 credits"
+                onClick={() => {}}
+              />
+            </Column>
+            <Column>
+              <ColumnHeader>Column three</ColumnHeader>
+              <Divider />
+              <CourseGroup
+                title="CIS Courses"
+                courseCount={5}
+                creditHours="3 - 6 credits"
+                onClick={() => {}}
+              />
+              <CourseGroup
+                title="Required Courses for SE"
+                courseCount={5}
+                creditHours="3 - 6 credits"
+                onClick={() => {}}
+              />
+              <CourseGroup
+                title="Application Sequence"
+                courseCount={5}
+                creditHours="3 - 6 credits"
+                onClick={() => {}}
+              />
+              <CourseGroup
+                title="Technical Electives"
+                courseCount={5}
+                creditHours="3 - 6 credits"
+                onClick={() => {}}
+              />
+              <CourseGroup
+                title="General Electives"
+                courseCount={5}
+                creditHours="3 - 6 credits"
+                onClick={() => {}}
+              />
+            </Column>
+          </Columns>
+        </DegreeItem>
         <InfoModal title="Course groups">
           <Paragraph>More info on course groups coming soon...</Paragraph>
         </InfoModal>
-      </DegreeItem>
+        <CreateGroupModal
+          open={createGroupModalOpen}
+          onClose={this.handleCreateGroupClose}
+          onCreateGroup={onCreateGroup}
+        />
+      </>
     );
   }
 }

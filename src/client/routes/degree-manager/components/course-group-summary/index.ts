@@ -1,13 +1,20 @@
+import * as Model from 'models';
 import { history } from 'client/history';
-import { withProps } from 'utilities/with-props';
-
 import { CourseGroupSummary } from './course-group-summary';
 
-const Container = withProps((ownProps: { masteredDegreeId: string }) => ({
-  onGroupClick: (groupId: string) => {
-    const { masteredDegreeId } = ownProps;
-    history.push(`/degree-manager/${masteredDegreeId}/groups/${groupId}`);
-  },
-}))(CourseGroupSummary);
+interface CourseGroupSummaryContainerProps {
+  masteredDegreeId: string;
+}
+
+const Container = Model.store.connect({
+  mapStateToProps: () => ({}),
+  mapDispatchToProps: (dispatch, ownProps: CourseGroupSummaryContainerProps) => ({
+    onGroupClick: (groupId: string) => {
+      const { masteredDegreeId } = ownProps;
+      history.push(`/degree-manager/${masteredDegreeId}/groups/${groupId}`);
+    },
+    onCreateGroup: (groupName: string, column: 1 | 2 | 3) => {},
+  }),
+})(CourseGroupSummary);
 
 export { Container as CourseGroupSummary };
