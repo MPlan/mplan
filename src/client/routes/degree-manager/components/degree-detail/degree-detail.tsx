@@ -38,12 +38,6 @@ const Content = styled(View)`
     flex: 0 0 auto;
   }
 `;
-const ButtonRow = styled(View)`
-  flex: 0 0 auto;
-  flex-direction: row;
-  margin-bottom: ${styles.space(0)};
-  align-items: center;
-`;
 const TitleRow = styled(View)`
   flex-direction: row;
   align-items: flex-end;
@@ -70,10 +64,12 @@ interface DegreeDetailProps {
   id: string;
   name: string;
   descriptionHtml: string;
+  published: boolean;
   onBackClick: () => void;
   onEditDegreeName: (newName: string) => void;
   onPreview: () => void;
   onDescriptionChange: (description: string) => void;
+  onPublishChange: (published: boolean) => void;
 }
 interface DegreeDetailState {
   editingDegreeName: boolean;
@@ -124,7 +120,17 @@ export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetai
   };
 
   render() {
-    const { id, name, onBackClick, descriptionHtml, onPreview, onDescriptionChange } = this.props;
+    const {
+      id,
+      name,
+      onBackClick,
+      descriptionHtml,
+      onPreview,
+      onDescriptionChange,
+      published,
+      onPublishChange,
+    } = this.props;
+
     const { editingDegreeName } = this.state;
     return (
       <Root>
@@ -157,7 +163,7 @@ export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetai
                 </TitleRow>
               )}
             </RightClickMenu>
-            <PublishUnlist />
+            <PublishUnlist published={published} onChange={onPublishChange} />
             <DescriptionEditor descriptionHtml={descriptionHtml} onChange={onDescriptionChange}>
               <Paragraph>Edit the description of this degree here.</Paragraph>
               <Paragraph>

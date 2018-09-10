@@ -13,24 +13,37 @@ import { createInfoModal } from 'components/info-modal';
 
 const ActionContainer = styled(View)`
   flex-direction: row;
-  & ${Text} {
-    margin-left: ${styles.space(0)};
-  }
 `;
-
 const Question = styled(Text)`
   font-weight: bold;
   font-style: italic;
   margin: ${styles.space(0)} 0;
 `;
-
 const Answer = styled(Text)``;
+const Green = styled(Text)`
+  font-weight: bold;
+  color: ${styles.success};
+`;
+const Status = styled(Text)`
+  margin-left: ${styles.space(0)};
+`;
 
-export class PublishUnlist extends React.PureComponent<{}, {}> {
+interface PublishUnlistProps {
+  published: boolean;
+  onChange: (published: boolean) => void;
+}
+
+export class PublishUnlist extends React.PureComponent<PublishUnlistProps, {}> {
   publishUnlistInfo = createInfoModal();
+
+  handleSwitchChange = () => {
+    const { published, onChange } = this.props;
+    onChange(!published);
+  };
 
   render() {
     const PublishUnlistModal = this.publishUnlistInfo.Modal;
+    const { published } = this.props;
     return (
       <>
         <DegreeItem title="Publish or unlist">
@@ -54,12 +67,13 @@ export class PublishUnlist extends React.PureComponent<{}, {}> {
             }
           >
             <ActionContainer>
-              <Switch />
-              <Text>
+              <Switch checked={published} onChange={this.handleSwitchChange} />
+              <Status>
                 Current Status:
                 <br />
-                <strong>Unlisted</strong>
-              </Text>
+                {published ? <Green>Published</Green> : <strong>Unlisted</strong>}
+                <strong />
+              </Status>
             </ActionContainer>
           </DescriptionAction>
         </DegreeItem>

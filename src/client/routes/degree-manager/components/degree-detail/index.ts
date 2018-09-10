@@ -22,6 +22,7 @@ const Container = Model.store.connect({
       id: ownProps.masteredDegreeId,
       name: masteredDegree.name,
       descriptionHtml: masteredDegree.descriptionHtml,
+      published: masteredDegree.published,
     };
   },
   mapDispatchToProps: (dispatch, ownProps: DegreeEditorContainerProps) => ({
@@ -42,6 +43,18 @@ const Container = Model.store.connect({
           ),
         };
         return newState;
+      });
+    },
+    onPublishChange: (published: boolean) => {
+      dispatch(state => {
+        return {
+          ...state,
+          masteredDegrees: Model.MasteredDegrees.updatedMasteredDegree(
+            state.masteredDegrees,
+            ownProps.masteredDegreeId,
+            masteredDegree => ({ ...masteredDegree, published }),
+          ),
+        };
       });
     },
     onDescriptionChange: (description: string) => {
