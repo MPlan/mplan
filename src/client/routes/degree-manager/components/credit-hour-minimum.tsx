@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { shallowEqualNoFunctions } from 'utilities/shallow-equal-no-functions';
 
 import { Paragraph } from 'components/paragraph';
 import { CreditHourEditor } from 'components/credit-hour-editor';
@@ -13,7 +14,11 @@ interface CreditHourMinimumProps {
   onChange: (minimumCreditHours: number) => void;
 }
 
-export class CreditHourMinimum extends React.PureComponent<CreditHourMinimumProps, {}> {
+export class CreditHourMinimum extends React.Component<CreditHourMinimumProps, {}> {
+  shouldComponentUpdate(nextProps: CreditHourMinimumProps) {
+    return !shallowEqualNoFunctions(this.props, nextProps);
+  }
+
   infoModal = createInfoModal();
 
   render() {
