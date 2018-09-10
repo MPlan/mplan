@@ -31,15 +31,6 @@ const ColumnHeader = styled(Text)`
   margin: 0 ${styles.space(-1)};
   margin-bottom: ${styles.space(-1)};
 `;
-const AddToActionableText = styled(ActionableText)`
-  font-size: ${styles.space(-1)};
-  margin: 0 ${styles.space(-1)};
-  margin-top: auto;
-  text-transform: uppercase;
-`;
-const Spacer = styled.div`
-  height: ${styles.space(0)};
-`;
 const TextContainer = styled(View)`
   margin-bottom: ${styles.space(0)};
 `;
@@ -60,7 +51,7 @@ const Link = styled(_Link)`
 
 interface CourseGroupSummaryProps {
   onGroupClick: (groupId: string) => void;
-  onCreateGroup: (groupName: string, column: 1 | 2 | 3) => void;
+  onCreateGroup: (groupName: string, column: number) => void;
 }
 interface CourseGroupSummaryState {
   createGroupModalOpen: boolean;

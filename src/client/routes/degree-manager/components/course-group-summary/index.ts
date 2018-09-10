@@ -13,7 +13,7 @@ const Container = Model.store.connect({
       const { masteredDegreeId } = ownProps;
       history.push(`/degree-manager/${masteredDegreeId}/groups/${groupId}`);
     },
-    onCreateGroup: (groupName: string, column: 1 | 2 | 3) => {},
+    onCreateGroup: (groupName: string, column: number) => {},
   }),
 })(CourseGroupSummary);
 

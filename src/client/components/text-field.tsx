@@ -48,7 +48,7 @@ export class TextField extends React.PureComponent<TextFieldProps, TextFieldStat
     const { focused } = this.state;
     return (
       <Field label={label} focused={focused}>
-        <Input innerRef={this.inputRef} {...restOfProps} />
+        <Input focused={focused} innerRef={this.inputRef} {...restOfProps} />
       </Field>
     );
   }
