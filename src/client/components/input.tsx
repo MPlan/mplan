@@ -11,4 +11,5 @@ export const Input = styled.input<InputProps>`
   border: ${props => (props.focused ? '2px' : '1px')} solid
     ${props => (props.focused ? styles.blue : styles.grayLighter)};
   transition: all 200ms;
+  outline: none;
 `;
