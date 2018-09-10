@@ -54,7 +54,7 @@ auth.post('/token', async (req, res) => {
       id: id,
       chosenDegree: false,
       degree: {
-        degreeGroupData: {},
+        courseGroupData: {},
         masteredDegreeId: undefined,
       },
       isAdmin: false,

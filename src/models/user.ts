@@ -28,7 +28,7 @@ export const emptyUser: User = {
     semesters: [],
   },
   degree: {
-    degreeGroupData: {},
+    courseGroupData: {},
   },
   isAdmin: false,
   userPrerequisiteOverrides: {},

@@ -1,5 +1,5 @@
 import * as MasteredDegrees from './mastered-degrees';
-import * as DegreeGroup from './degree-group';
+import * as CourseGroup from './course-group';
 import * as Catalog from './catalog';
 import * as Course from './course';
 import { flatten } from 'lodash';
@@ -9,7 +9,7 @@ import { maxBy } from 'utilities/max-by';
 
 interface Degree {
   masteredDegreeId?: string;
-  degreeGroupData: { [degreeGroupId: string]: DegreeGroup.Model };
+  courseGroupData: { [courseGroupId: string]: CourseGroup.Model };
 }
 export { Degree as Model };
 
@@ -35,10 +35,10 @@ export function getDegreeName(self: Degree, masteredDegrees: MasteredDegrees.Mod
 }
 
 export const getAllCourses = memoizeLast((self: Degree, catalog: Catalog.Model) => {
-  const { degreeGroupData } = self;
+  const { courseGroupData } = self;
 
   const courseArr = flatten(
-    Object.values(degreeGroupData).map(degreeGroup => DegreeGroup.getCourses(degreeGroup, catalog)),
+    Object.values(courseGroupData).map(courseGroup => CourseGroup.getCourses(courseGroup, catalog)),
   );
 
   const courses = new Set<Course.Model>();
@@ -55,10 +55,10 @@ export function getTotalCredits(self: Degree) {}
 export function getCompletedCredits(self: Degree) {}
 export function getPercentComplete(self: Degree) {}
 // export function generatePlan()
-export function addNewDegreeGroup(self: Degree): Degree {
-  const lastGroup = maxBy(Object.values(self.degreeGroupData), group => group.position);
+export function addNewCourseGroup(self: Degree): Degree {
+  const lastGroup = maxBy(Object.values(self.courseGroupData), group => group.position);
   const position = (lastGroup && lastGroup.position) || 0;
-  const newDegreeGroup: DegreeGroup.Model = {
+  const newCourseGroup: CourseGroup.Model = {
     completedCourseIds: {},
     courseIds: [],
     id: ObjectId(),
@@ -67,45 +67,45 @@ export function addNewDegreeGroup(self: Degree): Degree {
 
   return {
     ...self,
-    degreeGroupData: {
-      ...self.degreeGroupData,
-      [newDegreeGroup.id]: newDegreeGroup,
+    courseGroupData: {
+      ...self.courseGroupData,
+      [newCourseGroup.id]: newCourseGroup,
     },
   };
 }
 
-export function deleteDegreeGroup(self: Degree, degreeGroupIdToDelete: string): Degree {
-  const newDegreeGroupData = Object.entries(self.degreeGroupData)
-    .filter(([degreeGroupId]) => degreeGroupIdToDelete)
+export function deleteCourseGroup(self: Degree, courseGroupIdToDelete: string): Degree {
+  const newCourseGroupData = Object.entries(self.courseGroupData)
+    .filter(([courseGroupId]) => courseGroupIdToDelete)
     .reduce(
-      (degreeGroupData, [degreeGroupId, degreeGroup]) => {
-        degreeGroupData[degreeGroupId] = degreeGroup;
-        return degreeGroupData;
+      (courseGroupData, [courseGroupId, courseGroup]) => {
+        courseGroupData[courseGroupId] = courseGroup;
+        return courseGroupData;
       },
-      {} as { [catalogId: string]: DegreeGroup.Model },
+      {} as { [catalogId: string]: CourseGroup.Model },
     );
 
   return {
     ...self,
-    degreeGroupData: newDegreeGroupData,
+    courseGroupData: newCourseGroupData,
   };
 }
 
-export function updateDegreeGroup(
+export function updateCourseGroup(
   self: Degree,
-  degreeGroupIdToUpdate: string,
-  update: (degreeGroup: DegreeGroup.Model) => DegreeGroup.Model,
+  courseGroupIdToUpdate: string,
+  update: (courseGroup: CourseGroup.Model) => CourseGroup.Model,
 ): Degree {
-  const degreeGroupToUpdate = self.degreeGroupData[degreeGroupIdToUpdate];
-  if (!degreeGroupIdToUpdate) return self;
+  const courseGroupToUpdate = self.courseGroupData[courseGroupIdToUpdate];
+  if (!courseGroupIdToUpdate) return self;
 
   return {
     ...self,
-    degreeGroupData: {
-      ...self.degreeGroupData,
-      [degreeGroupIdToUpdate]: update(degreeGroupToUpdate),
+    courseGroupData: {
+      ...self.courseGroupData,
+      [courseGroupIdToUpdate]: update(courseGroupToUpdate),
     },
   };
 }
 
-export function reorderDegreeGroups(self: Degree) {}
+export function reorderCourseGroups(self: Degree) {}

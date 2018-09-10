@@ -3,67 +3,67 @@ import * as Course from './course';
 import * as MasteredDegrees from './mastered-degrees';
 import * as Catalog from './catalog';
 
-interface DegreeGroup {
+interface CourseGroup {
   id: string;
-  masteredDegreeGroupId?: string;
+  masteredCourseGroupId?: string;
   customName?: string;
   courseIds: string[];
   completedCourseIds: { [catalogId: string]: true };
   position: number;
 }
-export { DegreeGroup as Model };
+export { CourseGroup as Model };
 
-export function getMasteredDegreeGroup(
-  self: DegreeGroup,
+export function getMasteredCourseGroup(
+  self: CourseGroup,
   degree: Degree.Model,
   masteredDegrees: MasteredDegrees.Model,
 ) {
-  const { masteredDegreeGroupId } = self;
-  if (!masteredDegreeGroupId) return undefined;
+  const { masteredCourseGroupId } = self;
+  if (!masteredCourseGroupId) return undefined;
 
   const masteredDegree = Degree.getMasteredDegree(degree, masteredDegrees);
   if (!masteredDegree) return undefined;
 
-  const masteredDegreeGroup = masteredDegree.masteredDegreeGroups[masteredDegreeGroupId];
+  const masteredCourseGroup = masteredDegree.masteredCourseGroups[masteredCourseGroupId];
   if (!masteredDegree) return undefined;
 
-  return masteredDegreeGroup;
+  return masteredCourseGroup;
 }
 
-export function getDegreeGroupName(
-  self: DegreeGroup,
+export function getCourseGroupName(
+  self: CourseGroup,
   degree: Degree.Model,
   masteredDegrees: MasteredDegrees.Model,
 ) {
-  const masteredDegreeGroup = getMasteredDegreeGroup(self, degree, masteredDegrees);
-  if (!masteredDegreeGroup) return 'Custom Group';
-  return masteredDegreeGroup.name;
+  const masteredCourseGroup = getMasteredCourseGroup(self, degree, masteredDegrees);
+  if (!masteredCourseGroup) return 'Custom Group';
+  return masteredCourseGroup.name;
 }
 
 export function getDescriptionHtml(
-  self: DegreeGroup,
+  self: CourseGroup,
   degree: Degree.Model,
   masteredDegrees: MasteredDegrees.Model,
 ) {
-  const masteredDegreeGroup = getMasteredDegreeGroup(self, degree, masteredDegrees);
+  const masteredCourseGroup = getMasteredCourseGroup(self, degree, masteredDegrees);
   // Description html should always say this for  custom group. custom group don't have mastered
   // degree groups
-  if (!masteredDegreeGroup) return 'Custom group.';
-  return masteredDegreeGroup.name;
+  if (!masteredCourseGroup) return 'Custom group.';
+  return masteredCourseGroup.name;
 }
 
-export function getCourses(self: DegreeGroup, catalog: Catalog.Model) {
+export function getCourses(self: CourseGroup, catalog: Catalog.Model) {
   const { courseIds } = self;
 
   return courseIds.map(courseId => catalog[courseId]);
 }
 
-export function hasCourse(self: DegreeGroup, course: Course.Model) {
+export function hasCourse(self: CourseGroup, course: Course.Model) {
   const { courseIds } = self;
   return courseIds.includes(course.id);
 }
 
-export function addCourse(self: DegreeGroup, courseToAdd: Course.Model): DegreeGroup {
+export function addCourse(self: CourseGroup, courseToAdd: Course.Model): CourseGroup {
   const { courseIds } = self;
   const newCourseIds = [...courseIds.filter(id => id !== courseToAdd.id), courseToAdd.id];
 
@@ -73,7 +73,7 @@ export function addCourse(self: DegreeGroup, courseToAdd: Course.Model): DegreeG
   };
 }
 
-export function deleteCourse(self: DegreeGroup, courseToDelete: Course.Model): DegreeGroup {
+export function deleteCourse(self: CourseGroup, courseToDelete: Course.Model): CourseGroup {
   const { courseIds } = self;
   const newCourseIds = courseIds.filter(id => id !== courseToDelete.id);
 
@@ -83,12 +83,12 @@ export function deleteCourse(self: DegreeGroup, courseToDelete: Course.Model): D
   };
 }
 
-export function toggleCourseCompletion(self: DegreeGroup, courseToToggle: Course.Model) {
+export function toggleCourseCompletion(self: CourseGroup, courseToToggle: Course.Model) {
   if (hasCourse(self, courseToToggle)) return deleteCourse(self, courseToToggle);
   return addCourse(self, courseToToggle);
 }
 
-export function reorderCourses(self: DegreeGroup): DegreeGroup {
+export function reorderCourses(self: CourseGroup): CourseGroup {
   // TODO
   return self;
 }

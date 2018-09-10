@@ -1,9 +1,9 @@
 import * as App from './app';
 import * as Catalog from './catalog';
 import * as Course from './course';
-import * as DegreeGroup from './degree-group';
+import * as CourseGroup from './course-group';
 import * as Degree from './degree';
-import * as MasteredDegreeGroup from './mastered-degree-group';
+import * as MasteredCourseGroup from './mastered-course-group';
 import * as MasteredDegree from './mastered-degree';
 import * as MasteredDegrees from './mastered-degrees';
 import * as Plan from './plan';
@@ -16,9 +16,9 @@ export {
   App,
   Catalog,
   Course,
-  DegreeGroup,
+  CourseGroup,
   Degree,
-  MasteredDegreeGroup,
+  MasteredCourseGroup,
   MasteredDegree,
   MasteredDegrees,
   Plan,

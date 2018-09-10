@@ -1,5 +1,5 @@
 import { ObjectId } from 'utilities/object-id';
-import * as MasteredDegreeGroup from './mastered-degree-group';
+import * as MasteredCourseGroup from './mastered-course-group';
 import { maxBy } from 'utilities/max-by';
 
 interface MasteredDegree {
@@ -8,7 +8,7 @@ interface MasteredDegree {
   descriptionHtml: string;
   minimumCredits: number;
   published: boolean;
-  masteredDegreeGroups: { [groupId: string]: MasteredDegreeGroup.Model };
+  masteredCourseGroups: { [groupId: string]: MasteredCourseGroup.Model };
   position: number;
 }
 export { MasteredDegree as Model };
@@ -17,7 +17,7 @@ export function createNewMasteredDegree(degreeName: string, lastPosition: number
   const newDegree: MasteredDegree = {
     descriptionHtml: 'No description provided.',
     id: ObjectId(),
-    masteredDegreeGroups: {},
+    masteredCourseGroups: {},
     minimumCredits: 120,
     name: degreeName,
     published: false,
@@ -27,59 +27,59 @@ export function createNewMasteredDegree(degreeName: string, lastPosition: number
   return newDegree;
 }
 
-export function getNewDegreeGroupPosition(self: MasteredDegree, column: 1 | 2 | 3) {
-  const { masteredDegreeGroups } = self;
-  const degreeGroupPositions = Object.values(masteredDegreeGroups).filter(
+export function getNewCourseGroupPosition(self: MasteredDegree, column: 1 | 2 | 3) {
+  const { masteredCourseGroups } = self;
+  const courseGroupPositions = Object.values(masteredCourseGroups).filter(
     group => group.column === column,
   );
-  const lastGroup = maxBy(degreeGroupPositions, group => group.position);
+  const lastGroup = maxBy(courseGroupPositions, group => group.position);
   if (!lastGroup) return 0;
   return Math.ceil(lastGroup.position) + 2;
 }
 
 export function createNewGroup(self: MasteredDegree): MasteredDegree {
-  const { masteredDegreeGroups } = self;
-  const newGroup: MasteredDegreeGroup.Model = {
+  const { masteredCourseGroups } = self;
+  const newGroup: MasteredCourseGroup.Model = {
     allowListIds: [],
     creditMaximum: 6,
     creditMinimum: 6,
     defaultIds: [],
     descriptionHtml: 'No description provided',
     id: ObjectId(),
-    name: 'New Degree Group',
+    name: 'New Course Group',
     column: 1,
-    position: getNewDegreeGroupPosition(self, 1),
+    position: getNewCourseGroupPosition(self, 1),
   };
 
-  const newMasteredDegreeGroups = { ...masteredDegreeGroups, [newGroup.id]: newGroup };
+  const newMasteredCourseGroups = { ...masteredCourseGroups, [newGroup.id]: newGroup };
 
   return {
     ...self,
-    masteredDegreeGroups: newMasteredDegreeGroups,
+    masteredCourseGroups: newMasteredCourseGroups,
   };
 }
 
 export function deleteGroup(
   self: MasteredDegree,
-  groupToDelete: MasteredDegreeGroup.Model,
+  groupToDelete: MasteredCourseGroup.Model,
 ): MasteredDegree {
-  const { masteredDegreeGroups } = self;
+  const { masteredCourseGroups } = self;
 
-  const newMasteredDegreeGroups = Object.entries(masteredDegreeGroups)
+  const newMasteredCourseGroups = Object.entries(masteredCourseGroups)
     .filter(([groupId]) => groupId !== groupToDelete.id)
     .reduce(
-      (newMasteredDegreeGroups, [groupId, value]) => {
-        newMasteredDegreeGroups[groupId] = value;
-        return newMasteredDegreeGroups;
+      (newMasteredCourseGroups, [groupId, value]) => {
+        newMasteredCourseGroups[groupId] = value;
+        return newMasteredCourseGroups;
       },
       {} as {
-        [groupId: string]: MasteredDegreeGroup.Model;
+        [groupId: string]: MasteredCourseGroup.Model;
       },
     );
 
   return {
     ...self,
-    masteredDegreeGroups: newMasteredDegreeGroups,
+    masteredCourseGroups: newMasteredCourseGroups,
   };
 }
 

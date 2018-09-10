@@ -14,7 +14,7 @@ async function createUser(username: string) {
     id: id,
     chosenDegree: false,
     degree: {
-      degreeGroupData: {},
+      courseGroupData: {},
       masteredDegreeId: undefined,
     },
     isAdmin: false,
