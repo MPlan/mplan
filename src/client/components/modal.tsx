@@ -104,7 +104,6 @@ export class Modal extends React.Component<ModalProps, {}> {
   }
 
   render() {
-    console.log('modal render');
     return (
       <Container open={this.props.open} style={{ opacity: this.props.open ? 1 : 0 }}>
         <Backdrop onClick={this.props.onBlurCancel} />
