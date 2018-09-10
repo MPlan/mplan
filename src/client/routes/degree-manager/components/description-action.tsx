@@ -10,12 +10,11 @@ const Root = styled(View)`
   align-items: center;
 `;
 const Description = styled(View)`
-  width: 50rem;
-  max-width: 70%;
+  flex: 1 1 calc(70% - ${styles.space(0)});
   margin-right: ${styles.space(0)};
 `;
 const Action = styled(View)`
-  flex: 1 1 auto;
+  flex: 1 1 30%;
 `;
 
 interface DescriptionActionProps {

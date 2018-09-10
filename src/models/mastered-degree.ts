@@ -96,3 +96,13 @@ export function changeName(self: MasteredDegree, newName: string): MasteredDegre
     name: newName,
   };
 }
+
+export function changeMinimumCredits(
+  self: MasteredDegree,
+  newMinimumCredits: number,
+): MasteredDegree {
+  return {
+    ...self,
+    minimumCredits: newMinimumCredits,
+  };
+}

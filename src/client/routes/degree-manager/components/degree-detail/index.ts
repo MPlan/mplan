@@ -23,6 +23,7 @@ const Container = Model.store.connect({
       name: masteredDegree.name,
       descriptionHtml: masteredDegree.descriptionHtml,
       published: masteredDegree.published,
+      minimumCreditHours: masteredDegree.minimumCredits,
     };
   },
   mapDispatchToProps: (dispatch, ownProps: DegreeEditorContainerProps) => ({
@@ -69,6 +70,26 @@ const Container = Model.store.connect({
           masteredDegrees,
           masteredDegreeId,
           changeDescription,
+        );
+
+        return {
+          ...state,
+          masteredDegrees: newMasteredDegrees,
+        };
+      });
+    },
+    onMinimumCreditHoursChange: (minimumCreditHours: number) => {
+      dispatch(state => {
+        const { masteredDegrees } = state;
+        const { masteredDegreeId } = ownProps;
+
+        const changeMinimumCreditHours = (masteredDegree: Model.MasteredDegree.Model) =>
+          Model.MasteredDegree.changeMinimumCredits(masteredDegree, minimumCreditHours);
+
+        const newMasteredDegrees = Model.MasteredDegrees.updatedMasteredDegree(
+          masteredDegrees,
+          masteredDegreeId,
+          changeMinimumCreditHours,
         );
 
         return {

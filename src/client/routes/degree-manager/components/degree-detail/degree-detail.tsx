@@ -65,11 +65,13 @@ interface DegreeDetailProps {
   name: string;
   descriptionHtml: string;
   published: boolean;
+  minimumCreditHours: number;
   onBackClick: () => void;
   onEditDegreeName: (newName: string) => void;
   onPreview: () => void;
   onDescriptionChange: (description: string) => void;
   onPublishChange: (published: boolean) => void;
+  onMinimumCreditHoursChange: (minimumCreditHours: number) => void;
 }
 interface DegreeDetailState {
   editingDegreeName: boolean;
@@ -125,10 +127,12 @@ export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetai
       name,
       onBackClick,
       descriptionHtml,
+      minimumCreditHours,
       onPreview,
       onDescriptionChange,
       published,
       onPublishChange,
+      onMinimumCreditHoursChange,
     } = this.props;
 
     const { editingDegreeName } = this.state;
@@ -172,7 +176,10 @@ export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetai
                 curriculums/requirements here.
               </Paragraph>
             </DescriptionEditor>
-            <CreditHourMinimum />
+            <CreditHourMinimum
+              minimumCreditHours={minimumCreditHours}
+              onChange={onMinimumCreditHoursChange}
+            />
             <CourseGroupSummary masteredDegreeId={id} />
             <DegreeSummary />
           </Content>

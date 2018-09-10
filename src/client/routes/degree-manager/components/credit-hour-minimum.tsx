@@ -3,58 +3,18 @@ import * as styles from 'styles';
 import styled from 'styled-components';
 
 import { Paragraph } from 'components/paragraph';
-import { Input } from 'components/input';
-import { InlineEdit, DisplayProps, InputProps } from 'components/inline-edit';
-import { Text } from 'components/text';
-import { View } from 'components/view';
+import { CreditHourEditor } from 'components/credit-hour-editor';
 import { DegreeItem } from './degree-item';
 import { DescriptionAction } from './description-action';
 
-const NumberInput = styled(Input)`
-  border: 1px solid ${styles.grayLighter};
-`;
-
-interface CreditHourMinimumProps {}
-interface CreditHourMinimumState {
-  editing: boolean;
+interface CreditHourMinimumProps {
   minimumCreditHours: number;
+  onChange: (minimumCreditHours: number) => void;
 }
 
-export class CreditHourMinimum extends React.PureComponent<
-  CreditHourMinimumProps,
-  CreditHourMinimumState
-> {
-  constructor(props: CreditHourMinimumProps) {
-    super(props);
-
-    this.state = {
-      editing: false,
-      minimumCreditHours: 120,
-    };
-  }
-
-  handleEdit = () => {
-    this.setState({ editing: true });
-  };
-  handleBlur = () => {
-    this.setState({ editing: false });
-  };
-  handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.currentTarget.value;
-    const minimumCreditHours = parseInt(value, 10);
-    this.setState({ minimumCreditHours });
-  };
-
-  renderDisplay = (props: DisplayProps) => {
-    return <Text {...props} />;
-  };
-
-  renderInput = (props: InputProps) => {
-    return <NumberInput {...props} onChange={this.handleChange} type="number" />;
-  };
-
+export class CreditHourMinimum extends React.PureComponent<CreditHourMinimumProps, {}> {
   render() {
-    const { minimumCreditHours, editing } = this.state;
+    const { minimumCreditHours, onChange } = this.props;
     return (
       <DegreeItem title="Credit hour minimum">
         <DescriptionAction
@@ -75,14 +35,7 @@ export class CreditHourMinimum extends React.PureComponent<
             </>
           }
         >
-          <InlineEdit
-            editing={editing}
-            onBlur={this.handleBlur}
-            onEdit={this.handleEdit}
-            value={minimumCreditHours.toString()}
-            renderDisplay={this.renderDisplay}
-            renderInput={this.renderInput}
-          />
+          <CreditHourEditor creditHours={minimumCreditHours} onChange={onChange} />
         </DescriptionAction>
       </DegreeItem>
     );
