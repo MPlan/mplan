@@ -10,7 +10,7 @@ interface MasteredCourseGroup {
   creditMinimum: number;
   creditMaximum: number;
   position: number;
-  column: 1 | 2 | 3;
+  column: number;
 }
 export { MasteredCourseGroup as Model };
 

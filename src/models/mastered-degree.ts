@@ -27,7 +27,7 @@ export function createNewMasteredDegree(degreeName: string, lastPosition: number
   return newDegree;
 }
 
-export function getNewCourseGroupPosition(self: MasteredDegree, column: 1 | 2 | 3) {
+export function getNewCourseGroupPosition(self: MasteredDegree, column: number) {
   const { masteredCourseGroups } = self;
   const courseGroupPositions = Object.values(masteredCourseGroups).filter(
     group => group.column === column,
@@ -37,17 +37,17 @@ export function getNewCourseGroupPosition(self: MasteredDegree, column: 1 | 2 | 
   return Math.ceil(lastGroup.position) + 2;
 }
 
-export function createNewGroup(self: MasteredDegree): MasteredDegree {
+export function createNewGroup(self: MasteredDegree, name: string, column: number): MasteredDegree {
   const { masteredCourseGroups } = self;
   const newGroup: MasteredCourseGroup.Model = {
+    name,
+    column,
+    id: ObjectId(),
     allowListIds: [],
     creditMaximum: 6,
     creditMinimum: 6,
     defaultIds: [],
     descriptionHtml: 'No description provided',
-    id: ObjectId(),
-    name: 'New Course Group',
-    column: 1,
     position: getNewCourseGroupPosition(self, 1),
   };
 

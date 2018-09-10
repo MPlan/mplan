@@ -13,7 +13,23 @@ const Container = Model.store.connect({
       const { masteredDegreeId } = ownProps;
       history.push(`/degree-manager/${masteredDegreeId}/groups/${groupId}`);
     },
-    onCreateGroup: (groupName: string, column: number) => {},
+    onCreateGroup: (groupName: string, column: number) => {
+      dispatch(state => {
+        const createCourseGroup = (masteredDegree: Model.MasteredDegree.Model) =>
+          Model.MasteredDegree.createNewGroup(masteredDegree, groupName, column);
+
+        const newMasteredDegrees = Model.MasteredDegrees.updatedMasteredDegree(
+          state.masteredDegrees,
+          ownProps.masteredDegreeId,
+          createCourseGroup,
+        );
+
+        return {
+          ...state,
+          masteredDegrees: newMasteredDegrees,
+        };
+      });
+    },
   }),
 })(CourseGroupSummary);
 
