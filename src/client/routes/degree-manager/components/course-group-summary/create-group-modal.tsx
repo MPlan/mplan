@@ -14,6 +14,7 @@ const Actions = styled(View)`
   & > ${Button} {
     margin-left: ${styles.space(-1)};
   }
+  margin-top: ${styles.space(0)};
 `;
 
 interface CreateGroupModalProps {
@@ -39,16 +40,36 @@ export class CreateGroupModal extends React.PureComponent<
     };
   }
 
+  componentDidUpdate(previousProps: CreateGroupModalProps) {
+    const closedBefore = !previousProps.open;
+    const openNow = this.props.open;
+
+    if (closedBefore && openNow) {
+      this.setState({ groupName: '' });
+    }
+  }
+
   handleCreateClick = () => {
     const { groupName, column } = this.state;
     this.props.onCreateGroup(groupName, column);
   };
 
+  handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const groupName = e.currentTarget.value;
+    this.setState({ groupName });
+  };
+
   render() {
     const { open, onClose } = this.props;
+    const { groupName } = this.state;
     return (
-      <Modal title="Create new course group..." open={open} size="medium">
-        <TextField label="Course group name" />
+      <Modal title="Create new course group..." open={open} onBlurCancel={onClose} size="medium">
+        <TextField
+          label="Course group name"
+          placeholder="e.g. Technical Electives"
+          value={groupName}
+          onChange={this.handleNameChange}
+        />
         <Actions>
           <Button onClick={onClose}>Cancel</Button>
           <PrimaryButton onClick={this.handleCreateClick}>Create group</PrimaryButton>
