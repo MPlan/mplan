@@ -14,6 +14,7 @@ export const Button = styled.button`
   align-items: center;
   justify-content: center;
   font-family: ${styles.fontFamily};
+  cursor: pointer;
 
   & * {
     color: ${styles.text} !important;
@@ -23,10 +24,25 @@ export const Button = styled.button`
   &:focus {
     color: ${styles.textStrong} !important;
     background-color: ${styles.grayLighter};
+    &:disabled {
+      cursor: not-allowed;
+      background-color: ${styles.whiteTer} !important;
+      color: ${styles.grayLight} !important;
+    }
   }
   &:active {
     color: ${styles.textStrong} !important;
     background-color: ${styles.grayLight};
+    &:disabled {
+      cursor: not-allowed;
+      background-color: ${styles.whiteTer} !important;
+      color: ${styles.grayLight} !important;
+    }
+  }
+  &:disabled {
+    cursor: not-allowed;
+    background-color: ${styles.whiteTer} !important;
+    color: ${styles.grayLight} !important;
   }
 `;
 
