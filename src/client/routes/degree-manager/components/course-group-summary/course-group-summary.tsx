@@ -49,7 +49,20 @@ const Link = styled(_Link)`
   }
 `;
 
+export interface CourseGroupViewModel {
+  id: string;
+  name: string;
+  creditMinimum: number;
+  creditMaximum: number;
+}
+
 interface CourseGroupSummaryProps {
+  courseGroupsColumnOne: CourseGroupViewModel[];
+  courseGroupsColumnTwo: CourseGroupViewModel[];
+  courseGroupsColumnThree: CourseGroupViewModel[];
+  onRearrange: () => void;
+  onDelete: (groupId: string) => void;
+  onChangeColumn: (groupId: string) => void;
   onGroupClick: (groupId: string) => void;
   onCreateGroup: (groupName: string, column: number) => void;
 }
@@ -100,7 +113,12 @@ export class CourseGroupSummary extends React.PureComponent<
 
   render() {
     const { createGroupModalOpen } = this.state;
-    const { onCreateGroup } = this.props;
+    const {
+      onCreateGroup,
+      courseGroupsColumnOne,
+      courseGroupsColumnTwo,
+      courseGroupsColumnThree,
+    } = this.props;
     const InfoModal = this.infoModal.Modal;
     return (
       <>
@@ -130,86 +148,41 @@ export class CourseGroupSummary extends React.PureComponent<
             <Column>
               <ColumnHeader>Column one</ColumnHeader>
               <Divider />
-              <CourseGroup
-                title="Written and Oral Communication"
-                courseCount={5}
-                creditHours="3 - 6 credits"
-                onClick={() => this.props.onGroupClick('test-group')}
-              />
-              <CourseGroup
-                title="Humanities and the Arts"
-                courseCount={5}
-                creditHours="3 - 6 credits"
-                onClick={() => {}}
-              />
-              <CourseGroup
-                title="Social and Behavior Analysis"
-                courseCount={5}
-                creditHours="3 - 6 credits"
-                onClick={() => {}}
-              />
+              {courseGroupsColumnOne.map(group => (
+                <CourseGroup
+                  key={group.id}
+                  name={group.name}
+                  creditMinimum={group.creditMinimum}
+                  creditMaximum={group.creditMaximum}
+                  onClick={() => this.props.onGroupClick(group.id)}
+                />
+              ))}
             </Column>
             <Column>
               <ColumnHeader>Column two</ColumnHeader>
               <Divider />
-              <CourseGroup
-                title="Mathematics and Statistics"
-                courseCount={5}
-                creditHours="3 - 6 credits"
-                onClick={() => {}}
-              />
-              <CourseGroup
-                title="Laboratory Science"
-                courseCount={5}
-                creditHours="3 - 6 credits"
-                onClick={() => {}}
-              />
-              <CourseGroup
-                title="Additional Science"
-                courseCount={5}
-                creditHours="3 - 6 credits"
-                onClick={() => {}}
-              />
-              <CourseGroup
-                title="Business Courses"
-                courseCount={5}
-                creditHours="3 - 6 credits"
-                onClick={() => {}}
-              />
+              {courseGroupsColumnTwo.map(group => (
+                <CourseGroup
+                  key={group.id}
+                  name={group.name}
+                  creditMinimum={group.creditMinimum}
+                  creditMaximum={group.creditMaximum}
+                  onClick={() => this.props.onGroupClick(group.id)}
+                />
+              ))}
             </Column>
             <Column>
               <ColumnHeader>Column three</ColumnHeader>
               <Divider />
-              <CourseGroup
-                title="CIS Courses"
-                courseCount={5}
-                creditHours="3 - 6 credits"
-                onClick={() => {}}
-              />
-              <CourseGroup
-                title="Required Courses for SE"
-                courseCount={5}
-                creditHours="3 - 6 credits"
-                onClick={() => {}}
-              />
-              <CourseGroup
-                title="Application Sequence"
-                courseCount={5}
-                creditHours="3 - 6 credits"
-                onClick={() => {}}
-              />
-              <CourseGroup
-                title="Technical Electives"
-                courseCount={5}
-                creditHours="3 - 6 credits"
-                onClick={() => {}}
-              />
-              <CourseGroup
-                title="General Electives"
-                courseCount={5}
-                creditHours="3 - 6 credits"
-                onClick={() => {}}
-              />
+              {courseGroupsColumnThree.map(group => (
+                <CourseGroup
+                  key={group.id}
+                  name={group.name}
+                  creditMinimum={group.creditMinimum}
+                  creditMaximum={group.creditMaximum}
+                  onClick={() => this.props.onGroupClick(group.id)}
+                />
+              ))}
             </Column>
           </Columns>
         </DegreeItem>

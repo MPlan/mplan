@@ -1,6 +1,7 @@
 import { ObjectId } from 'utilities/object-id';
 import * as MasteredCourseGroup from './mastered-course-group';
 import { maxBy } from 'utilities/max-by';
+import { createSelector } from 'reselect';
 
 interface MasteredDegree {
   id: string;
@@ -12,6 +13,68 @@ interface MasteredDegree {
   position: number;
 }
 export { MasteredDegree as Model };
+
+const selectMasteredCourseGroups = (self: MasteredDegree) => self.masteredCourseGroups;
+
+export const getCourseGroups = createSelector(selectMasteredCourseGroups, masteredCourseGroups => {
+  return Object.values(masteredCourseGroups)
+    .reduce(
+      (courseGroupArray, group) => {
+        courseGroupArray.push(group);
+        return courseGroupArray;
+      },
+      [] as MasteredCourseGroup.Model[],
+    )
+    .sort((a, b) => a.column * 1000 + a.position - (b.column * 1000 + b.position));
+});
+
+export const getCourseGroupsColumnOne = createSelector(
+  selectMasteredCourseGroups,
+  masteredCourseGroups => {
+    return Object.values(masteredCourseGroups)
+      .reduce(
+        (courseGroupArray, group) => {
+          courseGroupArray.push(group);
+          return courseGroupArray;
+        },
+        [] as MasteredCourseGroup.Model[],
+      )
+      .filter(group => group.column === 1)
+      .sort((a, b) => a.column * 1000 + a.position - (b.column * 1000 + b.position));
+  },
+);
+
+export const getCourseGroupsColumnTwo = createSelector(
+  selectMasteredCourseGroups,
+  masteredCourseGroups => {
+    return Object.values(masteredCourseGroups)
+      .reduce(
+        (courseGroupArray, group) => {
+          courseGroupArray.push(group);
+          return courseGroupArray;
+        },
+        [] as MasteredCourseGroup.Model[],
+      )
+      .filter(group => group.column === 2)
+      .sort((a, b) => a.column * 1000 + a.position - (b.column * 1000 + b.position));
+  },
+);
+
+export const getCourseGroupsColumnThree = createSelector(
+  selectMasteredCourseGroups,
+  masteredCourseGroups => {
+    return Object.values(masteredCourseGroups)
+      .reduce(
+        (courseGroupArray, group) => {
+          courseGroupArray.push(group);
+          return courseGroupArray;
+        },
+        [] as MasteredCourseGroup.Model[],
+      )
+      .filter(group => group.column === 3)
+      .sort((a, b) => a.column * 1000 + a.position - (b.column * 1000 + b.position));
+  },
+);
 
 export function createNewMasteredDegree(degreeName: string, lastPosition: number): MasteredDegree {
   const newDegree: MasteredDegree = {

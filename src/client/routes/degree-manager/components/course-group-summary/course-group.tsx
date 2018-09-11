@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as styles from 'styles';
 import styled from 'styled-components';
+import * as pluralize from 'pluralize';
 
 import { View } from 'components/view';
 import { Text } from 'components/text';
@@ -62,29 +63,37 @@ const actions: Actions<'view' | 'delete' | 'move' | 'rearrange'> = {
 };
 
 interface CourseGroupProps {
-  title: string;
+  name: string;
   onClick: () => void;
-  courseCount: number;
-  creditHours: string;
+  creditMinimum: number;
+  creditMaximum: number;
 }
 
 export class CourseGroup extends React.PureComponent<CourseGroupProps, {}> {
   handleActions = (action: keyof typeof actions) => {};
 
+  get creditHours() {
+    const { creditMaximum, creditMinimum } = this.props;
+    if (creditMinimum === creditMaximum) {
+      return `${creditMinimum} ${pluralize('credits', creditMinimum)}`;
+    }
+
+    return `${creditMinimum} - ${creditMaximum} credits`;
+  }
+
   render() {
-    const { title, courseCount, creditHours, onClick } = this.props;
+    const { name, onClick } = this.props;
     return (
-      <RightClickMenu header={title} actions={actions} onAction={this.handleActions}>
+      <RightClickMenu header={name} actions={actions} onAction={this.handleActions}>
         {rightClickProps => (
           <Root onClick={onClick} {...rightClickProps}>
             <Summary>
-              <Title>{title}</Title>
+              <Title>{name}</Title>
               <Details>
-                <Text>{courseCount} Courses</Text>
-                <Text>{creditHours}</Text>
+                <Text>{this.creditHours}</Text>
               </Details>
             </Summary>
-            <DropdownMenu header={title} actions={actions} onAction={this.handleActions} />
+            <DropdownMenu header={name} actions={actions} onAction={this.handleActions} />
             <IconButton>
               <Fa icon="angleRight" />
             </IconButton>

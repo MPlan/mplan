@@ -1,13 +1,35 @@
 import * as Model from 'models';
 import { history } from 'client/history';
-import { CourseGroupSummary } from './course-group-summary';
+import { CourseGroupSummary, CourseGroupViewModel } from './course-group-summary';
+import { memoizeAll } from 'utilities/memoize-all';
 
 interface CourseGroupSummaryContainerProps {
   masteredDegreeId: string;
 }
 
 const Container = Model.store.connect({
-  mapStateToProps: () => ({}),
+  mapStateToProps: (state, ownProps: CourseGroupSummaryContainerProps) => {
+    const masteredDegree = Model.MasteredDegrees.getMasteredDegree(
+      state.masteredDegrees,
+      ownProps.masteredDegreeId,
+    );
+
+    if (!masteredDegree) {
+      throw new Error(`could not find mastered degree with id ${ownProps.masteredDegreeId}`);
+    }
+
+    return {
+      courseGroupsColumnOne: Model.MasteredDegree.getCourseGroupsColumnOne(
+        masteredDegree,
+      ) as CourseGroupViewModel[],
+      courseGroupsColumnTwo: Model.MasteredDegree.getCourseGroupsColumnTwo(
+        masteredDegree,
+      ) as CourseGroupViewModel[],
+      courseGroupsColumnThree: Model.MasteredDegree.getCourseGroupsColumnThree(
+        masteredDegree,
+      ) as CourseGroupViewModel[],
+    };
+  },
   mapDispatchToProps: (dispatch, ownProps: CourseGroupSummaryContainerProps) => ({
     onGroupClick: (groupId: string) => {
       const { masteredDegreeId } = ownProps;
@@ -30,6 +52,9 @@ const Container = Model.store.connect({
         };
       });
     },
+    onRearrange: () => {},
+    onDelete: (groupId: string) => {},
+    onChangeColumn: (groupId: string) => {},
   }),
 })(CourseGroupSummary);
 
