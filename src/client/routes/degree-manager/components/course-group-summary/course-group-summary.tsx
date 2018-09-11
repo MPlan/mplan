@@ -48,6 +48,21 @@ const Link = styled(_Link)`
     cursor: pointer;
   }
 `;
+const Empty = styled(View)`
+  height: 15rem;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+`;
+const EmptyTitle = styled(Text)`
+  font-size: ${styles.space(1)};
+  font-weight: ${styles.bold};
+  color: ${styles.grayLight};
+`;
+const EmptySubtitle = styled(Text)`
+  color: ${styles.grayLight};
+  font-size: ${styles.space(0)};
+`;
 
 export interface CourseGroupViewModel {
   id: string;
@@ -94,6 +109,14 @@ export class CourseGroupSummary extends React.PureComponent<
     this.state = {
       createGroupModalOpen: false,
     };
+  }
+
+  get empty() {
+    const { courseGroupsColumnOne, courseGroupsColumnTwo, courseGroupsColumnThree } = this.props;
+    if (courseGroupsColumnOne.length > 0) return false;
+    if (courseGroupsColumnTwo.length > 0) return false;
+    if (courseGroupsColumnThree.length > 0) return false;
+    return true;
   }
 
   handleDropdownActions = (action: keyof typeof actions) => {};
@@ -144,47 +167,54 @@ export class CourseGroupSummary extends React.PureComponent<
             <PrimaryButton onClick={this.handleCreateGroupOpen}>+ Create new group</PrimaryButton>
           </DescriptionAction>
 
-          <Columns>
-            <Column>
-              <ColumnHeader>Column one</ColumnHeader>
-              <Divider />
-              {courseGroupsColumnOne.map(group => (
-                <CourseGroup
-                  key={group.id}
-                  name={group.name}
-                  creditMinimum={group.creditMinimum}
-                  creditMaximum={group.creditMaximum}
-                  onClick={() => this.props.onGroupClick(group.id)}
-                />
-              ))}
-            </Column>
-            <Column>
-              <ColumnHeader>Column two</ColumnHeader>
-              <Divider />
-              {courseGroupsColumnTwo.map(group => (
-                <CourseGroup
-                  key={group.id}
-                  name={group.name}
-                  creditMinimum={group.creditMinimum}
-                  creditMaximum={group.creditMaximum}
-                  onClick={() => this.props.onGroupClick(group.id)}
-                />
-              ))}
-            </Column>
-            <Column>
-              <ColumnHeader>Column three</ColumnHeader>
-              <Divider />
-              {courseGroupsColumnThree.map(group => (
-                <CourseGroup
-                  key={group.id}
-                  name={group.name}
-                  creditMinimum={group.creditMinimum}
-                  creditMaximum={group.creditMaximum}
-                  onClick={() => this.props.onGroupClick(group.id)}
-                />
-              ))}
-            </Column>
-          </Columns>
+          {this.empty ? (
+            <Empty>
+              <EmptyTitle>Nothing here yet!</EmptyTitle>
+              <EmptySubtitle>Create a new group to begin.</EmptySubtitle>
+            </Empty>
+          ) : (
+            <Columns>
+              <Column>
+                <ColumnHeader>Column one</ColumnHeader>
+                <Divider />
+                {courseGroupsColumnOne.map(group => (
+                  <CourseGroup
+                    key={group.id}
+                    name={group.name}
+                    creditMinimum={group.creditMinimum}
+                    creditMaximum={group.creditMaximum}
+                    onClick={() => this.props.onGroupClick(group.id)}
+                  />
+                ))}
+              </Column>
+              <Column>
+                <ColumnHeader>Column two</ColumnHeader>
+                <Divider />
+                {courseGroupsColumnTwo.map(group => (
+                  <CourseGroup
+                    key={group.id}
+                    name={group.name}
+                    creditMinimum={group.creditMinimum}
+                    creditMaximum={group.creditMaximum}
+                    onClick={() => this.props.onGroupClick(group.id)}
+                  />
+                ))}
+              </Column>
+              <Column>
+                <ColumnHeader>Column three</ColumnHeader>
+                <Divider />
+                {courseGroupsColumnThree.map(group => (
+                  <CourseGroup
+                    key={group.id}
+                    name={group.name}
+                    creditMinimum={group.creditMinimum}
+                    creditMaximum={group.creditMaximum}
+                    onClick={() => this.props.onGroupClick(group.id)}
+                  />
+                ))}
+              </Column>
+            </Columns>
+          )}
         </DegreeItem>
         <InfoModal title="Course groups">
           <Paragraph>More info on course groups coming soon...</Paragraph>
