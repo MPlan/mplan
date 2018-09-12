@@ -70,7 +70,15 @@ interface CourseGroupProps {
 }
 
 export class CourseGroup extends React.PureComponent<CourseGroupProps, {}> {
-  handleActions = (action: keyof typeof actions) => {};
+  dropdownMenuRef = React.createRef<HTMLElement>();
+
+  handleActions = (action: keyof typeof actions) => {
+    const { onClick } = this.props;
+    if (action === 'view') {
+      onClick();
+      return;
+    }
+  };
 
   get creditHours() {
     const { creditMaximum, creditMinimum } = this.props;
@@ -81,19 +89,38 @@ export class CourseGroup extends React.PureComponent<CourseGroupProps, {}> {
     return `${creditMinimum} - ${creditMaximum} credits`;
   }
 
+  handleClick = (e: React.MouseEvent<any>) => {
+    const { onClick } = this.props;
+
+    const dropdownMenuElement = this.dropdownMenuRef.current;
+    if (!dropdownMenuElement) {
+      onClick();
+      return;
+    }
+
+    if (dropdownMenuElement.contains(e.target as any)) return;
+
+    onClick();
+  };
+
   render() {
-    const { name, onClick } = this.props;
+    const { name } = this.props;
     return (
       <RightClickMenu header={name} actions={actions} onAction={this.handleActions}>
         {rightClickProps => (
-          <Root onClick={onClick} {...rightClickProps}>
+          <Root onClick={this.handleClick} {...rightClickProps}>
             <Summary>
               <Title>{name}</Title>
               <Details>
                 <Text>{this.creditHours}</Text>
               </Details>
             </Summary>
-            <DropdownMenu header={name} actions={actions} onAction={this.handleActions} />
+            <DropdownMenu
+              containerRef={this.dropdownMenuRef}
+              header={name}
+              actions={actions}
+              onAction={this.handleActions}
+            />
             <IconButton>
               <Fa icon="angleRight" />
             </IconButton>

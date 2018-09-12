@@ -24,6 +24,7 @@ export interface DropdownMenuProps<T extends { [P in keyof T]: MenuItem }> {
   actions: T;
   onAction: (action: keyof T) => void;
   header: string;
+  containerRef?: React.RefObject<HTMLElement>;
 }
 
 interface DropdownMenuState<T extends { [P in keyof T]: MenuItem }> {
@@ -82,9 +83,9 @@ export class DropdownMenu<T extends { [P in keyof T]: MenuItem }> extends React.
   };
 
   render() {
-    const { actions, onAction, header, children, ...restOfProps } = this.props;
+    const { actions, onAction, header, children, containerRef, ...restOfProps } = this.props;
     return (
-      <Container {...restOfProps}>
+      <Container innerRef={containerRef} {...restOfProps}>
         <IconButton onClick={this.handleEllipsisClick} onBlur={this.handleEllipsisBlur}>
           <Fa icon="ellipsisH" size="lg" />
         </IconButton>
