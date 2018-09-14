@@ -11,6 +11,7 @@ import { Actions } from 'components/dropdown-menu';
 import { Divider } from 'components/divider';
 import { ActionableText } from 'components/actionable-text';
 import { createInfoModal } from 'components/info-modal';
+import { DeleteConfirmationModal } from 'components/delete-confirmation-modal';
 import { DegreeItem } from 'routes/degree-manager/components/degree-item';
 import { DescriptionAction } from 'routes/degree-manager/components/description-action';
 import { CreateGroupModal } from './create-group-modal';
@@ -77,15 +78,14 @@ interface CourseGroupSummaryProps {
   courseGroupsColumnOne: CourseGroupViewModel[];
   courseGroupsColumnTwo: CourseGroupViewModel[];
   courseGroupsColumnThree: CourseGroupViewModel[];
-  onRearrange: () => void;
   onDelete: (groupId: string) => void;
-  onChangeColumn: (groupId: string) => void;
   onGroupClick: (groupId: string) => void;
   onCreateGroup: (groupName: string, column: number) => void;
 }
 interface CourseGroupSummaryState {
   createGroupModalOpen: boolean;
   rearrangeModalOpen: boolean;
+  deleteConfirmationGroupId: string | undefined;
 }
 
 const actions: Actions<'add' | 'rearrange'> = {
@@ -112,7 +112,21 @@ export class CourseGroupSummary extends React.PureComponent<
     this.state = {
       createGroupModalOpen: false,
       rearrangeModalOpen: false,
+      deleteConfirmationGroupId: undefined,
     };
+  }
+
+  get deleteConfirmationOpen() {
+    return !!this.state.deleteConfirmationGroupId;
+  }
+  get groupToDeleteName() {
+    const { deleteConfirmationGroupId } = this.state;
+    if (!deleteConfirmationGroupId) return undefined;
+    const { courseGroupsColumnOne, courseGroupsColumnTwo, courseGroupsColumnThree } = this.props;
+    const groups = [...courseGroupsColumnOne, ...courseGroupsColumnTwo, ...courseGroupsColumnThree];
+    const group = groups.find(group => group.id === deleteConfirmationGroupId);
+    if (!group) return undefined;
+    return group.name;
   }
 
   get empty() {
@@ -154,14 +168,28 @@ export class CourseGroupSummary extends React.PureComponent<
     this.setState({ rearrangeModalOpen: false });
   };
 
+  handleDeleteOpen = (groupId: string) => {
+    this.setState({ deleteConfirmationGroupId: groupId });
+  };
+  handleDeleteClear = () => {
+    this.setState({ deleteConfirmationGroupId: undefined });
+  };
+
+  handleOnConfirmDelete = () => {
+    const { deleteConfirmationGroupId } = this.state;
+    if (!deleteConfirmationGroupId) return;
+    this.props.onDelete(deleteConfirmationGroupId);
+    this.handleDeleteClear();
+  };
+
   render() {
     const { createGroupModalOpen, rearrangeModalOpen } = this.state;
     const {
-      onCreateGroup,
       courseGroupsColumnOne,
       courseGroupsColumnTwo,
       courseGroupsColumnThree,
       masteredDegreeId,
+      onCreateGroup,
     } = this.props;
 
     const InfoModal = this.infoModal.Modal;
@@ -206,6 +234,8 @@ export class CourseGroupSummary extends React.PureComponent<
                     creditMinimum={group.creditMinimum}
                     creditMaximum={group.creditMaximum}
                     onClick={() => this.props.onGroupClick(group.id)}
+                    onRearrange={this.handleRearrangeOpen}
+                    onDelete={() => this.handleDeleteOpen(group.id)}
                   />
                 ))}
               </Column>
@@ -219,6 +249,8 @@ export class CourseGroupSummary extends React.PureComponent<
                     creditMinimum={group.creditMinimum}
                     creditMaximum={group.creditMaximum}
                     onClick={() => this.props.onGroupClick(group.id)}
+                    onRearrange={this.handleRearrangeOpen}
+                    onDelete={() => this.handleDeleteOpen(group.id)}
                   />
                 ))}
               </Column>
@@ -232,6 +264,8 @@ export class CourseGroupSummary extends React.PureComponent<
                     creditMinimum={group.creditMinimum}
                     creditMaximum={group.creditMaximum}
                     onClick={() => this.props.onGroupClick(group.id)}
+                    onRearrange={this.handleRearrangeOpen}
+                    onDelete={() => this.handleDeleteOpen(group.id)}
                   />
                 ))}
               </Column>
@@ -250,6 +284,13 @@ export class CourseGroupSummary extends React.PureComponent<
           open={rearrangeModalOpen}
           masteredDegreeId={masteredDegreeId}
           onClose={this.handleRearrangeClose}
+        />
+        <DeleteConfirmationModal
+          open={this.deleteConfirmationOpen}
+          title={`Are you sure you want to delete "${this.groupToDeleteName}"?`}
+          onClose={this.handleDeleteClear}
+          onConfirmDelete={this.handleOnConfirmDelete}
+          confirmationText="Yes, delete it"
         />
       </>
     );

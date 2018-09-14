@@ -61,6 +61,8 @@ const actions: Actions<'view' | 'delete' | 'rearrange'> = {
 interface CourseGroupProps {
   name: string;
   onClick: () => void;
+  onRearrange: () => void;
+  onDelete: () => void;
   creditMinimum: number;
   creditMaximum: number;
 }
@@ -69,9 +71,19 @@ export class CourseGroup extends React.PureComponent<CourseGroupProps, {}> {
   dropdownMenuRef = React.createRef<HTMLElement>();
 
   handleActions = (action: keyof typeof actions) => {
-    const { onClick } = this.props;
+    const { onClick, onRearrange, onDelete } = this.props;
     if (action === 'view') {
       onClick();
+      return;
+    }
+
+    if (action === 'rearrange') {
+      onRearrange();
+      return;
+    }
+
+    if (action === 'delete') {
+      onDelete();
       return;
     }
   };

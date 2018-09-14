@@ -1,7 +1,6 @@
 import * as Model from 'models';
 import { history } from 'client/history';
 import { CourseGroupSummary, CourseGroupViewModel } from './course-group-summary';
-import { memoizeAll } from 'utilities/memoize-all';
 
 interface CourseGroupSummaryContainerProps {
   masteredDegreeId: string;
@@ -53,9 +52,21 @@ const Container = Model.store.connect({
         };
       });
     },
-    onRearrange: () => {},
-    onDelete: (groupId: string) => {},
-    onChangeColumn: (groupId: string) => {},
+    onDelete: (groupId: string) => {
+      dispatch(state => {
+        const deleteGroup = (masteredDegree: Model.MasteredDegree.Model) =>
+          Model.MasteredDegree.deleteGroup(masteredDegree, groupId);
+
+        return {
+          ...state,
+          masteredDegrees: Model.MasteredDegrees.updatedMasteredDegree(
+            state.masteredDegrees,
+            ownProps.masteredDegreeId,
+            deleteGroup,
+          ),
+        };
+      });
+    },
   }),
 })(CourseGroupSummary);
 

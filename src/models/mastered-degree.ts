@@ -126,12 +126,12 @@ export function createNewGroup(self: MasteredDegree, name: string, column: numbe
 
 export function deleteGroup(
   self: MasteredDegree,
-  groupToDelete: MasteredCourseGroup.Model,
+  groupIdToDelete: string,
 ): MasteredDegree {
   const { masteredCourseGroups } = self;
 
   const newMasteredCourseGroups = Object.entries(masteredCourseGroups)
-    .filter(([groupId]) => groupId !== groupToDelete.id)
+    .filter(([groupId]) => groupId !== groupIdToDelete)
     .reduce(
       (newMasteredCourseGroups, [groupId, value]) => {
         newMasteredCourseGroups[groupId] = value;
