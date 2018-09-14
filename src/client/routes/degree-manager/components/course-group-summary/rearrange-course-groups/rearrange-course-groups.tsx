@@ -106,7 +106,7 @@ export class RearrangeCourseGroups extends React.PureComponent<RearrangeCourseGr
             <ColumnTitle>Column One</ColumnTitle>
             <SortableCourseGroupList
               distance={5}
-              axis="y"
+              lockAxis="y"
               groups={courseGroupsColumnOne}
               onLeft={this.handleOnLeftColumnOne}
               onRight={this.handleOnRightColumnOne}
@@ -117,7 +117,7 @@ export class RearrangeCourseGroups extends React.PureComponent<RearrangeCourseGr
             <ColumnTitle>Column Two</ColumnTitle>
             <SortableCourseGroupList
               distance={5}
-              axis="y"
+              lockAxis="y"
               groups={courseGroupsColumnTwo}
               onLeft={this.handleOnLeftColumnTwo}
               onRight={this.handleOnRightColumnTwo}
@@ -128,7 +128,7 @@ export class RearrangeCourseGroups extends React.PureComponent<RearrangeCourseGr
             <ColumnTitle>Column Three</ColumnTitle>
             <SortableCourseGroupList
               distance={5}
-              axis="y"
+              lockAxis="y"
               groups={courseGroupsColumnThree}
               onLeft={this.handleOnLeftColumnThree}
               onRight={this.handleOnRightColumnThree}
