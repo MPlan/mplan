@@ -31,20 +31,53 @@ export interface CourseGroupViewModel {
 }
 
 interface RearrangeCourseGroupsProps {
-  open: boolean;
-  onClose: () => void;
   courseGroupsColumnOne: CourseGroupViewModel[];
   courseGroupsColumnTwo: CourseGroupViewModel[];
   courseGroupsColumnThree: CourseGroupViewModel[];
+  open: boolean;
+  onClose: () => void;
+  onRearrange: (fromColumn: number, toColumn: number, oldIndex: number, newIndex: number) => void;
 }
 
 export class RearrangeCourseGroups extends React.PureComponent<RearrangeCourseGroupsProps, {}> {
-  handleOnLeftColumnOne = (groupId: string) => {};
-  handleOnRightColumnOne = (groupId: string) => {};
-  handleOnLeftColumnTwo = (groupId: string) => {};
-  handleOnRightColumnTwo = (groupId: string) => {};
-  handleOnLeftColumnThree = (groupId: string) => {};
-  handleOnRightColumnThree = (groupId: string) => {};
+  handleOnLeftColumnOne = () => {};
+  handleOnRightColumnOne = (groupId: string) => {
+    const { courseGroupsColumnOne, courseGroupsColumnTwo, onRearrange } = this.props;
+    const fromColumn = 1;
+    const toColumn = 2;
+    const oldIndex = courseGroupsColumnOne.findIndex(group => group.id === groupId);
+    const newIndex = Math.min(oldIndex, courseGroupsColumnTwo.length);
+
+    onRearrange(fromColumn, toColumn, oldIndex, newIndex);
+  };
+  handleOnLeftColumnTwo = (groupId: string) => {
+    const { courseGroupsColumnOne, courseGroupsColumnTwo, onRearrange } = this.props;
+    const fromColumn = 2;
+    const toColumn = 1;
+    const oldIndex = courseGroupsColumnTwo.findIndex(group => group.id === groupId);
+    const newIndex = Math.min(oldIndex, courseGroupsColumnOne.length);
+
+    onRearrange(fromColumn, toColumn, oldIndex, newIndex);
+  };
+  handleOnRightColumnTwo = (groupId: string) => {
+    const { courseGroupsColumnTwo, courseGroupsColumnThree, onRearrange } = this.props;
+    const fromColumn = 2;
+    const toColumn = 3;
+    const oldIndex = courseGroupsColumnTwo.findIndex(group => group.id === groupId);
+    const newIndex = Math.min(oldIndex, courseGroupsColumnThree.length);
+
+    onRearrange(fromColumn, toColumn, oldIndex, newIndex);
+  };
+  handleOnLeftColumnThree = (groupId: string) => {
+    const { courseGroupsColumnTwo, courseGroupsColumnThree, onRearrange } = this.props;
+    const fromColumn = 3;
+    const toColumn = 2;
+    const oldIndex = courseGroupsColumnThree.findIndex(group => group.id === groupId);
+    const newIndex = Math.min(oldIndex, courseGroupsColumnTwo.length);
+
+    onRearrange(fromColumn, toColumn, oldIndex, newIndex);
+  };
+  handleOnRightColumnThree = () => {};
 
   render() {
     const {

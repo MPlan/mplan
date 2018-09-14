@@ -1,7 +1,9 @@
 import { ObjectId } from 'utilities/object-id';
 import * as MasteredCourseGroup from './mastered-course-group';
-import { maxBy } from 'utilities/max-by';
 import { createSelector } from 'reselect';
+import { get } from 'utilities/get';
+import { maxBy } from 'utilities/max-by';
+import { max } from 'lodash';
 
 interface MasteredDegree {
   id: string;
@@ -167,5 +169,46 @@ export function changeMinimumCredits(
   return {
     ...self,
     minimumCredits: newMinimumCredits,
+  };
+}
+
+export function rearrangeCourseGroups(
+  self: MasteredDegree,
+  _fromColumn: number,
+  _toColumn: number,
+  oldIndex: number,
+  newIndex: number,
+): MasteredDegree {
+  const fromColumn = _fromColumn - 1;
+  const toColumn = _toColumn - 1;
+
+  const columnOne = getCourseGroupsColumnOne(self);
+  const columnTwo = getCourseGroupsColumnTwo(self);
+  const columnThree = getCourseGroupsColumnThree(self);
+
+  const columns = [columnOne, columnTwo, columnThree];
+  const group = columns[fromColumn][oldIndex];
+
+  const lastPositionInToColumn = max(columns[toColumn].map(group => group.position)) || 1000;
+  const positionBefore = get(columns, _ => _[toColumn][newIndex - 1].position, 0);
+  const positionAfter = get(
+    columns,
+    _ => _[toColumn][newIndex].position,
+    lastPositionInToColumn + 10,
+  );
+  const newPosition = (positionAfter + positionBefore) / 2;
+
+  const groupWithNewPosition = {
+    ...group,
+    position: newPosition,
+    column: toColumn + 1,
+  };
+
+  return {
+    ...self,
+    masteredCourseGroups: {
+      ...self.masteredCourseGroups,
+      [groupWithNewPosition.id]: groupWithNewPosition,
+    },
   };
 }

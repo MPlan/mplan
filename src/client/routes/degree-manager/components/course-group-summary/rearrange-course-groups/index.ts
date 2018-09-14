@@ -9,7 +9,29 @@ interface RearrangeCourseGroupsContainsProps {
 }
 
 const Container = Model.store.connect({
-  mapDispatchToProps: () => ({}),
+  mapDispatchToProps: (dispatch, ownProps: RearrangeCourseGroupsContainsProps) => ({
+    onRearrange: (fromColumn: number, toColumn: number, oldIndex: number, newIndex: number) => {
+      dispatch(state => {
+        const rearrangeCourseGroups = (masteredDegree: Model.MasteredDegree.Model) =>
+          Model.MasteredDegree.rearrangeCourseGroups(
+            masteredDegree,
+            fromColumn,
+            toColumn,
+            oldIndex,
+            newIndex,
+          );
+
+        return {
+          ...state,
+          masteredDegrees: Model.MasteredDegrees.updatedMasteredDegree(
+            state.masteredDegrees,
+            ownProps.masteredDegreeId,
+            rearrangeCourseGroups,
+          ),
+        };
+      });
+    },
+  }),
   mapStateToProps: (
     state,
     { masteredDegreeId, ...restOfOwnProps }: RearrangeCourseGroupsContainsProps,
