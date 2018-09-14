@@ -41,15 +41,11 @@ const DropdownMenu = styled(_DropdownMenu)`
   margin-right: ${styles.space(-2)};
 `;
 
-const actions: Actions<'view' | 'delete' | 'move' | 'rearrange'> = {
+const actions: Actions<'view' | 'delete' | 'rearrange'> = {
   view: {
     icon: 'pencil',
     text: 'View group',
     color: styles.blue,
-  },
-  move: {
-    icon: 'arrowsH',
-    text: 'Change column',
   },
   rearrange: {
     icon: 'bars',

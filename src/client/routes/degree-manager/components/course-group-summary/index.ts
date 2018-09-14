@@ -19,6 +19,7 @@ const Container = Model.store.connect({
     }
 
     return {
+      masteredDegreeId: ownProps.masteredDegreeId,
       courseGroupsColumnOne: Model.MasteredDegree.getCourseGroupsColumnOne(
         masteredDegree,
       ) as CourseGroupViewModel[],

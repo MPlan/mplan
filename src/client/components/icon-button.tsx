@@ -22,5 +22,10 @@ export const IconButton = styled.button`
   &:active {
     background-color: ${styles.grayLighter};
   }
+  &:disabled {
+    color: ${styles.grayLighter} !important;
+    background-color: transparent !important;
+    cursor: not-allowed;
+  }
   transition: all 0.2;
 `;

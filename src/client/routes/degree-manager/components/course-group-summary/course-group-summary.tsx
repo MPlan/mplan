@@ -15,6 +15,7 @@ import { DegreeItem } from 'routes/degree-manager/components/degree-item';
 import { DescriptionAction } from 'routes/degree-manager/components/description-action';
 import { CreateGroupModal } from './create-group-modal';
 import { CourseGroup } from './course-group';
+import { RearrangeCourseGroups } from './rearrange-course-groups';
 
 const Columns = styled(View)`
   flex-direction: row;
@@ -72,6 +73,7 @@ export interface CourseGroupViewModel {
 }
 
 interface CourseGroupSummaryProps {
+  masteredDegreeId: string;
   courseGroupsColumnOne: CourseGroupViewModel[];
   courseGroupsColumnTwo: CourseGroupViewModel[];
   courseGroupsColumnThree: CourseGroupViewModel[];
@@ -83,6 +85,7 @@ interface CourseGroupSummaryProps {
 }
 interface CourseGroupSummaryState {
   createGroupModalOpen: boolean;
+  rearrangeModalOpen: boolean;
 }
 
 const actions: Actions<'add' | 'rearrange'> = {
@@ -108,6 +111,7 @@ export class CourseGroupSummary extends React.PureComponent<
 
     this.state = {
       createGroupModalOpen: false,
+      rearrangeModalOpen: false,
     };
   }
 
@@ -119,7 +123,17 @@ export class CourseGroupSummary extends React.PureComponent<
     return true;
   }
 
-  handleDropdownActions = (action: keyof typeof actions) => {};
+  handleDropdownActions = (action: keyof typeof actions) => {
+    if (action === 'add') {
+      this.handleCreateGroupOpen();
+      return;
+    }
+
+    if (action === 'rearrange') {
+      this.handleRearrangeOpen();
+      return;
+    }
+  };
 
   dropdownProps = {
     header: 'Course groups',
@@ -133,15 +147,23 @@ export class CourseGroupSummary extends React.PureComponent<
   handleCreateGroupClose = () => {
     this.setState({ createGroupModalOpen: false });
   };
+  handleRearrangeOpen = () => {
+    this.setState({ rearrangeModalOpen: true });
+  };
+  handleRearrangeClose = () => {
+    this.setState({ rearrangeModalOpen: false });
+  };
 
   render() {
-    const { createGroupModalOpen } = this.state;
+    const { createGroupModalOpen, rearrangeModalOpen } = this.state;
     const {
       onCreateGroup,
       courseGroupsColumnOne,
       courseGroupsColumnTwo,
       courseGroupsColumnThree,
+      masteredDegreeId,
     } = this.props;
+
     const InfoModal = this.infoModal.Modal;
     return (
       <>
@@ -223,6 +245,11 @@ export class CourseGroupSummary extends React.PureComponent<
           open={createGroupModalOpen}
           onClose={this.handleCreateGroupClose}
           onCreateGroup={onCreateGroup}
+        />
+        <RearrangeCourseGroups
+          open={rearrangeModalOpen}
+          masteredDegreeId={masteredDegreeId}
+          onClose={this.handleRearrangeClose}
         />
       </>
     );
