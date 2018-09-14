@@ -3,7 +3,7 @@ import * as MasteredCourseGroup from './mastered-course-group';
 import { createSelector } from 'reselect';
 import { get } from 'utilities/get';
 import { maxBy } from 'utilities/max-by';
-import { max } from 'lodash';
+import { max, min } from 'lodash';
 
 interface MasteredDegree {
   id: string;
@@ -189,14 +189,21 @@ export function rearrangeCourseGroups(
   const columns = [columnOne, columnTwo, columnThree];
   const group = columns[fromColumn][oldIndex];
 
+  const firstPositionInFromColumn = min(columns[toColumn].map(group => group.position)) || 0;
   const lastPositionInToColumn = max(columns[toColumn].map(group => group.position)) || 1000;
-  const positionBefore = get(columns, _ => _[toColumn][newIndex - 1].position, 0);
-  const positionAfter = get(
-    columns,
-    _ => _[toColumn][newIndex].position,
-    lastPositionInToColumn + 10,
-  );
-  const newPosition = (positionAfter + positionBefore) / 2;
+
+  const offset = oldIndex > newIndex ? -1 : 1;
+  const positionCurrent = get(columns, _ => _[toColumn][newIndex].position);
+  const positionOffset = get(columns, _ => _[toColumn][newIndex + offset].position);
+
+  const newPosition =
+    positionCurrent === undefined
+      ? lastPositionInToColumn + 10
+      : positionOffset === undefined
+        ? oldIndex > newIndex
+          ? firstPositionInFromColumn - 10
+          : lastPositionInToColumn + 10
+        : (positionCurrent + positionOffset) / 2;
 
   const groupWithNewPosition = {
     ...group,

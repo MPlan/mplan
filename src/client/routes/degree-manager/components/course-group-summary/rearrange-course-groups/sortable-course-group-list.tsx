@@ -1,5 +1,4 @@
 import * as React from 'react';
-import * as styles from 'styles';
 import styled from 'styled-components';
 import { CourseGroupViewModel } from './rearrange-course-groups';
 

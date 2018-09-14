@@ -56,11 +56,12 @@ export class CreateGroupModal extends React.PureComponent<
     const openNow = this.props.open;
 
     if (closedBefore && openNow) {
-      this.setState({ groupName: '', column: 1 });
+      this.setState({ groupName: '' });
     }
   }
 
   handleCreateClick = () => {
+    if (!this.props.open) return;
     const { groupName, column } = this.state;
     this.props.onCreateGroup(groupName, column);
     this.props.onClose();

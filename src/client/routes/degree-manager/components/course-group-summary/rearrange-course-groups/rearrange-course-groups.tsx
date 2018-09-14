@@ -7,6 +7,7 @@ import { View } from 'components/view';
 import { Text } from 'components/text';
 import { Button } from 'components/button';
 import { SortableCourseGroupList } from './sortable-course-group-list';
+import { SortEnd } from 'react-sortable-hoc';
 
 const Columns = styled(View)`
   flex-direction: row;
@@ -79,6 +80,16 @@ export class RearrangeCourseGroups extends React.PureComponent<RearrangeCourseGr
   };
   handleOnRightColumnThree = () => {};
 
+  handleSortEndColumnOne = ({ oldIndex, newIndex }: SortEnd) => {
+    this.props.onRearrange(1, 1, oldIndex, newIndex);
+  };
+  handleSortEndColumnTwo = ({ oldIndex, newIndex }: SortEnd) => {
+    this.props.onRearrange(2, 2, oldIndex, newIndex);
+  };
+  handleSortEndColumnThree = ({ oldIndex, newIndex }: SortEnd) => {
+    this.props.onRearrange(3, 3, oldIndex, newIndex);
+  };
+
   render() {
     const {
       open,
@@ -99,6 +110,7 @@ export class RearrangeCourseGroups extends React.PureComponent<RearrangeCourseGr
               groups={courseGroupsColumnOne}
               onLeft={this.handleOnLeftColumnOne}
               onRight={this.handleOnRightColumnOne}
+              onSortEnd={this.handleSortEndColumnOne}
             />
           </Column>
           <Column>
@@ -109,6 +121,7 @@ export class RearrangeCourseGroups extends React.PureComponent<RearrangeCourseGr
               groups={courseGroupsColumnTwo}
               onLeft={this.handleOnLeftColumnTwo}
               onRight={this.handleOnRightColumnTwo}
+              onSortEnd={this.handleSortEndColumnTwo}
             />
           </Column>
           <Column>
@@ -119,6 +132,7 @@ export class RearrangeCourseGroups extends React.PureComponent<RearrangeCourseGr
               groups={courseGroupsColumnThree}
               onLeft={this.handleOnLeftColumnThree}
               onRight={this.handleOnRightColumnThree}
+              onSortEnd={this.handleSortEndColumnThree}
             />
           </Column>
         </Columns>
