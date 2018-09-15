@@ -1,6 +1,6 @@
 import { isEqual } from 'lodash';
 
-export function returnPrevious<T>(
+export function returnPreviousIfUnchanged<T>(
   calculate: (...args: any[]) => T,
   _compare?: (a: T, b: T) => boolean,
 ) {

@@ -1,6 +1,6 @@
 import { history } from 'client/history';
 import { Breadcrumbs } from './breadcrumbs';
-import { returnPrevious } from 'utilities/return-previous-if-unchanged';
+import { returnPreviousIfUnchanged } from 'utilities/return-previous-if-unchanged';
 import * as Model from 'models';
 
 function convertDashedCase(dashedCase: string) {
@@ -24,7 +24,7 @@ function convertPathToString(path: string, store: Model.App.Model) {
   return convertDashedCase(path);
 }
 
-const convertPathname = returnPrevious((pathname: string, store: Model.App.Model) => {
+const convertPathname = returnPreviousIfUnchanged((pathname: string, store: Model.App.Model) => {
   const pathSplit = pathname.split('/').slice(1);
   return pathSplit.map(pathPart => convertPathToString(pathPart, store));
 });
