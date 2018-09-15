@@ -1,6 +1,8 @@
 import { history } from 'client/history';
 import { Breadcrumbs } from './breadcrumbs';
 import { returnPreviousIfUnchanged } from 'utilities/return-previous-if-unchanged';
+import { memoizeAll } from 'utilities/memoize-all';
+import { flatten } from 'lodash';
 import * as Model from 'models';
 
 function convertDashedCase(dashedCase: string) {
@@ -21,8 +23,40 @@ function convertPathToString(path: string, store: Model.App.Model) {
   const masteredDegree = Model.MasteredDegrees.getMasteredDegree(masteredDegrees, path);
   if (masteredDegree) return masteredDegree.name;
 
+  const groupNameLookup = getLookup(store);
+  if (groupNameLookup[path]) return groupNameLookup[path];
+
   return convertDashedCase(path);
 }
+
+const createGroupNameLookup = memoizeAll(
+  (
+    ...masteredCourseGroups: Array<{ [courseGroupId: string]: Model.MasteredCourseGroup.Model }>
+  ) => {
+    const nameTuples = flatten(masteredCourseGroups.map(groupData => Object.values(groupData))).map(
+      group => ({ id: group.id, name: group.name }),
+    );
+    console.log('calculated course group name lookup');
+
+    const nameLookup = nameTuples.reduce(
+      (lookup, { id, name }) => {
+        lookup[id] = name;
+        return lookup;
+      },
+      {} as { [groupId: string]: string },
+    );
+
+    return nameLookup;
+  },
+);
+
+const getLookup = (store: Model.App.Model) => {
+  const masteredCourseGroups = Object.values(store.masteredDegrees).map(
+    masteredDegree => masteredDegree.masteredCourseGroups,
+  );
+
+  return createGroupNameLookup(...masteredCourseGroups);
+};
 
 const convertPathname = returnPreviousIfUnchanged((pathname: string, store: Model.App.Model) => {
   const pathSplit = pathname.split('/').slice(1);
