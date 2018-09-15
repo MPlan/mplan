@@ -19,6 +19,8 @@ const Container = Model.store.connect({
       return {
         name: '',
         descriptionHtml: '',
+        creditMinimum: 0,
+        creditMaximum: 0,
       };
     }
 
@@ -28,12 +30,16 @@ const Container = Model.store.connect({
       return {
         name: '',
         descriptionHtml: '',
+        creditMinimum: 0,
+        creditMaximum: 0,
       };
     }
 
     return {
       name: group.name,
       descriptionHtml: group.descriptionHtml,
+      creditMinimum: group.creditMinimum,
+      creditMaximum: group.creditMaximum,
     };
   },
   mapDispatchToProps: (dispatch, ownProps: CourseGroupDetailContainerProps) => ({
@@ -66,6 +72,40 @@ const Container = Model.store.connect({
           state.masteredDegrees,
           ownProps.masteredDegreeId,
           changeName,
+        );
+
+        return { ...state, masteredDegrees: newMasteredDegrees };
+      });
+    },
+    onCreditMinimumChange: (creditMinimum: number) => {
+      dispatch(state => {
+        const changeMinimum = (masteredDegree: Model.MasteredDegree.Model) =>
+          Model.MasteredDegree.updateGroup(masteredDegree, ownProps.groupId, group => ({
+            ...group,
+            creditMinimum,
+          }));
+
+        const newMasteredDegrees = Model.MasteredDegrees.updatedMasteredDegree(
+          state.masteredDegrees,
+          ownProps.masteredDegreeId,
+          changeMinimum,
+        );
+
+        return { ...state, masteredDegrees: newMasteredDegrees };
+      });
+    },
+    onCreditMaximumChange: (creditMaximum: number) => {
+      dispatch(state => {
+        const changeMaximum = (masteredDegree: Model.MasteredDegree.Model) =>
+          Model.MasteredDegree.updateGroup(masteredDegree, ownProps.groupId, group => ({
+            ...group,
+            creditMaximum,
+          }));
+
+        const newMasteredDegrees = Model.MasteredDegrees.updatedMasteredDegree(
+          state.masteredDegrees,
+          ownProps.masteredDegreeId,
+          changeMaximum,
         );
 
         return { ...state, masteredDegrees: newMasteredDegrees };

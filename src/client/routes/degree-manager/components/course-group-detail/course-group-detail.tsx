@@ -14,6 +14,7 @@ import { Paragraph } from 'components/paragraph';
 import { PrimaryButton } from 'components/button';
 import { Fa as _Fa } from 'components/fa';
 import { Link } from 'components/link';
+import { CreditHourEditor } from 'components/credit-hour-editor';
 
 import { DegreeItem } from 'routes/degree-manager/components/degree-item';
 import { DescriptionAction } from 'routes/degree-manager/components/description-action';
@@ -75,10 +76,14 @@ const ActionSubtitle = styled(Text)`
 interface CourseGroupDetailProps {
   name: string;
   descriptionHtml: string;
+  creditMinimum: number;
+  creditMaximum: number;
   onNameChange: (name: string) => void;
+  onDescriptionChange: (descriptionHtml: string) => void;
+  onCreditMinimumChange: (minimumCredits: number) => void;
+  onCreditMaximumChange: (maximumCredits: number) => void;
   onBackClick: () => void;
   onPreviewClick: () => void;
-  onDescriptionChange: (descriptionHtml: string) => void;
 }
 interface CourseGroupDetailState {
   editingName: boolean;
@@ -111,7 +116,18 @@ export class CourseGroupDetail extends React.Component<
   };
 
   render() {
-    const { name, descriptionHtml, onBackClick, onPreviewClick, onDescriptionChange } = this.props;
+    const {
+      name,
+      creditMinimum,
+      creditMaximum,
+      descriptionHtml,
+      onBackClick,
+      onPreviewClick,
+      onDescriptionChange,
+      onCreditMaximumChange,
+      onCreditMinimumChange,
+    } = this.props;
+
     const { editingName } = this.state;
 
     return (
@@ -154,7 +170,10 @@ export class CourseGroupDetail extends React.Component<
               </Paragraph>
             </DescriptionEditor>
             <DegreeItem title="Credit hours">
-              <DescriptionAction description={<>fewfods</>}>tesfds</DescriptionAction>
+              <DescriptionAction description={<>fewfods</>}>
+                <CreditHourEditor creditHours={creditMinimum} onChange={onCreditMinimumChange} />
+                <CreditHourEditor creditHours={creditMaximum} onChange={onCreditMaximumChange} />
+              </DescriptionAction>
             </DegreeItem>
             <DegreeItem title="Default courses">
               <Paragraph>These are the courses that will appear initially.</Paragraph>
