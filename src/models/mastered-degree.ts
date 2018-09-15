@@ -18,6 +18,10 @@ export { MasteredDegree as Model };
 
 const selectMasteredCourseGroups = (self: MasteredDegree) => self.masteredCourseGroups;
 
+export function getCourseGroup(self: MasteredDegree, groupId: string) {
+  return self.masteredCourseGroups[groupId] as MasteredCourseGroup.Model | undefined;
+}
+
 export const getCourseGroups = createSelector(selectMasteredCourseGroups, masteredCourseGroups => {
   return Object.values(masteredCourseGroups)
     .reduce(
@@ -124,10 +128,7 @@ export function createNewGroup(self: MasteredDegree, name: string, column: numbe
   };
 }
 
-export function deleteGroup(
-  self: MasteredDegree,
-  groupIdToDelete: string,
-): MasteredDegree {
+export function deleteGroup(self: MasteredDegree, groupIdToDelete: string): MasteredDegree {
   const { masteredCourseGroups } = self;
 
   const newMasteredCourseGroups = Object.entries(masteredCourseGroups)
@@ -145,6 +146,23 @@ export function deleteGroup(
   return {
     ...self,
     masteredCourseGroups: newMasteredCourseGroups,
+  };
+}
+
+export function updateGroup(
+  self: MasteredDegree,
+  groupId: string,
+  update: (group: MasteredCourseGroup.Model) => MasteredCourseGroup.Model,
+): MasteredDegree {
+  const group = self.masteredCourseGroups[groupId];
+  if (!group) return self;
+
+  return {
+    ...self,
+    masteredCourseGroups: {
+      ...self.masteredCourseGroups,
+      [groupId]: update(group),
+    },
   };
 }
 

@@ -105,7 +105,7 @@ export class CourseGroupDetail extends React.Component<
     this.setState({ editingName: false });
   };
   handleNameEdit = () => {
-    this.setState({ editingName: false });
+    this.setState({ editingName: true });
   };
 
   render() {

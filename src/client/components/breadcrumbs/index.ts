@@ -36,7 +36,6 @@ const createGroupNameLookup = memoizeAll(
     const nameTuples = flatten(masteredCourseGroups.map(groupData => Object.values(groupData))).map(
       group => ({ id: group.id, name: group.name }),
     );
-    console.log('calculated course group name lookup');
 
     const nameLookup = nameTuples.reduce(
       (lookup, { id, name }) => {
