@@ -1,5 +1,5 @@
 import * as React from 'react';
-import shallowEqual from 'recompose/shallowEqual';
+import { Observable, Observer } from 'rxjs';
 
 interface ConnectParams<State, OwnProps, PropsFromMapState, PropsFromMapDispatch> {
   mapStateToProps: (state: State, ownProps: OwnProps) => PropsFromMapState;
@@ -69,10 +69,17 @@ export function createStore<State>(initialState: State) {
     };
   }
 
+  function stream(): Observable<State> {
+    return Observable.create((observer: Observer<State>) => {
+      subscribe(observer.next.bind(observer));
+    });
+  }
+
   return {
     connect,
     subscribe,
     dispatch,
+    stream,
     get current() {
       return currentState;
     },

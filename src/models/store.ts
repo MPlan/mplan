@@ -6,6 +6,7 @@ const initialState: App.Model = {
   catalog: {},
   masteredDegrees: {},
   prerequisiteOverrides: {},
+  watchedMasteredDegrees: {},
   user: undefined,
   loaded: false,
   saveCount: 0,

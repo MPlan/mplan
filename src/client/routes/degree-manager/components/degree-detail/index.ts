@@ -27,6 +27,33 @@ const Container = Model.store.connect({
     };
   },
   mapDispatchToProps: (dispatch, ownProps: DegreeEditorContainerProps) => ({
+    onMount: () => {
+      dispatch(state => {
+        return {
+          ...state,
+          watchedMasteredDegrees: {
+            ...state.watchedMasteredDegrees,
+            [ownProps.masteredDegreeId]: true,
+          },
+        };
+      });
+    },
+    onWillUnmount: () => {
+      dispatch(state => {
+        return {
+          ...state,
+          watchedMasteredDegrees: Object.keys(state.watchedMasteredDegrees)
+            .filter(id => id !== ownProps.masteredDegreeId)
+            .reduce(
+              (watchedMasteredDegrees, masteredDegreeId) => {
+                watchedMasteredDegrees[masteredDegreeId] = true;
+                return watchedMasteredDegrees;
+              },
+              {} as { [masteredDegreeId: string]: true },
+            ),
+        };
+      });
+    },
     onBackClick: () => {
       history.push('/degree-manager');
     },

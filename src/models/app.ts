@@ -7,6 +7,7 @@ interface App {
   catalog: Catalog.Model;
   user: User.Model | undefined;
   masteredDegrees: MasteredDegrees.Model;
+  watchedMasteredDegrees: { [masteredDegreeId: string]: true };
   admins: string[];
   prerequisiteOverrides: { [courseKey: string]: Prerequisite.Model };
   loaded: boolean;

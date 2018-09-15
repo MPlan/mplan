@@ -38,9 +38,9 @@ degrees.put('/:masteredDegreeId', checkAdmin, async (req, res) => {
   });
 
   if (!masteredDegreeFromDb) {
-    degrees.insertOne({ _id: masteredDegree.id, ...masteredDegree });
+    await degrees.insertOne({ _id: masteredDegree.id, ...masteredDegree });
   } else {
-    degrees.findOneAndReplace({ id: masteredDegree }, masteredDegree);
+    await degrees.findOneAndReplace({ id: masteredDegree.id }, masteredDegree);
   }
 
   res.sendStatus(HttpStatus.NO_CONTENT);

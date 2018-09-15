@@ -2,6 +2,8 @@ import * as Model from 'models';
 import { DegreeEditor } from './degree-manager';
 import { saveMasteredDegree } from 'client/fetch/mastered-degrees';
 import { history } from 'client/history';
+import { map, distinctUntilChanged, debounceTime } from 'rxjs/operators';
+import { isEqual } from 'lodash';
 
 const Container = Model.store.connect({
   mapStateToProps: state => ({
@@ -14,17 +16,12 @@ const Container = Model.store.connect({
         const lastPosition = Model.MasteredDegrees.getLastPosition(state.masteredDegrees);
         const newDegree = Model.MasteredDegree.createNewMasteredDegree(degreeName, lastPosition);
 
-        saveMasteredDegree(newDegree).then(() =>
-          dispatch(state => ({ ...state, saveCount: state.saveCount - 1 })),
-        );
-
         return {
           ...state,
           masteredDegrees: Model.MasteredDegrees.addMasteredDegree(
             state.masteredDegrees,
             newDegree,
           ),
-          saveCount: state.saveCount + 1,
         };
       });
     },
@@ -33,5 +30,24 @@ const Container = Model.store.connect({
     },
   }),
 })(DegreeEditor);
+
+const masteredDegrees$ = Model.store.stream().pipe(
+  map(state => ({
+    masteredDegrees: state.masteredDegrees,
+    watchedMasteredDegrees: state.watchedMasteredDegrees,
+  })),
+  map(({ masteredDegrees, watchedMasteredDegrees }) => {
+    const degrees = Object.entries(masteredDegrees)
+      .filter(([masteredDegreeId]) => watchedMasteredDegrees[masteredDegreeId])
+      .map(([_, value]) => value);
+    return degrees;
+  }),
+  distinctUntilChanged(isEqual),
+  debounceTime(1000),
+);
+
+masteredDegrees$.subscribe(changedMasteredDegrees =>
+  changedMasteredDegrees.forEach(saveMasteredDegree),
+);
 
 export { Container as DegreeEditor };

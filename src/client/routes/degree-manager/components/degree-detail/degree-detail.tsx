@@ -72,6 +72,8 @@ interface DegreeDetailProps {
   onDescriptionChange: (description: string) => void;
   onPublishChange: (published: boolean) => void;
   onMinimumCreditHoursChange: (minimumCreditHours: number) => void;
+  onMount: () => void;
+  onWillUnmount: () => void;
 }
 interface DegreeDetailState {
   editingDegreeName: boolean;
@@ -101,6 +103,14 @@ export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetai
     this.state = {
       editingDegreeName: false,
     };
+  }
+
+  componentDidMount() {
+    this.props.onMount();
+  }
+
+  componentWillUnmount() {
+    this.props.onWillUnmount();
   }
 
   handleDegreeNameBlur = () => {

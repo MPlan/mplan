@@ -1,13 +1,11 @@
 import * as React from 'react';
 import * as Model from 'models';
 import * as styles from 'styles';
-import styled from 'styled-components';
 import { RouteComponentProps } from 'react-router';
 import { get } from 'utilities/get';
 
 import { Route, Redirect } from 'react-router';
 import { Page } from 'components/page';
-import { View } from 'components/view';
 import { Text } from 'components/text';
 import { PrimaryButton } from 'components/button';
 import { createSlides } from 'components/slides';
@@ -18,13 +16,6 @@ import { DegreePreview } from './components/degree-preview';
 import { CourseGroupDetail } from './components/course-group-detail';
 
 const { Slide, Slides } = createSlides();
-
-const Content = styled(View)`
-  max-width: 100%;
-  flex: 1 1 auto;
-  overflow: hidden;
-  position: relative;
-`;
 
 interface DegreeEditorProps {
   locationPathname: string;
@@ -61,7 +52,7 @@ export class DegreeEditor extends React.PureComponent<DegreeEditorProps, DegreeE
     this.setState({ newDegreeModalOpen: false });
   };
 
-  renderDegreeManager = ({ match }: RouteComponentProps<any>) => {
+  renderDegreeManager = () => {
     const { masteredDegrees, onMasteredDegreeClick } = this.props;
 
     return (
