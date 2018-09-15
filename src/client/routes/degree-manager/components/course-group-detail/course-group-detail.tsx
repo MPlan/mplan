@@ -74,9 +74,11 @@ const ActionSubtitle = styled(Text)`
 
 interface CourseGroupDetailProps {
   name: string;
+  descriptionHtml: string;
   onNameChange: (name: string) => void;
   onBackClick: () => void;
   onPreviewClick: () => void;
+  onDescriptionChange: (descriptionHtml: string) => void;
 }
 interface CourseGroupDetailState {
   editingName: boolean;
@@ -109,7 +111,7 @@ export class CourseGroupDetail extends React.Component<
   };
 
   render() {
-    const { name, onBackClick, onPreviewClick } = this.props;
+    const { name, descriptionHtml, onBackClick, onPreviewClick, onDescriptionChange } = this.props;
     const { editingName } = this.state;
 
     return (
@@ -143,7 +145,7 @@ export class CourseGroupDetail extends React.Component<
                 </TitleRow>
               )}
             </RightClickMenu>
-            <DescriptionEditor descriptionHtml={''} onChange={() => {}}>
+            <DescriptionEditor descriptionHtml={descriptionHtml} onChange={onDescriptionChange}>
               <Paragraph>Edit the description of this course group here.</Paragraph>
               <Paragraph>
                 The description will appear when the student clicks the "More info" link under the

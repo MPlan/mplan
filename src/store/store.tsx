@@ -57,10 +57,11 @@ export function createStore<State>(initialState: State) {
           this.previousStoreState = currentState;
         }
 
+        propsFromMapDispatch = mapDispatchToProps(dispatch, this.props);
+
         render() {
-          const propsFromMapDispatch = mapDispatchToProps(dispatch, this.props);
           const propsFromMapState = mapStateToProps(currentState, this.props);
-          const props = Object.assign({}, propsFromMapDispatch, propsFromMapState);
+          const props = Object.assign({}, this.propsFromMapDispatch, propsFromMapState);
           return <Component {...props} />;
         }
       }

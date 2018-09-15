@@ -18,6 +18,7 @@ const Container = Model.store.connect({
       history.replace('/degree-manager');
       return {
         name: '',
+        descriptionHtml: '',
       };
     }
 
@@ -26,11 +27,13 @@ const Container = Model.store.connect({
       history.replace(`/degree-manager/${masteredDegree.id}`);
       return {
         name: '',
+        descriptionHtml: '',
       };
     }
 
     return {
       name: group.name,
+      descriptionHtml: group.descriptionHtml,
     };
   },
   mapDispatchToProps: (dispatch, ownProps: CourseGroupDetailContainerProps) => ({
@@ -40,6 +43,23 @@ const Container = Model.store.connect({
           Model.MasteredDegree.updateGroup(masteredDegree, ownProps.groupId, group => ({
             ...group,
             name,
+          }));
+
+        const newMasteredDegrees = Model.MasteredDegrees.updatedMasteredDegree(
+          state.masteredDegrees,
+          ownProps.masteredDegreeId,
+          changeName,
+        );
+
+        return { ...state, masteredDegrees: newMasteredDegrees };
+      });
+    },
+    onDescriptionChange: (descriptionHtml: string) => {
+      dispatch(state => {
+        const changeName = (masteredDegree: Model.MasteredDegree.Model) =>
+          Model.MasteredDegree.updateGroup(masteredDegree, ownProps.groupId, group => ({
+            ...group,
+            descriptionHtml,
           }));
 
         const newMasteredDegrees = Model.MasteredDegrees.updatedMasteredDegree(

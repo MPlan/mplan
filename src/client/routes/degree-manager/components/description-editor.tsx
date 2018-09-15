@@ -37,7 +37,7 @@ export class DescriptionEditor extends React.PureComponent<DescriptionEditorProp
       <DegreeItem title="Description" {...restOfProps}>
         <Content>{children}</Content>
         <ReactQuillWrapper>
-          <ReactQuill value={descriptionHtml} onChange={onChange} />
+          <ReactQuill defaultValue={descriptionHtml} onChange={onChange} />
         </ReactQuillWrapper>
       </DegreeItem>
     );
