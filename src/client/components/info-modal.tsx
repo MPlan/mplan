@@ -7,6 +7,7 @@ import { Button } from 'components/button';
 import { createScene } from 'utilities/scene';
 
 const ButtonRow = styled(View)`
+  flex: 0 0 auto;
   flex-direction: row;
   justify-content: flex-end;
   margin-top: ${styles.space(0)};

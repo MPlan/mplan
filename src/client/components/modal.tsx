@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as ReactDom from 'react-dom';
 import * as styles from 'styles';
 import styled from 'styled-components';
 
@@ -82,6 +83,8 @@ export interface ModalProps {
 }
 
 export class Modal extends React.Component<ModalProps, {}> {
+  overlayElement = document.createElement('div');
+
   shouldComponentUpdate(nextProps: ModalProps) {
     if (!this.props.open && !nextProps.open) return false;
     if (shallowEqual(this.props, nextProps)) return false;
@@ -97,14 +100,16 @@ export class Modal extends React.Component<ModalProps, {}> {
 
   componentDidMount() {
     document.addEventListener('keydown', this.handleKeydown);
+    document.body.appendChild(this.overlayElement);
   }
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.handleKeydown);
+    document.body.removeChild(this.overlayElement);
   }
 
   render() {
-    return (
+    return ReactDom.createPortal(
       <Container open={this.props.open} style={{ opacity: this.props.open ? 1 : 0 }}>
         <Backdrop onClick={this.props.onBlurCancel} />
         <Content>
@@ -113,7 +118,8 @@ export class Modal extends React.Component<ModalProps, {}> {
             <Body noPadding={this.props.noPadding}>{this.props.children}</Body>
           </Card>
         </Content>
-      </Container>
+      </Container>,
+      this.overlayElement,
     );
   }
 }
