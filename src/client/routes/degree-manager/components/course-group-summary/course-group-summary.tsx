@@ -200,8 +200,8 @@ export class CourseGroupSummary extends React.PureComponent<
             description={
               <TextContainer>
                 <Paragraph>
-                  Course groups represent groups of courses that represent a particular requirement
-                  as part of a degree program.
+                  Course groups are groups of courses that represent a particular requirement as
+                  part of a degree program.
                 </Paragraph>
                 <Paragraph>
                   An example course group would be "Writing and Oral Communication" which would
@@ -273,7 +273,43 @@ export class CourseGroupSummary extends React.PureComponent<
           )}
         </DegreeItem>
         <InfoModal title="Course groups">
-          <Paragraph>More info on course groups coming soon...</Paragraph>
+          <Paragraph>
+            Course groups are groups of courses that represent a particular requirement as part of a
+            degree program.
+          </Paragraph>
+          <Paragraph>
+            An example course group would be "Writing and Oral Communication" which would include
+            the courses <Link to="/catalog/comp-150">COMP 105</Link> and{' '}
+            <Link to="/catalog/comp-270">COMP 270</Link>.
+          </Paragraph>
+          <Paragraph>
+            Course groups appear to students as a list of courses that they can add and remove
+            courses from. Once a student adds a course, it will become part of their MPlan—as in
+            they plan to, or, have already taken the course—and that information will be used to
+            calculate their personalized sequence of courses.
+          </Paragraph>
+          <Paragraph>
+            When you define a course group here, you define:
+            <ol>
+              <li>A description of the group.</li>
+              <li>The minimum number of credits needed to satisfy this group.</li>
+              <li>The maximum number of credits this group allows.</li>
+              <li>
+                A list of default courses that appear when the student initially selects the degree
+                program.
+              </li>
+              <li>A list of courses that a student is allowed to add for this particular group.</li>
+            </ol>
+          </Paragraph>
+          <Paragraph>
+            <strong>Disclaimer:</strong> when a student fails to meet any of the requirements
+            defined above, MPlan <em>will not block them</em> from doing so. Instead they will get a
+            non-dismissable warning that will won't go away throughout their usage of MPlan.
+          </Paragraph>
+          <Text>
+            MPlan is <em>not</em> a degree audit and should not be treated like one. Email or ping
+            us using the chat bubble on your lower-right if you have any questions.
+          </Text>
         </InfoModal>
         <CreateGroupModal
           open={createGroupModalOpen}
