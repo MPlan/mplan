@@ -158,8 +158,7 @@ export class CoursePicker extends React.PureComponent<CoursePickerProps, CourseP
           </Column>
         </Content>
         <Actions>
-          <Button onClick={onClose}>Cancel</Button>
-          <PrimaryButton>Save</PrimaryButton>
+          <Button onClick={onClose}>Done</Button>
         </Actions>
       </Modal>
     );
