@@ -129,7 +129,10 @@ export class CoursePicker extends React.PureComponent<CoursePickerProps, CourseP
                 query.length > 0 ? (
                   <Empty title="Oh no!" subtitle={`We couldn't find anything for "${query}."`} />
                 ) : (
-                  <Empty title="Search above to get started…" />
+                  <Empty
+                    title="Search above to get started…"
+                    subtitle="e.g. &quot;MATH 116&quot; or &quot;Art History&quot;"
+                  />
                 )
               }
             />
