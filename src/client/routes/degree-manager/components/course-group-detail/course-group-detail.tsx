@@ -90,10 +90,10 @@ interface CourseGroupDetailProps {
   allowListIds: string[];
 
   onAddDefaultCourse: (catalogId: string) => void;
-  onAddAllowedCourse: (catalogId: string) => void;
   onRemoveDefaultCourse: (catalogId: string) => void;
-  onRemoveAllowedCourse: (catalogId: string) => void;
   onRearrangeDefaultCourses: (oldIndex: number, newIndex: number) => void;
+  onAddAllowedCourse: (catalogId: string) => void;
+  onRemoveAllowedCourse: (catalogId: string) => void;
   onRearrangeAllowedCourses: (oldIndex: number, newIndex: number) => void;
   onNameChange: (name: string) => void;
   onDescriptionChange: (descriptionHtml: string) => void;
@@ -105,6 +105,7 @@ interface CourseGroupDetailProps {
 interface CourseGroupDetailState {
   editingName: boolean;
   defaultCoursesPickerOpen: boolean;
+  allowedCoursesPickerOpen: boolean;
 }
 
 export class CourseGroupDetail extends React.Component<
@@ -117,6 +118,7 @@ export class CourseGroupDetail extends React.Component<
     this.state = {
       editingName: false,
       defaultCoursesPickerOpen: false,
+      allowedCoursesPickerOpen: false,
     };
   }
 
@@ -141,6 +143,13 @@ export class CourseGroupDetail extends React.Component<
     this.setState({ defaultCoursesPickerOpen: false });
   };
 
+  handleAllowedCoursesPickerOpen = () => {
+    this.setState({ allowedCoursesPickerOpen: true });
+  };
+  handleAllowedCoursesPickerClose = () => {
+    this.setState({ allowedCoursesPickerOpen: false });
+  };
+
   render() {
     const {
       name,
@@ -153,12 +162,16 @@ export class CourseGroupDetail extends React.Component<
       onCreditMaximumChange,
       onCreditMinimumChange,
       defaultIds,
+      allowListIds,
       onAddDefaultCourse,
       onRemoveDefaultCourse,
       onRearrangeDefaultCourses,
+      onAddAllowedCourse,
+      onRemoveAllowedCourse,
+      onRearrangeAllowedCourses,
     } = this.props;
 
-    const { editingName, defaultCoursesPickerOpen } = this.state;
+    const { editingName, defaultCoursesPickerOpen, allowedCoursesPickerOpen } = this.state;
 
     return (
       <>
@@ -258,7 +271,8 @@ export class CourseGroupDetail extends React.Component<
                       <Paragraph>
                         <strong>Coming soon: </strong>
                         As an advisor, soon you'll be able to see a preview of the student degree
-                        work in the next iteration of MPlan.
+                        work in the next iteration of MPlan. Feel free to use the chat at the bottom
+                        right to ask any questions or give any feedback.
                       </Paragraph>
                     </>
                   }
@@ -273,10 +287,56 @@ export class CourseGroupDetail extends React.Component<
                 </DescriptionAction>
               </DegreeItem>
               <DegreeItem title="Allowed courses">
-                <Paragraph>
-                  This is the allowed white-list of courses. These will be presented to the users as
-                  options to choose from.
-                </Paragraph>
+                <DescriptionAction
+                  stretchAction
+                  description={
+                    <>
+                      <Paragraph>
+                        Allowed courses define what courses are allowed for this group.
+                      </Paragraph>
+                      <Paragraph>
+                        Allowed courses serves two purposes:
+                        <ol>
+                          <li>
+                            To warn students when they add courses that may not be credited, and
+                          </li>
+                          <li>To present the student with a preset list of options.</li>
+                        </ol>
+                      </Paragraph>
+                      <Paragraph>
+                        Allowed courses is ideal for elective requirement groups where the student
+                        gets a choice of what to take. E.g. "Technical Electives" or "Laboratory
+                        Science".
+                      </Paragraph>
+                      <Paragraph>
+                        <strong>Note: </strong>
+                        Allowed courses aren't applicable to requirement groups that can be
+                        satisfied by many possible courses such as "DDC Humanities".
+                      </Paragraph>
+                      <Paragraph>
+                        <strong>Disclaimer:</strong> when a student adds a course that is not in the
+                        allow courses, MPlan <em>will not block them</em> from doing so. Instead
+                        they will get a non-dismissable warning that will won't go away throughout
+                        their usage of MPlan. This was done to keep the tool usable in the event of
+                        edge cases. The warning will be very evident to the student.
+                      </Paragraph>
+                      <Paragraph>
+                        <strong>Coming soon: </strong>
+                        As an advisor, soon you'll be able to see a preview of the student degree
+                        work in the next iteration of MPlan. Feel free to use the chat at the bottom
+                        right to ask any questions or give any feedback.
+                      </Paragraph>
+                    </>
+                  }
+                >
+                  <Column>
+                    <PrimaryButton onClick={this.handleAllowedCoursesPickerOpen}>
+                      <Fa icon="pencil" /> Edit
+                    </PrimaryButton>
+                    <Spacer />
+                    <CourseList catalogIds={allowListIds} />
+                  </Column>
+                </DescriptionAction>
               </DegreeItem>
               <DegreeItem title="Summary">
                 <DescriptionAction description={<>test</>}>
@@ -298,6 +358,15 @@ export class CourseGroupDetail extends React.Component<
           open={defaultCoursesPickerOpen}
           onClose={this.handleDefaultCoursesPickerClose}
           onRearrange={onRearrangeDefaultCourses}
+        />
+        <CoursePicker
+          title={`Editing allowed courses for ${name}…`}
+          courseIds={allowListIds}
+          onAdd={onAddAllowedCourse}
+          onRemove={onRemoveAllowedCourse}
+          open={allowedCoursesPickerOpen}
+          onClose={this.handleAllowedCoursesPickerClose}
+          onRearrange={onRearrangeAllowedCourses}
         />
       </>
     );

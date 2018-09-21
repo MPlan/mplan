@@ -13,8 +13,9 @@ const Root = styled(View)`
   flex: 0 0 auto;
   margin-right: ${styles.space(-1)};
   &:hover {
-    background-color: ${styles.whiteBis};
+    background-color: ${styles.whiteTer};
   }
+  margin-bottom: ${styles.space(-1)};
 `;
 const SimpleName = styled(Text)`
   margin-bottom: ${styles.space(-1)};
