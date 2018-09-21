@@ -20,6 +20,7 @@ import { DegreeItem } from 'routes/degree-manager/components/degree-item';
 import { DescriptionAction } from 'routes/degree-manager/components/description-action';
 import { DescriptionEditor } from 'routes/degree-manager/components/description-editor';
 import { PageNav } from 'routes/degree-manager/components/page-nav';
+import { CourseList } from 'routes/degree-manager/components/course-list';
 
 const Root = styled(View)`
   flex: 1 1 auto;
@@ -75,6 +76,9 @@ const DescriptionSubheading = styled(Text)`
 const Spacer = styled.div`
   flex: 0 0 auto;
   height: ${styles.space(1)};
+`;
+const Column = styled(View)`
+  flex: 1 1 auto;
 `;
 
 interface CourseGroupDetailProps {
@@ -246,7 +250,7 @@ export class CourseGroupDetail extends React.Component<
                         student to choose from.
                       </Paragraph>
                       <Paragraph>
-                        The general recommendation is to set default courses <strong>only</strong>
+                        The general recommendation is to set default courses <strong>only</strong>{' '}
                         if the majority of students will take these courses to satisfy the
                         requirement.
                       </Paragraph>
@@ -258,9 +262,13 @@ export class CourseGroupDetail extends React.Component<
                     </>
                   }
                 >
-                  <PrimaryButton onClick={this.handleDefaultCoursesPickerOpen}>
-                    + edit
-                  </PrimaryButton>
+                  <Column>
+                    <PrimaryButton onClick={this.handleDefaultCoursesPickerOpen}>
+                      <Fa icon="pencil" /> Edit
+                    </PrimaryButton>
+                    <Spacer />
+                    <CourseList catalogIds={defaultIds} />
+                  </Column>
                 </DescriptionAction>
               </DegreeItem>
               <DegreeItem title="Allowed courses">

@@ -194,6 +194,12 @@ export class CourseGroupSummary extends React.PureComponent<
                   include the courses <Link to="/catalog/comp-150">COMP 105</Link> and{' '}
                   <Link to="/catalog/comp-270">COMP 270</Link>.
                 </Paragraph>
+                <Paragraph>
+                  Course groups appear to students as a list of courses that they can add and remove
+                  courses from. Once a student adds a course, it will become part of their
+                  MPlan—which means they plan to, or, have already taken the course. That
+                  information will be used to calculate their personalized sequence of courses.
+                </Paragraph>
                 <ActionableText onClick={this.infoModal.open}>
                   Click here for more info
                 </ActionableText>

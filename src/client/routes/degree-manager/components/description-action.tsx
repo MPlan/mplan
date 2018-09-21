@@ -7,7 +7,6 @@ import { View } from 'components/view';
 const Root = styled(View)`
   flex-direction: row;
   padding: 0 ${styles.space(0)};
-  align-items: center;
 `;
 const Description = styled(View)`
   flex: 1 1 calc(70% - ${styles.space(0)});
