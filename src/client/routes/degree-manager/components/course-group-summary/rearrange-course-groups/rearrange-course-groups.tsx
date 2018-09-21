@@ -111,6 +111,7 @@ export class RearrangeCourseGroups extends React.PureComponent<RearrangeCourseGr
               onLeft={this.handleOnLeftColumnOne}
               onRight={this.handleOnRightColumnOne}
               onSortEnd={this.handleSortEndColumnOne}
+              helperClass="sortableHelper"
             />
           </Column>
           <Column>
@@ -122,6 +123,7 @@ export class RearrangeCourseGroups extends React.PureComponent<RearrangeCourseGr
               onLeft={this.handleOnLeftColumnTwo}
               onRight={this.handleOnRightColumnTwo}
               onSortEnd={this.handleSortEndColumnTwo}
+              helperClass="sortableHelper"
             />
           </Column>
           <Column>
@@ -133,6 +135,7 @@ export class RearrangeCourseGroups extends React.PureComponent<RearrangeCourseGr
               onLeft={this.handleOnLeftColumnThree}
               onRight={this.handleOnRightColumnThree}
               onSortEnd={this.handleSortEndColumnThree}
+              helperClass="sortableHelper"
             />
           </Column>
         </Columns>
