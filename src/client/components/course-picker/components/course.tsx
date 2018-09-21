@@ -86,7 +86,23 @@ export class Course extends React.PureComponent<CourseProps, {}> {
           </SubtitleRow>
         </Body>
         <Button onClick={onToggle}>
-          {added ? <Fa icon="check" /> : <Fa icon="plus" />} {added ? 'Added' : 'Add'}
+          {sortable ? (
+            <>
+              <Fa icon="times" /> Remove
+            </>
+          ) : (
+            <>
+              {added ? (
+                <>
+                  <Fa icon="check" /> Added
+                </>
+              ) : (
+                <>
+                  <Fa icon="plus" /> Add
+                </>
+              )}
+            </>
+          )}
         </Button>
       </Root>
     );

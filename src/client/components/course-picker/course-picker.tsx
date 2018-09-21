@@ -118,7 +118,7 @@ export class CoursePicker extends React.PureComponent<CoursePickerProps, CourseP
     const { sorting } = this.state;
 
     return (
-      <Modal title={title} size="large" open={open}>
+      <Modal title={title} size="extra-large" open={open}>
         <Content sorting={sorting}>
           <Column>
             <Search type="search" placeholder="Search for a course…" onChange={this.handleSearch} />
