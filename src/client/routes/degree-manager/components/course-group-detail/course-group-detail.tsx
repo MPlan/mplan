@@ -89,6 +89,8 @@ interface CourseGroupDetailProps {
   onAddAllowedCourse: (catalogId: string) => void;
   onRemoveDefaultCourse: (catalogId: string) => void;
   onRemoveAllowedCourse: (catalogId: string) => void;
+  onRearrangeDefaultCourses: (oldIndex: number, newIndex: number) => void;
+  onRearrangeAllowedCourses: (oldIndex: number, newIndex: number) => void;
   onNameChange: (name: string) => void;
   onDescriptionChange: (descriptionHtml: string) => void;
   onCreditMinimumChange: (minimumCredits: number) => void;
@@ -149,6 +151,7 @@ export class CourseGroupDetail extends React.Component<
       defaultIds,
       onAddDefaultCourse,
       onRemoveDefaultCourse,
+      onRearrangeDefaultCourses,
     } = this.props;
 
     const { editingName, defaultCoursesPickerOpen } = this.state;
@@ -257,6 +260,7 @@ export class CourseGroupDetail extends React.Component<
           onRemove={onRemoveDefaultCourse}
           open={defaultCoursesPickerOpen}
           onClose={this.handleDefaultCoursesPickerClose}
+          onRearrange={onRearrangeDefaultCourses}
         />
       </>
     );

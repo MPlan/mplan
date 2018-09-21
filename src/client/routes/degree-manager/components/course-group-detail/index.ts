@@ -204,6 +204,90 @@ const Container = Model.store.connect({
         };
       });
     },
+    onRearrangeDefaultCourses: (oldIndex: number, newIndex: number) => {
+      if (oldIndex === newIndex) return;
+
+      dispatch(state => {
+        const rearrangeCourses = (
+          group: Model.MasteredCourseGroup.Model,
+        ): Model.MasteredCourseGroup.Model => {
+          const { defaultIds } = group;
+
+          const courseToMove = defaultIds[oldIndex];
+
+          const withoutThatCourse = [
+            ...defaultIds.slice(0, oldIndex),
+            ...defaultIds.slice(oldIndex + 1, defaultIds.length),
+          ];
+          const withThatCourseButWithNewIndex = [
+            ...withoutThatCourse.slice(0, newIndex),
+            courseToMove,
+            ...withoutThatCourse.slice(newIndex, withoutThatCourse.length),
+          ];
+
+          return {
+            ...group,
+            defaultIds: withThatCourseButWithNewIndex,
+          };
+        };
+
+        const updateGroup = (masteredDegree: Model.MasteredDegree.Model) =>
+          Model.MasteredDegree.updateGroup(masteredDegree, ownProps.groupId, rearrangeCourses);
+
+        const newMasteredDegrees = Model.MasteredDegrees.updatedMasteredDegree(
+          state.masteredDegrees,
+          ownProps.masteredDegreeId,
+          updateGroup,
+        );
+
+        return {
+          ...state,
+          masteredDegrees: newMasteredDegrees,
+        };
+      });
+    },
+    onRearrangeAllowedCourses: (oldIndex: number, newIndex: number) => {
+      if (oldIndex === newIndex) return;
+
+      dispatch(state => {
+        const rearrangeCourses = (
+          group: Model.MasteredCourseGroup.Model,
+        ): Model.MasteredCourseGroup.Model => {
+          const { allowListIds } = group;
+
+          const courseToMove = allowListIds[oldIndex];
+
+          const withoutThatCourse = [
+            ...allowListIds.slice(0, oldIndex),
+            ...allowListIds.slice(oldIndex + 1, allowListIds.length),
+          ];
+          const withThatCourseButWithNewIndex = [
+            ...withoutThatCourse.slice(0, newIndex),
+            courseToMove,
+            ...withoutThatCourse.slice(newIndex, withoutThatCourse.length),
+          ];
+
+          return {
+            ...group,
+            allowListIds: withThatCourseButWithNewIndex,
+          };
+        };
+
+        const updateGroup = (masteredDegree: Model.MasteredDegree.Model) =>
+          Model.MasteredDegree.updateGroup(masteredDegree, ownProps.groupId, rearrangeCourses);
+
+        const newMasteredDegrees = Model.MasteredDegrees.updatedMasteredDegree(
+          state.masteredDegrees,
+          ownProps.masteredDegreeId,
+          updateGroup,
+        );
+
+        return {
+          ...state,
+          masteredDegrees: newMasteredDegrees,
+        };
+      });
+    },
   }),
 })(CourseGroupDetail);
 

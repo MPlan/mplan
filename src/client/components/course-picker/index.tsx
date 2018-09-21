@@ -9,6 +9,7 @@ interface CoursePickerContainerProps {
   courseIds: string[];
   onAdd: (catalogId: string) => void;
   onRemove: (catalogId: string) => void;
+  onRearrange: (oldIndex: number, newIndex: number) => void;
   onClose: () => void;
 }
 
@@ -38,7 +39,7 @@ const Container = (compose(
       onSearch: ownProps.updateQuery,
       onAdd: ownProps.onAdd,
       onRemove: ownProps.onRemove,
-      onRearrange: (oldIndex: number, newIndex: number) => {},
+      onRearrange: ownProps.onRearrange,
       onClose: ownProps.onClose,
     }),
   }),

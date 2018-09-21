@@ -5,10 +5,11 @@ import * as pluralize from 'pluralize';
 import styled from 'styled-components';
 import { memoizeLast } from 'utilities/memoize-last';
 
+import { SortEnd } from 'react-sortable-hoc';
 import { Modal } from 'components/modal';
 import { View, ViewProps } from 'components/view';
 import { Input } from 'components/input';
-import { Button, PrimaryButton } from 'components/button';
+import { Button } from 'components/button';
 import { Empty } from 'components/empty';
 import { Caption as _Caption } from 'components/caption';
 import { SortableCourseList } from './components/sortable-course-list';
@@ -95,8 +96,9 @@ export class CoursePicker extends React.PureComponent<CoursePickerProps, CourseP
     this.setState({ sorting: true });
   };
 
-  handleSortEnd = () => {
+  handleSortEnd = (sortEnd: SortEnd) => {
     this.setState({ sorting: false });
+    this.props.onRearrange(sortEnd.oldIndex, sortEnd.newIndex);
   };
 
   render() {
@@ -151,7 +153,6 @@ export class CoursePicker extends React.PureComponent<CoursePickerProps, CourseP
               addedCourses={this.addedCourses}
               onAdd={onAdd}
               onRemove={onRemove}
-              onRearrange={onRearrange}
               helperClass="sortableHelper"
               lockAxis="y"
             />

@@ -19,7 +19,6 @@ interface CourseListProps {
   addedCourses: { [courseKey: string]: true | undefined };
   onAdd: (courseKey: string) => void;
   onRemove: (courseKey: string) => void;
-  onRearrange?: (oldIndex: number, newIndex: number) => void;
 }
 
 class CourseList extends React.PureComponent<CourseListProps, {}> {
