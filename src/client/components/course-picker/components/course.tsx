@@ -69,9 +69,9 @@ export class Course extends React.PureComponent<CourseProps, {}> {
     if (Array.isArray(creditHours)) {
       const first = creditHours[0];
       const second = creditHours[1];
-      return `${first} - ${second} credit hours`;
+      return `${first} - ${second} credits`;
     }
-    return `${creditHours} credit ${pluralize('hours', creditHours)}`;
+    return `${creditHours} ${pluralize('credit', creditHours)}`;
   }
 
   render() {

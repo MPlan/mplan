@@ -11,6 +11,7 @@ import { Actions } from 'components/dropdown-menu';
 import { Divider } from 'components/divider';
 import { ActionableText } from 'components/actionable-text';
 import { createInfoModal } from 'components/info-modal';
+import { Empty } from 'components/empty';
 import { DeleteConfirmationModal } from 'components/delete-confirmation-modal';
 import { DegreeItem } from 'routes/degree-manager/components/degree-item';
 import { DescriptionAction } from 'routes/degree-manager/components/description-action';
@@ -49,21 +50,6 @@ const Link = styled(_Link)`
     ${styles.linkHover};
     cursor: pointer;
   }
-`;
-const Empty = styled(View)`
-  height: 15rem;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-`;
-const EmptyTitle = styled(Text)`
-  font-size: ${styles.space(1)};
-  font-weight: ${styles.bold};
-  color: ${styles.grayLight};
-`;
-const EmptySubtitle = styled(Text)`
-  color: ${styles.grayLight};
-  font-size: ${styles.space(0)};
 `;
 
 export interface CourseGroupViewModel {
@@ -218,10 +204,7 @@ export class CourseGroupSummary extends React.PureComponent<
           </DescriptionAction>
 
           {this.empty ? (
-            <Empty>
-              <EmptyTitle>Nothing here yet!</EmptyTitle>
-              <EmptySubtitle>Create a new group to begin.</EmptySubtitle>
-            </Empty>
+            <Empty title="Nothing here yet!" subtitle="Create a new group to begin." />
           ) : (
             <Columns>
               <Column>

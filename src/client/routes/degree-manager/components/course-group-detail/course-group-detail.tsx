@@ -256,11 +256,12 @@ export class CourseGroupDetail extends React.Component<
           </Body>
         </Root>
         <CoursePicker
-          title="test"
+          title={`Editing default courses for ${name}…`}
           courseIds={defaultIds}
           onAdd={onAddDefaultCourse}
           onRemove={onRemoveDefaultCourse}
           open={defaultCoursesPickerOpen}
+          onClose={this.handleDefaultCoursesPickerClose}
         />
       </>
     );

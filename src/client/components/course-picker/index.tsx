@@ -9,6 +9,7 @@ interface CoursePickerContainerProps {
   courseIds: string[];
   onAdd: (catalogId: string) => void;
   onRemove: (catalogId: string) => void;
+  onClose: () => void;
 }
 
 interface CoursePickerContainerInternalProps extends CoursePickerContainerProps {
@@ -29,6 +30,8 @@ const Container = (compose(
         open: ownProps.open,
         courses,
         searchResults: searchResults.slice(0, 20),
+        query: ownProps.query,
+        searchResultsCount: searchResults.length,
       };
     },
     mapDispatchToProps: (_, ownProps: CoursePickerContainerInternalProps) => ({
@@ -36,6 +39,7 @@ const Container = (compose(
       onAdd: ownProps.onAdd,
       onRemove: ownProps.onRemove,
       onRearrange: (oldIndex: number, newIndex: number) => {},
+      onClose: ownProps.onClose,
     }),
   }),
 )(CoursePicker as any) as any) as React.ComponentType<CoursePickerContainerProps>;

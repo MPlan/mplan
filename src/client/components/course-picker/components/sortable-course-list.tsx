@@ -2,8 +2,9 @@ import * as React from 'react';
 import * as Model from 'models';
 import styled from 'styled-components';
 
-import { SortableContainer, SortEnd } from 'react-sortable-hoc';
+import { SortableContainer } from 'react-sortable-hoc';
 import { View } from 'components/view';
+import { Empty } from 'components/empty';
 import { SortableCourse } from './sortable-course';
 
 const { getCatalogId } = Model.Course;
@@ -40,15 +41,19 @@ class CourseList extends React.PureComponent<CourseListProps, {}> {
     const { courses } = this.props;
     return (
       <Root>
-        {courses.map((course, index) => (
-          <SortableCourse
-            index={index}
-            added={this.hasCourse(course)}
-            key={`${course.subjectCode} ${course.courseNumber}`}
-            course={course}
-            onToggle={() => this.handleToggle(course)}
-          />
-        ))}
+        {courses.length > 0 ? (
+          courses.map((course, index) => (
+            <SortableCourse
+              index={index}
+              added={this.hasCourse(course)}
+              key={`${course.subjectCode} ${course.courseNumber}`}
+              course={course}
+              onToggle={() => this.handleToggle(course)}
+            />
+          ))
+        ) : (
+          <Empty title="Nothing here yet." subtitle="When you add courses, they'll appear here." />
+        )}
       </Root>
     );
   }

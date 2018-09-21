@@ -4,6 +4,7 @@ import * as styles from 'styles';
 import styled from 'styled-components';
 
 import { View } from 'components/view';
+import { Empty } from 'components/empty';
 import { Course } from './course';
 
 const { getCatalogId } = Model.Course;
@@ -18,6 +19,7 @@ const Root = styled(View)`
 interface CourseListProps {
   courses: Model.Course.Model[];
   addedCourses: { [catalogId: string]: true | undefined };
+  empty: React.ReactNode;
   onRemove: (catalogId: string) => void;
   onAdd: (catalogId: string) => void;
 }
@@ -33,17 +35,19 @@ export class CourseList extends React.PureComponent<CourseListProps, {}> {
   }
 
   render() {
-    const { courses, addedCourses } = this.props;
+    const { courses, addedCourses, empty } = this.props;
     return (
       <Root>
-        {courses.map(course => (
-          <Course
-            key={getCatalogId(course)}
-            course={course}
-            added={!!addedCourses[getCatalogId(course)]}
-            onToggle={() => this.handleToggle(getCatalogId(course))}
-          />
-        ))}
+        {courses.length > 0
+          ? courses.map(course => (
+              <Course
+                key={getCatalogId(course)}
+                course={course}
+                added={!!addedCourses[getCatalogId(course)]}
+                onToggle={() => this.handleToggle(getCatalogId(course))}
+              />
+            ))
+          : empty}
       </Root>
     );
   }
