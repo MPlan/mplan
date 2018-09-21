@@ -226,7 +226,35 @@ export class CourseGroupDetail extends React.Component<
                 <DescriptionAction
                   description={
                     <>
-                      <Paragraph>These are the courses that will appear initially.</Paragraph>
+                      <Paragraph>
+                        Default courses are the pre-populated courses that appear to students in
+                        this course group.
+                      </Paragraph>
+                      <Paragraph>
+                        A student can choose to add to, remove from, or replace any of the default
+                        courses. Default courses can be thought of as the recommended courses a
+                        student should take to satisfy the requirement group.
+                      </Paragraph>
+                      <Paragraph>
+                        Certain requirements such as "Oral and Written Communication" are ideal for
+                        default courses because almost every student will take "COMP 105" and "COMP
+                        270".
+                      </Paragraph>
+                      <Paragraph>
+                        Default courses aren't as applicable to other requirements as such
+                        "Technical Electives" because there are many possible choices for the
+                        student to choose from.
+                      </Paragraph>
+                      <Paragraph>
+                        The general recommendation is to set default courses <strong>only</strong>
+                        if the majority of students will take these courses to satisfy the
+                        requirement.
+                      </Paragraph>
+                      <Paragraph>
+                        <strong>Coming soon: </strong>
+                        As an advisor, soon you'll be able to see a preview of the student degree
+                        work in the next iteration of MPlan.
+                      </Paragraph>
                     </>
                   }
                 >
