@@ -15,6 +15,7 @@ import { PrimaryButton } from 'components/button';
 import { Fa as _Fa } from 'components/fa';
 import { Link } from 'components/link';
 import { CreditHourEditor } from 'components/credit-hour-editor';
+import { CoursePicker } from 'components/course-picker';
 
 import { DegreeItem } from 'routes/degree-manager/components/degree-item';
 import { DescriptionAction } from 'routes/degree-manager/components/description-action';
@@ -72,12 +73,27 @@ const ActionSubtitle = styled(Text)`
   font-size: ${styles.space(-1)};
   margin-top: ${styles.space(-1)};
 `;
+const DescriptionSubheading = styled(Text)`
+  font-weight: bold;
+  margin-bottom: ${styles.space(-1)};
+`;
+const Spacer = styled.div`
+  flex: 0 0 auto;
+  height: ${styles.space(1)};
+`;
 
 interface CourseGroupDetailProps {
   name: string;
   descriptionHtml: string;
   creditMinimum: number;
   creditMaximum: number;
+  defaultIds: string[];
+  allowListIds: string[];
+
+  onAddDefaultCourse: (catalogId: string) => void;
+  onAddAllowedCourse: (catalogId: string) => void;
+  onRemoveDefaultCourse: (catalogId: string) => void;
+  onRemoveAllowedCourse: (catalogId: string) => void;
   onNameChange: (name: string) => void;
   onDescriptionChange: (descriptionHtml: string) => void;
   onCreditMinimumChange: (minimumCredits: number) => void;
@@ -87,6 +103,7 @@ interface CourseGroupDetailProps {
 }
 interface CourseGroupDetailState {
   editingName: boolean;
+  defaultCoursesPickerOpen: boolean;
 }
 
 export class CourseGroupDetail extends React.Component<
@@ -98,6 +115,7 @@ export class CourseGroupDetail extends React.Component<
 
     this.state = {
       editingName: false,
+      defaultCoursesPickerOpen: false,
     };
   }
 
@@ -115,6 +133,13 @@ export class CourseGroupDetail extends React.Component<
     this.setState({ editingName: true });
   };
 
+  handleDefaultCoursesPickerOpen = () => {
+    this.setState({ defaultCoursesPickerOpen: true });
+  };
+  handleDefaultCoursesPickerClose = () => {
+    this.setState({ defaultCoursesPickerOpen: false });
+  };
+
   render() {
     const {
       name,
@@ -126,76 +151,118 @@ export class CourseGroupDetail extends React.Component<
       onDescriptionChange,
       onCreditMaximumChange,
       onCreditMinimumChange,
+      defaultIds,
+      onAddDefaultCourse,
+      onRemoveDefaultCourse,
     } = this.props;
 
-    const { editingName } = this.state;
+    const { editingName, defaultCoursesPickerOpen } = this.state;
 
     return (
-      <Root>
-        <Body>
-          <Content>
-            <PageNav backTitle="Back to degree" onBackClick={onBackClick} />
-            <RightClickMenu
-              header={name}
-              actions={this.degreeDropdownAction}
-              onAction={this.handleActions}
-            >
-              {props => (
-                <TitleRow {...props}>
-                  <InlineEdit
-                    value={name}
-                    renderDisplay={props => <Title {...props} />}
-                    renderInput={props => (
-                      <TitleInput {...props} onChange={this.handleNameChange} />
-                    )}
-                    editing={editingName}
-                    onBlur={this.handleNameBlur}
-                    onEdit={this.handleNameEdit}
-                  />
-                  <VerticalBar />
-                  <DropdownMenu
-                    header={name}
-                    actions={this.degreeDropdownAction}
-                    onAction={this.handleActions}
-                  />
-                </TitleRow>
-              )}
-            </RightClickMenu>
-            <DescriptionEditor descriptionHtml={descriptionHtml} onChange={onDescriptionChange}>
-              <Paragraph>Edit the description of this course group here.</Paragraph>
-              <Paragraph>
-                The description will appear when the student clicks the "More info" link under the
-                course group title. You can see how this looks this when you{' '}
-                <Link onClick={onPreviewClick}>preview the degree</Link>.
-              </Paragraph>
-            </DescriptionEditor>
-            <DegreeItem title="Credit hours">
-              <DescriptionAction description={<>fewfods</>}>
-                <CreditHourEditor creditHours={creditMinimum} onChange={onCreditMinimumChange} />
-                <CreditHourEditor creditHours={creditMaximum} onChange={onCreditMaximumChange} />
-              </DescriptionAction>
-            </DegreeItem>
-            <DegreeItem title="Default courses">
-              <Paragraph>These are the courses that will appear initially.</Paragraph>
-            </DegreeItem>
-            <DegreeItem title="Allowed courses">
-              <Paragraph>
-                This is the allowed white-list of courses. These will be presented to the users as
-                options to choose from.
-              </Paragraph>
-            </DegreeItem>
-            <DegreeItem title="Summary">
-              <DescriptionAction description={<>test</>}>
-                <PrimaryButton>
-                  <Fa icon="angleLeft" />
-                  Back to degree
-                </PrimaryButton>
-                <ActionSubtitle>Your changes save automatically.</ActionSubtitle>
-              </DescriptionAction>
-            </DegreeItem>
-          </Content>
-        </Body>
-      </Root>
+      <>
+        <Root>
+          <Body>
+            <Content>
+              <PageNav backTitle="Back to degree" onBackClick={onBackClick} />
+              <RightClickMenu
+                header={name}
+                actions={this.degreeDropdownAction}
+                onAction={this.handleActions}
+              >
+                {props => (
+                  <TitleRow {...props}>
+                    <InlineEdit
+                      value={name}
+                      renderDisplay={props => <Title {...props} />}
+                      renderInput={props => (
+                        <TitleInput {...props} onChange={this.handleNameChange} />
+                      )}
+                      editing={editingName}
+                      onBlur={this.handleNameBlur}
+                      onEdit={this.handleNameEdit}
+                    />
+                    <VerticalBar />
+                    <DropdownMenu
+                      header={name}
+                      actions={this.degreeDropdownAction}
+                      onAction={this.handleActions}
+                    />
+                  </TitleRow>
+                )}
+              </RightClickMenu>
+              <DescriptionEditor descriptionHtml={descriptionHtml} onChange={onDescriptionChange}>
+                <Paragraph>Edit the description of this course group here.</Paragraph>
+                <Paragraph>
+                  The description will appear when the student clicks the "More info" link under the
+                  course group title. You can see how this looks this when you{' '}
+                  <Link onClick={onPreviewClick}>preview the degree</Link>.
+                </Paragraph>
+              </DescriptionEditor>
+              <DegreeItem title="Credit hours">
+                <DescriptionAction
+                  description={
+                    <>
+                      <DescriptionSubheading>Credit hour minimum</DescriptionSubheading>
+                      <Paragraph>
+                        The credit hour minimum is used to warn students when they have not added
+                        enough courses to satisfy the group.
+                      </Paragraph>
+                    </>
+                  }
+                >
+                  <CreditHourEditor creditHours={creditMinimum} onChange={onCreditMinimumChange} />
+                </DescriptionAction>
+                <Spacer />
+                <DescriptionAction
+                  description={
+                    <>
+                      <DescriptionSubheading>Credit hour maximum</DescriptionSubheading>
+                      <Paragraph>The credit hour minmum.</Paragraph>
+                    </>
+                  }
+                >
+                  <CreditHourEditor creditHours={creditMaximum} onChange={onCreditMaximumChange} />
+                </DescriptionAction>
+              </DegreeItem>
+              <DegreeItem title="Default courses">
+                <DescriptionAction
+                  description={
+                    <>
+                      <Paragraph>These are the courses that will appear initially.</Paragraph>
+                    </>
+                  }
+                >
+                  <PrimaryButton onClick={this.handleDefaultCoursesPickerOpen}>
+                    + edit
+                  </PrimaryButton>
+                </DescriptionAction>
+              </DegreeItem>
+              <DegreeItem title="Allowed courses">
+                <Paragraph>
+                  This is the allowed white-list of courses. These will be presented to the users as
+                  options to choose from.
+                </Paragraph>
+              </DegreeItem>
+              <DegreeItem title="Summary">
+                <DescriptionAction description={<>test</>}>
+                  <PrimaryButton>
+                    <Fa icon="angleLeft" />
+                    Back to degree
+                  </PrimaryButton>
+                  <ActionSubtitle>Your changes save automatically.</ActionSubtitle>
+                </DescriptionAction>
+              </DegreeItem>
+            </Content>
+          </Body>
+        </Root>
+        <CoursePicker
+          title="test"
+          courseIds={defaultIds}
+          onAdd={onAddDefaultCourse}
+          onRemove={onRemoveDefaultCourse}
+          open={defaultCoursesPickerOpen}
+        />
+      </>
     );
   }
 }

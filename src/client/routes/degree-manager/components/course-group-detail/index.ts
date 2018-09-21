@@ -21,6 +21,8 @@ const Container = Model.store.connect({
         descriptionHtml: '',
         creditMinimum: 0,
         creditMaximum: 0,
+        defaultIds: [],
+        allowListIds: [],
       };
     }
 
@@ -32,6 +34,8 @@ const Container = Model.store.connect({
         descriptionHtml: '',
         creditMinimum: 0,
         creditMaximum: 0,
+        defaultIds: [],
+        allowListIds: [],
       };
     }
 
@@ -40,6 +44,8 @@ const Container = Model.store.connect({
       descriptionHtml: group.descriptionHtml,
       creditMinimum: group.creditMinimum,
       creditMaximum: group.creditMaximum,
+      defaultIds: group.defaultIds,
+      allowListIds: group.allowListIds,
     };
   },
   mapDispatchToProps: (dispatch, ownProps: CourseGroupDetailContainerProps) => ({
@@ -116,6 +122,87 @@ const Container = Model.store.connect({
     },
     onPreviewClick: () => {
       history.push(`/degree-manager/${ownProps.masteredDegreeId}/preview`);
+    },
+    onAddDefaultCourse: (catalogId: string) => {
+      dispatch(state => {
+        const addDefaultId = (masteredDegree: Model.MasteredDegree.Model) =>
+          Model.MasteredDegree.updateGroup(masteredDegree, ownProps.groupId, group => ({
+            ...group,
+            defaultIds: [...group.defaultIds, catalogId],
+          }));
+
+        const newMasteredDegrees = Model.MasteredDegrees.updatedMasteredDegree(
+          state.masteredDegrees,
+          ownProps.masteredDegreeId,
+          addDefaultId,
+        );
+
+        return {
+          ...state,
+          masteredDegrees: newMasteredDegrees,
+        };
+      });
+    },
+    onRemoveDefaultCourse: (catalogId: string) => {
+      dispatch(state => {
+        const removeDefaultCourse = (masteredDegree: Model.MasteredDegree.Model) =>
+          Model.MasteredDegree.updateGroup(masteredDegree, ownProps.groupId, group => ({
+            ...group,
+            defaultIds: group.defaultIds.filter(id => id !== catalogId),
+          }));
+
+        const newMasteredDegrees = Model.MasteredDegrees.updatedMasteredDegree(
+          state.masteredDegrees,
+          ownProps.masteredDegreeId,
+          removeDefaultCourse,
+        );
+
+        return {
+          ...state,
+          masteredDegrees: newMasteredDegrees,
+        };
+      });
+    },
+    onAddAllowedCourse: (catalogId: string) => {
+      dispatch(state => {
+        const addAllowedId = (masteredDegree: Model.MasteredDegree.Model) =>
+          Model.MasteredDegree.updateGroup(masteredDegree, ownProps.groupId, group => ({
+            ...group,
+            allowListIds: [...group.allowListIds, catalogId],
+          }));
+
+        const newMasteredDegrees = Model.MasteredDegrees.updatedMasteredDegree(
+          state.masteredDegrees,
+          ownProps.masteredDegreeId,
+          addAllowedId,
+        );
+
+        return {
+          ...state,
+          masteredDegrees: newMasteredDegrees,
+        };
+      });
+    },
+
+    onRemoveAllowedCourse: (catalogId: string) => {
+      dispatch(state => {
+        const removeAllowedCourse = (masteredDegree: Model.MasteredDegree.Model) =>
+          Model.MasteredDegree.updateGroup(masteredDegree, ownProps.groupId, group => ({
+            ...group,
+            allowListIds: group.allowListIds.filter(id => id !== catalogId),
+          }));
+
+        const newMasteredDegrees = Model.MasteredDegrees.updatedMasteredDegree(
+          state.masteredDegrees,
+          ownProps.masteredDegreeId,
+          removeAllowedCourse,
+        );
+
+        return {
+          ...state,
+          masteredDegrees: newMasteredDegrees,
+        };
+      });
     },
   }),
 })(CourseGroupDetail);
