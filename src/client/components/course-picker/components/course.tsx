@@ -19,6 +19,7 @@ const Root = styled(View)`
   &:active {
     box-shadow: ${styles.grabbableShadowActive};
   }
+  background-color: white;
   z-index: 1;
 `;
 const Column = styled(View)`
@@ -53,7 +54,7 @@ class Course extends React.PureComponent<CourseProps, {}> {
       const second = creditHours[1];
       return `${first} - ${second} credit hours`;
     }
-    return `${creditHours} ${pluralize('hours', creditHours)}`;
+    return `${creditHours} credit ${pluralize('hours', creditHours)}`;
   }
 
   render() {

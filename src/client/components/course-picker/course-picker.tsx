@@ -10,6 +10,8 @@ import { Input } from 'components/input';
 import { SortableCourseList } from './components/course-list';
 
 const Content = styled(View)`
+  flex: 1 1 auto;
+  overflow: hidden;
   flex-direction: row;
 `;
 const Spacer = styled.div`
@@ -65,6 +67,7 @@ export class CoursePicker extends React.PureComponent<CoursePickerProps, {}> {
               addedCourses={this.addedCourses}
               onAdd={onAdd}
               onRemove={onRemove}
+              helperClass="sortableHelper"
             />
           </Column>
           <Spacer />
@@ -75,6 +78,7 @@ export class CoursePicker extends React.PureComponent<CoursePickerProps, {}> {
               onAdd={onAdd}
               onRemove={onRemove}
               onRearrange={onRearrange}
+              helperClass="sortableHelper"
             />
           </Column>
         </Content>

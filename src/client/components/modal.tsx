@@ -54,6 +54,7 @@ const Card = styled<CardProps>(View)`
     if (props.size === 'extra-large') return 'width: 70rem;';
     return '';
   }};
+  max-height: 90vh;
   overflow: auto;
 `;
 const Title = styled(Text)`
@@ -70,6 +71,7 @@ const Body = styled<BodyProps>(View)`
   ${props => (props.noPadding ? '' : `padding: 0 ${styles.space(1)}`)};
   margin-bottom: ${styles.space(1)};
   flex: 1 1 auto;
+  overflow: auto;
 `;
 
 export interface ModalProps {

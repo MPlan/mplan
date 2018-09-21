@@ -10,6 +10,7 @@ const { getCatalogId } = Model.Course;
 
 const Root = styled(View)`
   flex: 1 1 auto;
+  overflow: auto;
 `;
 
 interface CourseListProps {
