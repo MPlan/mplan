@@ -5,21 +5,28 @@ import styled from 'styled-components';
 import { memoizeLast } from 'utilities/memoize-last';
 
 import { Modal } from 'components/modal';
-import { View } from 'components/view';
+import { View, ViewProps } from 'components/view';
 import { Input } from 'components/input';
-import { SortableCourseList } from './components/course-list';
+import { SortableCourseList } from './components/sortable-course-list';
+import { CourseList } from './components/course-list';
 
-const Content = styled(View)`
+interface ContentProps extends ViewProps {
+  sorting?: boolean;
+}
+const Content = styled<ContentProps>(View)`
   flex: 1 1 auto;
   overflow: hidden;
   flex-direction: row;
+  & * {
+    ${props => (props.sorting ? 'user-select: none !important' : '')};
+  }
 `;
 const Spacer = styled.div`
   flex: 0 0 auto;
   width: ${styles.space(0)};
 `;
 const Column = styled(View)`
-  flex: 1 1 auto;
+  flex: 1 1 calc(50% - 0.5rem);
 `;
 const Search = styled(Input)``;
 
@@ -34,7 +41,18 @@ export interface CoursePickerProps {
   onRearrange: (oldIndex: number, newIndex: number) => void;
 }
 
-export class CoursePicker extends React.PureComponent<CoursePickerProps, {}> {
+interface CoursePickerState {
+  sorting: boolean;
+}
+
+export class CoursePicker extends React.PureComponent<CoursePickerProps, CoursePickerState> {
+  constructor(props: CoursePickerProps) {
+    super(props);
+    this.state = {
+      sorting: false,
+    };
+  }
+
   handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.currentTarget.value;
     this.props.onSearch(value);
@@ -53,32 +71,42 @@ export class CoursePicker extends React.PureComponent<CoursePickerProps, {}> {
     );
   });
 
+  handleSortStart = () => {
+    this.setState({ sorting: true });
+  };
+
+  handleSortEnd = () => {
+    this.setState({ sorting: false });
+  };
+
   render() {
     const { title, open, courses, searchResults, onAdd, onRemove, onRearrange } = this.props;
+    const { sorting } = this.state;
 
     return (
-      <Modal title={title} size="extra-large" open={open}>
-        <Content>
+      <Modal title={title} size="large" open={open}>
+        <Content sorting={sorting}>
           <Column>
             <Search type="search" placeholder="Search for a course…" onChange={this.handleSearch} />
-            <SortableCourseList
-              disableSorting
+            <CourseList
               courses={searchResults}
               addedCourses={this.addedCourses}
               onAdd={onAdd}
               onRemove={onRemove}
-              helperClass="sortableHelper"
             />
           </Column>
           <Spacer />
           <Column>
             <SortableCourseList
+              onSortStart={this.handleSortStart}
+              onSortEnd={this.handleSortEnd}
               courses={courses}
               addedCourses={this.addedCourses}
               onAdd={onAdd}
               onRemove={onRemove}
               onRearrange={onRearrange}
               helperClass="sortableHelper"
+              lockAxis="y"
             />
           </Column>
         </Content>

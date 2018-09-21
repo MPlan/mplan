@@ -1,61 +1,50 @@
 import * as React from 'react';
 import * as Model from 'models';
+import * as styles from 'styles';
 import styled from 'styled-components';
 
-import { SortableContainer, SortEnd } from 'react-sortable-hoc';
 import { View } from 'components/view';
-import { SortableCourse } from './course';
+import { Course } from './course';
 
 const { getCatalogId } = Model.Course;
 
 const Root = styled(View)`
-  flex: 1 1 auto;
+  & > * {
+    flex: 0 0 auto;
+  }
   overflow: auto;
 `;
 
 interface CourseListProps {
-  disableSorting?: boolean;
   courses: Model.Course.Model[];
-  addedCourses: { [courseKey: string]: true | undefined };
-  onAdd: (courseKey: string) => void;
-  onRemove: (courseKey: string) => void;
-  onRearrange?: (oldIndex: number, newIndex: number) => void;
+  addedCourses: { [catalogId: string]: true | undefined };
+  onRemove: (catalogId: string) => void;
+  onAdd: (catalogId: string) => void;
 }
 
-class CourseList extends React.PureComponent<CourseListProps, {}> {
-  hasCourse(course: Model.Course.Model) {
-    const catalogId = getCatalogId(course);
-    return !!this.props.addedCourses[catalogId];
-  }
-
-  handleToggle(course: Model.Course.Model) {
-    const { onAdd, onRemove } = this.props;
-    if (this.hasCourse(course)) {
-      onRemove(getCatalogId(course));
+export class CourseList extends React.PureComponent<CourseListProps, {}> {
+  handleToggle(catalogId: string) {
+    const { addedCourses, onRemove, onAdd } = this.props;
+    if (addedCourses[catalogId]) {
+      onRemove(catalogId);
     } else {
-      onAdd(getCatalogId(course));
+      onAdd(catalogId);
     }
   }
 
   render() {
-    const { courses, disableSorting } = this.props;
+    const { courses, addedCourses } = this.props;
     return (
       <Root>
-        {courses.map((course, index) => (
-          <SortableCourse
-            index={index}
-            disabled={disableSorting}
-            added={this.hasCourse(course)}
-            key={`${course.subjectCode} ${course.courseNumber}`}
+        {courses.map(course => (
+          <Course
+            key={getCatalogId(course)}
             course={course}
-            onToggle={() => this.handleToggle(course)}
+            added={!!addedCourses[getCatalogId(course)]}
+            onToggle={() => this.handleToggle(getCatalogId(course))}
           />
         ))}
       </Root>
     );
   }
 }
-
-export const SortableCourseList = SortableContainer<CourseListProps>(props => (
-  <CourseList {...props} />
-));

@@ -1,50 +1,67 @@
 import * as React from 'react';
 import * as Model from 'models';
 import * as styles from 'styles';
-import styled from 'styled-components';
 import * as pluralize from 'pluralize';
+import styled from 'styled-components';
 
-import { SortableElement } from 'react-sortable-hoc';
-import { Button } from 'components/button';
-import { View } from 'components/view';
+import { View, ViewProps } from 'components/view';
 import { Text } from 'components/text';
+import { Button as _Button } from 'components/button';
+import { Fa as _Fa } from 'components/fa';
 
-const Root = styled(View)`
-  flex-direction: row;
+const { getSimpleName } = Model.Course;
+
+interface RootProps extends ViewProps {
+  sortable?: boolean;
+}
+const Root = styled<RootProps>(View)`
   flex: 0 0 auto;
-  cursor: move;
-  &:hover {
-    box-shadow: ${styles.grabbableShadow};
-  }
-  &:active {
-    box-shadow: ${styles.grabbableShadowActive};
-  }
-  background-color: white;
-  z-index: 1;
-`;
-const Column = styled(View)`
-  flex: 1 1 auto;
-  margin-right: ${styles.space(0)};
-`;
-const Name = styled(Text)`
+  flex-direction: row;
+  align-items: flex-end;
   margin-bottom: ${styles.space(-1)};
+  padding: ${styles.space(-1)};
+  background-color: ${styles.white};
+  ${props =>
+    props.sortable
+      ? `
+    cursor: grab;
+    &:active {
+      grabbing;
+    }
+  `
+      : ''};
 `;
-const CreditHours = styled(Text)`
+const Body = styled(View)`
+  flex: 1 1 auto;
+  margin-right: ${styles.space(-1)};
+`;
+const SimpleName = styled(Text)`
+  margin-bottom: ${styles.space(-1)};
+  font-weight: bold;
+`;
+const SubtitleRow = styled(View)`
+  flex-direction: row;
+  justify-content: space-between;
+`;
+const Caption = styled(Text)`
   font-size: ${styles.space(-1)};
   text-transform: uppercase;
 `;
-const ButtonContainer = styled(View)`
-  flex-direction: row;
-  align-items: flex-end;
+const Button = styled(_Button)`
+  min-width: 7rem;
+`;
+const Fa = styled(_Fa)`
+  margin-right: ${styles.space(-1)};
 `;
 
-interface CourseProps {
+export interface CourseProps {
+  sortable?: boolean;
   course: Model.Course.Model;
   added: boolean;
   onToggle: () => void;
 }
 
-class Course extends React.PureComponent<CourseProps, {}> {
+export class Course extends React.PureComponent<CourseProps, {}> {
   get creditHourString() {
     const { course } = this.props;
     if (!course.creditHours) return '';
@@ -58,19 +75,20 @@ class Course extends React.PureComponent<CourseProps, {}> {
   }
 
   render() {
-    const { added, course, onToggle } = this.props;
+    const { course, added, onToggle, sortable } = this.props;
     return (
-      <Root>
-        <Column>
-          <Name>{course.name}</Name>
-          <CreditHours>{this.creditHourString}</CreditHours>
-        </Column>
-        <ButtonContainer>
-          <Button onClick={onToggle}>{added ? 'Added' : 'Add'}</Button>
-        </ButtonContainer>
+      <Root sortable={sortable}>
+        <Body>
+          <SimpleName>{getSimpleName(course)}</SimpleName>
+          <SubtitleRow>
+            <Caption>{course.name}</Caption>
+            <Caption>{this.creditHourString}</Caption>
+          </SubtitleRow>
+        </Body>
+        <Button onClick={onToggle}>
+          {added ? <Fa icon="check" /> : <Fa icon="plus" />} {added ? 'Added' : 'Add'}
+        </Button>
       </Root>
     );
   }
 }
-
-export const SortableCourse = SortableElement<CourseProps>(props => <Course {...props} />);
