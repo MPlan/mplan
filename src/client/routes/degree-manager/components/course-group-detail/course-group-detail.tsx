@@ -228,6 +228,7 @@ export class CourseGroupDetail extends React.Component<
               </DegreeItem>
               <DegreeItem title="Default courses">
                 <DescriptionAction
+                  stretchAction
                   description={
                     <>
                       <Paragraph>
