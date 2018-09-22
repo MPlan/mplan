@@ -18,18 +18,16 @@ const Root = styled<RootProps>(View)`
   flex: 0 0 auto;
   flex-direction: row;
   align-items: flex-end;
-  margin-bottom: ${styles.space(-1)};
+  margin: ${styles.space(-1)};
   padding: ${styles.space(-1)};
   background-color: ${styles.white};
-  ${props =>
-    props.sortable
-      ? `
-    cursor: grab;
-    &:active {
-      grabbing;
-    }
-  `
-      : ''};
+  cursor: ${({ sortable }) => (sortable ? 'grab' : 'initial')};
+  &:hover {
+    box-shadow: ${({ sortable }) => (sortable ? styles.grabbableShadow : 'unset')};
+  }
+  &:active {
+    cursor: ${({ sortable }) => (sortable ? 'grabbing' : 'initial')};
+  }
 `;
 const Body = styled(View)`
   flex: 1 1 auto;

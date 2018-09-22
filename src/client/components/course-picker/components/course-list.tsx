@@ -14,6 +14,7 @@ const Root = styled(View)`
     flex: 0 0 auto;
   }
   overflow: auto;
+  flex: 1 1 auto;
 `;
 
 interface CourseListProps {
