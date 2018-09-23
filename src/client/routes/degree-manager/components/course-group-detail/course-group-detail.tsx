@@ -87,14 +87,14 @@ interface CourseGroupDetailProps {
   creditMinimum: number;
   creditMaximum: number;
   defaultIds: string[];
-  allowListIds: string[];
+  recommendedIds: string[];
 
   onAddDefaultCourse: (catalogId: string) => void;
   onRemoveDefaultCourse: (catalogId: string) => void;
   onRearrangeDefaultCourses: (oldIndex: number, newIndex: number) => void;
-  onAddAllowedCourse: (catalogId: string) => void;
-  onRemoveAllowedCourse: (catalogId: string) => void;
-  onRearrangeAllowedCourses: (oldIndex: number, newIndex: number) => void;
+  onAddRecommendedCourse: (catalogId: string) => void;
+  onRemoveRecommendedCourse: (catalogId: string) => void;
+  onRearrangeRecommendedCourses: (oldIndex: number, newIndex: number) => void;
   onNameChange: (name: string) => void;
   onDescriptionChange: (descriptionHtml: string) => void;
   onCreditMinimumChange: (minimumCredits: number) => void;
@@ -105,7 +105,7 @@ interface CourseGroupDetailProps {
 interface CourseGroupDetailState {
   editingName: boolean;
   defaultCoursesPickerOpen: boolean;
-  allowedCoursesPickerOpen: boolean;
+  recommendedCoursesPickerOpen: boolean;
 }
 
 export class CourseGroupDetail extends React.Component<
@@ -118,7 +118,7 @@ export class CourseGroupDetail extends React.Component<
     this.state = {
       editingName: false,
       defaultCoursesPickerOpen: false,
-      allowedCoursesPickerOpen: false,
+      recommendedCoursesPickerOpen: false,
     };
   }
 
@@ -143,11 +143,11 @@ export class CourseGroupDetail extends React.Component<
     this.setState({ defaultCoursesPickerOpen: false });
   };
 
-  handleAllowedCoursesPickerOpen = () => {
-    this.setState({ allowedCoursesPickerOpen: true });
+  handleRecommendedCoursesPickerOpen = () => {
+    this.setState({ recommendedCoursesPickerOpen: true });
   };
-  handleAllowedCoursesPickerClose = () => {
-    this.setState({ allowedCoursesPickerOpen: false });
+  handleRecommendedCoursesPickerClose = () => {
+    this.setState({ recommendedCoursesPickerOpen: false });
   };
 
   render() {
@@ -162,16 +162,16 @@ export class CourseGroupDetail extends React.Component<
       onCreditMaximumChange,
       onCreditMinimumChange,
       defaultIds,
-      allowListIds,
+      recommendedIds,
       onAddDefaultCourse,
       onRemoveDefaultCourse,
       onRearrangeDefaultCourses,
-      onAddAllowedCourse,
-      onRemoveAllowedCourse,
-      onRearrangeAllowedCourses,
+      onAddRecommendedCourse,
+      onRemoveRecommendedCourse,
+      onRearrangeRecommendedCourses,
     } = this.props;
 
-    const { editingName, defaultCoursesPickerOpen, allowedCoursesPickerOpen } = this.state;
+    const { editingName, defaultCoursesPickerOpen, recommendedCoursesPickerOpen } = this.state;
 
     return (
       <>
@@ -239,34 +239,33 @@ export class CourseGroupDetail extends React.Component<
                   <CreditHourEditor creditHours={creditMaximum} onChange={onCreditMaximumChange} />
                 </DescriptionAction>
               </DegreeItem>
-              <DegreeItem title="Default courses">
+              <DegreeItem title="Preset courses">
                 <DescriptionAction
                   stretchAction
                   description={
                     <>
                       <Paragraph>
-                        Default courses are the pre-populated courses that appear to students in
-                        this course group.
+                        Preset courses are the prepopulated courses that appear to students in this
+                        course group.
                       </Paragraph>
                       <Paragraph>
-                        A student can choose to add to, remove from, or replace any of the default
-                        courses. Default courses can be thought of as the recommended courses a
+                        A student can choose to add to, remove from, or replace any of the preset
+                        courses. Preset courses can be thought of as the recommended courses a
                         student should take to satisfy the requirement group.
                       </Paragraph>
                       <Paragraph>
-                        Certain requirements such as "Oral and Written Communication" are ideal for
-                        default courses because almost every student will take "COMP 105" and "COMP
-                        270".
+                        Certain requirement groups such as "Written and Oral Communication" are
+                        ideal for default courses because almost every student will take COMP 105
+                        and COMP 270.
                       </Paragraph>
                       <Paragraph>
-                        Default courses aren't as applicable to other requirements as such
-                        "Technical Electives" because there are many possible choices for the
-                        student to choose from.
+                        Preset courses aren't applicable to other requirement groups as such
+                        "Technical Electives" because there isn't a preset list of courses that
+                        every student should take.
                       </Paragraph>
                       <Paragraph>
-                        The general recommendation is to set default courses <strong>only</strong>{' '}
-                        if the majority of students will take these courses to satisfy the
-                        requirement.
+                        The general recommendation is to set preset courses <strong>only</strong> if
+                        the majority of students will take these courses to satisfy the requirement.
                       </Paragraph>
                       <Paragraph>
                         <strong>Coming soon: </strong>
@@ -286,16 +285,16 @@ export class CourseGroupDetail extends React.Component<
                   </Column>
                 </DescriptionAction>
               </DegreeItem>
-              <DegreeItem title="Allowed courses">
+              <DegreeItem title="Recommended courses">
                 <DescriptionAction
                   stretchAction
                   description={
                     <>
                       <Paragraph>
-                        Allowed courses define what courses are allowed for this group.
+                        Recommended courses define what courses are allowed for this group.
                       </Paragraph>
                       <Paragraph>
-                        Allowed courses serves two purposes:
+                        Recommended courses serves two purposes:
                         <ol>
                           <li>
                             To warn students when they add courses that may not be credited, and
@@ -304,13 +303,13 @@ export class CourseGroupDetail extends React.Component<
                         </ol>
                       </Paragraph>
                       <Paragraph>
-                        Allowed courses is ideal for elective requirement groups where the student
-                        gets a choice of what to take. E.g. "Technical Electives" or "Laboratory
-                        Science".
+                        Recommended courses is ideal for elective requirement groups where the
+                        student gets a choice of what to take. E.g. "Technical Electives" or
+                        "Laboratory Science".
                       </Paragraph>
                       <Paragraph>
                         <strong>Note: </strong>
-                        Allowed courses aren't applicable to requirement groups that can be
+                        Recommended courses aren't applicable to requirement groups that can be
                         satisfied by many possible courses such as "DDC Humanities".
                       </Paragraph>
                       <Paragraph>
@@ -330,11 +329,63 @@ export class CourseGroupDetail extends React.Component<
                   }
                 >
                   <Column>
-                    <PrimaryButton onClick={this.handleAllowedCoursesPickerOpen}>
+                    <PrimaryButton onClick={this.handleRecommendedCoursesPickerOpen}>
                       <Fa icon="pencil" /> Edit
                     </PrimaryButton>
                     <Spacer />
-                    <CourseList catalogIds={allowListIds} />
+                    <CourseList catalogIds={recommendedIds} />
+                  </Column>
+                </DescriptionAction>
+              </DegreeItem>
+              <DegreeItem title="Permitted courses">
+                <DescriptionAction
+                  stretchAction
+                  description={
+                    <>
+                      <Paragraph>
+                        Recommended courses define what courses are allowed for this group.
+                      </Paragraph>
+                      <Paragraph>
+                        Recommended courses serves two purposes:
+                        <ol>
+                          <li>
+                            To warn students when they add courses that may not be credited, and
+                          </li>
+                          <li>To present the student with a preset list of options.</li>
+                        </ol>
+                      </Paragraph>
+                      <Paragraph>
+                        Recommended courses is ideal for elective requirement groups where the
+                        student gets a choice of what to take. E.g. "Technical Electives" or
+                        "Laboratory Science".
+                      </Paragraph>
+                      <Paragraph>
+                        <strong>Note: </strong>
+                        Recommended courses aren't applicable to requirement groups that can be
+                        satisfied by many possible courses such as "DDC Humanities".
+                      </Paragraph>
+                      <Paragraph>
+                        <strong>Disclaimer:</strong> when a student adds a course that is not in the
+                        allow courses, MPlan <em>will not block them</em> from doing so. Instead
+                        they will get a non-dismissable warning that will won't go away throughout
+                        their usage of MPlan. This was done to keep the tool usable in the event of
+                        edge cases. The warning will be very evident to the student.
+                      </Paragraph>
+                      <Paragraph>
+                        <strong>Coming soon: </strong>
+                        As an advisor, soon you'll be able to see a preview of the student degree
+                        work in the next iteration of MPlan. Feel free to use the chat at the bottom
+                        right to ask any questions or give any feedback.
+                      </Paragraph>
+                    </>
+                  }
+                >
+                  <Column>
+                    <PrimaryButton onClick={this.handleRecommendedCoursesPickerOpen}>
+                      <Fa icon="pencil" /> Edit
+                    </PrimaryButton>
+                    <Spacer />
+                    <CourseList catalogIds={recommendedIds} />
                   </Column>
                 </DescriptionAction>
               </DegreeItem>
@@ -360,13 +411,13 @@ export class CourseGroupDetail extends React.Component<
           onRearrange={onRearrangeDefaultCourses}
         />
         <CoursePicker
-          title={`Editing allowed courses for ${name}…`}
-          courseIds={allowListIds}
-          onAdd={onAddAllowedCourse}
-          onRemove={onRemoveAllowedCourse}
-          open={allowedCoursesPickerOpen}
-          onClose={this.handleAllowedCoursesPickerClose}
-          onRearrange={onRearrangeAllowedCourses}
+          title={`Editing recommended courses for ${name}…`}
+          courseIds={recommendedIds}
+          onAdd={onAddRecommendedCourse}
+          onRemove={onRemoveRecommendedCourse}
+          open={recommendedCoursesPickerOpen}
+          onClose={this.handleRecommendedCoursesPickerClose}
+          onRearrange={onRearrangeRecommendedCourses}
         />
       </>
     );

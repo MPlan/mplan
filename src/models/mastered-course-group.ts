@@ -6,7 +6,7 @@ interface MasteredCourseGroup {
   name: string;
   descriptionHtml: string;
   defaultIds: string[];
-  allowListIds: string[];
+  recommendedIds: string[];
   creditMinimum: number;
   creditMaximum: number;
   position: number;
@@ -20,10 +20,10 @@ export function getDefaultCourses(self: MasteredCourseGroup, catalog: Catalog.Mo
   return defaultIds.map(id => catalog[id]);
 }
 
-export function getAllowedCourses(self: MasteredCourseGroup, catalog: Catalog.Model) {
-  const { allowListIds } = self;
+export function getRecommendedCourses(self: MasteredCourseGroup, catalog: Catalog.Model) {
+  const { recommendedIds } = self;
 
-  return allowListIds.map(id => catalog[id]);
+  return recommendedIds.map(id => catalog[id]);
 }
 
 export function addToDefaults(self: MasteredCourseGroup, courseToAdd: Course.Model) {
@@ -50,26 +50,26 @@ export function deleteFromDefaults(self: MasteredCourseGroup, courseToDelete: Co
   return newSelf;
 }
 
-export function adddToAllowList(self: MasteredCourseGroup, courseToAdd: Course.Model) {
-  const { allowListIds } = self;
+export function addToRecommendedList(self: MasteredCourseGroup, courseToAdd: Course.Model) {
+  const { recommendedIds } = self;
 
-  const newAllowListIds = [...allowListIds.filter(id => id !== courseToAdd.id), courseToAdd.id];
+  const newRecommendedIds = [...recommendedIds.filter(id => id !== courseToAdd.id), courseToAdd.id];
 
   const newSelf: MasteredCourseGroup = {
     ...self,
-    allowListIds: newAllowListIds,
+    recommendedIds: newRecommendedIds,
   };
   return newSelf;
 }
 
-export function deleteFromAllowList(self: MasteredCourseGroup, courseToDelete: Course.Model) {
-  const { allowListIds } = self;
+export function deleteFromRecommended(self: MasteredCourseGroup, courseToDelete: Course.Model) {
+  const { recommendedIds } = self;
 
-  const newAllowListIds = allowListIds.filter(id => id !== courseToDelete.id);
+  const newRecommendedIds = recommendedIds.filter(id => id !== courseToDelete.id);
 
   const newSelf: MasteredCourseGroup = {
     ...self,
-    allowListIds: newAllowListIds,
+    recommendedIds: newRecommendedIds,
   };
   return newSelf;
 }

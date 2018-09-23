@@ -22,7 +22,7 @@ const Container = Model.store.connect({
         creditMinimum: 0,
         creditMaximum: 0,
         defaultIds: [],
-        allowListIds: [],
+        recommendedIds: [],
       };
     }
 
@@ -35,7 +35,7 @@ const Container = Model.store.connect({
         creditMinimum: 0,
         creditMaximum: 0,
         defaultIds: [],
-        allowListIds: [],
+        recommendedIds: [],
       };
     }
 
@@ -45,7 +45,7 @@ const Container = Model.store.connect({
       creditMinimum: group.creditMinimum,
       creditMaximum: group.creditMaximum,
       defaultIds: group.defaultIds,
-      allowListIds: group.allowListIds,
+      recommendedIds: group.recommendedIds,
     };
   },
   mapDispatchToProps: (dispatch, ownProps: CourseGroupDetailContainerProps) => ({
@@ -163,18 +163,18 @@ const Container = Model.store.connect({
         };
       });
     },
-    onAddAllowedCourse: (catalogId: string) => {
+    onAddRecommendedCourse: (catalogId: string) => {
       dispatch(state => {
-        const addAllowedId = (masteredDegree: Model.MasteredDegree.Model) =>
+        const addRecommendedId = (masteredDegree: Model.MasteredDegree.Model) =>
           Model.MasteredDegree.updateGroup(masteredDegree, ownProps.groupId, group => ({
             ...group,
-            allowListIds: [...group.allowListIds, catalogId],
+            recommendedIds: [...group.recommendedIds, catalogId],
           }));
 
         const newMasteredDegrees = Model.MasteredDegrees.updatedMasteredDegree(
           state.masteredDegrees,
           ownProps.masteredDegreeId,
-          addAllowedId,
+          addRecommendedId,
         );
 
         return {
@@ -183,19 +183,18 @@ const Container = Model.store.connect({
         };
       });
     },
-
-    onRemoveAllowedCourse: (catalogId: string) => {
+    onRemoveRecommendedCourse: (catalogId: string) => {
       dispatch(state => {
-        const removeAllowedCourse = (masteredDegree: Model.MasteredDegree.Model) =>
+        const removeRecommendedCourse = (masteredDegree: Model.MasteredDegree.Model) =>
           Model.MasteredDegree.updateGroup(masteredDegree, ownProps.groupId, group => ({
             ...group,
-            allowListIds: group.allowListIds.filter(id => id !== catalogId),
+            recommendedIds: group.recommendedIds.filter(id => id !== catalogId),
           }));
 
         const newMasteredDegrees = Model.MasteredDegrees.updatedMasteredDegree(
           state.masteredDegrees,
           ownProps.masteredDegreeId,
-          removeAllowedCourse,
+          removeRecommendedCourse,
         );
 
         return {
@@ -246,20 +245,20 @@ const Container = Model.store.connect({
         };
       });
     },
-    onRearrangeAllowedCourses: (oldIndex: number, newIndex: number) => {
+    onRearrangeRecommendedCourses: (oldIndex: number, newIndex: number) => {
       if (oldIndex === newIndex) return;
 
       dispatch(state => {
         const rearrangeCourses = (
           group: Model.MasteredCourseGroup.Model,
         ): Model.MasteredCourseGroup.Model => {
-          const { allowListIds } = group;
+          const { recommendedIds } = group;
 
-          const courseToMove = allowListIds[oldIndex];
+          const courseToMove = recommendedIds[oldIndex];
 
           const withoutThatCourse = [
-            ...allowListIds.slice(0, oldIndex),
-            ...allowListIds.slice(oldIndex + 1, allowListIds.length),
+            ...recommendedIds.slice(0, oldIndex),
+            ...recommendedIds.slice(oldIndex + 1, recommendedIds.length),
           ];
           const withThatCourseButWithNewIndex = [
             ...withoutThatCourse.slice(0, newIndex),
@@ -269,7 +268,7 @@ const Container = Model.store.connect({
 
           return {
             ...group,
-            allowListIds: withThatCourseButWithNewIndex,
+            recommendedIds: withThatCourseButWithNewIndex,
           };
         };
 

@@ -112,7 +112,7 @@ export function createNewGroup(self: MasteredDegree, name: string, column: numbe
     name,
     column,
     id: ObjectId(),
-    allowListIds: [],
+    recommendedIds: [],
     creditMaximum: 6,
     creditMinimum: 6,
     defaultIds: [],
