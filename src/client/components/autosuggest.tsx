@@ -6,6 +6,7 @@ import { View } from 'components/view';
 import { Input } from 'components/input';
 import { Popper, PopperContainerProps } from 'components/popper';
 import { Caption as _Caption } from 'components/caption';
+import { ClickAwayListener } from 'components/click-away-listener';
 
 const Root = styled(View)``;
 const Suggestions = styled(View)`
@@ -17,7 +18,7 @@ const Suggestions = styled(View)`
 `;
 const SuggestionWrapper = styled(View)``;
 const Caption = styled(_Caption)`
-  border-top: 1px solid ${styles.whiteTer};
+  border-top: 1px solid ${styles.grayLighter};
   padding: ${styles.space(-1)};
 `;
 
@@ -47,6 +48,7 @@ export class Autosuggest<T> extends React.PureComponent<AutosuggestProps<T>, Aut
       search: '',
     };
   }
+  suggestionsRef = React.createRef<HTMLElement>();
 
   componentDidUpdate(_: AutosuggestProps<T>, previousState: AutosuggestState) {
     const closedBefore = !previousState.search;
@@ -63,7 +65,25 @@ export class Autosuggest<T> extends React.PureComponent<AutosuggestProps<T>, Aut
     this.setState({ search });
   };
 
-  handleClose = () => {
+  handleClose = (e?: MouseEvent) => {
+    if (!e) {
+      this.setState({ search: '' });
+      return;
+    }
+
+    const target = e.target as Node;
+    const suggestionsElement = this.suggestionsRef.current;
+    if (!suggestionsElement) {
+      this.setState({ search: '' });
+      return;
+    }
+    if (!target) {
+      this.setState({ search: '' });
+      return;
+    }
+
+    if (suggestionsElement.contains(target)) return;
+
     this.setState({ search: '' });
   };
 
@@ -129,15 +149,17 @@ export class Autosuggest<T> extends React.PureComponent<AutosuggestProps<T>, Aut
     const { placeholder } = this.props;
     const { search } = this.state;
     return (
-      <Root {...props}>
-        <Input
-          type="search"
-          placeholder={placeholder}
-          value={search}
-          onChange={this.handleChange}
-          onKeyDown={this.handleKeyPress}
-        />
-      </Root>
+      <ClickAwayListener onClickAway={this.handleClose}>
+        <Root {...props}>
+          <Input
+            type="search"
+            placeholder={placeholder}
+            value={search}
+            onChange={this.handleChange}
+            onKeyDown={this.handleKeyPress}
+          />
+        </Root>
+      </ClickAwayListener>
     );
   };
 
@@ -150,7 +172,7 @@ export class Autosuggest<T> extends React.PureComponent<AutosuggestProps<T>, Aut
         open={!!search}
         onBlurCancel={this.handleClose}
         poppedElement={
-          <Suggestions>
+          <Suggestions innerRef={this.suggestionsRef}>
             {items.map((suggestion, index) => (
               <SuggestionWrapper
                 onMouseEnter={() => this.handleMouseEnter(index)}
