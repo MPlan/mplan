@@ -57,9 +57,9 @@ export function getCreditHoursFullString(self: Course) {
   const { creditHours } = self;
 
   if (!creditHours) return '';
-  if (Array.isArray(creditHours)) return `${creditHours[0]} - ${creditHours[1]} credit hours`;
-  if (creditHours === 1) return '1 credit hours';
-  return `${creditHours} credit hours`;
+  if (Array.isArray(creditHours)) return `${creditHours[0]} - ${creditHours[1]} credits`;
+  if (creditHours === 1) return '1 credit';
+  return `${creditHours} credits`;
 }
 
 export function getCreditHoursString(self: Course) {

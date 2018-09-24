@@ -30,7 +30,7 @@ const Container = (compose(
         title: ownProps.title,
         open: ownProps.open,
         courses,
-        searchResults: searchResults.slice(0, 20),
+        searchResults: searchResults.slice(0, 5),
         query: ownProps.query,
         searchResultsCount: searchResults.length,
       };

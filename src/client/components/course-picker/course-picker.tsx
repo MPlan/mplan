@@ -12,8 +12,13 @@ import { Input } from 'components/input';
 import { Button } from 'components/button';
 import { Empty } from 'components/empty';
 import { Caption as _Caption } from 'components/caption';
+import { Autosuggest } from 'components/autosuggest';
 import { SortableCourseList } from './components/sortable-course-list';
 import { CourseList } from './components/course-list';
+import { Course } from './components/course';
+import { AutosuggestCourse } from './components/autosuggest-course';
+
+const { getSimpleName, getCatalogId } = Model.Course;
 
 interface ContentProps extends ViewProps {
   sorting?: boolean;
@@ -101,6 +106,14 @@ export class CoursePicker extends React.PureComponent<CoursePickerProps, CourseP
     this.props.onRearrange(sortEnd.oldIndex, sortEnd.newIndex);
   };
 
+  handleSelectSuggestion = (key: string) => {
+    console.log({ key });
+  };
+
+  renderSuggestion = (course: Model.Course.Model, selected: boolean) => {
+    return <AutosuggestCourse course={course} selected={selected} />;
+  };
+
   render() {
     const {
       title,
@@ -113,6 +126,7 @@ export class CoursePicker extends React.PureComponent<CoursePickerProps, CourseP
       onRemove,
       onRearrange,
       onClose,
+      onSearch,
     } = this.props;
 
     const { sorting } = this.state;
@@ -121,28 +135,16 @@ export class CoursePicker extends React.PureComponent<CoursePickerProps, CourseP
       <Modal title={title} size="extra-large" open={open}>
         <Content sorting={sorting}>
           <Column>
-            <Search type="search" placeholder="Search for a course…" onChange={this.handleSearch} />
-            <CourseList
-              courses={searchResults}
-              addedCourses={this.addedCourses}
-              onAdd={onAdd}
-              onRemove={onRemove}
-              empty={
-                query.length > 0 ? (
-                  <Empty title="Oh no!" subtitle={`We couldn't find anything for "${query}."`} />
-                ) : (
-                  <Empty
-                    title="Search above to get started…"
-                    subtitle="e.g. &quot;MATH 116&quot; or &quot;Art History&quot;"
-                  />
-                )
-              }
+            <Autosuggest
+              items={searchResults}
+              getDisplayText={getSimpleName}
+              getKey={getCatalogId}
+              onSearch={onSearch}
+              renderSuggestion={this.renderSuggestion}
+              onSelectSuggestion={this.handleSelectSuggestion}
+              placeholder="Search for a course…"
+              totalCount={searchResultsCount}
             />
-            <Caption>
-              Showing {searchResults.length} of {searchResultsCount}{' '}
-              {pluralize('result', searchResultsCount)}.{' '}
-              {searchResults.length !== searchResultsCount ? 'Refine your search to see more.' : ''}
-            </Caption>
           </Column>
           <Spacer />
           <Column>
