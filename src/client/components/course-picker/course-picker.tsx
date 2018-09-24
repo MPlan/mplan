@@ -142,7 +142,7 @@ export class CoursePicker extends React.PureComponent<CoursePickerProps, CourseP
               onSearch={onSearch}
               renderSuggestion={this.renderSuggestion}
               onSelectSuggestion={this.handleSelectSuggestion}
-              placeholder="Search for a course…"
+              placeholder="Add a course by searching here…"
               totalCount={searchResultsCount}
             />
           </Column>
