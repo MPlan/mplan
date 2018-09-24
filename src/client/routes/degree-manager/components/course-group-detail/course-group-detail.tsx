@@ -14,13 +14,13 @@ import { PrimaryButton } from 'components/button';
 import { Fa as _Fa } from 'components/fa';
 import { Link } from 'components/link';
 import { CreditHourEditor } from 'components/credit-hour-editor';
-import { CoursePicker } from 'components/course-picker';
 
 import { DegreeItem } from 'routes/degree-manager/components/degree-item';
 import { DescriptionAction } from 'routes/degree-manager/components/description-action';
 import { DescriptionEditor } from 'routes/degree-manager/components/description-editor';
 import { PageNav } from 'routes/degree-manager/components/page-nav';
 import { CourseList } from 'routes/degree-manager/components/course-list';
+import { CoursePicker } from 'routes/degree-manager/components/course-picker';
 
 const Root = styled(View)`
   flex: 1 1 auto;
@@ -239,154 +239,17 @@ export class CourseGroupDetail extends React.Component<
                   <CreditHourEditor creditHours={creditMaximum} onChange={onCreditMaximumChange} />
                 </DescriptionAction>
               </DegreeItem>
-              <DegreeItem title="Preset courses">
+              <DegreeItem title="Courses">
                 <DescriptionAction
-                  stretchAction
                   description={
                     <>
-                      <Paragraph>
-                        Preset courses are the prepopulated courses that appear to students in this
-                        course group.
-                      </Paragraph>
-                      <Paragraph>
-                        A student can choose to add to, remove from, or replace any of the preset
-                        courses. Preset courses can be thought of as the recommended courses a
-                        student should take to satisfy the requirement group.
-                      </Paragraph>
-                      <Paragraph>
-                        Certain requirement groups such as "Written and Oral Communication" are
-                        ideal for default courses because almost every student will take COMP 105
-                        and COMP 270.
-                      </Paragraph>
-                      <Paragraph>
-                        Preset courses aren't applicable to other requirement groups as such
-                        "Technical Electives" because there isn't a preset list of courses that
-                        every student should take.
-                      </Paragraph>
-                      <Paragraph>
-                        The general recommendation is to set preset courses <strong>only</strong> if
-                        the majority of students will take these courses to satisfy the requirement.
-                      </Paragraph>
-                      <Paragraph>
-                        <strong>Coming soon: </strong>
-                        As an advisor, soon you'll be able to see a preview of the student degree
-                        work in the next iteration of MPlan. Feel free to use the chat at the bottom
-                        right to ask any questions or give any feedback.
-                      </Paragraph>
+                      <Text>test</Text>
                     </>
                   }
                 >
-                  <Column>
-                    <PrimaryButton onClick={this.handleDefaultCoursesPickerOpen}>
-                      <Fa icon="pencil" /> Edit
-                    </PrimaryButton>
-                    <Spacer />
-                    <CourseList catalogIds={defaultIds} />
-                  </Column>
-                </DescriptionAction>
-              </DegreeItem>
-              <DegreeItem title="Recommended courses">
-                <DescriptionAction
-                  stretchAction
-                  description={
-                    <>
-                      <Paragraph>
-                        Recommended courses define what courses are allowed for this group.
-                      </Paragraph>
-                      <Paragraph>
-                        Recommended courses serves two purposes:
-                        <ol>
-                          <li>
-                            To warn students when they add courses that may not be credited, and
-                          </li>
-                          <li>To present the student with a preset list of options.</li>
-                        </ol>
-                      </Paragraph>
-                      <Paragraph>
-                        Recommended courses is ideal for elective requirement groups where the
-                        student gets a choice of what to take. E.g. "Technical Electives" or
-                        "Laboratory Science".
-                      </Paragraph>
-                      <Paragraph>
-                        <strong>Note: </strong>
-                        Recommended courses aren't applicable to requirement groups that can be
-                        satisfied by many possible courses such as "DDC Humanities".
-                      </Paragraph>
-                      <Paragraph>
-                        <strong>Disclaimer:</strong> when a student adds a course that is not in the
-                        allow courses, MPlan <em>will not block them</em> from doing so. Instead
-                        they will get a non-dismissable warning that will won't go away throughout
-                        their usage of MPlan. This was done to keep the tool usable in the event of
-                        edge cases. The warning will be very evident to the student.
-                      </Paragraph>
-                      <Paragraph>
-                        <strong>Coming soon: </strong>
-                        As an advisor, soon you'll be able to see a preview of the student degree
-                        work in the next iteration of MPlan. Feel free to use the chat at the bottom
-                        right to ask any questions or give any feedback.
-                      </Paragraph>
-                    </>
-                  }
-                >
-                  <Column>
-                    <PrimaryButton onClick={this.handleRecommendedCoursesPickerOpen}>
-                      <Fa icon="pencil" /> Edit
-                    </PrimaryButton>
-                    <Spacer />
-                    <CourseList catalogIds={recommendedIds} />
-                  </Column>
-                </DescriptionAction>
-              </DegreeItem>
-              <DegreeItem title="Permitted courses">
-                <DescriptionAction
-                  stretchAction
-                  description={
-                    <>
-                      <Paragraph>
-                        Recommended courses define what courses are allowed for this group.
-                      </Paragraph>
-                      <Paragraph>
-                        Recommended courses serves two purposes:
-                        <ol>
-                          <li>
-                            To warn students when they add courses that may not be credited, and
-                          </li>
-                          <li>To present the student with a preset list of options.</li>
-                        </ol>
-                      </Paragraph>
-                      <Paragraph>
-                        Recommended courses is ideal for elective requirement groups where the
-                        student gets a choice of what to take. E.g. "Technical Electives" or
-                        "Laboratory Science".
-                      </Paragraph>
-                      <Paragraph>
-                        <strong>Note: </strong>
-                        Recommended courses aren't applicable to requirement groups that can be
-                        satisfied by many possible courses such as "DDC Humanities".
-                      </Paragraph>
-                      <Paragraph>
-                        <strong>Disclaimer:</strong> when a student adds a course that is not in the
-                        allow courses, MPlan <em>will not block them</em> from doing so. Instead
-                        they will get a non-dismissable warning that will won't go away throughout
-                        their usage of MPlan. This was done to keep the tool usable in the event of
-                        edge cases. The warning will be very evident to the student.
-                      </Paragraph>
-                      <Paragraph>
-                        <strong>Coming soon: </strong>
-                        As an advisor, soon you'll be able to see a preview of the student degree
-                        work in the next iteration of MPlan. Feel free to use the chat at the bottom
-                        right to ask any questions or give any feedback.
-                      </Paragraph>
-                    </>
-                  }
-                >
-                  <Column>
-                    <PrimaryButton onClick={this.handleRecommendedCoursesPickerOpen}>
-                      <Fa icon="pencil" /> Edit
-                    </PrimaryButton>
-                    <Spacer />
-                    <CourseList catalogIds={recommendedIds} />
-                  </Column>
+                  <PrimaryButton>
+                    <Fa icon="pencil" /> Edit
+                  </PrimaryButton>
                 </DescriptionAction>
               </DegreeItem>
               <DegreeItem title="Summary">
