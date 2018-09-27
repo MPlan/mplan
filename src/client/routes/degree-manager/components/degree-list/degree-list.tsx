@@ -7,7 +7,7 @@ import { searchList } from 'utilities/search-list';
 import { View } from 'components/view';
 import { Card } from 'components/card';
 import { Input } from 'components/input';
-import { NoResults } from 'components/no-results';
+import { Empty } from 'components/empty';
 
 import { DegreeListItem } from './degree-list-item';
 
@@ -58,15 +58,28 @@ export class DegreeList extends React.PureComponent<DegreeListProps, DegreeListS
   };
 
   render() {
+    const { search } = this.state;
     const masteredDegrees = this.filteredMasteredDegrees();
-    const shouldShowNoResults = masteredDegrees.length <= 0;
+    const shouldShowNoResults = masteredDegrees.length <= 0 && !search;
 
     return (
       <Root>
         <Search placeholder="Search for a degree..." onChange={this.handleSearch} />
         <List>
-          {shouldShowNoResults ? (
-            <NoResults query={this.state.search} />
+          {masteredDegrees.length <= 0 ? (
+            !search ? (
+              <Empty
+                title="Nothing here yet!"
+                subtitle="Create a new degree to get start."
+                size="large"
+              />
+            ) : (
+              <Empty
+                title="Oh no!"
+                subtitle={`We couldn't find anything for "${search}"`}
+                size="large"
+              />
+            )
           ) : (
             masteredDegrees.map(masteredDegree => (
               <DegreeListItem

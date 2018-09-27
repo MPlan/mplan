@@ -1,21 +1,17 @@
 import * as React from 'react';
 import * as Model from 'models';
 import * as styles from 'styles';
-import * as pluralize from 'pluralize';
 import styled from 'styled-components';
 import { memoizeLast } from 'utilities/memoize-last';
 
 import { SortEnd } from 'react-sortable-hoc';
 import { Modal } from 'components/modal';
 import { View, ViewProps } from 'components/view';
-import { Input } from 'components/input';
 import { Button } from 'components/button';
 import { Empty } from 'components/empty';
 import { Caption as _Caption } from 'components/caption';
 import { Autosuggest } from 'components/autosuggest';
 import { SortableCourseList } from './components/sortable-course-list';
-import { CourseList } from './components/course-list';
-import { Course } from './components/course';
 import { AutosuggestCourse } from './components/autosuggest-course';
 
 const { getSimpleName, getCatalogId } = Model.Course;
@@ -38,7 +34,6 @@ const Spacer = styled.div`
 const Column = styled(View)`
   flex: 1 1 calc(50% - 0.5rem);
 `;
-const Search = styled(Input)``;
 const Actions = styled(View)`
   flex: 0 0 auto;
   flex-direction: row;
@@ -106,8 +101,8 @@ export class CoursePicker extends React.PureComponent<CoursePickerProps, CourseP
     this.props.onRearrange(sortEnd.oldIndex, sortEnd.newIndex);
   };
 
-  handleSelectSuggestion = (key: string) => {
-    console.log({ key });
+  handleSelectSuggestion = (catalogId: string) => {
+    this.props.onAdd(catalogId);
   };
 
   renderSuggestion = (course: Model.Course.Model, selected: boolean) => {
@@ -145,20 +140,21 @@ export class CoursePicker extends React.PureComponent<CoursePickerProps, CourseP
               placeholder="Add a course by searching here…"
               totalCount={searchResultsCount}
             />
+            {courses.length > 0 ? (
+              <SortableCourseList
+                onSortStart={this.handleSortStart}
+                onSortEnd={this.handleSortEnd}
+                courses={courses}
+                onRemove={onRemove}
+                helperClass="sortableHelper"
+                lockAxis="y"
+              />
+            ) : (
+              <Empty title="Nothing here yet." subtitle="Search for a course above to begin." />
+            )}
           </Column>
           <Spacer />
-          <Column>
-            <SortableCourseList
-              onSortStart={this.handleSortStart}
-              onSortEnd={this.handleSortEnd}
-              courses={courses}
-              addedCourses={this.addedCourses}
-              onAdd={onAdd}
-              onRemove={onRemove}
-              helperClass="sortableHelper"
-              lockAxis="y"
-            />
-          </Column>
+          <Column />
         </Content>
         <Actions>
           <Button onClick={onClose}>Done</Button>

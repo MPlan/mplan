@@ -86,15 +86,12 @@ interface CourseGroupDetailProps {
   descriptionHtml: string;
   creditMinimum: number;
   creditMaximum: number;
-  defaultIds: string[];
-  recommendedIds: string[];
 
-  onAddDefaultCourse: (catalogId: string) => void;
-  onRemoveDefaultCourse: (catalogId: string) => void;
-  onRearrangeDefaultCourses: (oldIndex: number, newIndex: number) => void;
-  onAddRecommendedCourse: (catalogId: string) => void;
-  onRemoveRecommendedCourse: (catalogId: string) => void;
-  onRearrangeRecommendedCourses: (oldIndex: number, newIndex: number) => void;
+  catalogIds: string[];
+  onAddCourse: (catalogId: string) => void;
+  onRemoveCourse: (catalogId: string) => void;
+  onRearrangeCourses: (oldIndex: number, newIndex: number) => void;
+
   onNameChange: (name: string) => void;
   onDescriptionChange: (descriptionHtml: string) => void;
   onCreditMinimumChange: (minimumCredits: number) => void;
@@ -104,8 +101,7 @@ interface CourseGroupDetailProps {
 }
 interface CourseGroupDetailState {
   editingName: boolean;
-  defaultCoursesPickerOpen: boolean;
-  recommendedCoursesPickerOpen: boolean;
+  coursePickerOpen: boolean;
 }
 
 export class CourseGroupDetail extends React.Component<
@@ -117,8 +113,7 @@ export class CourseGroupDetail extends React.Component<
 
     this.state = {
       editingName: false,
-      defaultCoursesPickerOpen: false,
-      recommendedCoursesPickerOpen: false,
+      coursePickerOpen: false,
     };
   }
 
@@ -136,18 +131,11 @@ export class CourseGroupDetail extends React.Component<
     this.setState({ editingName: true });
   };
 
-  handleDefaultCoursesPickerOpen = () => {
-    this.setState({ defaultCoursesPickerOpen: true });
+  handleCoursePickerOpen = () => {
+    this.setState({ coursePickerOpen: true });
   };
-  handleDefaultCoursesPickerClose = () => {
-    this.setState({ defaultCoursesPickerOpen: false });
-  };
-
-  handleRecommendedCoursesPickerOpen = () => {
-    this.setState({ recommendedCoursesPickerOpen: true });
-  };
-  handleRecommendedCoursesPickerClose = () => {
-    this.setState({ recommendedCoursesPickerOpen: false });
+  handleCoursePickerClose = () => {
+    this.setState({ coursePickerOpen: false });
   };
 
   render() {
@@ -161,17 +149,13 @@ export class CourseGroupDetail extends React.Component<
       onDescriptionChange,
       onCreditMaximumChange,
       onCreditMinimumChange,
-      defaultIds,
-      recommendedIds,
-      onAddDefaultCourse,
-      onRemoveDefaultCourse,
-      onRearrangeDefaultCourses,
-      onAddRecommendedCourse,
-      onRemoveRecommendedCourse,
-      onRearrangeRecommendedCourses,
+      catalogIds,
+      onAddCourse,
+      onRemoveCourse,
+      onRearrangeCourses,
     } = this.props;
 
-    const { editingName, defaultCoursesPickerOpen, recommendedCoursesPickerOpen } = this.state;
+    const { editingName, coursePickerOpen } = this.state;
 
     return (
       <>
@@ -247,9 +231,10 @@ export class CourseGroupDetail extends React.Component<
                     </>
                   }
                 >
-                  <PrimaryButton>
+                  <PrimaryButton onClick={this.handleCoursePickerOpen}>
                     <Fa icon="pencil" /> Edit
                   </PrimaryButton>
+                  <CourseList catalogIds={catalogIds} />
                 </DescriptionAction>
               </DegreeItem>
               <DegreeItem title="Summary">
@@ -266,21 +251,12 @@ export class CourseGroupDetail extends React.Component<
         </Root>
         <CoursePicker
           title={`Editing default courses for ${name}…`}
-          courseIds={defaultIds}
-          onAdd={onAddDefaultCourse}
-          onRemove={onRemoveDefaultCourse}
-          open={defaultCoursesPickerOpen}
-          onClose={this.handleDefaultCoursesPickerClose}
-          onRearrange={onRearrangeDefaultCourses}
-        />
-        <CoursePicker
-          title={`Editing recommended courses for ${name}…`}
-          courseIds={recommendedIds}
-          onAdd={onAddRecommendedCourse}
-          onRemove={onRemoveRecommendedCourse}
-          open={recommendedCoursesPickerOpen}
-          onClose={this.handleRecommendedCoursesPickerClose}
-          onRearrange={onRearrangeRecommendedCourses}
+          courseIds={catalogIds}
+          onAdd={onAddCourse}
+          onRemove={onRemoveCourse}
+          open={coursePickerOpen}
+          onClose={this.handleCoursePickerClose}
+          onRearrange={onRearrangeCourses}
         />
       </>
     );

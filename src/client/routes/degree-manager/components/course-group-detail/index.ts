@@ -21,8 +21,7 @@ const Container = Model.store.connect({
         descriptionHtml: '',
         creditMinimum: 0,
         creditMaximum: 0,
-        defaultIds: [],
-        recommendedIds: [],
+        catalogIds: [],
       };
     }
 
@@ -34,8 +33,7 @@ const Container = Model.store.connect({
         descriptionHtml: '',
         creditMinimum: 0,
         creditMaximum: 0,
-        defaultIds: [],
-        recommendedIds: [],
+        catalogIds: [],
       };
     }
 
@@ -44,8 +42,7 @@ const Container = Model.store.connect({
       descriptionHtml: group.descriptionHtml,
       creditMinimum: group.creditMinimum,
       creditMaximum: group.creditMaximum,
-      defaultIds: group.defaultIds,
-      recommendedIds: group.recommendedIds,
+      catalogIds: Model.MasteredCourseGroup.getCatalogIds(group),
     };
   },
   mapDispatchToProps: (dispatch, ownProps: CourseGroupDetailContainerProps) => ({
@@ -123,18 +120,17 @@ const Container = Model.store.connect({
     onPreviewClick: () => {
       history.push(`/degree-manager/${ownProps.masteredDegreeId}/preview`);
     },
-    onAddDefaultCourse: (catalogId: string) => {
+    onAddCourse: (catalogId: string) => {
       dispatch(state => {
-        const addDefaultId = (masteredDegree: Model.MasteredDegree.Model) =>
-          Model.MasteredDegree.updateGroup(masteredDegree, ownProps.groupId, group => ({
-            ...group,
-            defaultIds: [...group.defaultIds, catalogId],
-          }));
+        const addCourse = (masteredDegree: Model.MasteredDegree.Model) =>
+          Model.MasteredDegree.updateGroup(masteredDegree, ownProps.groupId, group =>
+            Model.MasteredCourseGroup.addCourse(group, catalogId),
+          );
 
         const newMasteredDegrees = Model.MasteredDegrees.updatedMasteredDegree(
           state.masteredDegrees,
           ownProps.masteredDegreeId,
-          addDefaultId,
+          addCourse,
         );
 
         return {
@@ -143,18 +139,17 @@ const Container = Model.store.connect({
         };
       });
     },
-    onRemoveDefaultCourse: (catalogId: string) => {
+    onRemoveCourse: (catalogId: string) => {
       dispatch(state => {
-        const removeDefaultCourse = (masteredDegree: Model.MasteredDegree.Model) =>
-          Model.MasteredDegree.updateGroup(masteredDegree, ownProps.groupId, group => ({
-            ...group,
-            defaultIds: group.defaultIds.filter(id => id !== catalogId),
-          }));
+        const removeCourse = (masteredDegree: Model.MasteredDegree.Model) =>
+          Model.MasteredDegree.updateGroup(masteredDegree, ownProps.groupId, group =>
+            Model.MasteredCourseGroup.removeCourse(group, catalogId),
+          );
 
         const newMasteredDegrees = Model.MasteredDegrees.updatedMasteredDegree(
           state.masteredDegrees,
           ownProps.masteredDegreeId,
-          removeDefaultCourse,
+          removeCourse,
         );
 
         return {
@@ -163,117 +158,14 @@ const Container = Model.store.connect({
         };
       });
     },
-    onAddRecommendedCourse: (catalogId: string) => {
-      dispatch(state => {
-        const addRecommendedId = (masteredDegree: Model.MasteredDegree.Model) =>
-          Model.MasteredDegree.updateGroup(masteredDegree, ownProps.groupId, group => ({
-            ...group,
-            recommendedIds: [...group.recommendedIds, catalogId],
-          }));
-
-        const newMasteredDegrees = Model.MasteredDegrees.updatedMasteredDegree(
-          state.masteredDegrees,
-          ownProps.masteredDegreeId,
-          addRecommendedId,
-        );
-
-        return {
-          ...state,
-          masteredDegrees: newMasteredDegrees,
-        };
-      });
-    },
-    onRemoveRecommendedCourse: (catalogId: string) => {
-      dispatch(state => {
-        const removeRecommendedCourse = (masteredDegree: Model.MasteredDegree.Model) =>
-          Model.MasteredDegree.updateGroup(masteredDegree, ownProps.groupId, group => ({
-            ...group,
-            recommendedIds: group.recommendedIds.filter(id => id !== catalogId),
-          }));
-
-        const newMasteredDegrees = Model.MasteredDegrees.updatedMasteredDegree(
-          state.masteredDegrees,
-          ownProps.masteredDegreeId,
-          removeRecommendedCourse,
-        );
-
-        return {
-          ...state,
-          masteredDegrees: newMasteredDegrees,
-        };
-      });
-    },
-    onRearrangeDefaultCourses: (oldIndex: number, newIndex: number) => {
+    onRearrangeCourses: (oldIndex: number, newIndex: number) => {
       if (oldIndex === newIndex) return;
 
       dispatch(state => {
-        const rearrangeCourses = (
-          group: Model.MasteredCourseGroup.Model,
-        ): Model.MasteredCourseGroup.Model => {
-          const { defaultIds } = group;
-
-          const courseToMove = defaultIds[oldIndex];
-
-          const withoutThatCourse = [
-            ...defaultIds.slice(0, oldIndex),
-            ...defaultIds.slice(oldIndex + 1, defaultIds.length),
-          ];
-          const withThatCourseButWithNewIndex = [
-            ...withoutThatCourse.slice(0, newIndex),
-            courseToMove,
-            ...withoutThatCourse.slice(newIndex, withoutThatCourse.length),
-          ];
-
-          return {
-            ...group,
-            defaultIds: withThatCourseButWithNewIndex,
-          };
-        };
-
         const updateGroup = (masteredDegree: Model.MasteredDegree.Model) =>
-          Model.MasteredDegree.updateGroup(masteredDegree, ownProps.groupId, rearrangeCourses);
-
-        const newMasteredDegrees = Model.MasteredDegrees.updatedMasteredDegree(
-          state.masteredDegrees,
-          ownProps.masteredDegreeId,
-          updateGroup,
-        );
-
-        return {
-          ...state,
-          masteredDegrees: newMasteredDegrees,
-        };
-      });
-    },
-    onRearrangeRecommendedCourses: (oldIndex: number, newIndex: number) => {
-      if (oldIndex === newIndex) return;
-
-      dispatch(state => {
-        const rearrangeCourses = (
-          group: Model.MasteredCourseGroup.Model,
-        ): Model.MasteredCourseGroup.Model => {
-          const { recommendedIds } = group;
-
-          const courseToMove = recommendedIds[oldIndex];
-
-          const withoutThatCourse = [
-            ...recommendedIds.slice(0, oldIndex),
-            ...recommendedIds.slice(oldIndex + 1, recommendedIds.length),
-          ];
-          const withThatCourseButWithNewIndex = [
-            ...withoutThatCourse.slice(0, newIndex),
-            courseToMove,
-            ...withoutThatCourse.slice(newIndex, withoutThatCourse.length),
-          ];
-
-          return {
-            ...group,
-            recommendedIds: withThatCourseButWithNewIndex,
-          };
-        };
-
-        const updateGroup = (masteredDegree: Model.MasteredDegree.Model) =>
-          Model.MasteredDegree.updateGroup(masteredDegree, ownProps.groupId, rearrangeCourses);
+          Model.MasteredDegree.updateGroup(masteredDegree, ownProps.groupId, group =>
+            Model.MasteredCourseGroup.rearrangeCourses(group, oldIndex, newIndex),
+          );
 
         const newMasteredDegrees = Model.MasteredDegrees.updatedMasteredDegree(
           state.masteredDegrees,

@@ -16,24 +16,12 @@ const Root = styled(View)`
 
 interface CourseListProps {
   courses: Model.Course.Model[];
-  addedCourses: { [courseKey: string]: true | undefined };
-  onAdd: (courseKey: string) => void;
   onRemove: (courseKey: string) => void;
 }
 
 class CourseList extends React.PureComponent<CourseListProps, {}> {
-  hasCourse(course: Model.Course.Model) {
-    const catalogId = getCatalogId(course);
-    return !!this.props.addedCourses[catalogId];
-  }
-
   handleToggle(course: Model.Course.Model) {
-    const { onAdd, onRemove } = this.props;
-    if (this.hasCourse(course)) {
-      onRemove(getCatalogId(course));
-    } else {
-      onAdd(getCatalogId(course));
-    }
+    this.props.onRemove(getCatalogId(course));
   }
 
   render() {
@@ -44,10 +32,9 @@ class CourseList extends React.PureComponent<CourseListProps, {}> {
           courses.map((course, index) => (
             <SortableCourse
               index={index}
-              added={this.hasCourse(course)}
               key={`${course.subjectCode} ${course.courseNumber}`}
               course={course}
-              onToggle={() => this.handleToggle(course)}
+              onRemove={() => this.handleToggle(course)}
             />
           ))
         ) : (

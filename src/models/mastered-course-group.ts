@@ -1,12 +1,13 @@
-import * as Course from './course';
 import * as Catalog from './catalog';
+import { get } from 'utilities/get';
+import { memoizeLast } from 'utilities/memoize-last';
+const { min, max, ceil } = Math;
 
 interface MasteredCourseGroup {
   id: string;
   name: string;
   descriptionHtml: string;
-  defaultIds: string[];
-  recommendedIds: string[];
+  courses: { [catalogId: string]: { position: number; preset: boolean; hidden: boolean } };
   creditMinimum: number;
   creditMaximum: number;
   position: number;
@@ -14,62 +15,101 @@ interface MasteredCourseGroup {
 }
 export { MasteredCourseGroup as Model };
 
-export function getDefaultCourses(self: MasteredCourseGroup, catalog: Catalog.Model) {
-  const { defaultIds } = self;
+export const getCatalogIds = memoizeLast((self: MasteredCourseGroup) => {
+  return Object.entries(self.courses)
+    .map(([courseId, settings]) => ({
+      courseId,
+      position: settings.position,
+    }))
+    .sort((a, b) => a.position - b.position)
+    .map(({ courseId }) => courseId);
+});
 
-  return defaultIds.map(id => catalog[id]);
-}
+export const getCourses = memoizeLast((self: MasteredCourseGroup, catalog: Catalog.Model) => {
+  return Object.entries(self.courses)
+    .map(([catalogId, settings]) => ({
+      course: catalog[catalogId],
+      settings,
+    }))
+    .filter(({ course }) => !!course)
+    .sort((a, b) => a.settings.position - b.settings.position);
+});
 
-export function getRecommendedCourses(self: MasteredCourseGroup, catalog: Catalog.Model) {
-  const { recommendedIds } = self;
+export function addCourse(self: MasteredCourseGroup, catalogId: string): MasteredCourseGroup {
+  const lastPosition =
+    max(...Object.values(self.courses).map(settings => settings.position)) || 100;
 
-  return recommendedIds.map(id => catalog[id]);
-}
-
-export function addToDefaults(self: MasteredCourseGroup, courseToAdd: Course.Model) {
-  const { defaultIds } = self;
-
-  const newDefaultIds = [...defaultIds.filter(id => id !== courseToAdd.id), courseToAdd.id];
-
-  const newSelf: MasteredCourseGroup = {
-    ...self,
-    defaultIds: newDefaultIds,
+  const courses = {
+    ...self.courses,
+    [catalogId]: { position: ceil(lastPosition) + 2, preset: false, hidden: false },
   };
-  return newSelf;
+
+  return {
+    ...self,
+    courses,
+  };
 }
 
-export function deleteFromDefaults(self: MasteredCourseGroup, courseToDelete: Course.Model) {
-  const { defaultIds } = self;
+export function removeCourse(
+  self: MasteredCourseGroup,
+  catalogIdToDelete: string,
+): MasteredCourseGroup {
+  const courses = Object.entries(self.courses)
+    .filter(([catalogId]) => catalogId !== catalogIdToDelete)
+    .reduce(
+      (courses, [catalogId, settings]) => {
+        courses[catalogId] = settings;
+        return courses;
+      },
+      {} as {
+        [catalogId: string]: { position: number; preset: boolean; hidden: boolean };
+      },
+    );
 
-  const newDefaultIds = defaultIds.filter(id => id !== courseToDelete.id);
-
-  const newSelf: MasteredCourseGroup = {
+  return {
     ...self,
-    defaultIds: newDefaultIds,
+    courses,
   };
-  return newSelf;
 }
 
-export function addToRecommendedList(self: MasteredCourseGroup, courseToAdd: Course.Model) {
-  const { recommendedIds } = self;
+export function rearrangeCourses(
+  self: MasteredCourseGroup,
+  oldIndex: number,
+  newIndex: number,
+): MasteredCourseGroup {
+  const courses = Object.entries(self.courses)
+    .map(([catalogId, settings]) => ({ catalogId, ...settings }))
+    .sort((a, b) => a.position - b.position);
 
-  const newRecommendedIds = [...recommendedIds.filter(id => id !== courseToAdd.id), courseToAdd.id];
+  const catalogId = courses[oldIndex].catalogId;
+  if (!catalogId) return self;
 
-  const newSelf: MasteredCourseGroup = {
-    ...self,
-    recommendedIds: newRecommendedIds,
+  const offset = oldIndex > newIndex ? -1 : 1;
+  const positionCurrent = get(courses, _ => _[newIndex].position);
+  const positionOffset = get(courses, _ => _[newIndex + offset].position);
+
+  const lastPosition = max(...courses.map(course => course.position));
+  const firstPosition = min(...courses.map(course => course.position));
+
+  const newPosition =
+    positionCurrent === undefined
+      ? lastPosition + 10
+      : positionOffset === undefined
+        ? oldIndex > newIndex
+          ? firstPosition - 10
+          : lastPosition + 10
+        : (positionCurrent + positionOffset) / 2;
+
+  const settingsWithNewPosition = {
+    ...self.courses[catalogId],
+    position: newPosition,
   };
-  return newSelf;
-}
 
-export function deleteFromRecommended(self: MasteredCourseGroup, courseToDelete: Course.Model) {
-  const { recommendedIds } = self;
-
-  const newRecommendedIds = recommendedIds.filter(id => id !== courseToDelete.id);
-
-  const newSelf: MasteredCourseGroup = {
+  return {
     ...self,
-    recommendedIds: newRecommendedIds,
+    courses: {
+      ...self.courses,
+      [catalogId]: settingsWithNewPosition,
+    },
   };
-  return newSelf;
 }
