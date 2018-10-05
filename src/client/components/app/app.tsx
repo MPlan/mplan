@@ -1,10 +1,10 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Router, Switch, Route, Redirect, RouteComponentProps } from 'react-router';
 
 import { history } from 'client/history';
 import { Auth } from 'client/auth';
 
+import { Router, Switch, Route, Redirect, RouteComponentProps } from 'react-router';
 import { Landing } from 'routes/landing';
 import { Callback } from 'routes/callback';
 import { View } from 'components/view';
@@ -39,14 +39,6 @@ interface AppProps {
 
 export class App extends React.Component<AppProps, {}> {
   componentDidMount() {
-    (window as any).Intercom('boot', {
-      app_id: 'zpvusrfo',
-    });
-
-    history.listen(() => {
-      (window as any).Intercom('update');
-    });
-
     this.props.onMount();
   }
 

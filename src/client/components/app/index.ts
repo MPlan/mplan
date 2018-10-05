@@ -1,20 +1,18 @@
 import * as Model from 'models';
 import { App } from './app';
-import { fetchInitial } from 'client/fetch/fetch-initial';
+import { history } from 'client/history';
 
 const Container = Model.store.connect({
   mapStateToProps: () => ({}),
   mapDispatchToProps: dispatch => ({
     onMount: async () => {
-      const { user, catalog, masteredDegrees } = await fetchInitial();
+      (window as any).Intercom('boot', {
+        app_id: 'zpvusrfo',
+      });
 
-      dispatch(state => ({
-        ...state,
-        catalog,
-        user,
-        masteredDegrees,
-        loaded: true,
-      }));
+      history.listen(() => {
+        (window as any).Intercom('update');
+      });
     },
   }),
 })(App);

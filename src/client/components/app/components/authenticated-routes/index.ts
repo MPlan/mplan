@@ -1,7 +1,10 @@
 import * as Model from 'models';
-import { AuthenticatedRoutes } from './authenticated-routes';
 import { get } from 'utilities/get';
+
+import { fetchInitial } from 'client/fetch/fetch-initial';
 import { Routes, BottomRoutes } from 'client/routes';
+
+import { AuthenticatedRoutes } from './authenticated-routes';
 
 const Container = Model.store.connect({
   mapStateToProps: state => ({
@@ -9,7 +12,19 @@ const Container = Model.store.connect({
     isAdmin: get(state, _ => _.user.isAdmin, false),
     routes: [...Routes, ...BottomRoutes],
   }),
-  mapDispatchToProps: () => ({}),
+  mapDispatchToProps: dispatch => ({
+    onMount: async () => {
+      const { user, catalog, masteredDegrees } = await fetchInitial();
+
+      dispatch(state => ({
+        ...state,
+        catalog,
+        user,
+        masteredDegrees,
+        loaded: true,
+      }));
+    },
+  }),
 })(AuthenticatedRoutes);
 
 export { Container as AuthenticatedRoutes };

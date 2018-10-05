@@ -25,9 +25,14 @@ interface AuthenticatedRoutesProps {
   loaded: boolean;
   isAdmin: boolean;
   routes: RouteDefinition[];
+  onMount: () => any;
 }
 
 export class AuthenticatedRoutes extends React.Component<AuthenticatedRoutesProps, {}> {
+  componentDidMount() {
+    this.props.onMount();
+  }
+
   render() {
     const { loaded, routes, isAdmin } = this.props;
     if (!loaded) return <Loading />;
