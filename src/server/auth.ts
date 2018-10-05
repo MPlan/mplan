@@ -28,6 +28,7 @@ async function exchangeForToken(code: string, redirectUri: string) {
     client_secret: clientSecret,
     code: code,
     redirect_uri: redirectUri,
+    scope: 'openid'
   })}`;
 
   const tokenResponse = await axios.post(url);
