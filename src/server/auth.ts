@@ -50,7 +50,7 @@ auth.post('/token', async (req, res) => {
 
   try {
     const tokenResponse = await exchangeForToken(code, redirectUri);
-    const decoded = jwtDecode(tokenResponse.access_token) as Model.AccessTokenPayload;
+    const decoded = jwtDecode(tokenResponse.id_token) as Model.AccessTokenPayload;
     const username = decoded.sub;
 
     const { users } = await dbConnection;
