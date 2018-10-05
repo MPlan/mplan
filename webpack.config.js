@@ -61,6 +61,8 @@ const webpackConfig = {
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
       'process.env.TEST_USERNAME': JSON.stringify(process.env.TEST_USERNAME),
       'process.env.AUTHORIZATION_URI': JSON.stringify(process.env.AUTHORIZATION_URI),
+      'process.env.CLIENT_ID': JSON.stringify(process.env.CLIENT_ID),
+      'process.env.REDIRECT_URI': JSON.stringify(process.env.REDIRECT_URI),
     }),
   ],
 };

@@ -2,10 +2,11 @@ import * as jwtDecode from 'jwt-decode';
 import * as Model from 'models';
 import { history } from 'client/history';
 import { encode } from '../utilities/utilities';
-import { wait } from 'utilities/utilities';
+import { wait, getOrThrow } from 'utilities/utilities';
 
-const authorizeUrl = process.env.AUTHORIZATION_URI;
-const redirectUri = `${window.location.protocol}//${window.location.host}/callback`;
+const authorizeUrl = getOrThrow(process.env.AUTHORIZATION_URI);
+const clientId = getOrThrow(process.env.CLIENT_ID);
+const redirectUri = getOrThrow(process.env.REDIRECT_URI);
 
 function login() {
   if (process.env.NODE_ENV !== 'production') {
@@ -14,7 +15,7 @@ function login() {
 
   window.location.href = `${authorizeUrl}?${encode({
     response_type: 'code',
-    client_id: '7be756e5-fa58-4699-87b7-67acb051125f',
+    client_id: clientId,
     redirect_uri: redirectUri,
     scope: 'openid profile email',
   })}`;
