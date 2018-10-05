@@ -4,7 +4,7 @@ import { history } from 'client/history';
 import { encode } from '../utilities/utilities';
 import { wait } from 'utilities/utilities';
 
-const authorizeUrl = 'https://shibboleth.umich.edu/idp/profile/oidc/authorize';
+const authorizeUrl = process.env.AUTHORIZATION_URI;
 const redirectUri = `${window.location.protocol}//${window.location.host}/callback`;
 
 function login() {
