@@ -44,11 +44,14 @@ export async function checkJwts(req: Request, res: Response, next: NextFunction)
     return;
   }
 
-  const pem = await getPublicKeyFromJwk();
+  try {
+    const pem = await getPublicKeyFromJwk();
+    const result = jwt.verify(token, pem) as AccessTokenPayload;
 
-  const result = jwt.verify(token, pem) as AccessTokenPayload;
-
-  req.user = result;
-  req.user.nickname = result.sub;
-  next();
+    req.user = result;
+    req.user.nickname = result.sub;
+    next();
+  } catch (e) {
+    res.sendStatus(HttpStatus.UNAUTHORIZED);
+  }
 }
