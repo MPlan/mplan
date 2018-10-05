@@ -25,10 +25,10 @@ async function exchangeForToken(code: string, redirectUri: string) {
   const url = `${tokenUri}?${encode({
     grant_type: 'authorization_code',
     client_id: clientId,
-    client_secret: clientSecret,
+    // client_secret: clientSecret,
     code: code,
     redirect_uri: redirectUri,
-    scope: 'openid'
+    // scope: 'openid',
   })}`;
 
   const tokenResponse = await axios.post(url);
@@ -41,42 +41,47 @@ auth.post('/token', async (req, res) => {
   if (!code) return res.sendStatus(HttpStatus.BAD_REQUEST);
   if (!redirectUri) return res.sendStatus(HttpStatus.BAD_REQUEST);
 
-  const tokenResponse = await exchangeForToken(code, redirectUri);
-  const decoded = jwtDecode(tokenResponse.access_token) as Model.AccessTokenPayload;
-  const username = decoded.sub;
+  try {
+    const tokenResponse = await exchangeForToken(code, redirectUri);
+    const decoded = jwtDecode(tokenResponse.access_token) as Model.AccessTokenPayload;
+    const username = decoded.sub;
 
-  const { users } = await dbConnection;
-  const user = await users.findOne({ username });
+    const { users } = await dbConnection;
+    const user = await users.findOne({ username });
 
-  if (!user) {
-    const id = ObjectId();
-    const newUser: Model.User.Model & { _id: any } = {
-      _id: id,
-      id: id,
-      chosenDegree: false,
-      degree: {
-        courseGroupData: {},
-        masteredDegreeId: undefined,
-      },
-      isAdmin: false,
-      lastLoginDate: Date.now(),
-      lastUpdateDate: Date.now(),
-      plan: {
-        anchorSeason: 'fall',
-        anchorYear: new Date().getFullYear(),
-        semesters: [],
-      },
-      registerDate: Date.now(),
-      username,
-      userPrerequisiteOverrides: {},
-    };
+    if (!user) {
+      const id = ObjectId();
+      const newUser: Model.User.Model & { _id: any } = {
+        _id: id,
+        id: id,
+        chosenDegree: false,
+        degree: {
+          courseGroupData: {},
+          masteredDegreeId: undefined,
+        },
+        isAdmin: false,
+        lastLoginDate: Date.now(),
+        lastUpdateDate: Date.now(),
+        plan: {
+          anchorSeason: 'fall',
+          anchorYear: new Date().getFullYear(),
+          semesters: [],
+        },
+        registerDate: Date.now(),
+        username,
+        userPrerequisiteOverrides: {},
+      };
 
-    await users.insertOne(newUser);
+      await users.insertOne(newUser);
+    }
+
+    res.json({
+      id_token: tokenResponse.id_token,
+      refresh_token: tokenResponse.refresh_token,
+      access_token: tokenResponse.access_token,
+    });
+  } catch (e) {
+    console.error(e);
+    res.sendStatus(HttpStatus.INTERNAL_SERVER_ERROR);
   }
-
-  res.json({
-    id_token: tokenResponse.id_token,
-    refresh_token: tokenResponse.refresh_token,
-    access_token: tokenResponse.access_token,
-  });
 });

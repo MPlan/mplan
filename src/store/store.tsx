@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Observable, Observer } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+import { Observer } from 'rxjs/Observer';
 
 interface ConnectParams<State, OwnProps, PropsFromMapState, PropsFromMapDispatch> {
   mapStateToProps: (state: State, ownProps: OwnProps) => PropsFromMapState;
