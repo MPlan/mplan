@@ -11,14 +11,23 @@ export const auth = express.Router();
 const tokenUri = getOrThrow(process.env.TOKEN_URI);
 const clientId = getOrThrow(process.env.CLIENT_ID);
 const clientSecret = getOrThrow(process.env.CLIENT_SECRET);
+const userInfoUri = getOrThrow(process.env.USER_INFO_URI);
 
 interface TokenResponse {
   access_token: string;
   token_type: 'Bearer';
   refresh_token: string;
   expires_in: number;
-  scope: string;
   id_token: string;
+}
+
+interface UserInfoResponse {
+  sub: string;
+  name: string;
+  preferred_username: string;
+  given_name: string;
+  family_name: string;
+  email: string;
 }
 
 async function exchangeForToken(code: string, redirectUri: string) {
@@ -42,6 +51,18 @@ async function exchangeForToken(code: string, redirectUri: string) {
   return tokenResponse.data as TokenResponse;
 }
 
+async function getUserInfo(accessToken: string) {
+  const userInfoResponse = await axios({
+    method: 'get',
+    url: userInfoUri,
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  return userInfoResponse.data as UserInfoResponse;
+}
+
 auth.post('/token', async (req, res) => {
   const code = req.body.code;
   const redirectUri = req.body.redirect_uri;
@@ -50,8 +71,8 @@ auth.post('/token', async (req, res) => {
 
   try {
     const tokenResponse = await exchangeForToken(code, redirectUri);
-    const decoded = jwtDecode(tokenResponse.id_token) as Model.AccessTokenPayload;
-    const username = decoded.sub;
+    const userInfo = await getUserInfo(tokenResponse.access_token);
+    const username = userInfo.preferred_username;
 
     const { users } = await dbConnection;
     const user = await users.findOne({ username });
@@ -86,6 +107,7 @@ auth.post('/token', async (req, res) => {
       id_token: tokenResponse.id_token,
       refresh_token: tokenResponse.refresh_token,
       access_token: tokenResponse.access_token,
+      user_info: userInfo,
     });
   } catch (e) {
     console.error(e);
