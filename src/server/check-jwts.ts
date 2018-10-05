@@ -13,7 +13,7 @@ export async function getPublicKeyFromJwk() {
   if (publicKeyPem) return publicKeyPem;
 
   const response = await axios.get(jwkUri);
-  const jwk = response.data.keys[1];
+  const jwk = response.data.keys[0];
   const pem = jwkToPem(jwk) as string;
   publicKeyPem = pem;
   return pem;
