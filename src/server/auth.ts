@@ -21,15 +21,6 @@ interface TokenResponse {
   id_token: string;
 }
 
-interface UserInfoResponse {
-  sub: string;
-  name: string;
-  preferred_username: string;
-  given_name: string;
-  family_name: string;
-  email: string;
-}
-
 async function exchangeForToken(code: string, redirectUri: string) {
   const tokenResponse = await axios({
     method: 'post',
@@ -60,7 +51,7 @@ async function getUserInfo(accessToken: string) {
     },
   });
 
-  return userInfoResponse.data as UserInfoResponse;
+  return userInfoResponse.data as Model.UserInfoResponse;
 }
 
 auth.post('/token', async (req, res) => {

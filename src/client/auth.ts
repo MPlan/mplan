@@ -31,7 +31,7 @@ function loggedIn() {
   const token = localStorage.getItem('token');
   if (!token) return false;
 
-  const decoded = jwtDecode(token) as Model.AccessTokenPayload;
+  const decoded = jwtDecode(token) as Model.IdTokenPayload;
   if (!decoded) return false;
 
   if (new Date().getTime() >= decoded.exp * 1000) return false;
@@ -44,10 +44,10 @@ function userDisplayName() {
   const userInfoString = localStorage.getItem('userInfo');
   if (!userInfoString) return undefined;
 
-  const decoded = JSON.parse(userInfoString) as any;
+  const decoded = JSON.parse(userInfoString) as Model.UserInfoResponse;
   if (!decoded) return undefined;
 
-  return decoded.preferred_username || undefined;
+  return decoded.name || undefined;
 }
 
 function username() {
@@ -85,16 +85,8 @@ async function fetchToken(code: string) {
     }),
   });
   const data = await result.json();
-  const accessToken = data.access_token as string;
   const idToken = data.id_token as string;
-  const userInfo = data.user_info as {
-    sub: string;
-    name: string;
-    preferred_username: string;
-    given_name: string;
-    family_name: string;
-    email: string;
-  };
+  const userInfo = data.user_info as Model.UserInfoResponse;
   return { idToken, userInfo };
 }
 

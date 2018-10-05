@@ -1,12 +1,3 @@
-export interface AccessTokenPayload {
-  sub: string;
-  azp: string;
-  iss: string;
-  exp: number;
-  iat: number;
-  jti: string;
-}
-
 export interface IdTokenPayload {
   acr: string;
   sub: string;
@@ -18,4 +9,13 @@ export interface IdTokenPayload {
   exp: number;
   iat: number;
   jti: string;
+}
+
+export interface UserInfoResponse {
+  sub: string;
+  name: string;
+  preferred_username: string;
+  given_name: string;
+  family_name: string;
+  email: string;
 }
