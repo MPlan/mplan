@@ -22,16 +22,20 @@ interface TokenResponse {
 }
 
 async function exchangeForToken(code: string, redirectUri: string) {
-  const url = `${tokenUri}?${encode({
-    grant_type: 'authorization_code',
-    client_id: clientId,
-    // client_secret: clientSecret,
-    code: code,
-    redirect_uri: redirectUri,
-    // scope: 'openid',
-  })}`;
-
-  const tokenResponse = await axios.post(url);
+  const tokenResponse = await axios({
+    method: 'post',
+    url: tokenUri,
+    auth: {
+      username: clientId,
+      password: clientSecret,
+    },
+    data: {
+      grant_type: 'authorization_code',
+      client_id: clientId,
+      code: code,
+      redirect_uri: redirectUri,
+    },
+  });
   return tokenResponse.data as TokenResponse;
 }
 
