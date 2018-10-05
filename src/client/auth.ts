@@ -16,7 +16,7 @@ function login() {
     response_type: 'code',
     client_id: '7be756e5-fa58-4699-87b7-67acb051125f',
     redirect_uri: redirectUri,
-    scope: 'openid',
+    scope: 'openid profile',
   })}`;
 }
 
