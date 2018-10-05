@@ -1,7 +1,5 @@
 import * as express from 'express';
 import * as Model from '../models';
-import * as redisLib from 'redis';
-import * as Sentry from '@sentry/node';
 import * as HttpStatus from 'http-status';
 import axios from 'axios';
 import { encode, getOrThrow } from '../utilities/utilities';
@@ -14,24 +12,6 @@ const tokenUri = getOrThrow(process.env.TOKEN_URI);
 const clientId = getOrThrow(process.env.CLIENT_ID);
 const clientSecret = getOrThrow(process.env.CLIENT_SECRET);
 const userInfoUri = getOrThrow(process.env.USER_INFO_URI);
-const redisUrl = getOrThrow(process.env.REDIS_URL);
-
-const redis = redisLib.createClient(redisUrl);
-
-function setRedis(idToken: string, userInfo: UserInfoResponse) {
-  return new Promise((resolve, reject) => {
-    const twoHours = 2 * 60 * 60;
-    redis.set(idToken, JSON.stringify(userInfo), 'EX', twoHours, (err, res) => {
-      if (err) reject(err);
-      else resolve(res);
-    });
-  });
-}
-
-redis.on('error', function(err) {
-  console.error('Error ' + err);
-  Sentry.captureException(err);
-});
 
 interface TokenResponse {
   access_token: string;
@@ -93,11 +73,7 @@ auth.post('/token', async (req, res) => {
     const tokenResponse = await exchangeForToken(code, redirectUri);
     const userInfo = await getUserInfo(tokenResponse.access_token);
 
-    if (process.env.NODE_ENV === 'production') {
-      await setRedis(tokenResponse.id_token, userInfo);
-    }
-
-    const username = userInfo.preferred_username;
+    const username = userInfo.sub;
 
     const { users } = await dbConnection;
     const user = await users.findOne({ username });
