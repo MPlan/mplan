@@ -21,17 +21,17 @@ function login() {
 }
 
 function logout() {
-  localStorage.removeItem('accessToken');
+  localStorage.removeItem('token');
   history.push('/login');
 }
 
 function loggedIn() {
   if (process.env.NODE_ENV !== 'production') return true;
 
-  const accessToken = localStorage.getItem('accessToken');
-  if (!accessToken) return false;
+  const token = localStorage.getItem('token');
+  if (!token) return false;
 
-  const decoded = jwtDecode(accessToken) as Model.AccessTokenPayload;
+  const decoded = jwtDecode(token) as Model.AccessTokenPayload;
   if (!decoded) return false;
 
   if (new Date().getTime() >= decoded.exp * 1000) return false;
@@ -39,27 +39,27 @@ function loggedIn() {
 }
 
 function userDisplayName() {
-  if (process.env.NODE_ENV !== 'production') return 'Local Test User';
+  if (process.env.NODE_ENV !== 'production') return process.env.TEST_USERNAME;
 
-  const accessToken = localStorage.getItem('accessToken');
-  if (!accessToken) return undefined;
+  const userInfoString = localStorage.getItem('userInfo');
+  if (!userInfoString) return undefined;
 
-  const decoded = jwtDecode(accessToken) as any;
+  const decoded = JSON.parse(userInfoString) as any;
   if (!decoded) return undefined;
 
-  return decoded.sub || undefined;
+  return decoded.preferred_username || undefined;
 }
 
 function username() {
   if (process.env.NODE_ENV !== 'production') return process.env.TEST_USERNAME;
 
-  const accessToken = localStorage.getItem('accessToken');
-  if (!accessToken) return undefined;
+  const userInfoString = localStorage.getItem('userInfo');
+  if (!userInfoString) return undefined;
 
-  const decoded = jwtDecode(accessToken) as Model.AccessTokenPayload;
+  const decoded = JSON.parse(userInfoString) as any;
   if (!decoded) return undefined;
 
-  return decoded.sub || undefined;
+  return decoded.preferred_username || undefined;
 }
 
 async function handleCallback() {
@@ -67,9 +67,10 @@ async function handleCallback() {
 
   const code = new URL(window.location.href).searchParams.get('code');
   if (!code) return;
-  const token = await fetchToken(code);
+  const { idToken, userInfo } = await fetchToken(code);
 
-  localStorage.setItem('accessToken', token);
+  localStorage.setItem('token', idToken);
+  localStorage.setItem('userInfo', JSON.stringify(userInfo));
 }
 
 async function fetchToken(code: string) {
@@ -84,8 +85,17 @@ async function fetchToken(code: string) {
     }),
   });
   const data = await result.json();
-  const token = data.access_token as string;
-  return token;
+  const accessToken = data.access_token as string;
+  const idToken = data.id_token as string;
+  const userInfo = data.user_info as {
+    sub: string;
+    name: string;
+    preferred_username: string;
+    given_name: string;
+    family_name: string;
+    email: string;
+  };
+  return { idToken, userInfo };
 }
 
 async function token() {
@@ -95,7 +105,7 @@ async function token() {
     await wait(500);
   }
 
-  const token = localStorage.getItem('accessToken');
+  const token = localStorage.getItem('token');
   if (!token) throw new Error('Could not get token after log in');
 
   return token;

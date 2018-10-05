@@ -6,9 +6,10 @@ import * as express from 'express';
 import * as path from 'path';
 import * as throng from 'throng';
 import * as compression from 'compression';
+import * as Sentry from '@sentry/node';
 
 import { api } from './api';
-import { log } from '../utilities/utilities';
+import { log, getOrThrow } from '../utilities/utilities';
 import { dbConnection } from './models/mongo';
 
 const app = express();
@@ -16,8 +17,9 @@ const app = express();
 // vars
 const port = parseInt(process.env.PORT || '8090');
 const webConcurrency = parseInt(process.env.WEB_CONCURRENCY || '1');
+const sentryDsn = getOrThrow(process.env.SENTRY_DSN);
 
-async function start(workerId: number) {
+async function start() {
   // require https in production
   if (process.env.NODE_ENV === 'production') {
     // https://stackoverflow.com/questions/7185074/heroku-nodejs-http-to-https-ssl-forced-redirect
@@ -28,11 +30,15 @@ async function start(workerId: number) {
       }
       next();
     });
+
+    Sentry.init({ dsn: sentryDsn });
   }
 
+  app.use(Sentry.Handlers.requestHandler());
   app.use('/api', api);
+  app.use(Sentry.Handlers.errorHandler());
   app.use(compression(), express.static(path.resolve(__dirname, '../web-root')));
-  app.use('*', compression(), (req, res) => {
+  app.use('*', compression(), (_, res) => {
     res.sendFile(path.resolve(__dirname, '../web-root/index.html'));
   });
 
