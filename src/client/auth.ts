@@ -13,7 +13,7 @@ function login() {
   }
 
   window.location.href = `${authorizeUrl}?${encode({
-    response_type: 'code id_token',
+    response_type: 'id_token',
     client_id: '7be756e5-fa58-4699-87b7-67acb051125f',
     redirect_uri: redirectUri,
     scope: 'openid profile',
