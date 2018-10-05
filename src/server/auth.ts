@@ -29,12 +29,15 @@ async function exchangeForToken(code: string, redirectUri: string) {
       username: clientId,
       password: clientSecret,
     },
-    data: {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    data: encode({
       grant_type: 'authorization_code',
       client_id: clientId,
       code: code,
       redirect_uri: redirectUri,
-    },
+    }),
   });
   return tokenResponse.data as TokenResponse;
 }
