@@ -15,7 +15,7 @@ import { Paragraph } from 'components/paragraph';
 import { DescriptionEditor } from 'routes/degree-manager/components/description-editor';
 import { CreditHourMinimum } from 'routes/degree-manager/components/credit-hour-minimum';
 import { PublishUnlist } from 'routes/degree-manager/components/publish-unlist';
-import { RequirementGroupList } from 'routes/degree-manager/components/course-group-summary';
+import { RequirementGroupList } from 'routes/degree-manager/components/requirement-group-list';
 import { DegreeSummary } from 'routes/degree-manager/components/degree-summary';
 import { PageNav } from 'routes/degree-manager/components/page-nav';
 
