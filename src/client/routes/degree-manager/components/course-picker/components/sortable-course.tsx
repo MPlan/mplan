@@ -7,15 +7,16 @@ import styled from 'styled-components';
 import { View } from 'components/view';
 import { SortableElement } from 'react-sortable-hoc';
 import { Text } from 'components/text';
-import { Button as _Button } from 'components/button';
 import { Fa as _Fa } from 'components/fa';
+import { Switch as _Switch } from 'components/switch';
+import { TransparentButton } from 'components/button';
 
 const { getSimpleName } = Model.Course;
 
 const Root = styled(View)`
   flex: 0 0 auto;
   flex-direction: row;
-  align-items: flex-end;
+  align-items: center;
   margin: ${styles.space(-1)};
   padding: ${styles.space(-1)};
   background-color: ${styles.white};
@@ -27,29 +28,18 @@ const Root = styled(View)`
     cursor: grabbing;
   }
 `;
-const Body = styled(View)`
-  flex: 1 1 auto;
-  margin-right: ${styles.space(-1)};
-`;
 const SimpleName = styled(Text)`
-  margin-bottom: ${styles.space(-1)};
   font-weight: bold;
+  margin-right: ${styles.space(0)};
+  min-width: 4rem;
 `;
-const SubtitleRow = styled(View)`
-  flex-direction: row;
-  justify-content: space-between;
+const Name = styled(Text)`
+  margin-right: auto;
 `;
-const Caption = styled(Text)`
-  font-size: ${styles.space(-1)};
-  text-transform: uppercase;
+const Switch = styled(_Switch)`
+  margin-left: ${styles.space(0)};
+  margin-right: 2rem;
 `;
-const Button = styled(_Button)`
-  min-width: 7rem;
-`;
-const Fa = styled(_Fa)`
-  margin-right: ${styles.space(-1)};
-`;
-
 export interface CourseProps {
   course: Model.Course.Model;
   onRemove: () => void;
@@ -72,16 +62,10 @@ class Course extends React.PureComponent<CourseProps, {}> {
     const { course, onRemove } = this.props;
     return (
       <Root>
-        <Body>
-          <SimpleName>{getSimpleName(course)}</SimpleName>
-          <SubtitleRow>
-            <Caption>{course.name}</Caption>
-            <Caption>{this.creditHourString}</Caption>
-          </SubtitleRow>
-        </Body>
-        <Button onClick={onRemove}>
-          <Fa icon="times" /> Remove
-        </Button>
+        <SimpleName>{getSimpleName(course)}</SimpleName>
+        <Name>{course.name}</Name>
+        <Switch />
+        <TransparentButton onClick={onRemove}>Remove</TransparentButton>
       </Root>
     );
   }

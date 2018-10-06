@@ -55,9 +55,9 @@ interface SwitchProps extends React.HTMLProps<HTMLInputElement> {
 
 export class Switch extends React.Component<SwitchProps, {}> {
   render() {
-    const { innerRef, ref, ...restOfProps } = this.props;
+    const { innerRef, ref, className, ...restOfProps } = this.props;
     return (
-      <Root>
+      <Root className={className}>
         <SwitchInput {...restOfProps} innerRef={innerRef} type="checkbox" />
         <Slider />
       </Root>

@@ -7,10 +7,15 @@ import { memoizeLast } from 'utilities/memoize-last';
 import { SortEnd } from 'react-sortable-hoc';
 import { Modal } from 'components/modal';
 import { View, ViewProps } from 'components/view';
+import { Text } from 'components/text';
+import { Paragraph } from 'components/paragraph';
 import { Button } from 'components/button';
 import { Empty } from 'components/empty';
 import { Caption as _Caption } from 'components/caption';
 import { Autosuggest } from 'components/autosuggest';
+import { IconButton as _IconButton } from 'components/icon-button';
+import { Fa } from 'components/fa';
+import { createInfoModal } from 'components/info-modal';
 import { SortableCourseList } from './components/sortable-course-list';
 import { AutosuggestCourse } from './components/autosuggest-course';
 
@@ -22,17 +27,9 @@ interface ContentProps extends ViewProps {
 const Content = styled<ContentProps>(View)`
   flex: 1 1 auto;
   overflow: hidden;
-  flex-direction: row;
   & * {
     ${props => (props.sorting ? 'user-select: none !important' : '')};
   }
-`;
-const Spacer = styled.div`
-  flex: 0 0 auto;
-  width: ${styles.space(0)};
-`;
-const Column = styled(View)`
-  flex: 1 1 calc(50% - 0.5rem);
 `;
 const Actions = styled(View)`
   flex: 0 0 auto;
@@ -43,9 +40,27 @@ const Actions = styled(View)`
   }
   margin-top: ${styles.space(-1)};
 `;
-const Caption = styled(_Caption)`
-  margin-top: ${styles.space(-1)};
-  border-top: 1px solid ${styles.grayLighter};
+const RowHeader = styled(View)`
+  flex-direction: row;
+  flex: 0 0 auto;
+  border-bottom: 1px solid ${styles.grayLighter};
+  margin: 0 ${styles.space(0)};
+  margin-top: ${styles.space(1)};
+  align-items: flex-end;
+  padding-bottom: ${styles.space(-1)};
+`;
+const CourseNameCell = styled(Text)`
+  text-transform: uppercase;
+`;
+const DefaultCourse = styled(Text)`
+  margin-left: auto;
+  text-transform: uppercase;
+  text-align: right;
+  margin-right: ${styles.space(-1)};
+`;
+const IconButton = styled(_IconButton)`
+  margin-right: 7rem;
+  align-self: center;
 `;
 
 export interface CoursePickerProps {
@@ -67,6 +82,8 @@ interface CoursePickerState {
 }
 
 export class CoursePicker extends React.PureComponent<CoursePickerProps, CoursePickerState> {
+  infoModal = createInfoModal();
+
   constructor(props: CoursePickerProps) {
     super(props);
     this.state = {
@@ -116,20 +133,18 @@ export class CoursePicker extends React.PureComponent<CoursePickerProps, CourseP
       courses,
       searchResults,
       searchResultsCount,
-      query,
-      onAdd,
       onRemove,
-      onRearrange,
       onClose,
       onSearch,
     } = this.props;
 
     const { sorting } = this.state;
+    const InfoModal = this.infoModal.Modal;
 
     return (
-      <Modal title={title} size="extra-large" open={open}>
-        <Content sorting={sorting}>
-          <Column>
+      <>
+        <Modal title={title} size="large" open={open}>
+          <Content sorting={sorting}>
             <Autosuggest
               items={searchResults}
               getDisplayText={getSimpleName}
@@ -141,25 +156,59 @@ export class CoursePicker extends React.PureComponent<CoursePickerProps, CourseP
               totalCount={searchResultsCount}
             />
             {courses.length > 0 ? (
-              <SortableCourseList
-                onSortStart={this.handleSortStart}
-                onSortEnd={this.handleSortEnd}
-                courses={courses}
-                onRemove={onRemove}
-                helperClass="sortableHelper"
-                lockAxis="y"
-              />
+              <>
+                <RowHeader>
+                  <CourseNameCell>Course name</CourseNameCell>
+                  <DefaultCourse>
+                    Added by
+                    <br />
+                    default
+                  </DefaultCourse>
+                  <IconButton onClick={this.infoModal.open}>
+                    <Fa icon="questionCircle" />
+                  </IconButton>
+                </RowHeader>
+                <SortableCourseList
+                  onSortStart={this.handleSortStart}
+                  onSortEnd={this.handleSortEnd}
+                  courses={courses}
+                  onRemove={onRemove}
+                  helperClass="sortableHelper"
+                  lockAxis="y"
+                />
+              </>
             ) : (
               <Empty title="Nothing here yet." subtitle="Search for a course above to begin." />
             )}
-          </Column>
-          <Spacer />
-          <Column />
-        </Content>
-        <Actions>
-          <Button onClick={onClose}>Done</Button>
-        </Actions>
-      </Modal>
+          </Content>
+          <Actions>
+            <Button onClick={onClose}>Done</Button>
+          </Actions>
+        </Modal>
+        <InfoModal title="About Default courses">
+          <Paragraph>
+            Default courses are the pre-populated courses that appear to students in this course
+            group.
+          </Paragraph>
+          <Paragraph>
+            A student can choose to add to, remove from, or replace any of the default courses.
+            Default courses can be thought of as the recommended courses a student should take to
+            satisfy the requirement group.
+          </Paragraph>
+          <Paragraph>
+            Certain requirement groups such as "Written and Oral Communication" are ideal for
+            default courses because almost every student will take COMP 105 and COMP 270.
+          </Paragraph>
+          <Paragraph>
+            Default courses aren't applicable to other requirement groups as such "Technical
+            Electives" because there isn't a preset list of courses that every student should take.
+          </Paragraph>
+          <Text>
+            The general recommendation is to set preset courses <strong>only</strong> if the
+            majority of students will take these courses to satisfy the requirement.
+          </Text>
+        </InfoModal>
+      </>
     );
   }
 }
