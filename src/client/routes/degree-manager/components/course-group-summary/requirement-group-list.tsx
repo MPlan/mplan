@@ -16,8 +16,8 @@ import { DeleteConfirmationModal } from 'components/delete-confirmation-modal';
 import { DegreeItem } from 'routes/degree-manager/components/degree-item';
 import { DescriptionAction } from 'routes/degree-manager/components/description-action';
 import { CreateGroupModal } from './create-group-modal';
-import { RequirementGroup } from './course-group';
-import { RearrangeCourseGroups } from './rearrange-course-groups';
+import { RequirementGroup } from './requirement-group';
+import { RearrangeCourseGroups } from './rearrange-groups';
 
 const Columns = styled(View)`
   flex-direction: row;
@@ -52,7 +52,7 @@ const Link = styled(_Link)`
   }
 `;
 
-export interface CourseGroupViewModel {
+export interface GroupViewModel {
   id: string;
   name: string;
   creditMinimum: number;
@@ -61,9 +61,9 @@ export interface CourseGroupViewModel {
 
 interface RequirementGroupListProps {
   masteredDegreeId: string;
-  groupsColumnOne: CourseGroupViewModel[];
-  groupsColumnTwo: CourseGroupViewModel[];
-  groupsColumnThree: CourseGroupViewModel[];
+  groupsColumnOne: GroupViewModel[];
+  groupsColumnTwo: GroupViewModel[];
+  groupsColumnThree: GroupViewModel[];
   onDelete: (groupId: string) => void;
   onGroupClick: (groupId: string) => void;
   onCreateGroup: (groupName: string, column: number) => void;

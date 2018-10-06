@@ -1,6 +1,6 @@
 import * as Model from 'models';
 import { history } from 'client/history';
-import { RequirementGroupList, CourseGroupViewModel } from './course-group-summary';
+import { RequirementGroupList, GroupViewModel } from './requirement-group-list';
 
 interface RequirementGroupListContainerProps {
   masteredDegreeId: string;
@@ -21,13 +21,13 @@ const Container = Model.store.connect({
       masteredDegreeId: ownProps.masteredDegreeId,
       groupsColumnOne: Model.MasteredDegree.getCourseGroupsColumnOne(
         masteredDegree,
-      ) as CourseGroupViewModel[],
+      ) as GroupViewModel[],
       groupsColumnTwo: Model.MasteredDegree.getCourseGroupsColumnTwo(
         masteredDegree,
-      ) as CourseGroupViewModel[],
+      ) as GroupViewModel[],
       groupsColumnThree: Model.MasteredDegree.getCourseGroupsColumnThree(
         masteredDegree,
-      ) as CourseGroupViewModel[],
+      ) as GroupViewModel[],
     };
   },
   mapDispatchToProps: (dispatch, ownProps: RequirementGroupListContainerProps) => ({
