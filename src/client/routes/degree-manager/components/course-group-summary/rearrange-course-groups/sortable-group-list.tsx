@@ -1,10 +1,10 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { CourseGroupViewModel } from './rearrange-course-groups';
+import { GroupViewModel } from './rearrange-groups';
 
 import { SortableContainer } from 'react-sortable-hoc';
 import { View } from 'components/view';
-import { SortableGroup } from './sortable-course-group';
+import { SortableGroup } from './sortable-group';
 
 const Root = styled(View)`
   & > * {
@@ -13,7 +13,7 @@ const Root = styled(View)`
 `;
 
 interface SortableGroupListProps {
-  groups: CourseGroupViewModel[];
+  groups: GroupViewModel[];
   onLeft: (groupId: string) => void;
   onRight: (groupId: string) => void;
 }

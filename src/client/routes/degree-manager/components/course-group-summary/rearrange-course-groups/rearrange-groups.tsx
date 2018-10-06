@@ -6,7 +6,7 @@ import { Modal } from 'components/modal';
 import { View } from 'components/view';
 import { Text } from 'components/text';
 import { Button } from 'components/button';
-import { SortableCourseGroupList } from './sortable-course-group-list';
+import { SortableCourseGroupList } from './sortable-group-list';
 import { SortEnd } from 'react-sortable-hoc';
 
 const Columns = styled(View)`
@@ -25,16 +25,16 @@ const Actions = styled(View)`
   justify-content: flex-end;
 `;
 
-export interface CourseGroupViewModel {
+export interface GroupViewModel {
   id: string;
   name: string;
   column: number;
 }
 
 interface RearrangeGroupsProps {
-  courseGroupsColumnOne: CourseGroupViewModel[];
-  courseGroupsColumnTwo: CourseGroupViewModel[];
-  courseGroupsColumnThree: CourseGroupViewModel[];
+  courseGroupsColumnOne: GroupViewModel[];
+  courseGroupsColumnTwo: GroupViewModel[];
+  courseGroupsColumnThree: GroupViewModel[];
   open: boolean;
   onClose: () => void;
   onRearrange: (fromColumn: number, toColumn: number, oldIndex: number, newIndex: number) => void;
