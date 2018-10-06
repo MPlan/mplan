@@ -22,6 +22,7 @@ import { DescriptionEditor } from 'routes/degree-manager/components/description-
 import { PageNav } from 'routes/degree-manager/components/page-nav';
 import { CourseList } from 'routes/degree-manager/components/course-list';
 import { CoursePicker } from 'routes/degree-manager/components/course-picker';
+import { RequirementGroupSummary } from 'routes/degree-manager/components/requirement-group-summary';
 
 const Root = styled(View)`
   flex: 1 1 auto;
@@ -65,11 +66,7 @@ const TitleInput = styled(Input)`
 const Fa = styled(_Fa)`
   margin-right: ${styles.space(-1)};
 `;
-const ActionSubtitle = styled(Text)`
-  text-transform: uppercase;
-  font-size: ${styles.space(-1)};
-  margin-top: ${styles.space(-1)};
-`;
+
 const DescriptionSubheading = styled(Text)`
   font-weight: bold;
   margin-bottom: ${styles.space(-1)};
@@ -86,6 +83,8 @@ const Status = styled(Text)`
 `;
 
 interface RequirementGroupDetailProps {
+  masteredDegreeId: string;
+  groupId: string;
   name: string;
   descriptionHtml: string;
   creditMinimum: number;
@@ -149,6 +148,8 @@ export class RequirementGroupDetail extends React.Component<
 
   render() {
     const {
+      masteredDegreeId,
+      groupId,
       name,
       creditMinimum,
       creditMaximum,
@@ -285,13 +286,13 @@ export class RequirementGroupDetail extends React.Component<
                   </DescriptionAction>
                 )}
               </DegreeItem>
+              <RequirementGroupSummary masteredDegreeId={masteredDegreeId} groupId={groupId} />
               <DegreeItem title="Summary">
                 <DescriptionAction description={<>test</>}>
                   <PrimaryButton>
                     <Fa icon="angleLeft" />
                     Back to degree
                   </PrimaryButton>
-                  <ActionSubtitle>Your changes save automatically.</ActionSubtitle>
                 </DescriptionAction>
               </DegreeItem>
             </Content>

@@ -150,7 +150,7 @@ export class CoursePicker extends React.PureComponent<CoursePickerProps, CourseP
                 <RowHeader>
                   <CourseNameCell>Course name</CourseNameCell>
                   <DefaultCourse>
-                    Added by
+                    Add by
                     <br />
                     default
                   </DefaultCourse>

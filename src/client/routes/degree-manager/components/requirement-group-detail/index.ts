@@ -17,6 +17,8 @@ const Container = Model.store.connect({
     if (!masteredDegree) {
       history.replace('/degree-manager');
       return {
+        masteredDegreeId: ownProps.masteredDegreeId,
+        groupId: ownProps.groupId,
         name: '',
         descriptionHtml: '',
         creditMinimum: 0,
@@ -31,6 +33,8 @@ const Container = Model.store.connect({
     if (!group) {
       history.replace(`/degree-manager/${masteredDegree.id}`);
       return {
+        masteredDegreeId: ownProps.masteredDegreeId,
+        groupId: ownProps.groupId,
         name: '',
         descriptionHtml: '',
         creditMinimum: 0,
@@ -42,6 +46,8 @@ const Container = Model.store.connect({
     }
 
     return {
+      masteredDegreeId: ownProps.masteredDegreeId,
+      groupId: ownProps.groupId,
       name: group.name,
       descriptionHtml: group.descriptionHtml,
       creditMinimum: group.creditMinimum,
