@@ -87,11 +87,11 @@ export class DegreeEditor extends React.PureComponent<DegreeEditorProps, DegreeE
     );
   };
 
-  renderCourseGroup = (
-    props: RouteComponentProps<{ masteredDegreeId: string; courseGroupId: string }>,
+  renderGroup = (
+    props: RouteComponentProps<{ masteredDegreeId: string; groupId: string }>,
   ) => {
     const masteredDegreeId = get(props, _ => _.match.params.masteredDegreeId);
-    const groupId = get(props, _ => _.match.params.courseGroupId);
+    const groupId = get(props, _ => _.match.params.groupId);
 
     const active = !!props.match;
     if (active) {
@@ -125,8 +125,8 @@ export class DegreeEditor extends React.PureComponent<DegreeEditorProps, DegreeE
           <Route path="/degree-manager" children={this.renderDegreeManager} />
           <Route path="/degree-manager/:masteredDegreeId" children={this.renderDegreeDetail} />
           <Route
-            path="/degree-manager/:masteredDegreeId/groups/:courseGroupId"
-            children={this.renderCourseGroup}
+            path="/degree-manager/:masteredDegreeId/groups/:groupId"
+            children={this.renderGroup}
           />
           <Route
             path="/degree-manager/:masteredDegreeId/preview"

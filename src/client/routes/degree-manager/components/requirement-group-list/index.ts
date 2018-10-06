@@ -19,13 +19,13 @@ const Container = Model.store.connect({
 
     return {
       masteredDegreeId: ownProps.masteredDegreeId,
-      groupsColumnOne: Model.MasteredDegree.getCourseGroupsColumnOne(
+      groupsColumnOne: Model.MasteredDegree.getGroupsColumnOne(
         masteredDegree,
       ) as GroupViewModel[],
-      groupsColumnTwo: Model.MasteredDegree.getCourseGroupsColumnTwo(
+      groupsColumnTwo: Model.MasteredDegree.getGroupsColumnTwo(
         masteredDegree,
       ) as GroupViewModel[],
-      groupsColumnThree: Model.MasteredDegree.getCourseGroupsColumnThree(
+      groupsColumnThree: Model.MasteredDegree.getGroupsColumnThree(
         masteredDegree,
       ) as GroupViewModel[],
     };
@@ -37,13 +37,13 @@ const Container = Model.store.connect({
     },
     onCreateGroup: (groupName: string, column: number) => {
       dispatch(state => {
-        const createCourseGroup = (masteredDegree: Model.MasteredDegree.Model) =>
+        const createGroup = (masteredDegree: Model.MasteredDegree.Model) =>
           Model.MasteredDegree.createNewGroup(masteredDegree, groupName, column);
 
         const newMasteredDegrees = Model.MasteredDegrees.updatedMasteredDegree(
           state.masteredDegrees,
           ownProps.masteredDegreeId,
-          createCourseGroup,
+          createGroup,
         );
 
         return {

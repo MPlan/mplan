@@ -18,7 +18,7 @@ export { MasteredDegree as Model };
 
 const selectRequirementGroups = (self: MasteredDegree) => self.requirementGroups;
 
-export function getCourseGroup(self: MasteredDegree, groupId: string) {
+export function getGroup(self: MasteredDegree, groupId: string) {
   return self.requirementGroups[groupId] as RequirementGroup.Model | undefined;
 }
 
@@ -34,7 +34,7 @@ export const getCourseGroups = createSelector(selectRequirementGroups, requireme
     .sort((a, b) => a.column * 1000 + a.position - (b.column * 1000 + b.position));
 });
 
-export const getCourseGroupsColumnOne = createSelector(
+export const getGroupsColumnOne = createSelector(
   selectRequirementGroups,
   requirementGroups => {
     return Object.values(requirementGroups)
@@ -50,7 +50,7 @@ export const getCourseGroupsColumnOne = createSelector(
   },
 );
 
-export const getCourseGroupsColumnTwo = createSelector(
+export const getGroupsColumnTwo = createSelector(
   selectRequirementGroups,
   requirementGroups => {
     return Object.values(requirementGroups)
@@ -66,7 +66,7 @@ export const getCourseGroupsColumnTwo = createSelector(
   },
 );
 
-export const getCourseGroupsColumnThree = createSelector(
+export const getGroupsColumnThree = createSelector(
   selectRequirementGroups,
   requirementGroups => {
     return Object.values(requirementGroups)
@@ -190,7 +190,7 @@ export function changeMinimumCredits(
   };
 }
 
-export function rearrangeCourseGroups(
+export function rearrangeGroups(
   self: MasteredDegree,
   _fromColumn: number,
   _toColumn: number,
@@ -200,9 +200,9 @@ export function rearrangeCourseGroups(
   const fromColumn = _fromColumn - 1;
   const toColumn = _toColumn - 1;
 
-  const columnOne = getCourseGroupsColumnOne(self);
-  const columnTwo = getCourseGroupsColumnTwo(self);
-  const columnThree = getCourseGroupsColumnThree(self);
+  const columnOne = getGroupsColumnOne(self);
+  const columnTwo = getGroupsColumnTwo(self);
+  const columnThree = getGroupsColumnThree(self);
 
   const columns = [columnOne, columnTwo, columnThree];
   const group = columns[fromColumn][oldIndex];

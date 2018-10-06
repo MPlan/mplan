@@ -2,18 +2,18 @@ import * as Model from 'models';
 
 import { RearrangeGroups, GroupViewModel } from './rearrange-groups';
 
-interface RearrangeCourseGroupsContainsProps {
+interface RearrangeGroupsContainsProps {
   masteredDegreeId: string;
   open: boolean;
   onClose: () => void;
 }
 
 const Container = Model.store.connect({
-  mapDispatchToProps: (dispatch, ownProps: RearrangeCourseGroupsContainsProps) => ({
+  mapDispatchToProps: (dispatch, ownProps: RearrangeGroupsContainsProps) => ({
     onRearrange: (fromColumn: number, toColumn: number, oldIndex: number, newIndex: number) => {
       dispatch(state => {
-        const rearrangeCourseGroups = (masteredDegree: Model.MasteredDegree.Model) =>
-          Model.MasteredDegree.rearrangeCourseGroups(
+        const rearrangeGroups = (masteredDegree: Model.MasteredDegree.Model) =>
+          Model.MasteredDegree.rearrangeGroups(
             masteredDegree,
             fromColumn,
             toColumn,
@@ -26,7 +26,7 @@ const Container = Model.store.connect({
           masteredDegrees: Model.MasteredDegrees.updatedMasteredDegree(
             state.masteredDegrees,
             ownProps.masteredDegreeId,
-            rearrangeCourseGroups,
+            rearrangeGroups,
           ),
         };
       });
@@ -34,7 +34,7 @@ const Container = Model.store.connect({
   }),
   mapStateToProps: (
     state,
-    { masteredDegreeId, ...restOfOwnProps }: RearrangeCourseGroupsContainsProps,
+    { masteredDegreeId, ...restOfOwnProps }: RearrangeGroupsContainsProps,
   ) => {
     const masteredDegree = Model.MasteredDegrees.getMasteredDegree(
       state.masteredDegrees,
@@ -44,29 +44,29 @@ const Container = Model.store.connect({
     if (!masteredDegree) {
       return {
         ...restOfOwnProps,
-        courseGroupsColumnOne: [],
-        courseGroupsColumnTwo: [],
-        courseGroupsColumnThree: [],
+        groupsColumnOne: [],
+        groupsColumnTwo: [],
+        groupsColumnThree: [],
       };
     }
 
-    const courseGroupsColumnOne = Model.MasteredDegree.getCourseGroupsColumnOne(
+    const groupsColumnOne = Model.MasteredDegree.getGroupsColumnOne(
       masteredDegree,
     ) as GroupViewModel[];
-    const courseGroupsColumnTwo = Model.MasteredDegree.getCourseGroupsColumnTwo(
+    const groupsColumnTwo = Model.MasteredDegree.getGroupsColumnTwo(
       masteredDegree,
     ) as GroupViewModel[];
-    const courseGroupsColumnThree = Model.MasteredDegree.getCourseGroupsColumnThree(
+    const groupsColumnThree = Model.MasteredDegree.getGroupsColumnThree(
       masteredDegree,
     ) as GroupViewModel[];
 
     return {
       ...restOfOwnProps,
-      courseGroupsColumnOne,
-      courseGroupsColumnTwo,
-      courseGroupsColumnThree,
+      groupsColumnOne,
+      groupsColumnTwo,
+      groupsColumnThree,
     };
   },
 })(RearrangeGroups);
 
-export { Container as RearrangeCourseGroups };
+export { Container as RearrangeGroups };

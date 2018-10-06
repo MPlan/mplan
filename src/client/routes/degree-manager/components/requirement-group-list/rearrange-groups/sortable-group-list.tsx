@@ -38,6 +38,6 @@ class GroupList extends React.PureComponent<SortableGroupListProps, {}> {
   }
 }
 
-export const SortableCourseGroupList = SortableContainer<SortableGroupListProps>(props => (
+export const SortableGroupList = SortableContainer<SortableGroupListProps>(props => (
   <GroupList {...props} />
 ));

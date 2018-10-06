@@ -2,13 +2,13 @@ import * as Model from 'models';
 import { RequirementGroupDetail } from './requirement-group-detail';
 import { history } from 'client/history';
 
-interface CourseGroupDetailContainerProps {
+interface RequirementGroupDetailContainerProps {
   groupId: string;
   masteredDegreeId: string;
 }
 
 const Container = Model.store.connect({
-  mapStateToProps: (state, ownProps: CourseGroupDetailContainerProps) => {
+  mapStateToProps: (state, ownProps: RequirementGroupDetailContainerProps) => {
     const masteredDegree = Model.MasteredDegrees.getMasteredDegree(
       state.masteredDegrees,
       ownProps.masteredDegreeId,
@@ -27,7 +27,7 @@ const Container = Model.store.connect({
       };
     }
 
-    const group = Model.MasteredDegree.getCourseGroup(masteredDegree, ownProps.groupId);
+    const group = Model.MasteredDegree.getGroup(masteredDegree, ownProps.groupId);
     if (!group) {
       history.replace(`/degree-manager/${masteredDegree.id}`);
       return {
@@ -51,7 +51,7 @@ const Container = Model.store.connect({
       courseValidationEnabled: group.courseValidationEnabled,
     };
   },
-  mapDispatchToProps: (dispatch, ownProps: CourseGroupDetailContainerProps) => ({
+  mapDispatchToProps: (dispatch, ownProps: RequirementGroupDetailContainerProps) => ({
     onNameChange: (name: string) => {
       dispatch(state => {
         const changeName = (masteredDegree: Model.MasteredDegree.Model) =>

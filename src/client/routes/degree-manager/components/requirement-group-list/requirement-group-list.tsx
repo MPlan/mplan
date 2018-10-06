@@ -17,7 +17,7 @@ import { DegreeItem } from 'routes/degree-manager/components/degree-item';
 import { DescriptionAction } from 'routes/degree-manager/components/description-action';
 import { CreateGroupModal } from './create-group-modal';
 import { RequirementGroup } from './requirement-group';
-import { RearrangeCourseGroups } from './rearrange-groups';
+import { RearrangeGroups } from './rearrange-groups';
 
 const Columns = styled(View)`
   flex-direction: row;
@@ -305,7 +305,7 @@ export class RequirementGroupList extends React.PureComponent<
           onClose={this.handleCreateGroupClose}
           onCreateGroup={onCreateGroup}
         />
-        <RearrangeCourseGroups
+        <RearrangeGroups
           open={rearrangeModalOpen}
           masteredDegreeId={masteredDegreeId}
           onClose={this.handleRearrangeClose}

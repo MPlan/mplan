@@ -30,7 +30,7 @@ function convertPathToString(path: string, store: Model.App.Model) {
 }
 
 const createGroupNameLookup = memoizeAll(
-  (...requirementGroups: Array<{ [courseGroupId: string]: Model.RequirementGroup.Model }>) => {
+  (...requirementGroups: Array<{ [groupId: string]: Model.RequirementGroup.Model }>) => {
     const nameTuples = flatten(requirementGroups.map(groupData => Object.values(groupData))).map(
       group => ({ id: group.id, name: group.name }),
     );
