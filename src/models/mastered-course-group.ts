@@ -7,6 +7,7 @@ interface MasteredCourseGroup {
   id: string;
   name: string;
   descriptionHtml: string;
+  courseValidationEnabled: boolean;
   courses: { [catalogId: string]: { position: number; preset: boolean } };
   creditMinimum: number;
   creditMaximum: number;

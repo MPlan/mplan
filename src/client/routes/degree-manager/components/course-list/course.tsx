@@ -11,11 +11,10 @@ const { getSimpleName } = Model.Course;
 
 const Root = styled(View)`
   flex: 0 0 auto;
-  margin-right: ${styles.space(-1)};
   &:hover {
     background-color: ${styles.whiteTer};
   }
-  margin-bottom: ${styles.space(-1)};
+  padding: ${styles.space(-1)};
 `;
 const SimpleName = styled(Text)`
   margin-bottom: ${styles.space(-1)};
@@ -32,6 +31,7 @@ const Caption = styled(Text)`
 
 export interface CourseProps {
   course: Model.Course.Model;
+  preset: boolean;
 }
 
 export class Course extends React.PureComponent<CourseProps, {}> {
@@ -48,13 +48,15 @@ export class Course extends React.PureComponent<CourseProps, {}> {
   }
 
   render() {
-    const { course } = this.props;
+    const { course, preset } = this.props;
     return (
       <Root>
         <SimpleName>{getSimpleName(course)}</SimpleName>
         <SubtitleRow>
-          <Caption>{course.name}</Caption>
-          <Caption>{this.creditHourString}</Caption>
+          <Caption>
+            {course.name} | {this.creditHourString}
+          </Caption>
+          <Caption>{preset ? 'Default' : ''}</Caption>
         </SubtitleRow>
       </Root>
     );

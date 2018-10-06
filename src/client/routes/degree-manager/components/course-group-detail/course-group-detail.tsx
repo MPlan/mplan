@@ -14,6 +14,7 @@ import { PrimaryButton } from 'components/button';
 import { Fa as _Fa } from 'components/fa';
 import { Link } from 'components/link';
 import { CreditHourEditor } from 'components/credit-hour-editor';
+import { Switch } from 'components/switch';
 
 import { DegreeItem } from 'routes/degree-manager/components/degree-item';
 import { DescriptionAction } from 'routes/degree-manager/components/description-action';
@@ -77,8 +78,11 @@ const Spacer = styled.div`
   flex: 0 0 auto;
   height: ${styles.space(1)};
 `;
-const Column = styled(View)`
-  flex: 1 1 auto;
+const ActionContainer = styled(View)`
+  flex-direction: row;
+`;
+const Status = styled(Text)`
+  margin-left: ${styles.space(0)};
 `;
 
 interface CourseGroupDetailProps {
@@ -86,6 +90,7 @@ interface CourseGroupDetailProps {
   descriptionHtml: string;
   creditMinimum: number;
   creditMaximum: number;
+  courseValidationEnabled: boolean;
 
   catalogIds: string[];
   presetCourses: { [catalogId: string]: true | undefined };
@@ -100,6 +105,8 @@ interface CourseGroupDetailProps {
   onCreditMaximumChange: (maximumCredits: number) => void;
   onBackClick: () => void;
   onPreviewClick: () => void;
+
+  onToggleCourseValidation: () => void;
 }
 interface CourseGroupDetailState {
   editingName: boolean;
@@ -147,6 +154,7 @@ export class CourseGroupDetail extends React.Component<
       creditMaximum,
       descriptionHtml,
       presetCourses,
+      courseValidationEnabled,
       onBackClick,
       onPreviewClick,
       onDescriptionChange,
@@ -157,6 +165,7 @@ export class CourseGroupDetail extends React.Component<
       onRemoveCourse,
       onRearrangeCourses,
       onTogglePreset,
+      onToggleCourseValidation,
     } = this.props;
 
     const { editingName, coursePickerOpen } = this.state;
@@ -220,26 +229,56 @@ export class CourseGroupDetail extends React.Component<
                   description={
                     <>
                       <DescriptionSubheading>Credit hour maximum</DescriptionSubheading>
-                      <Paragraph>The credit hour minmum.</Paragraph>
+                      <Paragraph>The credit hour minimum.</Paragraph>
                     </>
                   }
                 >
                   <CreditHourEditor creditHours={creditMaximum} onChange={onCreditMaximumChange} />
                 </DescriptionAction>
               </DegreeItem>
-              <DegreeItem title="Courses">
+              <DegreeItem title="Course validation">
                 <DescriptionAction
                   description={
                     <>
-                      <Text>test</Text>
+                      <Paragraph>
+                        Course validation helps students check whether or not a course added to this
+                        group will be allowed. When course validation is turned on, students will
+                        receive non-dismissable warnings when they add courses that are not defined
+                        here.
+                      </Paragraph>
+                      <Paragraph>
+                        <strong>Disclaimer:</strong> though this feature helps validate some
+                        courses, it is not meant to be thorough.{' '}
+                        <em>MPlan is not a degree audit.</em>
+                      </Paragraph>
                     </>
                   }
                 >
-                  <PrimaryButton onClick={this.handleCoursePickerOpen}>
-                    <Fa icon="pencil" /> Edit
-                  </PrimaryButton>
-                  <CourseList catalogIds={catalogIds} />
+                  <ActionContainer>
+                    <Switch checked={courseValidationEnabled} onChange={onToggleCourseValidation} />
+                    <Status>
+                      Current Status:
+                      <br />
+                      {courseValidationEnabled ? (
+                        <strong>Enabled</strong>
+                      ) : (
+                        <strong>Disabled</strong>
+                      )}
+                      <strong />
+                    </Status>
+                  </ActionContainer>
                 </DescriptionAction>
+                {courseValidationEnabled && (
+                  <DescriptionAction
+                    description={
+                      <CourseList presetCourses={presetCourses} catalogIds={catalogIds} />
+                    }
+                  >
+                    <PrimaryButton onClick={this.handleCoursePickerOpen}>
+                      <Fa icon="pencil" /> Edit
+                    </PrimaryButton>
+                  </DescriptionAction>
+                )}
               </DegreeItem>
               <DegreeItem title="Summary">
                 <DescriptionAction description={<>test</>}>

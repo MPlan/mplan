@@ -23,6 +23,7 @@ const Container = Model.store.connect({
         creditMaximum: 0,
         catalogIds: [],
         presetCourses: {},
+        courseValidationEnabled: false,
       };
     }
 
@@ -36,6 +37,7 @@ const Container = Model.store.connect({
         creditMaximum: 0,
         catalogIds: [],
         presetCourses: {},
+        courseValidationEnabled: false,
       };
     }
 
@@ -46,6 +48,7 @@ const Container = Model.store.connect({
       creditMaximum: group.creditMaximum,
       catalogIds: Model.MasteredCourseGroup.getCatalogIds(group),
       presetCourses: Model.MasteredCourseGroup.getPresetCourses(group),
+      courseValidationEnabled: group.courseValidationEnabled,
     };
   },
   mapDispatchToProps: (dispatch, ownProps: CourseGroupDetailContainerProps) => ({
@@ -183,12 +186,31 @@ const Container = Model.store.connect({
       });
     },
     onTogglePreset: (catalogId: string) => {
-      console.log('toggle', catalogId);
       dispatch(state => {
         const updateGroup = (masteredDegree: Model.MasteredDegree.Model) =>
           Model.MasteredDegree.updateGroup(masteredDegree, ownProps.groupId, group =>
             Model.MasteredCourseGroup.togglePreset(group, catalogId),
           );
+
+        const newMasteredDegrees = Model.MasteredDegrees.updatedMasteredDegree(
+          state.masteredDegrees,
+          ownProps.masteredDegreeId,
+          updateGroup,
+        );
+
+        return {
+          ...state,
+          masteredDegrees: newMasteredDegrees,
+        };
+      });
+    },
+    onToggleCourseValidation: () => {
+      dispatch(state => {
+        const updateGroup = (masteredDegree: Model.MasteredDegree.Model) =>
+          Model.MasteredDegree.updateGroup(masteredDegree, ownProps.groupId, group => ({
+            ...group,
+            courseValidationEnabled: !group.courseValidationEnabled,
+          }));
 
         const newMasteredDegrees = Model.MasteredDegrees.updatedMasteredDegree(
           state.masteredDegrees,
