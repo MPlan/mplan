@@ -88,8 +88,10 @@ interface CourseGroupDetailProps {
   creditMaximum: number;
 
   catalogIds: string[];
+  presetCourses: { [catalogId: string]: true | undefined };
   onAddCourse: (catalogId: string) => void;
   onRemoveCourse: (catalogId: string) => void;
+  onTogglePreset: (catalogId: string) => void;
   onRearrangeCourses: (oldIndex: number, newIndex: number) => void;
 
   onNameChange: (name: string) => void;
@@ -144,6 +146,7 @@ export class CourseGroupDetail extends React.Component<
       creditMinimum,
       creditMaximum,
       descriptionHtml,
+      presetCourses,
       onBackClick,
       onPreviewClick,
       onDescriptionChange,
@@ -153,6 +156,7 @@ export class CourseGroupDetail extends React.Component<
       onAddCourse,
       onRemoveCourse,
       onRearrangeCourses,
+      onTogglePreset,
     } = this.props;
 
     const { editingName, coursePickerOpen } = this.state;
@@ -252,11 +256,13 @@ export class CourseGroupDetail extends React.Component<
         <CoursePicker
           title={`Editing default courses for ${name}…`}
           courseIds={catalogIds}
+          presetCourses={presetCourses}
           onAdd={onAddCourse}
           onRemove={onRemoveCourse}
           open={coursePickerOpen}
           onClose={this.handleCoursePickerClose}
           onRearrange={onRearrangeCourses}
+          onTogglePreset={onTogglePreset}
         />
       </>
     );

@@ -26,6 +26,7 @@ const Root = styled(View)`
   }
   &:active {
     cursor: grabbing;
+    box-shadow: ${styles.grabbableShadowActive};
   }
 `;
 const SimpleName = styled(Text)`
@@ -42,7 +43,9 @@ const Switch = styled(_Switch)`
 `;
 export interface CourseProps {
   course: Model.Course.Model;
+  preset: boolean;
   onRemove: () => void;
+  onTogglePreset: () => void;
 }
 
 class Course extends React.PureComponent<CourseProps, {}> {
@@ -59,12 +62,12 @@ class Course extends React.PureComponent<CourseProps, {}> {
   }
 
   render() {
-    const { course, onRemove } = this.props;
+    const { course, onRemove, preset, onTogglePreset } = this.props;
     return (
       <Root>
         <SimpleName>{getSimpleName(course)}</SimpleName>
         <Name>{course.name}</Name>
-        <Switch />
+        <Switch checked={preset} onClick={onTogglePreset} />
         <TransparentButton onClick={onRemove}>Remove</TransparentButton>
       </Root>
     );

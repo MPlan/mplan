@@ -2,7 +2,6 @@ import * as React from 'react';
 import * as Model from 'models';
 import * as styles from 'styles';
 import styled from 'styled-components';
-import { memoizeLast } from 'utilities/memoize-last';
 
 import { SortEnd } from 'react-sortable-hoc';
 import { Modal } from 'components/modal';
@@ -67,6 +66,7 @@ export interface CoursePickerProps {
   title: string;
   open: boolean;
   courses: Model.Course.Model[];
+  presetCourses: { [catalogId: string]: true | undefined };
   searchResults: Model.Course.Model[];
   query: string;
   searchResultsCount: number;
@@ -74,6 +74,7 @@ export interface CoursePickerProps {
   onAdd: (catalogId: string) => void;
   onRemove: (catalogId: string) => void;
   onRearrange: (oldIndex: number, newIndex: number) => void;
+  onTogglePreset: (catalogId: string) => void;
   onClose: () => void;
 }
 
@@ -95,19 +96,6 @@ export class CoursePicker extends React.PureComponent<CoursePickerProps, CourseP
     const value = e.currentTarget.value;
     this.props.onSearch(value);
   };
-
-  get addedCourses() {
-    return this._addedCourses(this.props.courses);
-  }
-  _addedCourses = memoizeLast((courses: Model.Course.Model[]) => {
-    return courses.map(Model.Course.getCatalogId).reduce(
-      (set, nextId) => {
-        set[nextId] = true;
-        return set;
-      },
-      {} as { [catalogId: string]: true | undefined },
-    );
-  });
 
   handleSortStart = () => {
     this.setState({ sorting: true });
@@ -133,9 +121,11 @@ export class CoursePicker extends React.PureComponent<CoursePickerProps, CourseP
       courses,
       searchResults,
       searchResultsCount,
+      presetCourses,
       onRemove,
       onClose,
       onSearch,
+      onTogglePreset,
     } = this.props;
 
     const { sorting } = this.state;
@@ -172,9 +162,12 @@ export class CoursePicker extends React.PureComponent<CoursePickerProps, CourseP
                   onSortStart={this.handleSortStart}
                   onSortEnd={this.handleSortEnd}
                   courses={courses}
+                  presetCourses={presetCourses}
                   onRemove={onRemove}
+                  onTogglePreset={onTogglePreset}
                   helperClass="sortableHelper"
                   lockAxis="y"
+                  distance={10}
                 />
               </>
             ) : (

@@ -16,7 +16,9 @@ const Root = styled(View)`
 
 interface CourseListProps {
   courses: Model.Course.Model[];
-  onRemove: (courseKey: string) => void;
+  presetCourses: { [catalogId: string]: true | undefined };
+  onRemove: (catalogId: string) => void;
+  onTogglePreset: (catalogId: string) => void;
 }
 
 class CourseList extends React.PureComponent<CourseListProps, {}> {
@@ -25,7 +27,7 @@ class CourseList extends React.PureComponent<CourseListProps, {}> {
   }
 
   render() {
-    const { courses } = this.props;
+    const { courses, onTogglePreset, presetCourses } = this.props;
     return (
       <Root>
         {courses.length > 0 ? (
@@ -35,6 +37,8 @@ class CourseList extends React.PureComponent<CourseListProps, {}> {
               key={`${course.subjectCode} ${course.courseNumber}`}
               course={course}
               onRemove={() => this.handleToggle(course)}
+              preset={!!presetCourses[getCatalogId(course)]}
+              onTogglePreset={() => onTogglePreset(getCatalogId(course))}
             />
           ))
         ) : (

@@ -22,6 +22,7 @@ const Container = Model.store.connect({
         creditMinimum: 0,
         creditMaximum: 0,
         catalogIds: [],
+        presetCourses: {},
       };
     }
 
@@ -34,6 +35,7 @@ const Container = Model.store.connect({
         creditMinimum: 0,
         creditMaximum: 0,
         catalogIds: [],
+        presetCourses: {},
       };
     }
 
@@ -43,6 +45,7 @@ const Container = Model.store.connect({
       creditMinimum: group.creditMinimum,
       creditMaximum: group.creditMaximum,
       catalogIds: Model.MasteredCourseGroup.getCatalogIds(group),
+      presetCourses: Model.MasteredCourseGroup.getPresetCourses(group),
     };
   },
   mapDispatchToProps: (dispatch, ownProps: CourseGroupDetailContainerProps) => ({
@@ -165,6 +168,26 @@ const Container = Model.store.connect({
         const updateGroup = (masteredDegree: Model.MasteredDegree.Model) =>
           Model.MasteredDegree.updateGroup(masteredDegree, ownProps.groupId, group =>
             Model.MasteredCourseGroup.rearrangeCourses(group, oldIndex, newIndex),
+          );
+
+        const newMasteredDegrees = Model.MasteredDegrees.updatedMasteredDegree(
+          state.masteredDegrees,
+          ownProps.masteredDegreeId,
+          updateGroup,
+        );
+
+        return {
+          ...state,
+          masteredDegrees: newMasteredDegrees,
+        };
+      });
+    },
+    onTogglePreset: (catalogId: string) => {
+      console.log('toggle', catalogId);
+      dispatch(state => {
+        const updateGroup = (masteredDegree: Model.MasteredDegree.Model) =>
+          Model.MasteredDegree.updateGroup(masteredDegree, ownProps.groupId, group =>
+            Model.MasteredCourseGroup.togglePreset(group, catalogId),
           );
 
         const newMasteredDegrees = Model.MasteredDegrees.updatedMasteredDegree(

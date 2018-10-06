@@ -7,7 +7,7 @@ interface MasteredCourseGroup {
   id: string;
   name: string;
   descriptionHtml: string;
-  courses: { [catalogId: string]: { position: number; preset: boolean; hidden: boolean } };
+  courses: { [catalogId: string]: { position: number; preset: boolean } };
   creditMinimum: number;
   creditMaximum: number;
   position: number;
@@ -33,6 +33,20 @@ export const getCourses = memoizeLast((self: MasteredCourseGroup, catalog: Catal
     }))
     .filter(({ course }) => !!course)
     .sort((a, b) => a.settings.position - b.settings.position);
+});
+
+export const getPresetCourses = memoizeLast((self: MasteredCourseGroup) => {
+  return Object.entries(self.courses)
+    .filter(([_, { preset }]) => !!preset)
+    .reduce(
+      (presetCourses, [courseId]) => {
+        presetCourses[courseId] = true;
+        return presetCourses;
+      },
+      {} as {
+        [catalogId: string]: true | undefined;
+      },
+    );
 });
 
 export function addCourse(self: MasteredCourseGroup, catalogId: string): MasteredCourseGroup {
@@ -62,9 +76,30 @@ export function removeCourse(
         return courses;
       },
       {} as {
-        [catalogId: string]: { position: number; preset: boolean; hidden: boolean };
+        [catalogId: string]: { position: number; preset: boolean };
       },
     );
+
+  return {
+    ...self,
+    courses,
+  };
+}
+
+export function togglePreset(
+  self: MasteredCourseGroup,
+  catalogIdToToggle: string,
+): MasteredCourseGroup {
+  const course = self.courses[catalogIdToToggle];
+  if (!course) return self;
+
+  const courses = {
+    ...self.courses,
+    [catalogIdToToggle]: {
+      ...course,
+      preset: !course.preset,
+    },
+  };
 
   return {
     ...self,
