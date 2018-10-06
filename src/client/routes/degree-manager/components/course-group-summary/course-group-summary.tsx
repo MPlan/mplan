@@ -136,7 +136,7 @@ export class CourseGroupSummary extends React.PureComponent<
   };
 
   dropdownProps = {
-    header: 'Course groups',
+    header: 'Requirement groups',
     actions,
     onAction: this.handleDropdownActions,
   };
@@ -181,13 +181,13 @@ export class CourseGroupSummary extends React.PureComponent<
     const InfoModal = this.infoModal.Modal;
     return (
       <>
-        <DegreeItem title="Course groups" dropdownMenuProps={this.dropdownProps}>
+        <DegreeItem title="Requirement groups" dropdownMenuProps={this.dropdownProps}>
           <DescriptionAction
             description={
               <TextContainer>
                 <Paragraph>
-                  Course groups are groups of courses that represent a particular requirement as
-                  part of a degree program.
+                  Requirement groups are groups of courses that represent a particular requirement
+                  as part of a degree program.
                 </Paragraph>
                 <Paragraph>
                   An example course group would be "Writing and Oral Communication" which would
@@ -195,8 +195,8 @@ export class CourseGroupSummary extends React.PureComponent<
                   <Link to="/catalog/comp-270">COMP 270</Link>.
                 </Paragraph>
                 <Paragraph>
-                  Course groups appear to students as a list of courses that they can add and remove
-                  courses from. Once a student adds a course, it will become part of their
+                  Requirement groups appear to students as a list of courses that they can add and
+                  remove courses from. Once a student adds a course, it will become part of their
                   MPlan—which means they plan to, or, have already taken the course. That
                   information will be used to calculate their personalized sequence of courses.
                 </Paragraph>
@@ -261,10 +261,10 @@ export class CourseGroupSummary extends React.PureComponent<
             </Columns>
           )}
         </DegreeItem>
-        <InfoModal title="Course groups">
+        <InfoModal title="Requirement groups">
           <Paragraph>
-            Course groups are groups of courses that represent a particular requirement as part of a
-            degree program.
+            Requirement groups are groups of courses that represent a particular requirement as part
+            of a degree program.
           </Paragraph>
           <Paragraph>
             An example course group would be "Writing and Oral Communication" which would include
@@ -272,7 +272,7 @@ export class CourseGroupSummary extends React.PureComponent<
             <Link to="/catalog/comp-270">COMP 270</Link>.
           </Paragraph>
           <Paragraph>
-            Course groups appear to students as a list of courses that they can add and remove
+            Requirement groups appear to students as a list of courses that they can add and remove
             courses from. Once a student adds a course, it will become part of their MPlan—as in
             they plan to, or, have already taken the course—and that information will be used to
             calculate their personalized sequence of courses.

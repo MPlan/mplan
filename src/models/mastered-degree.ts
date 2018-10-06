@@ -1,5 +1,5 @@
 import { ObjectId } from 'utilities/object-id';
-import * as MasteredCourseGroup from './mastered-course-group';
+import * as RequirementGroup from './mastered-course-group';
 import { createSelector } from 'reselect';
 import { get } from 'utilities/get';
 import { maxBy } from 'utilities/max-by';
@@ -11,39 +11,39 @@ interface MasteredDegree {
   descriptionHtml: string;
   minimumCredits: number;
   published: boolean;
-  masteredCourseGroups: { [groupId: string]: MasteredCourseGroup.Model };
+  requirementGroups: { [groupId: string]: RequirementGroup.Model };
   position: number;
 }
 export { MasteredDegree as Model };
 
-const selectMasteredCourseGroups = (self: MasteredDegree) => self.masteredCourseGroups;
+const selectRequirementGroups = (self: MasteredDegree) => self.requirementGroups;
 
 export function getCourseGroup(self: MasteredDegree, groupId: string) {
-  return self.masteredCourseGroups[groupId] as MasteredCourseGroup.Model | undefined;
+  return self.requirementGroups[groupId] as RequirementGroup.Model | undefined;
 }
 
-export const getCourseGroups = createSelector(selectMasteredCourseGroups, masteredCourseGroups => {
-  return Object.values(masteredCourseGroups)
+export const getCourseGroups = createSelector(selectRequirementGroups, requirementGroups => {
+  return Object.values(requirementGroups)
     .reduce(
       (courseGroupArray, group) => {
         courseGroupArray.push(group);
         return courseGroupArray;
       },
-      [] as MasteredCourseGroup.Model[],
+      [] as RequirementGroup.Model[],
     )
     .sort((a, b) => a.column * 1000 + a.position - (b.column * 1000 + b.position));
 });
 
 export const getCourseGroupsColumnOne = createSelector(
-  selectMasteredCourseGroups,
-  masteredCourseGroups => {
-    return Object.values(masteredCourseGroups)
+  selectRequirementGroups,
+  requirementGroups => {
+    return Object.values(requirementGroups)
       .reduce(
         (courseGroupArray, group) => {
           courseGroupArray.push(group);
           return courseGroupArray;
         },
-        [] as MasteredCourseGroup.Model[],
+        [] as RequirementGroup.Model[],
       )
       .filter(group => group.column === 1)
       .sort((a, b) => a.column * 1000 + a.position - (b.column * 1000 + b.position));
@@ -51,15 +51,15 @@ export const getCourseGroupsColumnOne = createSelector(
 );
 
 export const getCourseGroupsColumnTwo = createSelector(
-  selectMasteredCourseGroups,
-  masteredCourseGroups => {
-    return Object.values(masteredCourseGroups)
+  selectRequirementGroups,
+  requirementGroups => {
+    return Object.values(requirementGroups)
       .reduce(
         (courseGroupArray, group) => {
           courseGroupArray.push(group);
           return courseGroupArray;
         },
-        [] as MasteredCourseGroup.Model[],
+        [] as RequirementGroup.Model[],
       )
       .filter(group => group.column === 2)
       .sort((a, b) => a.column * 1000 + a.position - (b.column * 1000 + b.position));
@@ -67,15 +67,15 @@ export const getCourseGroupsColumnTwo = createSelector(
 );
 
 export const getCourseGroupsColumnThree = createSelector(
-  selectMasteredCourseGroups,
-  masteredCourseGroups => {
-    return Object.values(masteredCourseGroups)
+  selectRequirementGroups,
+  requirementGroups => {
+    return Object.values(requirementGroups)
       .reduce(
         (courseGroupArray, group) => {
           courseGroupArray.push(group);
           return courseGroupArray;
         },
-        [] as MasteredCourseGroup.Model[],
+        [] as RequirementGroup.Model[],
       )
       .filter(group => group.column === 3)
       .sort((a, b) => a.column * 1000 + a.position - (b.column * 1000 + b.position));
@@ -86,7 +86,7 @@ export function createNewMasteredDegree(degreeName: string, lastPosition: number
   const newDegree: MasteredDegree = {
     descriptionHtml: 'No description provided.',
     id: ObjectId(),
-    masteredCourseGroups: {},
+    requirementGroups: {},
     minimumCredits: 120,
     name: degreeName,
     published: false,
@@ -97,8 +97,8 @@ export function createNewMasteredDegree(degreeName: string, lastPosition: number
 }
 
 export function getNewCourseGroupPosition(self: MasteredDegree, column: number) {
-  const { masteredCourseGroups } = self;
-  const courseGroupPositions = Object.values(masteredCourseGroups).filter(
+  const { requirementGroups } = self;
+  const courseGroupPositions = Object.values(requirementGroups).filter(
     group => group.column === column,
   );
   const lastGroup = maxBy(courseGroupPositions, group => group.position);
@@ -107,8 +107,8 @@ export function getNewCourseGroupPosition(self: MasteredDegree, column: number) 
 }
 
 export function createNewGroup(self: MasteredDegree, name: string, column: number): MasteredDegree {
-  const { masteredCourseGroups } = self;
-  const newGroup: MasteredCourseGroup.Model = {
+  const { requirementGroups } = self;
+  const newGroup: RequirementGroup.Model = {
     name,
     column,
     id: ObjectId(),
@@ -120,47 +120,47 @@ export function createNewGroup(self: MasteredDegree, name: string, column: numbe
     position: getNewCourseGroupPosition(self, 1),
   };
 
-  const newMasteredCourseGroups = { ...masteredCourseGroups, [newGroup.id]: newGroup };
+  const newRequirementGroups = { ...requirementGroups, [newGroup.id]: newGroup };
 
   return {
     ...self,
-    masteredCourseGroups: newMasteredCourseGroups,
+    requirementGroups: newRequirementGroups,
   };
 }
 
 export function deleteGroup(self: MasteredDegree, groupIdToDelete: string): MasteredDegree {
-  const { masteredCourseGroups } = self;
+  const { requirementGroups } = self;
 
-  const newMasteredCourseGroups = Object.entries(masteredCourseGroups)
+  const newRequirementGroups = Object.entries(requirementGroups)
     .filter(([groupId]) => groupId !== groupIdToDelete)
     .reduce(
-      (newMasteredCourseGroups, [groupId, value]) => {
-        newMasteredCourseGroups[groupId] = value;
-        return newMasteredCourseGroups;
+      (newRequirementGroups, [groupId, value]) => {
+        newRequirementGroups[groupId] = value;
+        return newRequirementGroups;
       },
       {} as {
-        [groupId: string]: MasteredCourseGroup.Model;
+        [groupId: string]: RequirementGroup.Model;
       },
     );
 
   return {
     ...self,
-    masteredCourseGroups: newMasteredCourseGroups,
+    requirementGroups: newRequirementGroups,
   };
 }
 
 export function updateGroup(
   self: MasteredDegree,
   groupId: string,
-  update: (group: MasteredCourseGroup.Model) => MasteredCourseGroup.Model,
+  update: (group: RequirementGroup.Model) => RequirementGroup.Model,
 ): MasteredDegree {
-  const group = self.masteredCourseGroups[groupId];
+  const group = self.requirementGroups[groupId];
   if (!group) return self;
 
   return {
     ...self,
-    masteredCourseGroups: {
-      ...self.masteredCourseGroups,
+    requirementGroups: {
+      ...self.requirementGroups,
       [groupId]: update(group),
     },
   };
@@ -231,8 +231,8 @@ export function rearrangeCourseGroups(
 
   return {
     ...self,
-    masteredCourseGroups: {
-      ...self.masteredCourseGroups,
+    requirementGroups: {
+      ...self.requirementGroups,
       [groupWithNewPosition.id]: groupWithNewPosition,
     },
   };

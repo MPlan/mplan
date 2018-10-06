@@ -3,7 +3,7 @@ import { get } from 'utilities/get';
 import { memoizeLast } from 'utilities/memoize-last';
 const { min, max, ceil } = Math;
 
-interface MasteredCourseGroup {
+interface RequirementGroup {
   id: string;
   name: string;
   descriptionHtml: string;
@@ -14,9 +14,9 @@ interface MasteredCourseGroup {
   position: number;
   column: number;
 }
-export { MasteredCourseGroup as Model };
+export { RequirementGroup as Model };
 
-export const getCatalogIds = memoizeLast((self: MasteredCourseGroup) => {
+export const getCatalogIds = memoizeLast((self: RequirementGroup) => {
   return Object.entries(self.courses)
     .map(([courseId, settings]) => ({
       courseId,
@@ -26,7 +26,7 @@ export const getCatalogIds = memoizeLast((self: MasteredCourseGroup) => {
     .map(({ courseId }) => courseId);
 });
 
-export const getCourses = memoizeLast((self: MasteredCourseGroup, catalog: Catalog.Model) => {
+export const getCourses = memoizeLast((self: RequirementGroup, catalog: Catalog.Model) => {
   return Object.entries(self.courses)
     .map(([catalogId, settings]) => ({
       course: catalog[catalogId],
@@ -36,7 +36,7 @@ export const getCourses = memoizeLast((self: MasteredCourseGroup, catalog: Catal
     .sort((a, b) => a.settings.position - b.settings.position);
 });
 
-export const getPresetCourses = memoizeLast((self: MasteredCourseGroup) => {
+export const getPresetCourses = memoizeLast((self: RequirementGroup) => {
   return Object.entries(self.courses)
     .filter(([_, { preset }]) => !!preset)
     .reduce(
@@ -50,7 +50,7 @@ export const getPresetCourses = memoizeLast((self: MasteredCourseGroup) => {
     );
 });
 
-export function addCourse(self: MasteredCourseGroup, catalogId: string): MasteredCourseGroup {
+export function addCourse(self: RequirementGroup, catalogId: string): RequirementGroup {
   const lastPosition =
     max(...Object.values(self.courses).map(settings => settings.position)) || 100;
 
@@ -65,10 +65,7 @@ export function addCourse(self: MasteredCourseGroup, catalogId: string): Mastere
   };
 }
 
-export function removeCourse(
-  self: MasteredCourseGroup,
-  catalogIdToDelete: string,
-): MasteredCourseGroup {
+export function removeCourse(self: RequirementGroup, catalogIdToDelete: string): RequirementGroup {
   const courses = Object.entries(self.courses)
     .filter(([catalogId]) => catalogId !== catalogIdToDelete)
     .reduce(
@@ -87,10 +84,7 @@ export function removeCourse(
   };
 }
 
-export function togglePreset(
-  self: MasteredCourseGroup,
-  catalogIdToToggle: string,
-): MasteredCourseGroup {
+export function togglePreset(self: RequirementGroup, catalogIdToToggle: string): RequirementGroup {
   const course = self.courses[catalogIdToToggle];
   if (!course) return self;
 
@@ -109,10 +103,10 @@ export function togglePreset(
 }
 
 export function rearrangeCourses(
-  self: MasteredCourseGroup,
+  self: RequirementGroup,
   oldIndex: number,
   newIndex: number,
-): MasteredCourseGroup {
+): RequirementGroup {
   const courses = Object.entries(self.courses)
     .map(([catalogId, settings]) => ({ catalogId, ...settings }))
     .sort((a, b) => a.position - b.position);

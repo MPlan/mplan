@@ -3,7 +3,7 @@ import * as Catalog from './catalog';
 import * as Course from './course';
 import * as CourseGroup from './course-group';
 import * as Degree from './degree';
-import * as MasteredCourseGroup from './mastered-course-group';
+import * as RequirementGroup from './mastered-course-group';
 import * as MasteredDegree from './mastered-degree';
 import * as MasteredDegrees from './mastered-degrees';
 import * as Plan from './plan';
@@ -18,7 +18,7 @@ export {
   Course,
   CourseGroup,
   Degree,
-  MasteredCourseGroup,
+  RequirementGroup,
   MasteredDegree,
   MasteredDegrees,
   Plan,

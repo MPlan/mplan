@@ -30,10 +30,8 @@ function convertPathToString(path: string, store: Model.App.Model) {
 }
 
 const createGroupNameLookup = memoizeAll(
-  (
-    ...masteredCourseGroups: Array<{ [courseGroupId: string]: Model.MasteredCourseGroup.Model }>
-  ) => {
-    const nameTuples = flatten(masteredCourseGroups.map(groupData => Object.values(groupData))).map(
+  (...requirementGroups: Array<{ [courseGroupId: string]: Model.RequirementGroup.Model }>) => {
+    const nameTuples = flatten(requirementGroups.map(groupData => Object.values(groupData))).map(
       group => ({ id: group.id, name: group.name }),
     );
 
@@ -50,11 +48,11 @@ const createGroupNameLookup = memoizeAll(
 );
 
 const getLookup = (store: Model.App.Model) => {
-  const masteredCourseGroups = Object.values(store.masteredDegrees).map(
-    masteredDegree => masteredDegree.masteredCourseGroups,
+  const requirementGroups = Object.values(store.masteredDegrees).map(
+    masteredDegree => masteredDegree.requirementGroups,
   );
 
-  return createGroupNameLookup(...masteredCourseGroups);
+  return createGroupNameLookup(...requirementGroups);
 };
 
 const convertPathname = returnPreviousIfUnchanged((pathname: string, store: Model.App.Model) => {

@@ -5,7 +5,7 @@ import * as Catalog from './catalog';
 
 interface CourseGroup {
   id: string;
-  masteredCourseGroupId?: string;
+  requirementGroupId?: string;
   customName?: string;
   courseIds: string[];
   completedCourseIds: { [catalogId: string]: true };
@@ -13,21 +13,21 @@ interface CourseGroup {
 }
 export { CourseGroup as Model };
 
-export function getMasteredCourseGroup(
+export function getRequirementGroup(
   self: CourseGroup,
   degree: Degree.Model,
   masteredDegrees: MasteredDegrees.Model,
 ) {
-  const { masteredCourseGroupId } = self;
-  if (!masteredCourseGroupId) return undefined;
+  const { requirementGroupId } = self;
+  if (!requirementGroupId) return undefined;
 
   const masteredDegree = Degree.getMasteredDegree(degree, masteredDegrees);
   if (!masteredDegree) return undefined;
 
-  const masteredCourseGroup = masteredDegree.masteredCourseGroups[masteredCourseGroupId];
+  const requirementGroup = masteredDegree.requirementGroups[requirementGroupId];
   if (!masteredDegree) return undefined;
 
-  return masteredCourseGroup;
+  return requirementGroup;
 }
 
 export function getCourseGroupName(
@@ -35,9 +35,9 @@ export function getCourseGroupName(
   degree: Degree.Model,
   masteredDegrees: MasteredDegrees.Model,
 ) {
-  const masteredCourseGroup = getMasteredCourseGroup(self, degree, masteredDegrees);
-  if (!masteredCourseGroup) return 'Custom Group';
-  return masteredCourseGroup.name;
+  const requirementGroup = getRequirementGroup(self, degree, masteredDegrees);
+  if (!requirementGroup) return 'Custom Group';
+  return requirementGroup.name;
 }
 
 export function getDescriptionHtml(
@@ -45,11 +45,11 @@ export function getDescriptionHtml(
   degree: Degree.Model,
   masteredDegrees: MasteredDegrees.Model,
 ) {
-  const masteredCourseGroup = getMasteredCourseGroup(self, degree, masteredDegrees);
+  const requirementGroup = getRequirementGroup(self, degree, masteredDegrees);
   // Description html should always say this for  custom group. custom group don't have mastered
   // degree groups
-  if (!masteredCourseGroup) return 'Custom group.';
-  return masteredCourseGroup.name;
+  if (!requirementGroup) return 'Custom group.';
+  return requirementGroup.name;
 }
 
 export function getCourses(self: CourseGroup, catalog: Catalog.Model) {

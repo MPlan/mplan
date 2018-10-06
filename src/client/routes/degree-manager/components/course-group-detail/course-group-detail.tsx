@@ -236,7 +236,7 @@ export class CourseGroupDetail extends React.Component<
                   <CreditHourEditor creditHours={creditMaximum} onChange={onCreditMaximumChange} />
                 </DescriptionAction>
               </DegreeItem>
-              <DegreeItem title="Course validation">
+              <DegreeItem title="Courses">
                 <DescriptionAction
                   description={
                     <>

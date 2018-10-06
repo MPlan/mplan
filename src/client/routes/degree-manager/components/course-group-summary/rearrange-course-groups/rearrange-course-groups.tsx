@@ -100,7 +100,7 @@ export class RearrangeCourseGroups extends React.PureComponent<RearrangeCourseGr
     } = this.props;
 
     return (
-      <Modal title="Rearranging course groups…" open={open} onBlurCancel={onClose} size="large">
+      <Modal title="Rearranging groups…" open={open} onBlurCancel={onClose} size="large">
         <Columns>
           <Column>
             <ColumnTitle>Column One</ColumnTitle>

@@ -46,8 +46,8 @@ const Container = Model.store.connect({
       descriptionHtml: group.descriptionHtml,
       creditMinimum: group.creditMinimum,
       creditMaximum: group.creditMaximum,
-      catalogIds: Model.MasteredCourseGroup.getCatalogIds(group),
-      presetCourses: Model.MasteredCourseGroup.getPresetCourses(group),
+      catalogIds: Model.RequirementGroup.getCatalogIds(group),
+      presetCourses: Model.RequirementGroup.getPresetCourses(group),
       courseValidationEnabled: group.courseValidationEnabled,
     };
   },
@@ -130,7 +130,7 @@ const Container = Model.store.connect({
       dispatch(state => {
         const addCourse = (masteredDegree: Model.MasteredDegree.Model) =>
           Model.MasteredDegree.updateGroup(masteredDegree, ownProps.groupId, group =>
-            Model.MasteredCourseGroup.addCourse(group, catalogId),
+            Model.RequirementGroup.addCourse(group, catalogId),
           );
 
         const newMasteredDegrees = Model.MasteredDegrees.updatedMasteredDegree(
@@ -149,7 +149,7 @@ const Container = Model.store.connect({
       dispatch(state => {
         const removeCourse = (masteredDegree: Model.MasteredDegree.Model) =>
           Model.MasteredDegree.updateGroup(masteredDegree, ownProps.groupId, group =>
-            Model.MasteredCourseGroup.removeCourse(group, catalogId),
+            Model.RequirementGroup.removeCourse(group, catalogId),
           );
 
         const newMasteredDegrees = Model.MasteredDegrees.updatedMasteredDegree(
@@ -170,7 +170,7 @@ const Container = Model.store.connect({
       dispatch(state => {
         const updateGroup = (masteredDegree: Model.MasteredDegree.Model) =>
           Model.MasteredDegree.updateGroup(masteredDegree, ownProps.groupId, group =>
-            Model.MasteredCourseGroup.rearrangeCourses(group, oldIndex, newIndex),
+            Model.RequirementGroup.rearrangeCourses(group, oldIndex, newIndex),
           );
 
         const newMasteredDegrees = Model.MasteredDegrees.updatedMasteredDegree(
@@ -189,7 +189,7 @@ const Container = Model.store.connect({
       dispatch(state => {
         const updateGroup = (masteredDegree: Model.MasteredDegree.Model) =>
           Model.MasteredDegree.updateGroup(masteredDegree, ownProps.groupId, group =>
-            Model.MasteredCourseGroup.togglePreset(group, catalogId),
+            Model.RequirementGroup.togglePreset(group, catalogId),
           );
 
         const newMasteredDegrees = Model.MasteredDegrees.updatedMasteredDegree(
