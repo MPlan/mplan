@@ -67,7 +67,7 @@ class Course extends React.PureComponent<CourseProps, {}> {
       <Root>
         <SimpleName>{getSimpleName(course)}</SimpleName>
         <Name>{course.name}</Name>
-        <Switch checked={preset} onClick={onTogglePreset} />
+        <Switch checked={preset} onChange={onTogglePreset} />
         <TransparentButton onClick={onRemove}>Remove</TransparentButton>
       </Root>
     );

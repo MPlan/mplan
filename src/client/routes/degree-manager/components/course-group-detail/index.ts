@@ -1,5 +1,5 @@
 import * as Model from 'models';
-import { CourseGroupDetail } from './course-group-detail';
+import { RequirementGroupDetail } from './course-group-detail';
 import { history } from 'client/history';
 
 interface CourseGroupDetailContainerProps {
@@ -225,6 +225,6 @@ const Container = Model.store.connect({
       });
     },
   }),
-})(CourseGroupDetail);
+})(RequirementGroupDetail);
 
 export { Container as CourseGroupDetail };

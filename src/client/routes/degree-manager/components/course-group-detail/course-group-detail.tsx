@@ -85,7 +85,7 @@ const Status = styled(Text)`
   margin-left: ${styles.space(0)};
 `;
 
-interface CourseGroupDetailProps {
+interface RequirementGroupDetailProps {
   name: string;
   descriptionHtml: string;
   creditMinimum: number;
@@ -108,16 +108,16 @@ interface CourseGroupDetailProps {
 
   onToggleCourseValidation: () => void;
 }
-interface CourseGroupDetailState {
+interface RequirementGroupDetailState {
   editingName: boolean;
   coursePickerOpen: boolean;
 }
 
-export class CourseGroupDetail extends React.Component<
-  CourseGroupDetailProps,
-  CourseGroupDetailState
+export class RequirementGroupDetail extends React.Component<
+  RequirementGroupDetailProps,
+  RequirementGroupDetailState
 > {
-  constructor(props: CourseGroupDetailProps) {
+  constructor(props: RequirementGroupDetailProps) {
     super(props);
 
     this.state = {
@@ -236,15 +236,20 @@ export class CourseGroupDetail extends React.Component<
                   <CreditHourEditor creditHours={creditMaximum} onChange={onCreditMaximumChange} />
                 </DescriptionAction>
               </DegreeItem>
-              <DegreeItem title="Courses">
+              <DegreeItem title="Courses and validation">
                 <DescriptionAction
                   description={
                     <>
                       <Paragraph>
-                        Course validation helps students check whether or not a course added to this
-                        group will be allowed. When course validation is turned on, students will
-                        receive non-dismissable warnings when they add courses that are not defined
-                        here.
+                        Enabling this section enables <strong>course validation</strong>. When this
+                        is disabled, students will be able to add any course to this group without
+                        warning.
+                      </Paragraph>
+                      <Paragraph>
+                        <strong>Course validation</strong> helps students check whether or not a
+                        course added to this group will be allowed. When course validation is turned
+                        on, students will receive non-dismissable warnings when they add courses
+                        that are not defined here.
                       </Paragraph>
                       <Paragraph>
                         <strong>Disclaimer:</strong> though this feature helps validate some
