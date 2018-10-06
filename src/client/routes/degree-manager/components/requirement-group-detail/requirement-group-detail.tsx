@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { View } from 'components/view';
 import { Text } from 'components/text';
 import { Input } from 'components/input';
-import { RightClickMenu } from 'components/right-click-menu';
+import { RightClickMenu, RightClickProps } from 'components/right-click-menu';
 import { InlineEdit } from 'components/inline-edit';
 import { VerticalBar } from 'components/vertical-bar';
 import { DropdownMenu } from 'components/dropdown-menu';
@@ -15,6 +15,7 @@ import { Fa as _Fa } from 'components/fa';
 import { Link } from 'components/link';
 import { CreditHourEditor } from 'components/credit-hour-editor';
 import { Switch } from 'components/switch';
+import { DeleteConfirmationModal } from 'components/delete-confirmation-modal';
 
 import { DegreeItem } from 'routes/degree-manager/components/degree-item';
 import { DescriptionAction } from 'routes/degree-manager/components/description-action';
@@ -104,12 +105,14 @@ interface RequirementGroupDetailProps {
   onCreditMaximumChange: (maximumCredits: number) => void;
   onBackClick: () => void;
   onPreviewClick: () => void;
+  onDelete: () => void;
 
   onToggleCourseValidation: () => void;
 }
 interface RequirementGroupDetailState {
   editingName: boolean;
   coursePickerOpen: boolean;
+  deleteConfirmationOpen: boolean;
 }
 
 export class RequirementGroupDetail extends React.Component<
@@ -122,11 +125,33 @@ export class RequirementGroupDetail extends React.Component<
     this.state = {
       editingName: false,
       coursePickerOpen: false,
+      deleteConfirmationOpen: false,
     };
   }
 
-  degreeDropdownAction = () => {};
-  handleActions = () => {};
+  degreeDropdownAction = {
+    rename: {
+      text: 'Rename',
+      icon: 'pencil',
+      color: styles.blue,
+    },
+    delete: {
+      text: 'Delete',
+      icon: 'trash',
+      color: styles.danger,
+    },
+  };
+  handleActions = (action: keyof typeof RequirementGroupDetail.prototype.degreeDropdownAction) => {
+    if (action === 'rename') {
+      this.setState({ editingName: true });
+      return;
+    }
+
+    if (action === 'delete') {
+      this.setState({ deleteConfirmationOpen: true });
+      return;
+    }
+  };
 
   handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.currentTarget.value;
@@ -144,6 +169,33 @@ export class RequirementGroupDetail extends React.Component<
   };
   handleCoursePickerClose = () => {
     this.setState({ coursePickerOpen: false });
+  };
+
+  handleDeleteConfirmationClose = () => {
+    this.setState({ deleteConfirmationOpen: false });
+  };
+
+  renderTitleRow = (props: RightClickProps) => {
+    const { name } = this.props;
+    const { editingName } = this.state;
+    return (
+      <TitleRow {...props}>
+        <InlineEdit
+          value={name}
+          renderDisplay={props => <Title {...props} />}
+          renderInput={props => <TitleInput {...props} onChange={this.handleNameChange} />}
+          editing={editingName}
+          onBlur={this.handleNameBlur}
+          onEdit={this.handleNameEdit}
+        />
+        <VerticalBar />
+        <DropdownMenu
+          header={name}
+          actions={this.degreeDropdownAction}
+          onAction={this.handleActions}
+        />
+      </TitleRow>
+    );
   };
 
   render() {
@@ -167,9 +219,10 @@ export class RequirementGroupDetail extends React.Component<
       onRearrangeCourses,
       onTogglePreset,
       onToggleCourseValidation,
+      onDelete,
     } = this.props;
 
-    const { editingName, coursePickerOpen } = this.state;
+    const { coursePickerOpen, deleteConfirmationOpen } = this.state;
 
     return (
       <>
@@ -181,28 +234,8 @@ export class RequirementGroupDetail extends React.Component<
                 header={name}
                 actions={this.degreeDropdownAction}
                 onAction={this.handleActions}
-              >
-                {props => (
-                  <TitleRow {...props}>
-                    <InlineEdit
-                      value={name}
-                      renderDisplay={props => <Title {...props} />}
-                      renderInput={props => (
-                        <TitleInput {...props} onChange={this.handleNameChange} />
-                      )}
-                      editing={editingName}
-                      onBlur={this.handleNameBlur}
-                      onEdit={this.handleNameEdit}
-                    />
-                    <VerticalBar />
-                    <DropdownMenu
-                      header={name}
-                      actions={this.degreeDropdownAction}
-                      onAction={this.handleActions}
-                    />
-                  </TitleRow>
-                )}
-              </RightClickMenu>
+                children={this.renderTitleRow}
+              />
               <DescriptionEditor descriptionHtml={descriptionHtml} onChange={onDescriptionChange}>
                 <Paragraph>Edit the description of this course group here.</Paragraph>
                 <Paragraph>
@@ -300,6 +333,14 @@ export class RequirementGroupDetail extends React.Component<
           onClose={this.handleCoursePickerClose}
           onRearrange={onRearrangeCourses}
           onTogglePreset={onTogglePreset}
+        />
+        <DeleteConfirmationModal
+          open={deleteConfirmationOpen}
+          onClose={this.handleDeleteConfirmationClose}
+          onConfirmDelete={onDelete}
+          title={`Are you sure you want to delete "${name}"?`}
+          confirmationText="Yes, delete it"
+          icon="trash"
         />
       </>
     );

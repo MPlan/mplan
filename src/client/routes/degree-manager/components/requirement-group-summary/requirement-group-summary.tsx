@@ -26,13 +26,15 @@ const HorizontalLine = styled.hr`
 `;
 
 export interface RequirementGroupSummaryProps {
-  group: Model.RequirementGroup.Model;
+  group: Model.RequirementGroup.Model | undefined;
   onBackClick: () => void;
 }
 
 export class RequirementGroupSummary extends React.PureComponent<RequirementGroupSummaryProps, {}> {
   render() {
     const { group, onBackClick } = this.props;
+    if (!group) return null;
+
     return (
       <DegreeItem title="Summary">
         <DescriptionAction

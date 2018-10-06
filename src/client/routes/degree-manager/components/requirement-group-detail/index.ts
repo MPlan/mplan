@@ -14,35 +14,32 @@ const Container = Model.store.connect({
       ownProps.masteredDegreeId,
     );
 
+    const emptyProps = {
+      masteredDegreeId: ownProps.masteredDegreeId,
+      groupId: ownProps.groupId,
+      name: '',
+      descriptionHtml: '',
+      creditMinimum: 0,
+      creditMaximum: 0,
+      catalogIds: [],
+      presetCourses: {},
+      courseValidationEnabled: false,
+    };
+
     if (!masteredDegree) {
       history.replace('/degree-manager');
-      return {
-        masteredDegreeId: ownProps.masteredDegreeId,
-        groupId: ownProps.groupId,
-        name: '',
-        descriptionHtml: '',
-        creditMinimum: 0,
-        creditMaximum: 0,
-        catalogIds: [],
-        presetCourses: {},
-        courseValidationEnabled: false,
-      };
+      return emptyProps;
+    }
+
+    if (!ownProps.groupId) {
+      history.replace(`/degree-manager/${masteredDegree.id}`);
+      return emptyProps;
     }
 
     const group = Model.MasteredDegree.getGroup(masteredDegree, ownProps.groupId);
     if (!group) {
       history.replace(`/degree-manager/${masteredDegree.id}`);
-      return {
-        masteredDegreeId: ownProps.masteredDegreeId,
-        groupId: ownProps.groupId,
-        name: '',
-        descriptionHtml: '',
-        creditMinimum: 0,
-        creditMaximum: 0,
-        catalogIds: [],
-        presetCourses: {},
-        courseValidationEnabled: false,
-      };
+      return emptyProps;
     }
 
     return {
@@ -222,6 +219,23 @@ const Container = Model.store.connect({
           state.masteredDegrees,
           ownProps.masteredDegreeId,
           updateGroup,
+        );
+
+        return {
+          ...state,
+          masteredDegrees: newMasteredDegrees,
+        };
+      });
+    },
+    onDelete: () => {
+      dispatch(state => {
+        const deleteGroup = (masteredDegree: Model.MasteredDegree.Model) =>
+          Model.MasteredDegree.deleteGroup(masteredDegree, ownProps.groupId);
+
+        const newMasteredDegrees = Model.MasteredDegrees.updatedMasteredDegree(
+          state.masteredDegrees,
+          ownProps.masteredDegreeId,
+          deleteGroup,
         );
 
         return {
