@@ -287,14 +287,6 @@ export class RequirementGroupDetail extends React.Component<
                 )}
               </DegreeItem>
               <RequirementGroupSummary masteredDegreeId={masteredDegreeId} groupId={groupId} />
-              <DegreeItem title="Summary">
-                <DescriptionAction description={<>test</>}>
-                  <PrimaryButton>
-                    <Fa icon="angleLeft" />
-                    Back to degree
-                  </PrimaryButton>
-                </DescriptionAction>
-              </DegreeItem>
             </Content>
           </Body>
         </Root>

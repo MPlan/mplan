@@ -195,10 +195,10 @@ export class RequirementGroupList extends React.PureComponent<
                   <Link to="/catalog/comp-270">COMP 270</Link>.
                 </Paragraph>
                 <Paragraph>
-                  Requirement groups appear to students as a list of courses that they can add and
-                  remove courses from. Once a student adds a course, it will become part of their
-                  MPlan—which means they plan to, or, have already taken the course. That
-                  information will be used to calculate their personalized sequence of courses.
+                  Requirement groups appear to students as a list of courses in three columns that
+                  they can add and remove courses from. Once a student adds a course, it will become
+                  part of their MPlan—which means they plan to, or, have already taken the course.
+                  That information will be used to calculate their personalized sequence of courses.
                 </Paragraph>
                 <ActionableText onClick={this.infoModal.open}>
                   Click here for more info

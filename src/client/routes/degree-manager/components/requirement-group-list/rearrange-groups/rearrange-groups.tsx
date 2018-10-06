@@ -19,6 +19,9 @@ const Column = styled(View)`
 const ColumnTitle = styled(Text)`
   margin: 0 ${styles.space(-1)};
   margin-bottom: ${styles.space(0)};
+  padding-bottom: ${styles.space(-1)};
+  font-weight: bold;
+  border-bottom: 1px solid ${styles.grayLighter};
 `;
 const Actions = styled(View)`
   flex-direction: row;
@@ -91,13 +94,7 @@ export class RearrangeGroups extends React.PureComponent<RearrangeGroupsProps, {
   };
 
   render() {
-    const {
-      open,
-      onClose,
-      groupsColumnOne,
-      groupsColumnTwo,
-      groupsColumnThree,
-    } = this.props;
+    const { open, onClose, groupsColumnOne, groupsColumnTwo, groupsColumnThree } = this.props;
 
     return (
       <Modal title="Rearranging groups…" open={open} onBlurCancel={onClose} size="large">
