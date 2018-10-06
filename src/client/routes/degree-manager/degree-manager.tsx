@@ -13,7 +13,7 @@ import { NewDegreeModal } from './components/new-degree-modal';
 import { DegreeList } from './components/degree-list';
 import { DegreeDetail } from './components/degree-detail';
 import { DegreePreview } from './components/degree-preview';
-import { CourseGroupDetail } from './components/course-group-detail';
+import { RequirementGroupDetail } from './components/requirement-group-detail';
 
 const { Slide, Slides } = createSlides();
 
@@ -101,7 +101,7 @@ export class DegreeEditor extends React.PureComponent<DegreeEditorProps, DegreeE
 
     return (
       <Slide slide={2} active={active}>
-        <CourseGroupDetail groupId={groupId!} masteredDegreeId={masteredDegreeId!} />
+        <RequirementGroupDetail groupId={groupId!} masteredDegreeId={masteredDegreeId!} />
       </Slide>
     );
   };
