@@ -1,13 +1,13 @@
 import * as Model from 'models';
 import { history } from 'client/history';
-import { CourseGroupSummary, CourseGroupViewModel } from './course-group-summary';
+import { RequirementGroupList, CourseGroupViewModel } from './course-group-summary';
 
-interface CourseGroupSummaryContainerProps {
+interface RequirementGroupListContainerProps {
   masteredDegreeId: string;
 }
 
 const Container = Model.store.connect({
-  mapStateToProps: (state, ownProps: CourseGroupSummaryContainerProps) => {
+  mapStateToProps: (state, ownProps: RequirementGroupListContainerProps) => {
     const masteredDegree = Model.MasteredDegrees.getMasteredDegree(
       state.masteredDegrees,
       ownProps.masteredDegreeId,
@@ -19,18 +19,18 @@ const Container = Model.store.connect({
 
     return {
       masteredDegreeId: ownProps.masteredDegreeId,
-      courseGroupsColumnOne: Model.MasteredDegree.getCourseGroupsColumnOne(
+      groupsColumnOne: Model.MasteredDegree.getCourseGroupsColumnOne(
         masteredDegree,
       ) as CourseGroupViewModel[],
-      courseGroupsColumnTwo: Model.MasteredDegree.getCourseGroupsColumnTwo(
+      groupsColumnTwo: Model.MasteredDegree.getCourseGroupsColumnTwo(
         masteredDegree,
       ) as CourseGroupViewModel[],
-      courseGroupsColumnThree: Model.MasteredDegree.getCourseGroupsColumnThree(
+      groupsColumnThree: Model.MasteredDegree.getCourseGroupsColumnThree(
         masteredDegree,
       ) as CourseGroupViewModel[],
     };
   },
-  mapDispatchToProps: (dispatch, ownProps: CourseGroupSummaryContainerProps) => ({
+  mapDispatchToProps: (dispatch, ownProps: RequirementGroupListContainerProps) => ({
     onGroupClick: (groupId: string) => {
       const { masteredDegreeId } = ownProps;
       history.push(`/degree-manager/${masteredDegreeId}/groups/${groupId}`);
@@ -68,6 +68,6 @@ const Container = Model.store.connect({
       });
     },
   }),
-})(CourseGroupSummary);
+})(RequirementGroupList);
 
-export { Container as CourseGroupSummary };
+export { Container as RequirementGroupList };

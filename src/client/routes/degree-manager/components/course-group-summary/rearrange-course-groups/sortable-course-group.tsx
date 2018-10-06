@@ -30,14 +30,14 @@ const Name = styled(Text)`
   margin: 0 ${styles.space(0)};
 `;
 
-interface SortableCourseGroupProps {
+interface SortableGroupProps {
   name: string;
   column: number;
   onLeft: () => void;
   onRight: () => void;
 }
 
-class CourseGroup extends React.PureComponent<SortableCourseGroupProps, {}> {
+class Group extends React.PureComponent<SortableGroupProps, {}> {
   render() {
     const { name, onLeft, onRight, column } = this.props;
     return (
@@ -54,6 +54,4 @@ class CourseGroup extends React.PureComponent<SortableCourseGroupProps, {}> {
   }
 }
 
-export const SortableCourseGroup = SortableElement<SortableCourseGroupProps>(props => (
-  <CourseGroup {...props} />
-));
+export const SortableGroup = SortableElement<SortableGroupProps>(props => <Group {...props} />);

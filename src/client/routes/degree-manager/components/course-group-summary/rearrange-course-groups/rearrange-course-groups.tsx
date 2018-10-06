@@ -31,7 +31,7 @@ export interface CourseGroupViewModel {
   column: number;
 }
 
-interface RearrangeCourseGroupsProps {
+interface RearrangeGroupsProps {
   courseGroupsColumnOne: CourseGroupViewModel[];
   courseGroupsColumnTwo: CourseGroupViewModel[];
   courseGroupsColumnThree: CourseGroupViewModel[];
@@ -40,7 +40,7 @@ interface RearrangeCourseGroupsProps {
   onRearrange: (fromColumn: number, toColumn: number, oldIndex: number, newIndex: number) => void;
 }
 
-export class RearrangeCourseGroups extends React.PureComponent<RearrangeCourseGroupsProps, {}> {
+export class RearrangeGroups extends React.PureComponent<RearrangeGroupsProps, {}> {
   handleOnLeftColumnOne = () => {};
   handleOnRightColumnOne = (groupId: string) => {
     const { courseGroupsColumnOne, courseGroupsColumnTwo, onRearrange } = this.props;

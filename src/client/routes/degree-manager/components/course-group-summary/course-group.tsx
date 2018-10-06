@@ -58,7 +58,7 @@ const actions: Actions<'view' | 'delete' | 'rearrange'> = {
   },
 };
 
-interface CourseGroupProps {
+interface RequirementGroupProps {
   name: string;
   onClick: () => void;
   onRearrange: () => void;
@@ -67,7 +67,7 @@ interface CourseGroupProps {
   creditMaximum: number;
 }
 
-export class CourseGroup extends React.PureComponent<CourseGroupProps, {}> {
+export class RequirementGroup extends React.PureComponent<RequirementGroupProps, {}> {
   dropdownMenuRef = React.createRef<HTMLElement>();
 
   handleActions = (action: keyof typeof actions) => {

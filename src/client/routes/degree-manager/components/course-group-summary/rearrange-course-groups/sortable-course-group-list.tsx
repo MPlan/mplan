@@ -4,7 +4,7 @@ import { CourseGroupViewModel } from './rearrange-course-groups';
 
 import { SortableContainer } from 'react-sortable-hoc';
 import { View } from 'components/view';
-import { SortableCourseGroup } from './sortable-course-group';
+import { SortableGroup } from './sortable-course-group';
 
 const Root = styled(View)`
   & > * {
@@ -12,19 +12,19 @@ const Root = styled(View)`
   }
 `;
 
-interface SortableCourseGroupListProps {
+interface SortableGroupListProps {
   groups: CourseGroupViewModel[];
   onLeft: (groupId: string) => void;
   onRight: (groupId: string) => void;
 }
 
-class CourseGroupList extends React.PureComponent<SortableCourseGroupListProps, {}> {
+class GroupList extends React.PureComponent<SortableGroupListProps, {}> {
   render() {
     const { groups, onRight, onLeft } = this.props;
     return (
       <Root>
         {groups.map((group, index) => (
-          <SortableCourseGroup
+          <SortableGroup
             key={group.id}
             index={index}
             name={group.name}
@@ -38,6 +38,6 @@ class CourseGroupList extends React.PureComponent<SortableCourseGroupListProps, 
   }
 }
 
-export const SortableCourseGroupList = SortableContainer<SortableCourseGroupListProps>(props => (
-  <CourseGroupList {...props} />
+export const SortableCourseGroupList = SortableContainer<SortableGroupListProps>(props => (
+  <GroupList {...props} />
 ));

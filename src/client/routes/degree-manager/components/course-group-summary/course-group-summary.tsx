@@ -16,7 +16,7 @@ import { DeleteConfirmationModal } from 'components/delete-confirmation-modal';
 import { DegreeItem } from 'routes/degree-manager/components/degree-item';
 import { DescriptionAction } from 'routes/degree-manager/components/description-action';
 import { CreateGroupModal } from './create-group-modal';
-import { CourseGroup } from './course-group';
+import { RequirementGroup } from './course-group';
 import { RearrangeCourseGroups } from './rearrange-course-groups';
 
 const Columns = styled(View)`
@@ -59,16 +59,16 @@ export interface CourseGroupViewModel {
   creditMaximum: number;
 }
 
-interface CourseGroupSummaryProps {
+interface RequirementGroupListProps {
   masteredDegreeId: string;
-  courseGroupsColumnOne: CourseGroupViewModel[];
-  courseGroupsColumnTwo: CourseGroupViewModel[];
-  courseGroupsColumnThree: CourseGroupViewModel[];
+  groupsColumnOne: CourseGroupViewModel[];
+  groupsColumnTwo: CourseGroupViewModel[];
+  groupsColumnThree: CourseGroupViewModel[];
   onDelete: (groupId: string) => void;
   onGroupClick: (groupId: string) => void;
   onCreateGroup: (groupName: string, column: number) => void;
 }
-interface CourseGroupSummaryState {
+interface RequirementGroupListState {
   createGroupModalOpen: boolean;
   rearrangeModalOpen: boolean;
   deleteConfirmationGroupId: string | undefined;
@@ -86,13 +86,13 @@ const actions: Actions<'add' | 'rearrange'> = {
   },
 };
 
-export class CourseGroupSummary extends React.PureComponent<
-  CourseGroupSummaryProps,
-  CourseGroupSummaryState
+export class RequirementGroupList extends React.PureComponent<
+  RequirementGroupListProps,
+  RequirementGroupListState
 > {
   infoModal = createInfoModal();
 
-  constructor(props: CourseGroupSummaryProps) {
+  constructor(props: RequirementGroupListProps) {
     super(props);
 
     this.state = {
@@ -108,18 +108,18 @@ export class CourseGroupSummary extends React.PureComponent<
   get groupToDeleteName() {
     const { deleteConfirmationGroupId } = this.state;
     if (!deleteConfirmationGroupId) return undefined;
-    const { courseGroupsColumnOne, courseGroupsColumnTwo, courseGroupsColumnThree } = this.props;
-    const groups = [...courseGroupsColumnOne, ...courseGroupsColumnTwo, ...courseGroupsColumnThree];
+    const { groupsColumnOne, groupsColumnTwo, groupsColumnThree } = this.props;
+    const groups = [...groupsColumnOne, ...groupsColumnTwo, ...groupsColumnThree];
     const group = groups.find(group => group.id === deleteConfirmationGroupId);
     if (!group) return undefined;
     return group.name;
   }
 
   get empty() {
-    const { courseGroupsColumnOne, courseGroupsColumnTwo, courseGroupsColumnThree } = this.props;
-    if (courseGroupsColumnOne.length > 0) return false;
-    if (courseGroupsColumnTwo.length > 0) return false;
-    if (courseGroupsColumnThree.length > 0) return false;
+    const { groupsColumnOne, groupsColumnTwo, groupsColumnThree } = this.props;
+    if (groupsColumnOne.length > 0) return false;
+    if (groupsColumnTwo.length > 0) return false;
+    if (groupsColumnThree.length > 0) return false;
     return true;
   }
 
@@ -171,9 +171,9 @@ export class CourseGroupSummary extends React.PureComponent<
   render() {
     const { createGroupModalOpen, rearrangeModalOpen } = this.state;
     const {
-      courseGroupsColumnOne,
-      courseGroupsColumnTwo,
-      courseGroupsColumnThree,
+      groupsColumnOne,
+      groupsColumnTwo,
+      groupsColumnThree,
       masteredDegreeId,
       onCreateGroup,
     } = this.props;
@@ -216,8 +216,8 @@ export class CourseGroupSummary extends React.PureComponent<
               <Column>
                 <ColumnHeader>Column one</ColumnHeader>
                 <Divider />
-                {courseGroupsColumnOne.map(group => (
-                  <CourseGroup
+                {groupsColumnOne.map(group => (
+                  <RequirementGroup
                     key={group.id}
                     name={group.name}
                     creditMinimum={group.creditMinimum}
@@ -231,8 +231,8 @@ export class CourseGroupSummary extends React.PureComponent<
               <Column>
                 <ColumnHeader>Column two</ColumnHeader>
                 <Divider />
-                {courseGroupsColumnTwo.map(group => (
-                  <CourseGroup
+                {groupsColumnTwo.map(group => (
+                  <RequirementGroup
                     key={group.id}
                     name={group.name}
                     creditMinimum={group.creditMinimum}
@@ -246,8 +246,8 @@ export class CourseGroupSummary extends React.PureComponent<
               <Column>
                 <ColumnHeader>Column three</ColumnHeader>
                 <Divider />
-                {courseGroupsColumnThree.map(group => (
-                  <CourseGroup
+                {groupsColumnThree.map(group => (
+                  <RequirementGroup
                     key={group.id}
                     name={group.name}
                     creditMinimum={group.creditMinimum}

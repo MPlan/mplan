@@ -15,7 +15,7 @@ import { Paragraph } from 'components/paragraph';
 import { DescriptionEditor } from 'routes/degree-manager/components/description-editor';
 import { CreditHourMinimum } from 'routes/degree-manager/components/credit-hour-minimum';
 import { PublishUnlist } from 'routes/degree-manager/components/publish-unlist';
-import { CourseGroupSummary } from 'routes/degree-manager/components/course-group-summary';
+import { RequirementGroupList } from 'routes/degree-manager/components/course-group-summary';
 import { DegreeSummary } from 'routes/degree-manager/components/degree-summary';
 import { PageNav } from 'routes/degree-manager/components/page-nav';
 
@@ -190,7 +190,7 @@ export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetai
               minimumCreditHours={minimumCreditHours}
               onChange={onMinimumCreditHoursChange}
             />
-            <CourseGroupSummary masteredDegreeId={id} />
+            <RequirementGroupList masteredDegreeId={id} />
             <DegreeSummary />
           </Content>
         </Body>

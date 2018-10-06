@@ -1,6 +1,6 @@
 import * as Model from 'models';
 
-import { RearrangeCourseGroups, CourseGroupViewModel } from './rearrange-course-groups';
+import { RearrangeGroups, CourseGroupViewModel } from './rearrange-course-groups';
 
 interface RearrangeCourseGroupsContainsProps {
   masteredDegreeId: string;
@@ -67,6 +67,6 @@ const Container = Model.store.connect({
       courseGroupsColumnThree,
     };
   },
-})(RearrangeCourseGroups);
+})(RearrangeGroups);
 
 export { Container as RearrangeCourseGroups };
