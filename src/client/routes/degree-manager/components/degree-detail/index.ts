@@ -13,7 +13,7 @@ const Container = Model.store.connect({
       ownProps.masteredDegreeId,
     );
 
-    if (!masteredDegree) {
+    if (!masteredDegree || !ownProps.masteredDegreeId) {
       history.replace('/degree-manager');
       return;
     }
@@ -117,6 +117,19 @@ const Container = Model.store.connect({
           masteredDegrees,
           masteredDegreeId,
           changeMinimumCreditHours,
+        );
+
+        return {
+          ...state,
+          masteredDegrees: newMasteredDegrees,
+        };
+      });
+    },
+    onDelete: () => {
+      dispatch(state => {
+        const newMasteredDegrees = Model.MasteredDegrees.deleteMasteredDegree(
+          state.masteredDegrees,
+          ownProps.masteredDegreeId,
         );
 
         return {

@@ -43,7 +43,7 @@ export class RequirementGroupSummary extends React.PureComponent<RequirementGrou
               <Text>
                 <strong>Description</strong>
               </Text>
-              <Text dangerouslySetInnerHTML={{ __html: group.descriptionHtml }} />
+              <Text small dangerouslySetInnerHTML={{ __html: group.descriptionHtml }} />
               <HorizontalLine />
 
               <Paragraph>

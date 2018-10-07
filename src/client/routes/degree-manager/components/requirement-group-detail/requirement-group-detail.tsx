@@ -133,7 +133,6 @@ export class RequirementGroupDetail extends React.Component<
     rename: {
       text: 'Rename',
       icon: 'pencil',
-      color: styles.blue,
     },
     delete: {
       text: 'Delete',
@@ -253,6 +252,10 @@ export class RequirementGroupDetail extends React.Component<
                         The credit hour minimum is used to warn students when they have not added
                         enough courses to satisfy the group.
                       </Paragraph>
+                      <Paragraph>
+                        If the student fails to meet the credit hour minimum, they will receive a
+                        non-dismissable warning that will go away once they meet the minimum.
+                      </Paragraph>
                     </>
                   }
                 >
@@ -263,7 +266,16 @@ export class RequirementGroupDetail extends React.Component<
                   description={
                     <>
                       <DescriptionSubheading>Credit hour maximum</DescriptionSubheading>
-                      <Paragraph>The credit hour minimum.</Paragraph>
+                      <Paragraph>
+                        The credit hour maximum is used to warn students when they have added too
+                        many courses to this group.
+                      </Paragraph>
+                      <Paragraph>
+                        Similar to the credit hour minimum, the student will receive a
+                        non-dismissable warning. Furthermore, additional credits added past the
+                        maximum will not count towards the <strong>degree</strong> credit hour
+                        minimum defined on the previous page.
+                      </Paragraph>
                     </>
                   }
                 >

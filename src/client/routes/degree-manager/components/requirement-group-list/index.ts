@@ -14,17 +14,19 @@ const Container = Model.store.connect({
     );
 
     if (!masteredDegree) {
-      throw new Error(`could not find mastered degree with id ${ownProps.masteredDegreeId}`);
+      history.push('/degree-manager');
+      return {
+        masteredDegreeId: '',
+        groupsColumnOne: [],
+        groupsColumnTwo: [],
+        groupsColumnThree: [],
+      };
     }
 
     return {
       masteredDegreeId: ownProps.masteredDegreeId,
-      groupsColumnOne: Model.MasteredDegree.getGroupsColumnOne(
-        masteredDegree,
-      ) as GroupViewModel[],
-      groupsColumnTwo: Model.MasteredDegree.getGroupsColumnTwo(
-        masteredDegree,
-      ) as GroupViewModel[],
+      groupsColumnOne: Model.MasteredDegree.getGroupsColumnOne(masteredDegree) as GroupViewModel[],
+      groupsColumnTwo: Model.MasteredDegree.getGroupsColumnTwo(masteredDegree) as GroupViewModel[],
       groupsColumnThree: Model.MasteredDegree.getGroupsColumnThree(
         masteredDegree,
       ) as GroupViewModel[],

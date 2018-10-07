@@ -46,3 +46,18 @@ export function addMasteredDegree(
     [masteredDegree.id]: masteredDegree,
   };
 }
+
+export function deleteMasteredDegree(
+  self: MasteredDegrees,
+  masteredDegreeIdToDelete: string,
+): MasteredDegrees {
+  return Object.entries(self)
+    .filter(([masteredDegreeId]) => masteredDegreeId !== masteredDegreeIdToDelete)
+    .reduce(
+      (masteredDegrees, [masteredDegreeId, value]) => {
+        masteredDegrees[masteredDegreeId] = value;
+        return masteredDegrees;
+      },
+      {} as MasteredDegrees,
+    );
+}

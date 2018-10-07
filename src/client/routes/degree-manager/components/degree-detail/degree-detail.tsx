@@ -11,6 +11,7 @@ import { DropdownMenu } from 'components/dropdown-menu';
 import { InlineEdit } from 'components/inline-edit';
 import { RightClickMenu } from 'components/right-click-menu';
 import { Paragraph } from 'components/paragraph';
+import { DeleteConfirmationModal } from 'components/delete-confirmation-modal';
 
 import { DescriptionEditor } from 'routes/degree-manager/components/description-editor';
 import { CreditHourMinimum } from 'routes/degree-manager/components/credit-hour-minimum';
@@ -67,6 +68,7 @@ interface DegreeDetailProps {
   published: boolean;
   minimumCreditHours: number;
   onBackClick: () => void;
+  onDelete: () => void;
   onEditDegreeName: (newName: string) => void;
   onPreview: () => void;
   onDescriptionChange: (description: string) => void;
@@ -77,6 +79,7 @@ interface DegreeDetailProps {
 }
 interface DegreeDetailState {
   editingDegreeName: boolean;
+  deleteConfirmationOpen: boolean;
 }
 
 export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetailState> {
@@ -84,11 +87,6 @@ export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetai
     rename: {
       icon: 'pencil',
       text: 'Rename degree',
-    },
-    add: {
-      icon: 'plus',
-      text: 'Add course group',
-      color: styles.blue,
     },
     delete: {
       icon: 'trash',
@@ -102,6 +100,7 @@ export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetai
 
     this.state = {
       editingDegreeName: false,
+      deleteConfirmationOpen: false,
     };
   }
 
@@ -129,6 +128,15 @@ export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetai
       this.handleDegreeNameEdit();
       return;
     }
+
+    if (key === 'delete') {
+      this.setState({ deleteConfirmationOpen: true });
+      return;
+    }
+  };
+
+  handleDeleteConfirmationClose = () => {
+    this.setState({ deleteConfirmationOpen: false });
   };
 
   render() {
@@ -139,62 +147,72 @@ export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetai
       descriptionHtml,
       minimumCreditHours,
       onPreview,
+      onDelete,
       onDescriptionChange,
       published,
       onPublishChange,
       onMinimumCreditHoursChange,
     } = this.props;
 
-    const { editingDegreeName } = this.state;
+    const { editingDegreeName, deleteConfirmationOpen } = this.state;
     return (
-      <Root>
-        <Body>
-          <Content>
-            <PageNav backTitle="Back to degrees" onBackClick={onBackClick} />
-            <RightClickMenu
-              header={name}
-              actions={this.degreeDropdownAction}
-              onAction={this.handleActions}
-            >
-              {props => (
-                <TitleRow {...props}>
-                  <InlineEdit
-                    value={name}
-                    renderDisplay={props => <Title {...props} />}
-                    renderInput={props => (
-                      <TitleInput {...props} onChange={this.handleDegreeNameChange} />
-                    )}
-                    editing={editingDegreeName}
-                    onBlur={this.handleDegreeNameBlur}
-                    onEdit={this.handleDegreeNameEdit}
-                  />
-                  <VerticalBar />
-                  <DropdownMenu
-                    header={name}
-                    actions={this.degreeDropdownAction}
-                    onAction={this.handleActions}
-                  />
-                </TitleRow>
-              )}
-            </RightClickMenu>
-            <PublishUnlist published={published} onChange={onPublishChange} />
-            <DescriptionEditor descriptionHtml={descriptionHtml} onChange={onDescriptionChange}>
-              <Paragraph>Edit the description of this degree here.</Paragraph>
-              <Paragraph>
-                The degree description will appear under the degree name on the student's degree
-                worksheet. It is recommend to include a link to any official degree
-                curriculums/requirements here.
-              </Paragraph>
-            </DescriptionEditor>
-            <CreditHourMinimum
-              minimumCreditHours={minimumCreditHours}
-              onChange={onMinimumCreditHoursChange}
-            />
-            <RequirementGroupList masteredDegreeId={id} />
-            <DegreeSummary />
-          </Content>
-        </Body>
-      </Root>
+      <>
+        <Root>
+          <Body>
+            <Content>
+              <PageNav backTitle="Back to degrees" onBackClick={onBackClick} />
+              <RightClickMenu
+                header={name}
+                actions={this.degreeDropdownAction}
+                onAction={this.handleActions}
+              >
+                {props => (
+                  <TitleRow {...props}>
+                    <InlineEdit
+                      value={name}
+                      renderDisplay={props => <Title {...props} />}
+                      renderInput={props => (
+                        <TitleInput {...props} onChange={this.handleDegreeNameChange} />
+                      )}
+                      editing={editingDegreeName}
+                      onBlur={this.handleDegreeNameBlur}
+                      onEdit={this.handleDegreeNameEdit}
+                    />
+                    <VerticalBar />
+                    <DropdownMenu
+                      header={name}
+                      actions={this.degreeDropdownAction}
+                      onAction={this.handleActions}
+                    />
+                  </TitleRow>
+                )}
+              </RightClickMenu>
+              <PublishUnlist published={published} onChange={onPublishChange} />
+              <DescriptionEditor descriptionHtml={descriptionHtml} onChange={onDescriptionChange}>
+                <Paragraph>Edit the description of this degree here.</Paragraph>
+                <Paragraph>
+                  The degree description will appear under the degree name on the student's degree
+                  worksheet. It is recommend to include a link to any official degree
+                  curriculums/requirements here.
+                </Paragraph>
+              </DescriptionEditor>
+              <CreditHourMinimum
+                minimumCreditHours={minimumCreditHours}
+                onChange={onMinimumCreditHoursChange}
+              />
+              <RequirementGroupList masteredDegreeId={id} />
+              <DegreeSummary />
+            </Content>
+          </Body>
+        </Root>
+        <DeleteConfirmationModal
+          title={`Are you sure you want to delete "${name}"?`}
+          open={deleteConfirmationOpen}
+          confirmationText="Yes, delete it."
+          onClose={this.handleDeleteConfirmationClose}
+          onConfirmDelete={onDelete}
+        />
+      </>
     );
   }
 }
