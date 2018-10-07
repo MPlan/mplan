@@ -35,7 +35,6 @@ interface AutosuggestProps<T> {
 
 interface AutosuggestState {
   selectedIndex: number | undefined;
-  setBy: 'mouse' | 'keyboard' | undefined;
   search: string;
 }
 
@@ -44,7 +43,6 @@ export class Autosuggest<T> extends React.PureComponent<AutosuggestProps<T>, Aut
     super(props);
     this.state = {
       selectedIndex: 0,
-      setBy: 'keyboard',
       search: '',
     };
   }
@@ -55,7 +53,7 @@ export class Autosuggest<T> extends React.PureComponent<AutosuggestProps<T>, Aut
     const openNow = !!this.state.search;
 
     if (closedBefore && openNow) {
-      this.setState({ setBy: 'keyboard', selectedIndex: 0 });
+      this.setState({ selectedIndex: 0 });
     }
   }
 
@@ -88,15 +86,14 @@ export class Autosuggest<T> extends React.PureComponent<AutosuggestProps<T>, Aut
   };
 
   handleMouseEnter(index: number) {
-    this.setState({ selectedIndex: index, setBy: 'mouse' });
+    this.setState({ selectedIndex: index });
   }
   handleMouseLeave = () => {
-    this.setState({ selectedIndex: undefined, setBy: undefined });
+    this.setState({ selectedIndex: undefined });
   };
   handleClick = () => {
-    const { selectedIndex, setBy } = this.state;
+    const { selectedIndex } = this.state;
     const { items, getKey, onSelectSuggestion } = this.props;
-    if (setBy !== 'mouse') return;
     if (selectedIndex === undefined) return;
     const item = items[selectedIndex];
     if (!item) return;
@@ -105,13 +102,12 @@ export class Autosuggest<T> extends React.PureComponent<AutosuggestProps<T>, Aut
     this.handleClose();
   };
   handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    const { selectedIndex, setBy } = this.state;
+    const { selectedIndex } = this.state;
     const { items, onSelectSuggestion, getKey } = this.props;
 
     if (e.key === 'ArrowDown') {
       e.preventDefault();
       this.setState(previousState => ({
-        setBy: 'keyboard',
         selectedIndex:
           previousState.selectedIndex === undefined
             ? 0
@@ -123,7 +119,6 @@ export class Autosuggest<T> extends React.PureComponent<AutosuggestProps<T>, Aut
     if (e.key === 'ArrowUp') {
       e.preventDefault();
       this.setState(previousState => ({
-        setBy: 'keyboard',
         selectedIndex:
           previousState.selectedIndex === undefined
             ? items.length - 1
@@ -134,7 +129,6 @@ export class Autosuggest<T> extends React.PureComponent<AutosuggestProps<T>, Aut
 
     if (e.key === 'Enter') {
       e.preventDefault();
-      if (setBy === 'mouse') return;
       if (selectedIndex === undefined) return;
       const selectedItem = items[selectedIndex];
       if (!selectedItem) return;
