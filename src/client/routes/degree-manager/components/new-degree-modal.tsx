@@ -26,12 +26,29 @@ interface NewDegreeModalState {
 }
 
 export class NewDegreeModal extends React.PureComponent<NewDegreeModalProps, NewDegreeModalState> {
+  textFieldRef = React.createRef<TextField>();
+
   constructor(props: NewDegreeModalProps) {
     super(props);
 
     this.state = {
       degreeName: '',
     };
+  }
+
+  componentDidUpdate(previousProps: NewDegreeModalProps, previousState: NewDegreeModalState) {
+    const closedBefore = !previousProps.open;
+    const openNow = !!this.props.open;
+
+    if (closedBefore && openNow) {
+      this.setState({ degreeName: '' });
+
+      const textFieldInstance = this.textFieldRef.current;
+      if (!textFieldInstance) return;
+      textFieldInstance.focus();
+
+      return;
+    }
   }
 
   handleClickCreate = () => {
@@ -48,12 +65,16 @@ export class NewDegreeModal extends React.PureComponent<NewDegreeModalProps, New
 
   render() {
     const { open, onClose } = this.props;
+    const { degreeName } = this.state;
+
     return (
       <Modal size="medium" title="Create new degree..." open={open} onBlurCancel={onClose}>
         <TextField
           label="Degree Name"
           placeholder="e.g. Software Engineering F17"
+          value={degreeName}
           onChange={this.handleDegreeNameChange}
+          ref={this.textFieldRef as any}
         />
         <Actions>
           <Button onClick={onClose}>Cancel</Button>

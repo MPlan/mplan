@@ -42,6 +42,8 @@ export class CreateGroupModal extends React.PureComponent<
   CreateGroupModalProps,
   CreateGroupModalState
 > {
+  textFieldRef = React.createRef<TextField>();
+
   constructor(props: CreateGroupModalProps) {
     super(props);
 
@@ -57,6 +59,12 @@ export class CreateGroupModal extends React.PureComponent<
 
     if (closedBefore && openNow) {
       this.setState({ groupName: '' });
+
+      const textFieldInstance = this.textFieldRef.current;
+      if (!textFieldInstance) return;
+      textFieldInstance.focus();
+
+      return;
     }
   }
 
@@ -84,6 +92,7 @@ export class CreateGroupModal extends React.PureComponent<
           placeholder="e.g. Technical Electives"
           value={groupName}
           onChange={this.handleNameChange}
+          ref={this.textFieldRef as any}
         />
         <Spacer />
         <SelectField label="Column" items={selectFieldItems} onChange={this.handleColumnChange} />

@@ -43,6 +43,12 @@ export class TextField extends React.PureComponent<TextFieldProps, TextFieldStat
     inputElement.removeEventListener('blur', this.handleInputBlur);
   }
 
+  focus() {
+    const inputElement = this.inputRef.current;
+    if (!inputElement) return;
+    inputElement.focus();
+  }
+
   render() {
     const { label, ref, innerRef, ...restOfProps } = this.props;
     const { focused } = this.state;
