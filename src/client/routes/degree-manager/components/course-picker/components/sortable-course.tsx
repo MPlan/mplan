@@ -69,7 +69,7 @@ class Course extends React.PureComponent<CourseProps, {}> {
   render() {
     const { course, onRemove, preset, onTogglePreset } = this.props;
     return (
-      <Root>
+      <Root className={`sortable-${course.subjectCode}-${course.courseNumber}`}>
         <Fa icon="bars" />
         <SimpleName>{getSimpleName(course)}</SimpleName>
         <Name>{course.name}</Name>

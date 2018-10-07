@@ -336,7 +336,7 @@ export class RequirementGroupDetail extends React.Component<
           </Body>
         </Root>
         <CoursePicker
-          title={`Editing courses for ${name}…`}
+          title={`Editing courses for "${name}"…`}
           courseIds={catalogIds}
           presetCourses={presetCourses}
           onAdd={onAddCourse}

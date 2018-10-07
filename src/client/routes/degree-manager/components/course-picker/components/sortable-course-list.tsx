@@ -22,6 +22,20 @@ interface CourseListProps {
 }
 
 class CourseList extends React.PureComponent<CourseListProps, {}> {
+  componentDidUpdate(previousProps: CourseListProps) {
+    if (previousProps.courses.length + 1 === this.props.courses.length) {
+      // new course added
+      const course = this.props.courses[this.props.courses.length - 1];
+      if (!course) return;
+
+      const newElement = document.querySelector(
+        `.sortable-${course.subjectCode}-${course.courseNumber}`,
+      );
+      if (!newElement) return;
+      newElement.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
   handleToggle(course: Model.Course.Model) {
     this.props.onRemove(getCatalogId(course));
   }
