@@ -60,7 +60,7 @@ export class Autosuggest<T> extends React.PureComponent<AutosuggestProps<T>, Aut
   handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const search = e.currentTarget.value;
     this.props.onSearch(search);
-    this.setState({ search });
+    this.setState({ search, selectedIndex: 0 });
   };
 
   handleClose = (e?: MouseEvent) => {
