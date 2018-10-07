@@ -28,6 +28,7 @@ const Root = styled(View)`
     cursor: grabbing;
     box-shadow: ${styles.grabbableShadowActive};
   }
+  user-select: none;
 `;
 const SimpleName = styled(Text)`
   font-weight: bold;

@@ -168,7 +168,7 @@ export class CoursePicker extends React.PureComponent<CoursePickerProps, CourseP
                   onTogglePreset={onTogglePreset}
                   helperClass="sortableHelper"
                   lockAxis="y"
-                  distance={10}
+                  distance={5}
                 />
               </>
             ) : (
