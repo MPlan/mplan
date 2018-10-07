@@ -97,8 +97,8 @@ export class DegreeSummary extends React.PureComponent<DegreeSummaryProps, {}> {
               </Paragraph>
               {this.maximumTotal < degree.minimumCredits && (
                 <Paragraph color={styles.danger}>
-                  The maximum credit total ({this.maximumTotal}) do not meet the number of minimum
-                  credits ({degree.minimumCredits}
+                  The maximum credit total for every requirement group ({this.maximumTotal}) does
+                  not meet the number of minimum credits ({degree.minimumCredits}
                   ). Students will not be able to meet the requirements for this degree.
                 </Paragraph>
               )}

@@ -87,7 +87,7 @@ export class RequirementGroupSummary extends React.PureComponent<RequirementGrou
                   <>
                     Course validation is enabled meaning that students will get a non-dismissable
                     warning when the add courses that are not included in the course list defined
-                    above.
+                    above. Double check the list above.
                   </>
                 ) : (
                   <>
