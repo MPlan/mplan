@@ -1,7 +1,6 @@
 import { history } from 'client/history';
 import { Breadcrumbs } from './breadcrumbs';
 import { returnPreviousIfUnchanged } from 'utilities/return-previous-if-unchanged';
-import { memoizeAll } from 'utilities/memoize-all';
 import { flatten } from 'lodash';
 import * as Model from 'models';
 
@@ -29,23 +28,23 @@ function convertPathToString(path: string, store: Model.App.Model) {
   return convertDashedCase(path);
 }
 
-const createGroupNameLookup = memoizeAll(
-  (...requirementGroups: Array<{ [groupId: string]: Model.RequirementGroup.Model }>) => {
-    const nameTuples = flatten(requirementGroups.map(groupData => Object.values(groupData))).map(
-      group => ({ id: group.id, name: group.name }),
-    );
+const createGroupNameLookup = (
+  ...requirementGroups: Array<{ [groupId: string]: Model.RequirementGroup.Model }>
+) => {
+  const nameTuples = flatten(requirementGroups.map(groupData => Object.values(groupData))).map(
+    group => ({ id: group.id, name: group.name }),
+  );
 
-    const nameLookup = nameTuples.reduce(
-      (lookup, { id, name }) => {
-        lookup[id] = name;
-        return lookup;
-      },
-      {} as { [groupId: string]: string },
-    );
+  const nameLookup = nameTuples.reduce(
+    (lookup, { id, name }) => {
+      lookup[id] = name;
+      return lookup;
+    },
+    {} as { [groupId: string]: string },
+  );
 
-    return nameLookup;
-  },
-);
+  return nameLookup;
+};
 
 const getLookup = (store: Model.App.Model) => {
   const requirementGroups = Object.values(store.masteredDegrees).map(

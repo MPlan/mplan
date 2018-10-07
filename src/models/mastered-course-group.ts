@@ -1,14 +1,14 @@
 import * as Catalog from './catalog';
-import { get } from 'utilities/get';
 import { memoizeLast } from 'utilities/memoize-last';
-const { min, max, ceil } = Math;
 
 interface RequirementGroup {
   id: string;
   name: string;
   descriptionHtml: string;
   courseValidationEnabled: boolean;
-  courses: { [catalogId: string]: { position: number; preset: boolean } };
+  /** array of catalog ids */
+  courses: string[];
+  presetCourses: { [catalogId: string]: true | undefined };
   creditMinimum: number;
   creditMaximum: number;
   position: number;
@@ -16,89 +16,64 @@ interface RequirementGroup {
 }
 export { RequirementGroup as Model };
 
-export const getCatalogIds = memoizeLast((self: RequirementGroup) => {
-  return Object.entries(self.courses)
-    .map(([courseId, settings]) => ({
-      courseId,
-      position: settings.position,
-    }))
-    .sort((a, b) => a.position - b.position)
-    .map(({ courseId }) => courseId);
-});
-
 export const getCourses = memoizeLast((self: RequirementGroup, catalog: Catalog.Model) => {
-  return Object.entries(self.courses)
-    .map(([catalogId, settings]) => ({
+  return self.courses
+    .map(catalogId => ({
       course: catalog[catalogId],
-      settings,
+      preset: self.presetCourses[catalogId],
     }))
-    .filter(({ course }) => !!course)
-    .sort((a, b) => a.settings.position - b.settings.position);
-});
-
-export const getPresetCourses = memoizeLast((self: RequirementGroup) => {
-  return Object.entries(self.courses)
-    .filter(([_, { preset }]) => !!preset)
-    .reduce(
-      (presetCourses, [courseId]) => {
-        presetCourses[courseId] = true;
-        return presetCourses;
-      },
-      {} as {
-        [catalogId: string]: true | undefined;
-      },
-    );
+    .filter(({ course }) => !!course);
 });
 
 export function addCourse(self: RequirementGroup, catalogId: string): RequirementGroup {
-  const lastPosition =
-    max(...Object.values(self.courses).map(settings => settings.position)) || 100;
-
-  const courses = {
-    ...self.courses,
-    [catalogId]: { position: ceil(lastPosition) + 2, preset: false, hidden: false },
-  };
-
   return {
     ...self,
-    courses,
+    courses: [...self.courses, catalogId],
   };
 }
 
 export function removeCourse(self: RequirementGroup, catalogIdToDelete: string): RequirementGroup {
-  const courses = Object.entries(self.courses)
-    .filter(([catalogId]) => catalogId !== catalogIdToDelete)
+  const presetCourses = Object.keys(self.presetCourses)
+    .filter(catalogId => catalogId !== catalogIdToDelete)
     .reduce(
-      (courses, [catalogId, settings]) => {
-        courses[catalogId] = settings;
-        return courses;
+      (presetCourses, catalogId) => {
+        presetCourses[catalogId] = true;
+        return presetCourses;
       },
-      {} as {
-        [catalogId: string]: { position: number; preset: boolean };
-      },
+      {} as { [catalogId: string]: true | undefined },
     );
 
   return {
     ...self,
-    courses,
+    courses: self.courses.filter(catalogId => catalogId !== catalogIdToDelete),
+    presetCourses,
   };
 }
 
 export function togglePreset(self: RequirementGroup, catalogIdToToggle: string): RequirementGroup {
-  const course = self.courses[catalogIdToToggle];
-  if (!course) return self;
+  if (self.presetCourses[catalogIdToToggle]) {
+    // remove course
+    return {
+      ...self,
+      presetCourses: Object.keys(self.presetCourses)
+        .filter(catalogId => catalogId !== catalogIdToToggle)
+        .reduce(
+          (presetCourses, catalogId) => {
+            presetCourses[catalogId] = true;
+            return presetCourses;
+          },
+          {} as { [catalogId: string]: true | undefined },
+        ),
+    };
+  }
 
-  const courses = {
-    ...self.courses,
-    [catalogIdToToggle]: {
-      ...course,
-      preset: !course.preset,
-    },
-  };
-
+  // add courses
   return {
     ...self,
-    courses,
+    presetCourses: {
+      ...self.presetCourses,
+      [catalogIdToToggle]: true,
+    },
   };
 }
 
@@ -107,39 +82,24 @@ export function rearrangeCourses(
   oldIndex: number,
   newIndex: number,
 ): RequirementGroup {
-  const courses = Object.entries(self.courses)
-    .map(([catalogId, settings]) => ({ catalogId, ...settings }))
-    .sort((a, b) => a.position - b.position);
+  if (oldIndex === newIndex) return self;
 
-  const catalogId = courses[oldIndex].catalogId;
-  if (!catalogId) return self;
+  const catalogId = self.courses[oldIndex];
+  const { courses } = self;
 
-  const offset = oldIndex > newIndex ? -1 : 1;
-  const positionCurrent = get(courses, _ => _[newIndex].position);
-  const positionOffset = get(courses, _ => _[newIndex + offset].position);
+  const withoutOldIndex = [
+    ...courses.slice(0, oldIndex),
+    ...courses.slice(oldIndex + 1, courses.length),
+  ];
 
-  const lastPosition = max(...courses.map(course => course.position));
-  const firstPosition = min(...courses.map(course => course.position));
-
-  const newPosition =
-    positionCurrent === undefined
-      ? lastPosition + 10
-      : positionOffset === undefined
-        ? oldIndex > newIndex
-          ? firstPosition - 10
-          : lastPosition + 10
-        : (positionCurrent + positionOffset) / 2;
-
-  const settingsWithNewPosition = {
-    ...self.courses[catalogId],
-    position: newPosition,
-  };
+  const withNewIndex = [
+    ...withoutOldIndex.slice(0, newIndex),
+    catalogId,
+    ...withoutOldIndex.slice(newIndex, withoutOldIndex.length),
+  ];
 
   return {
     ...self,
-    courses: {
-      ...self.courses,
-      [catalogId]: settingsWithNewPosition,
-    },
+    courses: withNewIndex,
   };
 }

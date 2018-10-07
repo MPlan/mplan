@@ -12,11 +12,6 @@ import { Fa as _Fa } from 'components/fa';
 import { DegreeItem } from 'routes/degree-manager/components/degree-item';
 import { DescriptionAction } from 'routes/degree-manager/components/description-action';
 
-const ActionSubtitle = styled(Text)`
-  text-transform: uppercase;
-  font-size: ${styles.space(-1)};
-  margin-top: ${styles.space(-1)};
-`;
 const Fa = styled(_Fa)`
   margin-left: ${styles.space(-1)};
 `;
@@ -108,8 +103,7 @@ export class DegreeSummary extends React.PureComponent<DegreeSummaryProps, {}> {
           <PrimaryButton>
             Preview Degree <Fa icon="angleRight" />
           </PrimaryButton>
-          <ActionSubtitle>Your changes save automatically.</ActionSubtitle>
-        </DescriptionAction>
+          </DescriptionAction>
       </DegreeItem>
     );
   }

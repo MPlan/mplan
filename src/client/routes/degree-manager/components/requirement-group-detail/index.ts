@@ -49,8 +49,8 @@ const Container = Model.store.connect({
       descriptionHtml: group.descriptionHtml,
       creditMinimum: group.creditMinimum,
       creditMaximum: group.creditMaximum,
-      catalogIds: Model.RequirementGroup.getCatalogIds(group),
-      presetCourses: Model.RequirementGroup.getPresetCourses(group),
+      catalogIds: group.courses,
+      presetCourses: group.presetCourses,
       courseValidationEnabled: group.courseValidationEnabled,
     };
   },

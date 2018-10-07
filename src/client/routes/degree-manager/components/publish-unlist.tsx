@@ -5,11 +5,14 @@ import styled from 'styled-components';
 import { View } from 'components/view';
 import { Text } from 'components/text';
 import { Switch } from 'components/switch';
-import { DegreeItem } from './degree-item';
-import { DescriptionAction } from './description-action';
 import { Paragraph } from 'components/paragraph';
 import { ActionableText } from 'components/actionable-text';
 import { createInfoModal } from 'components/info-modal';
+import { PrimaryButton } from 'components/button';
+import { Fa as _Fa } from 'components/fa';
+
+import { DegreeItem } from 'routes/degree-manager/components/degree-item';
+import { DescriptionAction } from 'routes/degree-manager/components/description-action';
 
 const ActionContainer = styled(View)`
   flex-direction: row;
@@ -26,6 +29,14 @@ const Green = styled(Text)`
 `;
 const Status = styled(Text)`
   margin-left: ${styles.space(0)};
+`;
+const Fa = styled(_Fa)`
+  margin-right: ${styles.space(-1)};
+`;
+const ActionSubtitle = styled(Text)`
+  text-transform: uppercase;
+  font-size: ${styles.space(-1)};
+  margin-top: ${styles.space(-1)};
 `;
 
 interface PublishUnlistProps {
@@ -46,7 +57,7 @@ export class PublishUnlist extends React.PureComponent<PublishUnlistProps, {}> {
     const { published } = this.props;
     return (
       <>
-        <DegreeItem title="Publish or unlist">
+        <DegreeItem title="Publish">
           <DescriptionAction
             description={
               <>
@@ -75,6 +86,12 @@ export class PublishUnlist extends React.PureComponent<PublishUnlistProps, {}> {
                 <strong />
               </Status>
             </ActionContainer>
+          </DescriptionAction>
+          <DescriptionAction description={<React.Fragment />}>
+            <PrimaryButton>
+              <Fa icon="angleLeft" /> Back to Degrees
+            </PrimaryButton>
+            <ActionSubtitle>Your changes save automatically.</ActionSubtitle>
           </DescriptionAction>
         </DegreeItem>
         <PublishUnlistModal title="Publish or unlist">

@@ -1,5 +1,4 @@
 import * as React from 'react';
-import * as Model from 'models';
 import * as styles from 'styles';
 import styled from 'styled-components';
 
@@ -200,8 +199,8 @@ export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetai
                 onChange={onMinimumCreditHoursChange}
               />
               <RequirementGroupList masteredDegreeId={id} />
-              <PublishUnlist published={published} onChange={onPublishChange} />
               <DegreeSummary masteredDegreeId={id} />
+              <PublishUnlist published={published} onChange={onPublishChange} />
             </Content>
           </Body>
         </Root>
