@@ -17,16 +17,15 @@ const Root = styled(View)`
   flex: 0 0 auto;
   flex-direction: row;
   align-items: center;
-  margin: ${styles.space(-1)};
   padding: ${styles.space(-1)};
   background-color: ${styles.white};
   cursor: grab;
   &:hover {
-    box-shadow: ${styles.grabbableShadow};
+    background-color: ${styles.whiteBis};
   }
   &:active {
     cursor: grabbing;
-    box-shadow: ${styles.grabbableShadowActive};
+    background-color: ${styles.whiteTer};
   }
   user-select: none;
 `;
@@ -42,6 +41,11 @@ const Switch = styled(_Switch)`
   margin-left: ${styles.space(0)};
   margin-right: 2rem;
 `;
+const Fa = styled(_Fa)`
+  margin-left: ${styles.space(0)};
+  margin-right: ${styles.space(0)};
+`;
+
 export interface CourseProps {
   course: Model.Course.Model;
   preset: boolean;
@@ -66,6 +70,7 @@ class Course extends React.PureComponent<CourseProps, {}> {
     const { course, onRemove, preset, onTogglePreset } = this.props;
     return (
       <Root>
+        <Fa icon="bars" />
         <SimpleName>{getSimpleName(course)}</SimpleName>
         <Name>{course.name}</Name>
         <Switch checked={preset} onChange={onTogglePreset} />

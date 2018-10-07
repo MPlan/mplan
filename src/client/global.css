@@ -1,12 +1,13 @@
 .sortableHelper {
   z-index: 300 !important;
-  box-shadow: 0 0.2rem 1.3rem 0 rgba(12, 0, 51, 0.2);
-  /* user-select: none; */
+  user-select: none;
   cursor: grabbing !important;
-  cursor: -webkit-grabbing !important;
+  background-color: hsl(0, 0%, 96%) !important;
+  box-shadow: 0 0.2rem 1.3rem 0 rgba(12, 0, 51, 0.2);
 }
 
 .sortableHelper:active {
+  user-select: none;
   cursor: grabbing !important;
-  cursor: -webkit-grabbing !important;
+  background-color: hsl(0, 0%, 96%) !important;
 }
