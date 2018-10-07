@@ -29,6 +29,7 @@ const Content = styled<ContentProps>(View)`
   & * {
     ${props => (props.sorting ? 'user-select: none !important' : '')};
   }
+  border-bottom: 1px solid ${styles.grayLighter};
 `;
 const Actions = styled(View)`
   flex: 0 0 auto;

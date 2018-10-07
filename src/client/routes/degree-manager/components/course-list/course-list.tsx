@@ -14,6 +14,7 @@ const Root = styled(View)`
   overflow: scroll;
   max-height: 25rem;
   border-top: 1px solid ${styles.grayLighter};
+  border-bottom: 1px solid ${styles.grayLighter};
 `;
 
 interface CourseListProps {
