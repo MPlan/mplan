@@ -187,7 +187,6 @@ export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetai
                   </TitleRow>
                 )}
               </RightClickMenu>
-              <PublishUnlist published={published} onChange={onPublishChange} />
               <DescriptionEditor descriptionHtml={descriptionHtml} onChange={onDescriptionChange}>
                 <Paragraph>Edit the description of this degree here.</Paragraph>
                 <Paragraph>
@@ -201,6 +200,7 @@ export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetai
                 onChange={onMinimumCreditHoursChange}
               />
               <RequirementGroupList masteredDegreeId={id} />
+              <PublishUnlist published={published} onChange={onPublishChange} />
               <DegreeSummary />
             </Content>
           </Body>
