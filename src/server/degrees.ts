@@ -45,3 +45,20 @@ degrees.put('/:masteredDegreeId', checkAdmin, async (req, res) => {
 
   res.sendStatus(HttpStatus.NO_CONTENT);
 });
+
+degrees.delete('/:masteredDegreeId', checkAdmin, async (req, res) => {
+  const masteredDegreeId = req.params.masteredDegreeId as string | undefined;
+
+  if (!masteredDegreeId) {
+    res.sendStatus(HttpStatus.BAD_REQUEST);
+    return;
+  }
+
+  const { degrees } = await dbConnection;
+
+  await degrees.findOneAndDelete({
+    id: masteredDegreeId,
+  });
+
+  res.sendStatus(HttpStatus.NO_CONTENT);
+});

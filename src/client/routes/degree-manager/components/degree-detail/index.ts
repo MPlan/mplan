@@ -1,6 +1,7 @@
 import * as Model from 'models';
 import { DegreeDetail } from './degree-detail';
 import { history } from 'client/history';
+import { deleteMasteredDegree } from 'client/fetch/mastered-degrees';
 
 interface DegreeEditorContainerProps {
   masteredDegreeId: string;
@@ -131,6 +132,8 @@ const Container = Model.store.connect({
           state.masteredDegrees,
           ownProps.masteredDegreeId,
         );
+
+        deleteMasteredDegree(ownProps.masteredDegreeId);
 
         return {
           ...state,

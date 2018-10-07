@@ -12,6 +12,10 @@ const ButtonRow = styled(View)`
   justify-content: flex-end;
   margin-top: ${styles.space(0)};
 `;
+const Content = styled(View)`
+  flex: 1 1 auto;
+  overflow: auto;
+`;
 
 export function createInfoModal() {
   class InfoModal extends React.Component<
@@ -22,7 +26,7 @@ export function createInfoModal() {
       const { children, title, ...restOfProps } = this.props;
       return (
         <GenericModal {...restOfProps} size="medium" title={title}>
-          {children}
+          <Content>{children}</Content>
           <ButtonRow>
             <Button onClick={this.props.onBlurCancel}>Got it!</Button>
           </ButtonRow>

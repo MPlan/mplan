@@ -17,3 +17,11 @@ export async function saveMasteredDegree(masteredDegree: Model.MasteredDegree.Mo
   });
   if (response.status !== 204) throw new Error('Could not save mastered degree');
 }
+
+export async function deleteMasteredDegree(masteredDegreeId: string) {
+  const response = await fetchWithAuth(`/api/degrees/${masteredDegreeId}`, {
+    method: 'DELETE',
+  });
+
+  if (response.status !== 204) throw new Error('Could not delete mastered degree');
+}
