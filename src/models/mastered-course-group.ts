@@ -25,10 +25,10 @@ export const getCourses = memoizeLast((self: RequirementGroup, catalog: Catalog.
     .filter(({ course }) => !!course);
 });
 
-export function addCourse(self: RequirementGroup, catalogId: string): RequirementGroup {
+export function addCourse(self: RequirementGroup, catalogIdToAdd: string): RequirementGroup {
   return {
     ...self,
-    courses: [...self.courses, catalogId],
+    courses: [...self.courses.filter(catalogId => catalogId !== catalogIdToAdd), catalogIdToAdd],
   };
 }
 
