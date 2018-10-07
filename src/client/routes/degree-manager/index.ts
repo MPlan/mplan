@@ -1,4 +1,5 @@
 import * as Model from 'models';
+import { ObjectId } from 'utilities/object-id';
 import { DegreeEditor } from './degree-manager';
 import { saveMasteredDegree } from 'client/fetch/mastered-degrees';
 import { history } from 'client/history';
@@ -13,8 +14,18 @@ const Container = Model.store.connect({
   mapDispatchToProps: dispatch => ({
     onCreateDegree: (degreeName: string) => {
       dispatch(state => {
+        const newDegreeId = ObjectId();
         const lastPosition = Model.MasteredDegrees.getLastPosition(state.masteredDegrees);
-        const newDegree = Model.MasteredDegree.createNewMasteredDegree(degreeName, lastPosition);
+        const newDegree = Model.MasteredDegree.createNewMasteredDegree(
+          degreeName,
+          lastPosition,
+          newDegreeId,
+        );
+
+        setTimeout(() => {
+          // TODO: this is kind of a hack
+          history.push(`/degree-manager/${newDegreeId}`);
+        }, 100);
 
         return {
           ...state,

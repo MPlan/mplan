@@ -1,4 +1,3 @@
-import { ObjectId } from 'utilities/object-id';
 import * as RequirementGroup from './mastered-course-group';
 import { createSelector } from 'reselect';
 import { get } from 'utilities/get';
@@ -34,58 +33,53 @@ export const getCourseGroups = createSelector(selectRequirementGroups, requireme
     .sort((a, b) => a.column * 1000 + a.position - (b.column * 1000 + b.position));
 });
 
-export const getGroupsColumnOne = createSelector(
-  selectRequirementGroups,
-  requirementGroups => {
-    return Object.values(requirementGroups)
-      .reduce(
-        (courseGroupArray, group) => {
-          courseGroupArray.push(group);
-          return courseGroupArray;
-        },
-        [] as RequirementGroup.Model[],
-      )
-      .filter(group => group.column === 1)
-      .sort((a, b) => a.column * 1000 + a.position - (b.column * 1000 + b.position));
-  },
-);
+export const getGroupsColumnOne = createSelector(selectRequirementGroups, requirementGroups => {
+  return Object.values(requirementGroups)
+    .reduce(
+      (courseGroupArray, group) => {
+        courseGroupArray.push(group);
+        return courseGroupArray;
+      },
+      [] as RequirementGroup.Model[],
+    )
+    .filter(group => group.column === 1)
+    .sort((a, b) => a.column * 1000 + a.position - (b.column * 1000 + b.position));
+});
 
-export const getGroupsColumnTwo = createSelector(
-  selectRequirementGroups,
-  requirementGroups => {
-    return Object.values(requirementGroups)
-      .reduce(
-        (courseGroupArray, group) => {
-          courseGroupArray.push(group);
-          return courseGroupArray;
-        },
-        [] as RequirementGroup.Model[],
-      )
-      .filter(group => group.column === 2)
-      .sort((a, b) => a.column * 1000 + a.position - (b.column * 1000 + b.position));
-  },
-);
+export const getGroupsColumnTwo = createSelector(selectRequirementGroups, requirementGroups => {
+  return Object.values(requirementGroups)
+    .reduce(
+      (courseGroupArray, group) => {
+        courseGroupArray.push(group);
+        return courseGroupArray;
+      },
+      [] as RequirementGroup.Model[],
+    )
+    .filter(group => group.column === 2)
+    .sort((a, b) => a.column * 1000 + a.position - (b.column * 1000 + b.position));
+});
 
-export const getGroupsColumnThree = createSelector(
-  selectRequirementGroups,
-  requirementGroups => {
-    return Object.values(requirementGroups)
-      .reduce(
-        (courseGroupArray, group) => {
-          courseGroupArray.push(group);
-          return courseGroupArray;
-        },
-        [] as RequirementGroup.Model[],
-      )
-      .filter(group => group.column === 3)
-      .sort((a, b) => a.column * 1000 + a.position - (b.column * 1000 + b.position));
-  },
-);
+export const getGroupsColumnThree = createSelector(selectRequirementGroups, requirementGroups => {
+  return Object.values(requirementGroups)
+    .reduce(
+      (courseGroupArray, group) => {
+        courseGroupArray.push(group);
+        return courseGroupArray;
+      },
+      [] as RequirementGroup.Model[],
+    )
+    .filter(group => group.column === 3)
+    .sort((a, b) => a.column * 1000 + a.position - (b.column * 1000 + b.position));
+});
 
-export function createNewMasteredDegree(degreeName: string, lastPosition: number): MasteredDegree {
+export function createNewMasteredDegree(
+  degreeName: string,
+  lastPosition: number,
+  id: string,
+): MasteredDegree {
   const newDegree: MasteredDegree = {
     descriptionHtml: 'No description provided.',
-    id: ObjectId(),
+    id,
     requirementGroups: {},
     minimumCredits: 120,
     name: degreeName,
@@ -106,12 +100,17 @@ export function getNewCourseGroupPosition(self: MasteredDegree, column: number) 
   return Math.ceil(lastGroup.position) + 2;
 }
 
-export function createNewGroup(self: MasteredDegree, name: string, column: number): MasteredDegree {
+export function createNewGroup(
+  self: MasteredDegree,
+  name: string,
+  column: number,
+  id: string,
+): MasteredDegree {
   const { requirementGroups } = self;
   const newGroup: RequirementGroup.Model = {
     name,
     column,
-    id: ObjectId(),
+    id,
     courses: {},
     courseValidationEnabled: false,
     creditMaximum: 6,

@@ -1,3 +1,4 @@
+import { ObjectId } from 'utilities/object-id';
 import * as Model from 'models';
 import { history } from 'client/history';
 import { RequirementGroupList, GroupViewModel } from './requirement-group-list';
@@ -39,14 +40,17 @@ const Container = Model.store.connect({
     },
     onCreateGroup: (groupName: string, column: number) => {
       dispatch(state => {
+        const newGroupId = ObjectId();
         const createGroup = (masteredDegree: Model.MasteredDegree.Model) =>
-          Model.MasteredDegree.createNewGroup(masteredDegree, groupName, column);
+          Model.MasteredDegree.createNewGroup(masteredDegree, groupName, column, newGroupId);
 
         const newMasteredDegrees = Model.MasteredDegrees.updatedMasteredDegree(
           state.masteredDegrees,
           ownProps.masteredDegreeId,
           createGroup,
         );
+
+        history.push(`/degree-manager/${ownProps.masteredDegreeId}/groups/${newGroupId}`);
 
         return {
           ...state,
