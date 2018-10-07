@@ -36,7 +36,7 @@ export class RequirementGroupSummary extends React.PureComponent<RequirementGrou
     if (!group) return null;
 
     return (
-      <DegreeItem title="Summary">
+      <DegreeItem title="Review">
         <DescriptionAction
           description={
             <>
@@ -49,6 +49,12 @@ export class RequirementGroupSummary extends React.PureComponent<RequirementGrou
               <Paragraph>
                 <strong>Credit hours</strong>
               </Paragraph>
+              {group.creditMinimum > group.creditMaximum && (
+                <Paragraph color={styles.danger}>
+                  The credit minimum exceeds the credit maximum. This may lead to undesired
+                  behavior.
+                </Paragraph>
+              )}
               <Paragraph>
                 {group.creditMinimum === group.creditMaximum ? (
                   <>

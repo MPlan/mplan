@@ -201,7 +201,7 @@ export class DegreeDetail extends React.Component<DegreeDetailProps, DegreeDetai
               />
               <RequirementGroupList masteredDegreeId={id} />
               <PublishUnlist published={published} onChange={onPublishChange} />
-              <DegreeSummary />
+              <DegreeSummary masteredDegreeId={id} />
             </Content>
           </Body>
         </Root>

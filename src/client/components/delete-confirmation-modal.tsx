@@ -28,14 +28,15 @@ interface DeleteConfirmationModalProps {
   title: string;
   confirmationText: string;
   icon?: string;
+  info?: string;
 }
 
 export class DeleteConfirmationModal extends React.PureComponent<DeleteConfirmationModalProps, {}> {
   render() {
-    const { title, confirmationText, open, onClose, onConfirmDelete, icon } = this.props;
+    const { title, confirmationText, open, onClose, onConfirmDelete, icon, info } = this.props;
     return (
       <Modal title={title} open={open} onBlurCancel={onClose} size="medium">
-        <Paragraph>This action cannot be undone.</Paragraph>
+        <Paragraph>{info || 'This action cannot be undone.'}</Paragraph>
         <Actions>
           <Button onClick={onClose}>Cancel</Button>
           <DangerButton onClick={onConfirmDelete}>
