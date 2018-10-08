@@ -8,6 +8,7 @@ export const ActionableText = styled(Text)`
   font-size: ${styles.space(-1)};
   text-transform: uppercase;
   justify-self: flex-start;
+  align-self: flex-start;
   &:active {
     color: ${styles.linkActive};
   }

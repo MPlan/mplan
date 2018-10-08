@@ -343,7 +343,10 @@ export class RequirementGroupDetail extends React.Component<
                 <DescriptionAction
                   description={
                     <>
-                      <Paragraph>TODO</Paragraph>
+                      <Paragraph>
+                        Use this section to enable course checking and set pre-populated default
+                        courses for this requirement group.
+                      </Paragraph>
                       {this.coursesEnabled && (
                         <ButtonBar>
                           <PrimaryButton onClick={this.handleCoursePickerOpen}>
@@ -415,10 +418,35 @@ export class RequirementGroupDetail extends React.Component<
           </Paragraph>
         </RelaxModeModal>
         <StrictModeModal title="Strict Mode">
-          <Paragraph>Strict mode only allows the courses defined in </Paragraph>
+          <Paragraph>
+            Strict mode pre-populates this requirement group in a student's degree worksheet with
+            the courses defined here and does not allow any deviance.
+          </Paragraph>
+          <Paragraph>
+            This mode is recommended for requirement groups where almost all the students will take
+            the same courses such as "Written and Oral Communication" where almost all students will
+            take COMP 105 and COMP 270.
+          </Paragraph>
+          <Paragraph>
+            <strong>Note:</strong> in the case of petitions/edge cases, students will still be able
+            to add courses that are not listed in this group but if they do, they will receive a
+            non-dismissable warning.
+          </Paragraph>
         </StrictModeModal>
         <AlternatesAllowedModal title="Alternates Allowed Mode">
-          <Paragraph>TODO</Paragraph>
+          <Paragraph>
+            Alternates Allowed mode allows alternate courses along with presets.
+          </Paragraph>
+          <Paragraph>
+            This mode is recommended if there is a some choice involved in the requirement group.
+            Requirement groups such as "Technical Electives" and "Laboratory Sciences" are good
+            candidates for this mode.
+          </Paragraph>
+          <Paragraph>
+            <strong>Note:</strong> in the case of petitions/edge cases, students will still be able
+            to add courses that are not listed in this group but if they do, they will receive a
+            non-dismissable warning.
+          </Paragraph>
         </AlternatesAllowedModal>
       </>
     );
