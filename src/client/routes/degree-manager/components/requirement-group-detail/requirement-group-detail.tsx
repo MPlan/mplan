@@ -10,20 +10,23 @@ import { InlineEdit } from 'components/inline-edit';
 import { VerticalBar } from 'components/vertical-bar';
 import { DropdownMenu } from 'components/dropdown-menu';
 import { Paragraph } from 'components/paragraph';
-import { PrimaryButton } from 'components/button';
 import { Fa as _Fa } from 'components/fa';
 import { Link } from 'components/link';
 import { CreditHourEditor } from 'components/credit-hour-editor';
-import { Switch } from 'components/switch';
+import { RadioGroup } from 'components/radio-group';
 import { DeleteConfirmationModal } from 'components/delete-confirmation-modal';
+import { ActionableText } from 'components/actionable-text';
+import { createInfoModal } from 'components/info-modal';
+import { Empty } from 'components/empty';
+import { PrimaryButton } from 'components/button';
 
 import { DegreeItem } from 'routes/degree-manager/components/degree-item';
 import { DescriptionAction } from 'routes/degree-manager/components/description-action';
 import { DescriptionEditor } from 'routes/degree-manager/components/description-editor';
 import { PageNav } from 'routes/degree-manager/components/page-nav';
-import { CourseList } from 'routes/degree-manager/components/course-list';
 import { CoursePicker } from 'routes/degree-manager/components/course-picker';
 import { RequirementGroupSummary } from 'routes/degree-manager/components/requirement-group-summary';
+import { CourseList } from 'routes/degree-manager/components/course-list';
 
 const Root = styled(View)`
   flex: 1 1 auto;
@@ -67,7 +70,6 @@ const TitleInput = styled(Input)`
 const Fa = styled(_Fa)`
   margin-right: ${styles.space(-1)};
 `;
-
 const DescriptionSubheading = styled(Text)`
   font-weight: bold;
   margin-bottom: ${styles.space(-1)};
@@ -76,12 +78,52 @@ const Spacer = styled.div`
   flex: 0 0 auto;
   height: ${styles.space(1)};
 `;
-const ActionContainer = styled(View)`
+const RadioDescription = styled(View)`
+  margin-top: ${styles.space(-1)};
+  margin-left: 2rem;
+`;
+const ButtonBar = styled(View)`
   flex-direction: row;
+  justify-content: flex-end;
+  margin-bottom: ${styles.space(-1)};
 `;
-const Status = styled(Text)`
-  margin-left: ${styles.space(0)};
-`;
+
+const { Modal: RelaxModeModal, open: openRelaxModeInfo } = createInfoModal();
+const { Modal: StrictModeModal, open: openStrictModeInfo } = createInfoModal();
+const { Modal: AlternatesAllowedModal, open: openAlternatesAllowedModeInfo } = createInfoModal();
+
+const courseModeOptions = [
+  {
+    value: 'relaxed',
+    label: 'Relaxed',
+    description: (
+      <RadioDescription>
+        <Paragraph>Allows students to add any courses.</Paragraph>
+        <ActionableText onClick={openRelaxModeInfo}>More info</ActionableText>
+      </RadioDescription>
+    ),
+  },
+  {
+    value: 'strict',
+    label: 'Strict',
+    description: (
+      <RadioDescription>
+        <Paragraph>Only allows the courses defined here.</Paragraph>
+        <ActionableText onClick={openStrictModeInfo}>More info</ActionableText>
+      </RadioDescription>
+    ),
+  },
+  {
+    value: 'alternates-allowed',
+    label: 'Alternates Allowed',
+    description: (
+      <RadioDescription>
+        <Paragraph>Allows alternate courses along with presets.</Paragraph>
+        <ActionableText onClick={openAlternatesAllowedModeInfo}>More info</ActionableText>
+      </RadioDescription>
+    ),
+  },
+];
 
 interface RequirementGroupDetailProps {
   masteredDegreeId: string;
@@ -90,10 +132,11 @@ interface RequirementGroupDetailProps {
   descriptionHtml: string;
   creditMinimum: number;
   creditMaximum: number;
-  courseValidationEnabled: boolean;
 
   catalogIds: string[];
   presetCourses: { [catalogId: string]: true | undefined };
+  courseMode: string; // 'relaxed' | 'strict' | 'alternates-allowed';
+
   onAddCourse: (catalogId: string) => void;
   onRemoveCourse: (catalogId: string) => void;
   onTogglePreset: (catalogId: string) => void;
@@ -107,8 +150,9 @@ interface RequirementGroupDetailProps {
   onPreviewClick: () => void;
   onDelete: () => void;
 
-  onToggleCourseValidation: () => void;
+  onCourseModeChange: (mode: string) => void;
 }
+
 interface RequirementGroupDetailState {
   editingName: boolean;
   coursePickerOpen: boolean;
@@ -119,16 +163,6 @@ export class RequirementGroupDetail extends React.Component<
   RequirementGroupDetailProps,
   RequirementGroupDetailState
 > {
-  constructor(props: RequirementGroupDetailProps) {
-    super(props);
-
-    this.state = {
-      editingName: false,
-      coursePickerOpen: false,
-      deleteConfirmationOpen: false,
-    };
-  }
-
   degreeDropdownAction = {
     rename: {
       text: 'Rename',
@@ -140,6 +174,29 @@ export class RequirementGroupDetail extends React.Component<
       color: styles.danger,
     },
   };
+
+  constructor(props: RequirementGroupDetailProps) {
+    super(props);
+
+    this.state = {
+      editingName: false,
+      coursePickerOpen: false,
+      deleteConfirmationOpen: false,
+    };
+  }
+
+  get showNoActionNeeded() {
+    return this.props.courseMode === 'relaxed';
+  }
+
+  get coursesEnabled() {
+    return this.props.courseMode !== 'relaxed';
+  }
+
+  get hasCourses() {
+    return this.props.catalogIds.length > 0;
+  }
+
   handleActions = (action: keyof typeof RequirementGroupDetail.prototype.degreeDropdownAction) => {
     if (action === 'rename') {
       this.setState({ editingName: true });
@@ -206,18 +263,18 @@ export class RequirementGroupDetail extends React.Component<
       creditMaximum,
       descriptionHtml,
       presetCourses,
-      courseValidationEnabled,
+      catalogIds,
+      courseMode,
       onBackClick,
       onPreviewClick,
       onDescriptionChange,
       onCreditMaximumChange,
       onCreditMinimumChange,
-      catalogIds,
       onAddCourse,
       onRemoveCourse,
       onRearrangeCourses,
       onTogglePreset,
-      onToggleCourseValidation,
+      onCourseModeChange,
       onDelete,
     } = this.props;
 
@@ -282,54 +339,44 @@ export class RequirementGroupDetail extends React.Component<
                   <CreditHourEditor creditHours={creditMaximum} onChange={onCreditMaximumChange} />
                 </DescriptionAction>
               </DegreeItem>
-              <DegreeItem title="Courses and validation">
+              <DegreeItem title="Courses">
                 <DescriptionAction
                   description={
                     <>
-                      <Paragraph>
-                        Enabling this section enables <strong>course validation</strong>. When this
-                        is disabled, students will be able to add any course to this group without
-                        warning.
-                      </Paragraph>
-                      <Paragraph>
-                        <strong>Course validation</strong> helps students check whether or not a
-                        course added to this group will be allowed. When course validation is turned
-                        on, students will receive non-dismissable warnings when they add courses
-                        that are not defined here.
-                      </Paragraph>
-                      <Paragraph>
-                        <strong>Disclaimer:</strong> though this feature helps validate some
-                        courses, it is not meant to be thorough.{' '}
-                        <em>MPlan is not a degree audit.</em>
-                      </Paragraph>
+                      <Paragraph>TODO</Paragraph>
+                      {this.coursesEnabled && (
+                        <ButtonBar>
+                          <PrimaryButton onClick={this.handleCoursePickerOpen}>
+                            <Fa icon={this.hasCourses ? 'pencil' : 'plus'} />
+                            {this.hasCourses ? 'Edit' : 'Add'} Courses
+                          </PrimaryButton>
+                        </ButtonBar>
+                      )}
+                      {this.showNoActionNeeded && (
+                        <Empty
+                          title="No action needed."
+                          subtitle={
+                            <>
+                              Switch to a different mode if you'd like to add courses.
+                              <br />
+                              In Relaxed mode, there is no need to add courses.
+                            </>
+                          }
+                        />
+                      )}
+                      {this.coursesEnabled && (
+                        <CourseList catalogIds={catalogIds} presetCourses={presetCourses} />
+                      )}
                     </>
                   }
                 >
-                  <ActionContainer>
-                    <Switch checked={courseValidationEnabled} onChange={onToggleCourseValidation} />
-                    <Status>
-                      Current Status:
-                      <br />
-                      {courseValidationEnabled ? (
-                        <strong>Enabled</strong>
-                      ) : (
-                        <strong>Disabled</strong>
-                      )}
-                      <strong />
-                    </Status>
-                  </ActionContainer>
+                  <Paragraph style={{ fontWeight: 'bold' }}>Mode:</Paragraph>
+                  <RadioGroup
+                    value={courseMode}
+                    options={courseModeOptions}
+                    onChange={onCourseModeChange}
+                  />
                 </DescriptionAction>
-                {courseValidationEnabled && (
-                  <DescriptionAction
-                    description={
-                      <CourseList presetCourses={presetCourses} catalogIds={catalogIds} />
-                    }
-                  >
-                    <PrimaryButton onClick={this.handleCoursePickerOpen}>
-                      <Fa icon="pencil" /> Edit
-                    </PrimaryButton>
-                  </DescriptionAction>
-                )}
               </DegreeItem>
               <RequirementGroupSummary masteredDegreeId={masteredDegreeId} groupId={groupId} />
             </Content>
@@ -354,6 +401,24 @@ export class RequirementGroupDetail extends React.Component<
           confirmationText="Yes, delete it"
           icon="trash"
         />
+        <RelaxModeModal title="Relaxed Mode">
+          <Paragraph>Relaxed mode allows students to add any courses to this group.</Paragraph>
+          <Paragraph>
+            This mode is recommended for requirement groups that span a wide variety of courses such
+            as "Humanities and the Arts" and "Social and Behavioral Analysis".
+          </Paragraph>
+          <Paragraph>
+            The general recommendation is to use this mode when it's too hard to create a list of
+            courses to maintain. Requirement groups like "Technical Electives" or "Applications" may
+            also be good candidates for this mode.
+          </Paragraph>
+        </RelaxModeModal>
+        <StrictModeModal title="Strict Mode">
+          <Paragraph>Strict mode only allows the courses defined in </Paragraph>
+        </StrictModeModal>
+        <AlternatesAllowedModal title="Alternates Allowed Mode">
+          <Paragraph>TODO</Paragraph>
+        </AlternatesAllowedModal>
       </>
     );
   }

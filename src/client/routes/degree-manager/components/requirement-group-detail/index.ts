@@ -23,7 +23,7 @@ const Container = Model.store.connect({
       creditMaximum: 0,
       catalogIds: [],
       presetCourses: {},
-      courseValidationEnabled: false,
+      courseMode: 'relaxed',
     };
 
     if (!masteredDegree) {
@@ -51,7 +51,7 @@ const Container = Model.store.connect({
       creditMaximum: group.creditMaximum,
       catalogIds: group.courses,
       presetCourses: group.presetCourses,
-      courseValidationEnabled: group.courseValidationEnabled,
+      courseMode: group.courseMode,
     };
   },
   mapDispatchToProps: (dispatch, ownProps: RequirementGroupDetailContainerProps) => ({
@@ -207,26 +207,6 @@ const Container = Model.store.connect({
         };
       });
     },
-    onToggleCourseValidation: () => {
-      dispatch(state => {
-        const updateGroup = (masteredDegree: Model.MasteredDegree.Model) =>
-          Model.MasteredDegree.updateGroup(masteredDegree, ownProps.groupId, group => ({
-            ...group,
-            courseValidationEnabled: !group.courseValidationEnabled,
-          }));
-
-        const newMasteredDegrees = Model.MasteredDegrees.updatedMasteredDegree(
-          state.masteredDegrees,
-          ownProps.masteredDegreeId,
-          updateGroup,
-        );
-
-        return {
-          ...state,
-          masteredDegrees: newMasteredDegrees,
-        };
-      });
-    },
     onDelete: () => {
       dispatch(state => {
         const deleteGroup = (masteredDegree: Model.MasteredDegree.Model) =>
@@ -236,6 +216,26 @@ const Container = Model.store.connect({
           state.masteredDegrees,
           ownProps.masteredDegreeId,
           deleteGroup,
+        );
+
+        return {
+          ...state,
+          masteredDegrees: newMasteredDegrees,
+        };
+      });
+    },
+    onCourseModeChange: (mode: string) => {
+      dispatch(state => {
+        const updateGroupMode = (masteredDegree: Model.MasteredDegree.Model) =>
+          Model.MasteredDegree.updateGroup(masteredDegree, ownProps.groupId, group => ({
+            ...group,
+            courseMode: mode,
+          }));
+
+        const newMasteredDegrees = Model.MasteredDegrees.updatedMasteredDegree(
+          state.masteredDegrees,
+          ownProps.masteredDegreeId,
+          updateGroupMode,
         );
 
         return {

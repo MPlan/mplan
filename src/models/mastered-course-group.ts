@@ -5,7 +5,6 @@ interface RequirementGroup {
   id: string;
   name: string;
   descriptionHtml: string;
-  courseValidationEnabled: boolean;
   /** array of catalog ids */
   courses: string[];
   presetCourses: { [catalogId: string]: true | undefined };
@@ -13,6 +12,7 @@ interface RequirementGroup {
   creditMaximum: number;
   position: number;
   column: number;
+  courseMode: string; // 'relaxed' | 'strict' | 'alternates-allowed';
 }
 export { RequirementGroup as Model };
 

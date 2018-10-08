@@ -7,6 +7,7 @@ import { Paragraph } from 'components/paragraph';
 import { Text } from 'components/text';
 import { PrimaryButton } from 'components/button';
 import { Fa as _Fa } from 'components/fa';
+import { HorizontalLine } from 'components/horizontal-line';
 
 import { DegreeItem } from 'routes/degree-manager/components/degree-item';
 import { DescriptionAction } from 'routes/degree-manager/components/description-action';
@@ -18,11 +19,6 @@ const ActionSubtitle = styled(Text)`
   text-transform: uppercase;
   font-size: ${styles.space(-1)};
   margin-top: ${styles.space(-1)};
-`;
-const HorizontalLine = styled.hr`
-  width: 100%;
-  border: none;
-  border-bottom: 1px solid ${styles.grayLighter};
 `;
 
 export interface RequirementGroupSummaryProps {
@@ -78,25 +74,7 @@ export class RequirementGroupSummary extends React.PureComponent<RequirementGrou
               <Paragraph>
                 <strong>Course validation</strong>
               </Paragraph>
-              <Paragraph>
-                Current Status:{' '}
-                <strong>{group.courseValidationEnabled ? 'Enabled' : 'Disabled'}</strong>
-              </Paragraph>
-              <Paragraph>
-                {group.courseValidationEnabled ? (
-                  <>
-                    Course validation is enabled meaning that students will get a non-dismissable
-                    warning when the add courses that are not included in the course list defined
-                    above. Double check the list above.
-                  </>
-                ) : (
-                  <>
-                    Course validation is disabled meaning that students can freely add courses to
-                    this group without warnings. This is recommended for requirement groups with too
-                    many possible courses to maintain (e.g. Humanities and the Arts).
-                  </>
-                )}
-              </Paragraph>
+              <Paragraph>TODO</Paragraph>
             </>
           }
         >

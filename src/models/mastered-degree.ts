@@ -113,7 +113,7 @@ export function createNewGroup(
     id,
     courses: [],
     presetCourses: {},
-    courseValidationEnabled: false,
+    courseMode: 'relaxed',
     creditMaximum: 6,
     creditMinimum: 6,
     descriptionHtml: 'No description provided',

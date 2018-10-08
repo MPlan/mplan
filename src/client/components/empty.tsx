@@ -32,7 +32,7 @@ const Subtitle = styled<TextWithSizeProps>(Text)`
 
 interface EmptyProps {
   title?: string;
-  subtitle?: string;
+  subtitle?: React.ReactNode;
   size?: 'small' | 'regular' | 'large';
 }
 
