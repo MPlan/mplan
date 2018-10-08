@@ -49,6 +49,7 @@ const Fa = styled(_Fa)`
 export interface CourseProps {
   course: Model.Course.Model;
   preset: boolean;
+  presetsEnabled: boolean;
   onRemove: () => void;
   onTogglePreset: () => void;
 }
@@ -67,13 +68,13 @@ class Course extends React.PureComponent<CourseProps, {}> {
   }
 
   render() {
-    const { course, onRemove, preset, onTogglePreset } = this.props;
+    const { course, preset, presetsEnabled, onRemove, onTogglePreset } = this.props;
     return (
       <Root className={`sortable-${course.subjectCode}-${course.courseNumber}`}>
         <Fa icon="bars" />
         <SimpleName>{getSimpleName(course)}</SimpleName>
         <Name>{course.name}</Name>
-        <Switch checked={preset} onChange={onTogglePreset} />
+        {presetsEnabled && <Switch checked={preset} onChange={onTogglePreset} />}
         <TransparentButton onClick={onRemove}>Remove</TransparentButton>
       </Root>
     );

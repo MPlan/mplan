@@ -71,6 +71,7 @@ export interface CoursePickerProps {
   searchResults: Model.Course.Model[];
   query: string;
   searchResultsCount: number;
+  presetsEnabled: boolean;
   onSearch: (query: string) => void;
   onAdd: (catalogId: string) => void;
   onRemove: (catalogId: string) => void;
@@ -123,6 +124,7 @@ export class CoursePicker extends React.PureComponent<CoursePickerProps, CourseP
       searchResults,
       searchResultsCount,
       presetCourses,
+      presetsEnabled,
       onRemove,
       onClose,
       onSearch,
@@ -150,20 +152,25 @@ export class CoursePicker extends React.PureComponent<CoursePickerProps, CourseP
               <>
                 <RowHeader>
                   <CourseNameCell>Course name</CourseNameCell>
-                  <DefaultCourse>
-                    Add by
-                    <br />
-                    default
-                  </DefaultCourse>
-                  <IconButton onClick={this.infoModal.open}>
-                    <Fa icon="questionCircle" />
-                  </IconButton>
+                  {presetsEnabled && (
+                    <>
+                      <DefaultCourse>
+                        Add by
+                        <br />
+                        default
+                      </DefaultCourse>
+                      <IconButton onClick={this.infoModal.open}>
+                        <Fa icon="questionCircle" />
+                      </IconButton>
+                    </>
+                  )}
                 </RowHeader>
                 <SortableCourseList
                   onSortStart={this.handleSortStart}
                   onSortEnd={this.handleSortEnd}
                   courses={courses}
                   presetCourses={presetCourses}
+                  presetsEnabled={presetsEnabled}
                   onRemove={onRemove}
                   onTogglePreset={onTogglePreset}
                   helperClass="sortableHelper"

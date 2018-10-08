@@ -8,6 +8,7 @@ interface CoursePickerContainerProps {
   open: boolean;
   courseIds: string[];
   presetCourses: { [catalogId: string]: true | undefined };
+  presetsEnabled: boolean;
   onAdd: (catalogId: string) => void;
   onRemove: (catalogId: string) => void;
   onTogglePreset: (catalogId: string) => void;
@@ -32,6 +33,7 @@ const Container = compose<CoursePickerProps, CoursePickerContainerProps>(
         title: ownProps.title,
         open: ownProps.open,
         presetCourses: ownProps.presetCourses,
+        presetsEnabled: ownProps.presetsEnabled,
         courses,
         searchResults: searchResults.slice(0, 5),
         query: ownProps.query,

@@ -386,6 +386,7 @@ export class RequirementGroupDetail extends React.Component<
           title={`Editing courses for "${name}"…`}
           courseIds={catalogIds}
           presetCourses={presetCourses}
+          presetsEnabled={courseMode === 'alternates-allowed'}
           onAdd={onAddCourse}
           onRemove={onRemoveCourse}
           open={coursePickerOpen}
