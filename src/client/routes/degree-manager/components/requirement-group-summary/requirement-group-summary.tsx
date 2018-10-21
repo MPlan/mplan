@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as Model from 'models';
 import * as styles from 'styles';
+import * as pluralize from 'pluralize';
 import styled from 'styled-components';
 
 import { Paragraph } from 'components/paragraph';
@@ -23,12 +24,19 @@ const ActionSubtitle = styled(Text)`
 
 export interface RequirementGroupSummaryProps {
   group: Model.RequirementGroup.Model | undefined;
+  minimumPrepopulatedCredits: number;
+  maximumPrepopulatedCredits: number;
   onBackClick: () => void;
 }
 
 export class RequirementGroupSummary extends React.PureComponent<RequirementGroupSummaryProps, {}> {
   render() {
-    const { group, onBackClick } = this.props;
+    const {
+      group,
+      onBackClick,
+      minimumPrepopulatedCredits,
+      maximumPrepopulatedCredits,
+    } = this.props;
     if (!group) return null;
 
     return (
@@ -72,9 +80,88 @@ export class RequirementGroupSummary extends React.PureComponent<RequirementGrou
               <HorizontalLine />
 
               <Paragraph>
-                <strong>Course validation</strong>
+                <strong>Courses</strong>
               </Paragraph>
-              <Paragraph>TODO</Paragraph>
+              <Paragraph>
+                Mode:{' '}
+                <strong>
+                  {group.courseMode === 'relaxed'
+                    ? 'relaxed'
+                    : group.courseMode === 'strict'
+                      ? 'strict'
+                      : group.courseMode === 'alternates-allowed'
+                        ? 'alternates allowed'
+                        : 'ERROR'}
+                </strong>
+              </Paragraph>
+              {group.courseMode === 'relaxed' ? (
+                <>
+                  <Paragraph>
+                    In relax mode, students can freely add courses to this list.
+                    <br />
+                    No further action needed.
+                  </Paragraph>
+                </>
+              ) : (
+                <>
+                  <Paragraph>
+                    There {group.courses.length > 0 ? 'are' : 'is'}{' '}
+                    <strong>{group.courses.length}</strong> configured course
+                    {group.courses.length > 0 ? 's' : ''} in this group.
+                    <br />
+                    {group.courseMode === 'strict' && (
+                      <>
+                        {minimumPrepopulatedCredits === maximumPrepopulatedCredits ? (
+                          <>
+                            These courses total to <strong>{minimumPrepopulatedCredits}</strong>{' '}
+                            credit {pluralize('hours', minimumPrepopulatedCredits)}.
+                          </>
+                        ) : (
+                          <>
+                            These courses total to <strong>{minimumPrepopulatedCredits}</strong> -{' '}
+                            <strong>{maximumPrepopulatedCredits}</strong> credit hours.
+                          </>
+                        )}
+                      </>
+                    )}
+                    {group.courseMode === 'alternates-allowed' && (
+                      <>
+                        {minimumPrepopulatedCredits === maximumPrepopulatedCredits ? (
+                          <>
+                            The courses added by default total to{' '}
+                            <strong>{minimumPrepopulatedCredits}</strong> credit{' '}
+                            {pluralize('hours', minimumPrepopulatedCredits)}.
+                          </>
+                        ) : (
+                          <>
+                            The courses added by default total to{' '}
+                            <strong>{minimumPrepopulatedCredits}</strong> -{' '}
+                            <strong>{maximumPrepopulatedCredits}</strong> credit hours.
+                          </>
+                        )}
+                      </>
+                    )}
+                  </Paragraph>
+                  <Paragraph color={styles.danger}>
+                    {maximumPrepopulatedCredits < group.creditMinimum && (
+                      <>
+                        The maximum total of prepopulated credit hours (
+                        <strong>{maximumPrepopulatedCredits}</strong>) is less than the minimum for
+                        this group (<strong>{group.creditMinimum}</strong>
+                        ).
+                      </>
+                    )}
+                    {minimumPrepopulatedCredits > group.creditMaximum && (
+                      <>
+                        The minimum total of prepopulated credit hours (
+                        <strong>{minimumPrepopulatedCredits}</strong>) is greater than the maximum
+                        for this group (<strong>{group.creditMaximum}</strong>
+                        ).
+                      </>
+                    )}
+                  </Paragraph>
+                </>
+              )}
             </>
           }
         >

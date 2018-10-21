@@ -188,25 +188,13 @@ export class CoursePicker extends React.PureComponent<CoursePickerProps, CourseP
         </Modal>
         <InfoModal title="About Default courses">
           <Paragraph>
-            Default courses are the pre-populated courses that appear to students in this course
-            group.
-          </Paragraph>
-          <Paragraph>
-            A student can choose to add to, remove from, or replace any of the default courses.
-            Default courses can be thought of as the recommended courses a student should take to
-            satisfy the requirement group.
-          </Paragraph>
-          <Paragraph>
-            Certain requirement groups such as "Written and Oral Communication" are ideal for
-            default courses because almost every student will take COMP 105 and COMP 270.
-          </Paragraph>
-          <Paragraph>
-            Default courses aren't applicable to other requirement groups as such "Technical
-            Electives" because there isn't a preset list of courses that every student should take.
+            Default courses are only available in the "Alternates allowed" mode and their purpose is
+            to provide a way to prepopulate a requirement group with courses that almost every
+            student will take while also allowing the flexibility to choose other courses.
           </Paragraph>
           <Text>
-            The general recommendation is to set preset courses <strong>only</strong> if the
-            majority of students will take these courses to satisfy the requirement.
+            The general recommendation is to set a course as default only if the all of students
+            will take the course to satisfy the requirement.
           </Text>
         </InfoModal>
       </>
