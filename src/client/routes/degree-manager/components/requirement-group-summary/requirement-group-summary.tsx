@@ -128,13 +128,13 @@ export class RequirementGroupSummary extends React.PureComponent<RequirementGrou
                       <>
                         {minimumPrepopulatedCredits === maximumPrepopulatedCredits ? (
                           <>
-                            The courses added by default total to{' '}
+                            The courses added by default (i.e. prepopulated) total to{' '}
                             <strong>{minimumPrepopulatedCredits}</strong> credit{' '}
                             {pluralize('hours', minimumPrepopulatedCredits)}.
                           </>
                         ) : (
                           <>
-                            The courses added by default total to{' '}
+                            The courses added by default (i.e. prepopulated) total to{' '}
                             <strong>{minimumPrepopulatedCredits}</strong> -{' '}
                             <strong>{maximumPrepopulatedCredits}</strong> credit hours.
                           </>
@@ -143,14 +143,15 @@ export class RequirementGroupSummary extends React.PureComponent<RequirementGrou
                     )}
                   </Paragraph>
                   <Paragraph color={styles.danger}>
-                    {maximumPrepopulatedCredits < group.creditMinimum && (
-                      <>
-                        The maximum total of prepopulated credit hours (
-                        <strong>{maximumPrepopulatedCredits}</strong>) is less than the minimum for
-                        this group (<strong>{group.creditMinimum}</strong>
-                        ).
-                      </>
-                    )}
+                    {maximumPrepopulatedCredits < group.creditMinimum &&
+                      group.courseMode === 'strict' && (
+                        <>
+                          The maximum total of prepopulated credit hours (
+                          <strong>{maximumPrepopulatedCredits}</strong>) is less than the minimum
+                          for this group (<strong>{group.creditMinimum}</strong>
+                          ).
+                        </>
+                      )}
                     {minimumPrepopulatedCredits > group.creditMaximum && (
                       <>
                         The minimum total of prepopulated credit hours (

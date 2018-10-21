@@ -18,18 +18,20 @@ const Root = styled(View)`
 `;
 
 interface CourseListProps {
+  showDefaults: boolean;
   courses: Model.Course.Model[];
   presetCourses: { [catalogId: string]: true | undefined };
 }
 
 export class CourseList extends React.PureComponent<CourseListProps, {}> {
   render() {
-    const { courses, presetCourses } = this.props;
+    const { courses, presetCourses, showDefaults } = this.props;
     return (
       <Root>
         {courses.length > 0 ? (
           courses.map(course => (
             <Course
+              showDefaults={showDefaults}
               preset={!!presetCourses[getCatalogId(course)]}
               key={getCatalogId(course)}
               course={course}

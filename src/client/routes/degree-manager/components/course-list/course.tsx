@@ -30,6 +30,7 @@ const Caption = styled(Text)`
 `;
 
 export interface CourseProps {
+  showDefaults: boolean;
   course: Model.Course.Model;
   preset: boolean;
 }
@@ -48,7 +49,7 @@ export class Course extends React.PureComponent<CourseProps, {}> {
   }
 
   render() {
-    const { course, preset } = this.props;
+    const { course, preset, showDefaults } = this.props;
     return (
       <Root>
         <SimpleName>{getSimpleName(course)}</SimpleName>
@@ -56,7 +57,7 @@ export class Course extends React.PureComponent<CourseProps, {}> {
           <Caption>
             {course.name} | {this.creditHourString}
           </Caption>
-          <Caption>{preset ? 'Default' : ''}</Caption>
+          <Caption>{preset && showDefaults ? 'Default' : ''}</Caption>
         </SubtitleRow>
       </Root>
     );

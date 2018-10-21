@@ -40,7 +40,8 @@ export class DegreeSummary extends React.PureComponent<DegreeSummaryProps, {}> {
       .map(group => group.creditMaximum)
       .reduce((sum, next) => sum + next, 0);
   }
-  get groupGrount() {
+
+  get groupCount() {
     if (!this.props.degree) return 0;
     return Object.keys(this.props.degree.requirementGroups).length;
   }
@@ -82,19 +83,28 @@ export class DegreeSummary extends React.PureComponent<DegreeSummaryProps, {}> {
                 requirements, they will receive a non-dismissable warning.
               </Paragraph>
               <Paragraph>
-                There {this.groupGrount === 1 ? 'is' : 'are'} currently{' '}
-                <strong>{this.groupGrount}</strong> requirement{' '}
+                There {this.groupCount === 1 ? 'is' : 'are'} currently{' '}
+                <strong>{this.groupCount}</strong> requirement{' '}
                 {pluralize('groups', Object.keys(degree.requirementGroups).length)} that total
-                {this.groupGrount === 1 ? 's' : ''} up to a minimum of{' '}
+                {this.groupCount === 1 ? 's' : ''} up to a minimum of{' '}
                 <strong>{this.minimumTotal}</strong> credit {pluralize('hours', this.minimumTotal)}{' '}
                 and a maximum of <strong>{this.maximumTotal}</strong> credit{' '}
                 {pluralize('hours', this.maximumTotal)}.
               </Paragraph>
               {this.maximumTotal < degree.minimumCredits && (
                 <Paragraph color={styles.danger}>
-                  The maximum credit total for every requirement group ({this.maximumTotal}) does
-                  not meet the number of minimum credits ({degree.minimumCredits}
+                  The maximum credit total for every requirement group (
+                  <strong>{this.maximumTotal}</strong>) does not meet the number of minimum credits
+                  (<strong>{degree.minimumCredits}</strong>
                   ). Students will not be able to meet the requirements for this degree.
+                </Paragraph>
+              )}
+              {this.minimumTotal > degree.minimumCredits && (
+                <Paragraph color={styles.danger}>
+                  The minimum credit total for every requirement group (
+                  <strong>{this.minimumTotal}</strong>) exceeds the number of minimum credits (
+                  <strong>{degree.minimumCredits}</strong>
+                  ). Students will always exceed the minimum.
                 </Paragraph>
               )}
             </>
@@ -103,7 +113,7 @@ export class DegreeSummary extends React.PureComponent<DegreeSummaryProps, {}> {
           <PrimaryButton>
             Preview Degree <Fa icon="angleRight" />
           </PrimaryButton>
-          </DescriptionAction>
+        </DescriptionAction>
       </DegreeItem>
     );
   }

@@ -368,7 +368,11 @@ export class RequirementGroupDetail extends React.Component<
                         />
                       )}
                       {this.coursesEnabled && (
-                        <CourseList catalogIds={catalogIds} presetCourses={presetCourses} />
+                        <CourseList
+                          showDefaults={courseMode === 'alternates-allowed'}
+                          catalogIds={catalogIds}
+                          presetCourses={presetCourses}
+                        />
                       )}
                     </>
                   }
