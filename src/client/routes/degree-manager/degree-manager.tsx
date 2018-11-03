@@ -9,11 +9,11 @@ import { Page } from 'components/page';
 import { Text } from 'components/text';
 import { PrimaryButton } from 'components/button';
 import { createSlides } from 'components/slides';
-import { NewDegreeModal } from './components/new-degree-modal';
-import { DegreeList } from './components/degree-list';
-import { DegreeDetail } from './components/degree-detail';
-import { DegreePreview } from './components/degree-preview';
-import { RequirementGroupDetail } from './components/requirement-group-detail';
+import { NewDegreeModal } from 'routes/degree-manager/components/new-degree-modal';
+import { DegreeList } from 'routes/degree-manager/components/degree-list';
+import { DegreeDetail } from 'routes/degree-manager/components/degree-detail';
+import { DegreePreview } from 'routes/degree-manager/components/degree-preview';
+import { RequirementGroupDetail } from 'routes/degree-manager/components/requirement-group-detail';
 
 const { Slide, Slides } = createSlides();
 
@@ -25,6 +25,8 @@ interface DegreeEditorProps {
 }
 interface DegreeEditorState {
   newDegreeModalOpen: boolean;
+  createNewDegreeModalOpen: boolean;
+  createDegreeFromExistingModalOpen: boolean;
 }
 
 export class DegreeEditor extends React.PureComponent<DegreeEditorProps, DegreeEditorState> {
@@ -33,6 +35,8 @@ export class DegreeEditor extends React.PureComponent<DegreeEditorProps, DegreeE
 
     this.state = {
       newDegreeModalOpen: false,
+      createNewDegreeModalOpen: false,
+      createDegreeFromExistingModalOpen: false,
     };
   }
 
@@ -87,9 +91,7 @@ export class DegreeEditor extends React.PureComponent<DegreeEditorProps, DegreeE
     );
   };
 
-  renderGroup = (
-    props: RouteComponentProps<{ masteredDegreeId: string; groupId: string }>,
-  ) => {
+  renderGroup = (props: RouteComponentProps<{ masteredDegreeId: string; groupId: string }>) => {
     const masteredDegreeId = get(props, _ => _.match.params.masteredDegreeId);
     const groupId = get(props, _ => _.match.params.groupId);
 
@@ -134,11 +136,7 @@ export class DegreeEditor extends React.PureComponent<DegreeEditorProps, DegreeE
           />
         </Slides>
 
-        <NewDegreeModal
-          open={newDegreeModalOpen}
-          onClose={this.handleNewDegreeClose}
-          onCreateNewDegree={this.props.onCreateDegree}
-        />
+        <NewDegreeModal open={newDegreeModalOpen} onClose={this.handleNewDegreeClose} />
       </>
     );
   }
