@@ -13,7 +13,7 @@ const SimpleName = styled(Text)`
   /* margin-bottom: ${styles.space(-1)}; */
   font-size: ${styles.space(1)};
 `;
-const Container = styled(View)`
+const Root = styled(View)`
   cursor: pointer;
   flex-direction: row;
   padding: ${styles.space(0)};
@@ -29,6 +29,7 @@ const Container = styled(View)`
   &:hover ${SimpleName} {
     text-decoration: underline;
   }
+  transition: all 200ms;
 `;
 const Summary = styled(View)`
   flex: 0 1 auto;
@@ -111,7 +112,7 @@ export class Course extends React.PureComponent<CourseProps, CourseState> {
   render() {
     const { course } = this.props;
     return (
-      <Container onClick={this.handleClick}>
+      <Root onClick={this.handleClick}>
         <Summary>
           <SimpleName>{Model.Course.getSimpleName(course)}</SimpleName>
           <FullName>{course.name}</FullName>
@@ -133,7 +134,7 @@ export class Course extends React.PureComponent<CourseProps, CourseState> {
         <ArrowContainer>
           <Fa icon="chevronRight" />
         </ArrowContainer>
-      </Container>
+      </Root>
     );
   }
 }
