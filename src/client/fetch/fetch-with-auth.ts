@@ -12,7 +12,7 @@ export async function fetchWithAuth(url: string, _options?: Options) {
   return fetch(url, {
     ...options,
     headers: new Headers({
-      ...(options.headers || {}),
+      ...options.headers,
       Authorization: `Bearer ${token}`,
     }),
   });

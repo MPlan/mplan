@@ -124,10 +124,6 @@ export class CourseDetail extends React.PureComponent<CourseDetailProps, CourseD
         <Row>
           <Text>{course.description}</Text>
         </Row>
-        <Row>
-          <Key>Previous instructors:</Key>
-          <Text>{Model.Course.getHistoricallyTaughtBy(course)}</Text>
-        </Row>
         {prerequisitesConsideringOverrides && (
           <Row>
             <Key>Preferred prerequisites:</Key>

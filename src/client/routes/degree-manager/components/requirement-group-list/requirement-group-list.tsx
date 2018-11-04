@@ -191,8 +191,8 @@ export class RequirementGroupList extends React.PureComponent<
                 </Paragraph>
                 <Paragraph>
                   An example course group would be "Writing and Oral Communication" which would
-                  include the courses <Link to="/catalog/comp-150">COMP 105</Link> and{' '}
-                  <Link to="/catalog/comp-270">COMP 270</Link>.
+                  include the courses <Link to="/catalog/COMP/105">COMP 105</Link> and{' '}
+                  <Link to="/catalog/COMP/270">COMP 270</Link>.
                 </Paragraph>
                 <Paragraph>
                   Requirement groups appear to students as a list of courses in three columns that
@@ -268,8 +268,8 @@ export class RequirementGroupList extends React.PureComponent<
           </Paragraph>
           <Paragraph>
             An example course group would be "Writing and Oral Communication" which would include
-            the courses <Link to="/catalog/comp-150">COMP 105</Link> and{' '}
-            <Link to="/catalog/comp-270">COMP 270</Link>.
+            the courses <Link to="/catalog/COMP/105">COMP 105</Link> and{' '}
+            <Link to="/catalog/COMP/270">COMP 270</Link>.
           </Paragraph>
           <Paragraph>
             Requirement groups appear to students as a list of courses that they can add and remove
