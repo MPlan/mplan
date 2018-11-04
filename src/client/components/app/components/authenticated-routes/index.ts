@@ -14,13 +14,14 @@ const Container = Model.store.connect({
   }),
   mapDispatchToProps: dispatch => ({
     onMount: async () => {
-      const { user, catalog, masteredDegrees } = await fetchInitial();
+      const { user, catalog, masteredDegrees, prerequisiteOverrides } = await fetchInitial();
 
       dispatch(state => ({
         ...state,
         catalog,
         user,
         masteredDegrees,
+        prerequisiteOverrides,
         loaded: true,
       }));
     },
