@@ -1,6 +1,7 @@
 import * as Plan from './plan';
 import * as Degree from './degree';
 import * as Prerequisite from './prerequisite';
+import * as Course from './course';
 
 interface User {
   id: string;
@@ -33,5 +34,42 @@ export const emptyUser: User = {
   isAdmin: false,
   userPrerequisiteOverrides: {},
 };
+
+export function addPrerequisiteOverride(
+  self: User,
+  subjectCode: string,
+  courseNumber: string,
+  prerequisite: Prerequisite.Model,
+): User {
+  const catalogId = Course.makeCatalogId(subjectCode, courseNumber);
+
+  return {
+    ...self,
+    userPrerequisiteOverrides: {
+      ...self.userPrerequisiteOverrides,
+      [catalogId]: prerequisite,
+    },
+  };
+}
+
+export function removePrerequisiteOverride(
+  self: User,
+  subjectCode: string,
+  courseNumber: string,
+): User {
+  const catalogId = Course.makeCatalogId(subjectCode, courseNumber);
+  return {
+    ...self,
+    userPrerequisiteOverrides: Object.entries(self.userPrerequisiteOverrides)
+      .filter(([key]) => key !== catalogId)
+      .reduce(
+        (acc, [key, value]) => {
+          acc[key] = value;
+          return acc;
+        },
+        {} as typeof self.userPrerequisiteOverrides,
+      ),
+  };
+}
 
 export { User as Model };

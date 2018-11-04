@@ -27,11 +27,40 @@ const Container = Model.store.connect({
       ),
     };
   },
-  mapDispatchToProps: (dispatch, ownProps: PrerequisiteEditorContainerProps) => ({
-    onClose: ownProps.onClose,
-    onSaveUser: (prerequisites: Model.Prerequisite.Model) => {},
+  mapDispatchToProps: (dispatch, { course, onClose }: PrerequisiteEditorContainerProps) => ({
+    onClose,
+    onSaveUser: (prerequisite: Model.Prerequisite.Model) => {
+      dispatch(state => {
+        const { user } = state;
+        if (!user) return state;
+
+        return {
+          ...state,
+          user: Model.User.addPrerequisiteOverride(
+            user,
+            course.subjectCode,
+            course.courseNumber,
+            prerequisite,
+          ),
+        };
+      });
+    },
+    onRemoveUser: () => {
+      dispatch(state => {
+        const { user } = state;
+        if (!user) return state;
+
+        return {
+          ...state,
+          user: Model.User.removePrerequisiteOverride(
+            user,
+            course.subjectCode,
+            course.courseNumber,
+          ),
+        };
+      });
+    },
     onSaveGlobal: (prerequisites: Model.Prerequisite.Model) => {},
-    onRemoveUser: () => {},
     onRemoveGlobal: () => {},
   }),
 })(PrerequisiteEditor);
