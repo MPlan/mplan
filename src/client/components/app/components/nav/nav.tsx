@@ -73,7 +73,7 @@ const Root = styled(View)`
   overflow: auto;
 `;
 
-export class Nav extends React.PureComponent<NavProps, {}> {
+export class Nav extends React.Component<NavProps, {}> {
   render() {
     const { isAdmin, routes, bottomRoutes } = this.props;
     return (
