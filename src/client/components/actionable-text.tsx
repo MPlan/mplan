@@ -5,7 +5,7 @@ import { Text } from './text';
 export const ActionableText = styled(Text)`
   font-family: ${styles.fontFamily};
   color: ${styles.link};
-  font-size: ${styles.space(-1)};
+  font-size: 0.8rem;
   text-transform: uppercase;
   justify-self: flex-start;
   align-self: flex-start;
