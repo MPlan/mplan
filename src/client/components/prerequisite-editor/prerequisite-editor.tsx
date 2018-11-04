@@ -1,12 +1,12 @@
 import * as React from 'react';
 import * as Model from 'models';
+import * as styles from 'styles';
 import {
   isAndPrerequisite,
-  isOrPrerequisite,
   isCoursePrerequisite,
+  isOrPrerequisite,
   isStringPrerequisite,
-} from 'models/models';
-import * as styles from 'styles';
+} from 'models/prerequisite';
 import styled from 'styled-components';
 import { parsePrerequisiteString } from 'sync/catalog-umd-umich/courses/parse/prerequisites';
 
@@ -19,9 +19,9 @@ import { Button, DangerButton } from 'components/button';
 import { ActionableText } from 'components/actionable-text';
 
 function replaceCourseStrings(
-  prerequisite: Model.Prerequisite,
-  catalog: Model.Catalog,
-): Model.Prerequisite {
+  prerequisite: Model.Prerequisite.Model,
+  catalog: Model.Catalog.Model,
+): Model.Prerequisite.Model {
   if (isAndPrerequisite(prerequisite) || isOrPrerequisite(prerequisite)) {
     const operands = isAndPrerequisite(prerequisite) ? prerequisite.and : prerequisite.or;
     const transformedOperands = operands.map(operand => replaceCourseStrings(operand, catalog));
@@ -39,7 +39,7 @@ function replaceCourseStrings(
   const courseNumber = match[2];
   const previousOrConcurrent = (match[3] || '').includes('*') ? 'CONCURRENT' : 'PREVIOUS';
 
-  const courseInCatalog = !!catalog.getCourse(subjectCode, courseNumber);
+  const courseInCatalog = !!Model.Catalog.getCourse(catalog, subjectCode, courseNumber);
   if (!courseInCatalog) return prerequisite;
 
   return [subjectCode, courseNumber, previousOrConcurrent] as [
@@ -106,7 +106,7 @@ const ClearOverride = styled(View)`
   flex-direction: row;
 `;
 
-function transformPrerequisiteToString(prerequisite: Model.Prerequisite | undefined): string {
+function transformPrerequisiteToString(prerequisite: Model.Prerequisite.Model | undefined): string {
   if (!prerequisite) return '';
 
   if (isStringPrerequisite(prerequisite)) return prerequisite;
@@ -135,17 +135,18 @@ export interface PrerequisiteEditorProps {
   open: boolean;
   globalOverrideExists: boolean;
   localOverrideExists: boolean;
-  course: Model.Course;
-  catalog: Model.Catalog;
-  onClose: () => void;
+  course: Model.Course.Model;
+  catalog: Model.Catalog.Model;
   isAdmin: boolean;
-  onSaveUser: (course: Model.Course, prerequisites: Model.Prerequisite) => void;
-  onSaveGlobal: (course: Model.Course, prerequisites: Model.Prerequisite) => Promise<void>;
-  onRemoveUser: (course: Model.Course) => void;
-  onRemoveGlobal: (course: Model.Course) => Promise<void>;
+  initialPrerequisites: Model.Prerequisite.Model;
+  onClose: () => void;
+  onSaveUser: (prerequisites: Model.Prerequisite.Model) => any;
+  onSaveGlobal: (prerequisites: Model.Prerequisite.Model) => any;
+  onRemoveUser: () => any;
+  onRemoveGlobal: () => any;
 }
 interface PrerequisiteEditorState {
-  prerequisite: Model.Prerequisite | undefined;
+  prerequisite: Model.Prerequisite.Model | undefined;
   textareaEmpty: boolean;
 }
 
@@ -157,7 +158,7 @@ export class PrerequisiteEditor extends React.PureComponent<
     super(props);
 
     const parsed = safeParsePrerequisiteString(
-      transformPrerequisiteToString(props.course.prerequisitesConsideringOverrides),
+      transformPrerequisiteToString(props.initialPrerequisites),
     );
     const parsedWithCourses = parsed ? replaceCourseStrings(parsed, props.catalog) : undefined;
 
@@ -184,7 +185,7 @@ export class PrerequisiteEditor extends React.PureComponent<
     const prerequisite = this.state.prerequisite;
     if (!prerequisite) return;
 
-    this.props.onSaveUser(this.props.course, prerequisite);
+    this.props.onSaveUser(prerequisite);
     this.props.onClose();
   };
 
@@ -192,17 +193,17 @@ export class PrerequisiteEditor extends React.PureComponent<
     const prerequisite = this.state.prerequisite;
     if (!prerequisite) return;
 
-    this.props.onSaveGlobal(this.props.course, prerequisite);
+    this.props.onSaveGlobal(prerequisite);
     this.props.onClose();
   };
 
   handleRemoveGlobally = () => {
-    this.props.onRemoveGlobal(this.props.course);
+    this.props.onRemoveGlobal();
     this.props.onClose();
   };
 
   handleRemoveLocally = () => {
-    this.props.onRemoveUser(this.props.course);
+    this.props.onRemoveUser();
     this.props.onClose();
   };
 
@@ -214,11 +215,12 @@ export class PrerequisiteEditor extends React.PureComponent<
       globalOverrideExists,
       localOverrideExists,
       isAdmin,
+      initialPrerequisites,
     } = this.props;
     const { prerequisite, textareaEmpty } = this.state;
     return (
       <Modal
-        title={`Editing prerequisites for ${course.simpleName}`}
+        title={`Editing prerequisites for ${Model.Course.getSimpleName(course)}`}
         open={open}
         size="extra-large"
         minHeight={35}
@@ -247,9 +249,7 @@ export class PrerequisiteEditor extends React.PureComponent<
             <TextAreaColumn>
               <ColumnTitle>Enter prerequisite expression here:</ColumnTitle>
               <TextArea
-                defaultValue={transformPrerequisiteToString(
-                  course.prerequisitesConsideringOverrides,
-                )}
+                defaultValue={transformPrerequisiteToString(initialPrerequisites)}
                 onChange={this.handleChange}
                 placeholder={
                   'e.g.\n(MATH 115 or MPLS with a score of 116) and\n(CIS 150 or IMSE 150 or CCM 150)'

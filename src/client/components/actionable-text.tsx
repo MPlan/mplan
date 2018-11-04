@@ -17,7 +17,4 @@ export const ActionableText = styled(Text)`
     ${styles.linkHover};
     cursor: pointer;
   }
-  &::after {
-    content: '…'
-  }
 `;

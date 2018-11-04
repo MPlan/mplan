@@ -12,7 +12,7 @@ import { Prerequisite } from 'components/prerequisite';
 import { PreferredPrerequisite } from 'components/preferred-prerequisite';
 import { ActionableText } from 'components/actionable-text';
 import { Fa } from 'components/fa';
-// import { PrerequisiteEditor } from 'components/prerequisite-editor';
+import { PrerequisiteEditor } from 'components/prerequisite-editor';
 
 const Container = styled(View)`
   margin: auto;
@@ -173,8 +173,7 @@ export class CourseDetail extends React.PureComponent<CourseDetailProps, CourseD
           </Row>
         )}
         {this.state.prerequisiteEditorOpen && (
-          <div />
-          // <PrerequisiteEditor course={course} open onClose={this.handlePrerequisiteEditorClose} />
+          <PrerequisiteEditor course={course} open onClose={this.handlePrerequisiteEditorClose} />
         )}
       </Container>
     );
