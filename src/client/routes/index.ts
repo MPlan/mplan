@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { DegreeEditor } from './degree-manager';
+import { Catalog } from './catalog';
 
 export interface RouteDefinition {
   path: string;
@@ -16,6 +17,13 @@ export const Routes: RouteDefinition[] = [
     icon: 'edit',
     component: DegreeEditor,
     requiresAdmin: true,
+  },
+  {
+    path: '/catalog',
+    name: 'Catalog',
+    icon: 'book',
+    component: Catalog,
+    requiresAdmin: false,
   },
 ];
 

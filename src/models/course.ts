@@ -82,7 +82,9 @@ export const getPrerequisitesConsideringOverrides = memoizeAll(
   },
 );
 
-export function getHistoricallyTaughtBy(self: Course) {}
+export function getHistoricallyTaughtBy(self: Course) {
+  return 'TODO';
+}
 
 export function getPriority(self: Course) {}
 
@@ -106,6 +108,18 @@ export const getBestOption = memoizeAll(
     return bestOption;
   },
 );
+
+export function getPrerequisiteOverrideType(
+  self: Course,
+  user: User.Model,
+  prerequisiteOverrides: { [courseKey: string]: Prerequisite.Model },
+) {
+  const userOverride = user.userPrerequisiteOverrides[getCatalogId(self)];
+  if (userOverride) return 'USER_OVERRIDE';
+  const globalOverride = prerequisiteOverrides[getCatalogId(self)];
+  if (globalOverride) return 'GLOBAL_OVERRIDE';
+  return undefined;
+}
 
 export const getBestOptionWithConcurrent = memoizeAll(
   (self: Course, degree: Degree.Model, catalog: Catalog.Model): Set<PrerequisiteTuple> => {
