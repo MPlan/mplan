@@ -1,6 +1,10 @@
 import * as Model from 'models';
 
 import { PrerequisiteEditor } from './prerequisite-editor';
+import {
+  savePrerequisiteOverride,
+  deletePrerequisiteOverride,
+} from 'client/fetch/prerequisite-overrides';
 
 interface PrerequisiteEditorContainerProps {
   open: boolean;
@@ -60,8 +64,16 @@ const Container = Model.store.connect({
         };
       });
     },
-    onSaveGlobal: (prerequisites: Model.Prerequisite.Model) => {},
-    onRemoveGlobal: () => {},
+    onSaveGlobal: async (prerequisites: Model.Prerequisite.Model) => {
+      const catalogId = Model.Course.makeCatalogId(course.subjectCode, course.courseNumber);
+      dispatch(state => Model.App.addPrerequisiteOverride(state, catalogId, prerequisites));
+      await savePrerequisiteOverride(catalogId, prerequisites);
+    },
+    onRemoveGlobal: async () => {
+      const catalogId = Model.Course.makeCatalogId(course.subjectCode, course.courseNumber);
+      dispatch(state => Model.App.deletePrerequisiteOverride(state, catalogId));
+      await deletePrerequisiteOverride(catalogId);
+    },
   }),
 })(PrerequisiteEditor);
 

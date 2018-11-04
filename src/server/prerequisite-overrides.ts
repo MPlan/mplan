@@ -19,39 +19,6 @@ prerequisiteOverrides.get('/', async (_, res) => {
   res.json(overridesObject);
 });
 
-prerequisiteOverrides.post('/', checkAdmin, async (req, res) => {
-  const { prerequisiteOverrides } = await dbConnection;
-
-  const body = req.body;
-  if (!body.courseKey) {
-    res.sendStatus(HttpStatus.BAD_REQUEST);
-    return;
-  }
-  if (!body.prerequisites) {
-    res.sendStatus(HttpStatus.BAD_REQUEST);
-    return;
-  }
-  const courseKeyToInsert = body.courseKey as string;
-  const prerequisitesToInsert = body.prerequisites as Model.Prerequisite.Model;
-
-  const exists = prerequisiteOverrides.findOne({
-    courseKey: courseKeyToInsert,
-    prerequisites: prerequisitesToInsert,
-  });
-
-  if (!exists) {
-    res.sendStatus(HttpStatus.CONFLICT);
-    return;
-  }
-
-  await prerequisiteOverrides.insertOne({
-    courseKey: courseKeyToInsert,
-    prerequisites: prerequisitesToInsert,
-  });
-
-  res.sendStatus(HttpStatus.NO_CONTENT);
-});
-
 prerequisiteOverrides.put('/:courseKey', checkAdmin, async (req, res) => {
   const courseKey = req.params.courseKey as string;
   if (!courseKey) {
@@ -70,11 +37,11 @@ prerequisiteOverrides.put('/:courseKey', checkAdmin, async (req, res) => {
   const exists = !!(await prerequisiteOverrides.findOne({ courseKey }));
 
   if (!exists) {
-    res.sendStatus(HttpStatus.NOT_FOUND);
-    return;
+    await prerequisiteOverrides.insertOne({ courseKey, prerequisites });
+  } else {
+    await prerequisiteOverrides.findOneAndReplace({ courseKey }, { courseKey, prerequisites });
   }
 
-  await prerequisiteOverrides.findOneAndReplace({ courseKey }, { courseKey, prerequisites });
   res.sendStatus(HttpStatus.NO_CONTENT);
 });
 
