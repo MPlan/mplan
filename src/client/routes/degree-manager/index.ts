@@ -11,31 +11,7 @@ const Container = Model.store.connect({
     locationPathname: history.location.pathname,
     masteredDegrees: Model.MasteredDegrees.getAsArray(state.masteredDegrees),
   }),
-  mapDispatchToProps: dispatch => ({
-    onCreateDegree: (degreeName: string) => {
-      dispatch(state => {
-        const newDegreeId = ObjectId();
-        const lastPosition = Model.MasteredDegrees.getLastPosition(state.masteredDegrees);
-        const newDegree = Model.MasteredDegree.createNewMasteredDegree(
-          degreeName,
-          lastPosition,
-          newDegreeId,
-        );
-
-        setTimeout(() => {
-          // TODO: this is kind of a hack
-          history.push(`/degree-manager/${newDegreeId}`);
-        }, 100);
-
-        return {
-          ...state,
-          masteredDegrees: Model.MasteredDegrees.addMasteredDegree(
-            state.masteredDegrees,
-            newDegree,
-          ),
-        };
-      });
-    },
+  mapDispatchToProps: () => ({
     onMasteredDegreeClick: (masteredDegreeId: string) => {
       history.push(`/degree-manager/${masteredDegreeId}`);
     },

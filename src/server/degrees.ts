@@ -9,13 +9,25 @@ degrees.get('/', async (req, res) => {
   const { degrees } = await dbConnection;
   const allDegrees = await degrees.find({}).toArray();
 
-  const combinedDegrees = allDegrees.reduce(
-    (combined, next) => {
-      combined[next.id] = next;
-      return combined;
-    },
-    {} as any,
-  );
+  const combinedDegrees = allDegrees
+    .map(degree =>
+      Object.entries(degree)
+        .filter(([prop]) => prop === '_id')
+        .reduce(
+          (degree, [key, value]) => {
+            degree[key] = value;
+            return degree;
+          },
+          {} as any,
+        ),
+    )
+    .reduce(
+      (combined, next) => {
+        combined[next.id] = next;
+        return combined;
+      },
+      {} as any,
+    );
 
   res.json(combinedDegrees);
 

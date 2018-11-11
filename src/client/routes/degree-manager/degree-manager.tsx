@@ -20,7 +20,6 @@ const { Slide, Slides } = createSlides();
 interface DegreeEditorProps {
   locationPathname: string;
   masteredDegrees: Model.MasteredDegree.Model[];
-  onCreateDegree: (degreeName: string) => void;
   onMasteredDegreeClick: (masteredDegreeId: string) => void;
 }
 interface DegreeEditorState {
