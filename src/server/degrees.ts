@@ -12,7 +12,7 @@ degrees.get('/', async (req, res) => {
   const combinedDegrees = allDegrees
     .map(degree =>
       Object.entries(degree)
-        .filter(([prop]) => prop === '_id')
+        .filter(([prop]) => prop !== '_id')
         .reduce(
           (degree, [key, value]) => {
             degree[key] = value;
