@@ -57,14 +57,21 @@ const SearchRow = styled(View)`
 `;
 const BigSearch = styled.input`
   flex: 1 1 auto;
-  font-size: ${styles.space(2)};
+  font-size: ${styles.space(3)};
   font-family: ${styles.fontFamily};
-  font-weight: ${styles.bold};
+  font-weight: bold;
   margin-bottom: ${styles.space(-1)};
   color: ${styles.textLight};
   background-color: transparent;
   border: none;
   outline: none;
+  text-transform: uppercase;
+  &::placeholder {
+    text-transform: none;
+    font-weight: ${styles.bold};
+    color: ${styles.grayLight};
+    font-size: ${styles.space(2)};
+  }
 `;
 const ClearSearch = styled(ActionableText)`
   color: ${styles.textLight};
@@ -228,7 +235,7 @@ export class Catalog extends React.PureComponent<CatalogProps, CatalogState> {
             <SearchRow>
               <BigSearch
                 type="search"
-                placeholder="Search for a course..."
+                placeholder="Search for a course…"
                 value={this.state.searchValue}
                 onChange={this.handleSearch}
                 innerRef={this.bigSearchRef}
