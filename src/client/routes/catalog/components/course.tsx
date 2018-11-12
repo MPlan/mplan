@@ -52,6 +52,7 @@ interface CourseProps {
 }
 interface CourseState {
   showMore: boolean;
+  focused: boolean;
 }
 
 export class Course extends React.PureComponent<CourseProps, CourseState> {
@@ -59,7 +60,16 @@ export class Course extends React.PureComponent<CourseProps, CourseState> {
     super(props);
     this.state = {
       showMore: false,
+      focused: false,
     };
+  }
+
+  componentDidMount() {
+    document.addEventListener('keypress', this.handleKeyPress);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keypress', this.handleKeyPress);
   }
 
   get description() {
@@ -99,6 +109,21 @@ export class Course extends React.PureComponent<CourseProps, CourseState> {
     }));
   };
 
+  handleKeyPress = (e: KeyboardEvent) => {
+    const key = e.key;
+    if (key !== 'Enter') return;
+    if (!this.state.focused) return;
+    this.props.onClick();
+  };
+
+  handleFocus = () => {
+    this.setState({ focused: true });
+  };
+
+  handleBlur = () => {
+    this.setState({ focused: false });
+  };
+
   handleClick = (e: React.MouseEvent<Element>) => {
     const target = e.target;
     if (!target) return;
@@ -112,7 +137,12 @@ export class Course extends React.PureComponent<CourseProps, CourseState> {
   render() {
     const { course } = this.props;
     return (
-      <Root onClick={this.handleClick}>
+      <Root
+        onClick={this.handleClick}
+        onFocus={this.handleFocus}
+        onBlur={this.handleBlur}
+        tabIndex={0}
+      >
         <Summary>
           <SimpleName>{Model.Course.getSimpleName(course)}</SimpleName>
           <FullName>{course.name}</FullName>

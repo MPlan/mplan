@@ -16,7 +16,7 @@ import { Loading } from 'components/loading';
 import { CourseDetail } from './components/course-detail';
 import { Course } from './components/course';
 
-const INPUT_DEBOUNCE_TIME = 250;
+const INPUT_DEBOUNCE_TIME = 100;
 
 const Container = styled(View)`
   flex: 1 1 auto;
@@ -117,6 +117,7 @@ export class Catalog extends React.PureComponent<CatalogProps, CatalogState> {
   search$ = new Subject<string>();
   searchSubscription: Subscription | undefined;
   searching = false;
+  bigSearchRef = React.createRef<HTMLInputElement>();
 
   constructor(props: CatalogProps) {
     super(props);
@@ -138,11 +139,26 @@ export class Catalog extends React.PureComponent<CatalogProps, CatalogState> {
         }),
       )
       .subscribe(this.props.onSearch);
+    const bigSearchElement = this.bigSearchRef.current;
+    if (!bigSearchElement) return;
+    bigSearchElement.focus();
   }
 
   componentWillUnmount() {
     if (this.searchSubscription) {
       this.searchSubscription.unsubscribe();
+    }
+  }
+
+  componentDidUpdate(previousProps: CatalogProps) {
+    const lastPath = previousProps.location.pathname;
+    const currentPath = this.props.location.pathname;
+
+    if (lastPath !== '/catalog' && currentPath === '/catalog') {
+      const bigSearchElement = this.bigSearchRef.current;
+      if (!bigSearchElement) return;
+      bigSearchElement.focus();
+      bigSearchElement.select();
     }
   }
 
@@ -188,7 +204,21 @@ export class Catalog extends React.PureComponent<CatalogProps, CatalogState> {
     if (!subjectCode) return null;
     if (!courseNumber) return null;
 
-    return <CourseDetail subjectCode={subjectCode} courseNumber={courseNumber} />;
+    return (
+      <CourseDetail
+        subjectCode={subjectCode}
+        courseNumber={courseNumber}
+        open={this.courseSelected}
+      />
+    );
+  };
+
+  handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key !== 'Enter') return;
+    const firstResult = this.props.searchResults[0];
+    if (!firstResult) return;
+    this.handleCourseClick(firstResult);
+    e.currentTarget.blur();
   };
 
   render() {
@@ -202,6 +232,8 @@ export class Catalog extends React.PureComponent<CatalogProps, CatalogState> {
                 placeholder="Search for a course..."
                 value={this.state.searchValue}
                 onChange={this.handleSearch}
+                innerRef={this.bigSearchRef}
+                onKeyPress={this.handleKeyPress}
               />
               <ClearSearch onClick={this.handleClearSearch}>Clear Search</ClearSearch>
             </SearchRow>

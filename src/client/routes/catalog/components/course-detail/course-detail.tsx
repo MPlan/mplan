@@ -63,6 +63,7 @@ const EditPrerequisites = styled(ActionableText)`
 `;
 
 interface CourseDetailProps {
+  open: boolean;
   course: Model.Course.Model;
   overrideApplied: boolean;
   prerequisitesContainConcurrent: boolean;
@@ -79,6 +80,19 @@ export class CourseDetail extends React.PureComponent<CourseDetailProps, CourseD
       prerequisiteEditorOpen: false,
     };
   }
+
+  componentDidMount() {
+    document.addEventListener('keydown', this.handleKeyDown);
+  }
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleKeyDown);
+  }
+
+  handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key !== 'Backspace') return;
+    if (!this.props.open) return;
+    history.goBack();
+  };
 
   handleBackClick = () => {
     history.goBack();

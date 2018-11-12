@@ -4,12 +4,13 @@ import { CourseDetail } from './course-detail';
 import { history } from 'client/history';
 
 interface CourseDetailContainerProps {
+  open: boolean;
   subjectCode: string;
   courseNumber: string;
 }
 
 const Container = Model.store.connect({
-  mapStateToProps: (state, { subjectCode, courseNumber }: CourseDetailContainerProps) => {
+  mapStateToProps: (state, { subjectCode, courseNumber, open }: CourseDetailContainerProps) => {
     const { user, prerequisiteOverrides, catalog } = state;
     if (!user) throw new Error('user required');
 
@@ -19,6 +20,7 @@ const Container = Model.store.connect({
       history.replace('/catalog');
 
       return {
+        open: false,
         course: {
           id: '',
           name: '',
@@ -33,6 +35,7 @@ const Container = Model.store.connect({
     }
 
     return {
+      open,
       course,
       overrideApplied: !!Model.Course.getPrerequisiteOverrideType(
         course,
