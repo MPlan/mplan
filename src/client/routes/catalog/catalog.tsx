@@ -158,7 +158,6 @@ export class Catalog extends React.PureComponent<CatalogProps, CatalogState> {
       const bigSearchElement = this.bigSearchRef.current;
       if (!bigSearchElement) return;
       bigSearchElement.focus();
-      bigSearchElement.select();
     }
   }
 
