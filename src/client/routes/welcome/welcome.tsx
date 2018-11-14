@@ -116,6 +116,7 @@ const Times = styled(Fa)`
 
 interface WelcomeProps {
   degrees: Model.MasteredDegree.Model[];
+  onSelectedDegree: (degreeId: string) => void;
 }
 
 interface WelcomeState {
@@ -182,6 +183,12 @@ export class Welcome extends React.PureComponent<WelcomeProps, WelcomeState> {
     this.setState({ selectedDegreeId: undefined });
   };
 
+  handleLetsBegin = () => {
+    const { selectedDegreeId } = this.state;
+    if (!selectedDegreeId) return;
+    this.props.onSelectedDegree(selectedDegreeId);
+  };
+
   renderSuggestion = (degree: Model.MasteredDegree.Model, selected: boolean) => {
     return <Suggestion selected={selected}>{degree.name}</Suggestion>;
   };
@@ -234,9 +241,11 @@ export class Welcome extends React.PureComponent<WelcomeProps, WelcomeState> {
                 />
               )}
 
-              <PrimaryButton>
-                Let's begin <Arrow icon="chevronRight" />
-              </PrimaryButton>
+              {!!this.selectedDegreeName && (
+                <PrimaryButton onClick={this.handleLetsBegin}>
+                  Let's begin <Arrow icon="chevronRight" />
+                </PrimaryButton>
+              )}
               <NotPart onClick={this.notPartInfoModal.open}>
                 Not part of the College of Engineering and Computer Science?
               </NotPart>

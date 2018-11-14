@@ -18,7 +18,25 @@ const Container = Model.store.connect({
       degrees: getMasteredDegreesConsideringAdmin(state.masteredDegrees, isAdmin),
     };
   },
-  mapDispatchToProps: () => ({}),
+  mapDispatchToProps: dispatch => ({
+    onSelectedDegree: (degreeId: string) => {
+      dispatch(state => {
+        const user = state.user;
+        if (!user) return state;
+        return {
+          ...state,
+          user: {
+            ...user,
+            chosenDegree: true,
+            degree: {
+              ...user.degree,
+              masteredDegreeId: degreeId,
+            },
+          },
+        };
+      });
+    },
+  }),
 })(Welcome);
 
 export { Container as Welcome };
