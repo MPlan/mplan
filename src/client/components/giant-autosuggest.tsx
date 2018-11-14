@@ -18,8 +18,30 @@ const Suggestions = styled(View)`
   position: absolute;
   top: 100%;
   width: 100%;
-  box-shadow: ${styles.boxShadow(-1)};
-  background-color: ${styles.deepCove};
+  background-color: ${styles.blackTer};
+  max-height: 15rem;
+  overflow: scroll;
+  & > * {
+    flex: 0 0 auto;
+  }
+  &::-webkit-scrollbar {
+    -webkit-appearance: none;
+  }
+
+  &::-webkit-scrollbar:vertical {
+    width: 11px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    border: 2px solid ${styles.blackTer};
+    background-color: ${styles.gray};
+  }
+
+  &::-webkit-scrollbar-track:vertical {
+    background-color: ${styles.blackTer};
+    border-radius: 8px;
+  }
 `;
 const SuggestionWrapper = styled(View)``;
 const DontSee = styled(Text)`
@@ -29,6 +51,7 @@ const DontSee = styled(Text)`
   &:hover {
     text-decoration: underline;
     color: ${styles.turbo};
+    background-color: ${styles.deepKoamaru};
   }
   &:active {
     color: ${styles.beeKeeper};

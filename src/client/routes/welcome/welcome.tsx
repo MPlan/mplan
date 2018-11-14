@@ -61,6 +61,7 @@ const Suggestion = styled<SuggestionProps>(Text)`
   font-size: ${styles.space(2)};
   background-color: ${props => (props.selected ? styles.deepKoamaru : 'transparent')};
   color: ${styles.turbo};
+  padding: ${styles.space(0)};
 `;
 const Mail = styled.a`
   color: ${styles.turbo};
@@ -99,7 +100,7 @@ interface WelcomeProps {
 interface WelcomeState {
   gotStarted: boolean;
   search: string;
-  dontSeeModalOpen: boolean;
+  selectedDegreeId: string | undefined;
 }
 
 const getDisplayText = (degree: Model.MasteredDegree.Model) => degree.name;
@@ -109,7 +110,7 @@ export class Welcome extends React.PureComponent<WelcomeProps, WelcomeState> {
   state: WelcomeState = {
     gotStarted: false,
     search: '',
-    dontSeeModalOpen: false,
+    selectedDegreeId: undefined,
   };
 
   searchRef = React.createRef<HTMLInputElement>();
@@ -147,7 +148,9 @@ export class Welcome extends React.PureComponent<WelcomeProps, WelcomeState> {
     this.setState({ search });
   };
 
-  handleSelectDegree = (degreeId: string) => {};
+  handleSelectDegree = (selectedDegreeId: string) => {
+    this.setState({ selectedDegreeId });
+  };
   handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {};
   handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {};
 
