@@ -5,19 +5,21 @@ import { history } from 'client/history';
 import { Auth } from 'client/auth';
 
 import { Router, Switch, Route, Redirect, RouteComponentProps } from 'react-router';
-import { Landing } from 'routes/landing';
 import { Callback } from 'routes/callback';
 import { View } from 'components/view';
+import { Routes } from 'client/routes';
 import { AuthenticatedRoutes } from './components/authenticated-routes';
 
 function renderLanding() {
-  if (Auth.loggedIn()) return <Redirect to="/timeline" />;
-  return <Landing />;
+  if (Auth.loggedIn()) return <Redirect to={Routes[0].path} />;
+  Auth.login();
+  return <Callback noHandleCallback />;
 }
 
-function renderApp(props: RouteComponentProps<any>) {
+function renderApp() {
   if (Auth.loggedIn()) return <AuthenticatedRoutes />;
-  return <Redirect to="/login" />;
+  Auth.login();
+  return <Callback noHandleCallback />;
 }
 
 interface AppContentProps
