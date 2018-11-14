@@ -3,14 +3,13 @@ import * as Model from 'models';
 import * as styles from 'styles';
 import styled from 'styled-components';
 import { wait } from 'utilities/utilities';
-import { memoizeLast } from 'utilities/memoize-last';
 import { searchList } from 'utilities/search-list';
 
 import { View } from 'components/view';
 import { Text, TextProps } from 'components/text';
 import { GiantAutosuggest } from 'components/giant-autosuggest';
 import { PrimaryButton } from 'components/button';
-import { Fa as _Fa } from 'components/fa';
+import { Fa } from 'components/fa';
 import { Paragraph } from 'components/paragraph';
 import { createInfoModal } from 'components/info-modal';
 
@@ -27,7 +26,8 @@ const Slide = styled(View)`
 `;
 const Box = styled(View)`
   margin: auto;
-  max-width: 64rem;
+  width: 64rem;
+  max-width: 100vw;
   align-items: flex-start;
 `;
 const Title = styled(Text)`
@@ -46,7 +46,7 @@ const Description = styled(Text)`
   font-size: ${styles.space(2)};
   margin-bottom: ${styles.space(0)};
 `;
-const Fa = styled(_Fa)`
+const Arrow = styled(Fa)`
   margin-left: ${styles.space(0)};
 `;
 const YearInfo = styled(Text)`
@@ -92,6 +92,27 @@ const NotPart = styled(Text)`
     color: ${styles.active(styles.beeKeeper)};
   }
 `;
+const SelectedDegree = styled(View)`
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: ${styles.space(0)};
+`;
+const SelectedDegreeName = styled(Text)`
+  font-size: ${styles.space(3)};
+  font-weight: bold;
+  color: ${styles.turbo};
+  flex: 1 1 auto;
+`;
+const Times = styled(Fa)`
+  margin-left: ${styles.space(2)};
+  color: ${styles.white};
+  &:hover {
+    color: ${styles.hover(styles.white)};
+  }
+  &:active {
+    color: ${styles.active(styles.white)};
+  }
+`;
 
 interface WelcomeProps {
   degrees: Model.MasteredDegree.Model[];
@@ -119,11 +140,17 @@ export class Welcome extends React.PureComponent<WelcomeProps, WelcomeState> {
   notPartInfoModal = createInfoModal();
 
   get degrees() {
-    return this._getOrCalculateDegrees(this.props.degrees, this.state.search);
+    return searchList(this.props.degrees, getDisplayText, this.state.search);
   }
-  _getOrCalculateDegrees = memoizeLast((degrees: Model.MasteredDegree.Model[], search: string) => {
-    return searchList(degrees, getDisplayText, search);
-  });
+
+  get selectedDegreeName() {
+    const { selectedDegreeId } = this.state;
+    const { degrees } = this.props;
+    if (!selectedDegreeId) return undefined;
+    const selectedDegree = degrees.find(degree => degree.id === selectedDegreeId);
+    if (!selectedDegree) return undefined;
+    return selectedDegree.name;
+  }
 
   componentDidMount() {
     const buttonElement = this.buttonRef.current;
@@ -151,8 +178,9 @@ export class Welcome extends React.PureComponent<WelcomeProps, WelcomeState> {
   handleSelectDegree = (selectedDegreeId: string) => {
     this.setState({ selectedDegreeId });
   };
-  handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {};
-  handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {};
+  handleUnselectDegree = () => {
+    this.setState({ selectedDegreeId: undefined });
+  };
 
   renderSuggestion = (degree: Model.MasteredDegree.Model, selected: boolean) => {
     return <Suggestion selected={selected}>{degree.name}</Suggestion>;
@@ -175,7 +203,7 @@ export class Welcome extends React.PureComponent<WelcomeProps, WelcomeState> {
                 for your future.
               </Description>
               <PrimaryButton innerRef={this.buttonRef} onClick={this.handleGetStarted}>
-                Get Started <Fa icon="chevronRight" />
+                Get Started <Arrow icon="chevronRight" />
               </PrimaryButton>
             </Box>
           </Slide>
@@ -188,20 +216,26 @@ export class Welcome extends React.PureComponent<WelcomeProps, WelcomeState> {
                 or ask your <Mail href="mailto:umd-cecs-undergrad@umich.edu">CECS advisor</Mail> if
                 you need additional assistance.
               </YearInfo>
-              <GiantAutosuggest
-                focus={gotStarted}
-                items={this.degrees}
-                getDisplayText={getDisplayText}
-                getKey={getKey}
-                onSelectSuggestion={this.handleSelectDegree}
-                renderSuggestion={this.renderSuggestion}
-                onSearch={this.handleSearch}
-                onFocus={this.handleFocus}
-                onBlur={this.handleBlur}
-                onClickDontSee={this.infoModal.open}
-              />
+              {this.selectedDegreeName ? (
+                <SelectedDegree>
+                  <SelectedDegreeName>{this.selectedDegreeName}</SelectedDegreeName>
+                  <Times icon="times" size="4x" onClick={this.handleUnselectDegree} />
+                </SelectedDegree>
+              ) : (
+                <GiantAutosuggest
+                  focus={gotStarted}
+                  items={this.degrees}
+                  getDisplayText={getDisplayText}
+                  getKey={getKey}
+                  onSelectSuggestion={this.handleSelectDegree}
+                  renderSuggestion={this.renderSuggestion}
+                  onSearch={this.handleSearch}
+                  onClickDontSee={this.infoModal.open}
+                />
+              )}
+
               <PrimaryButton>
-                Let's begin <Fa icon="chevronRight" />
+                Let's begin <Arrow icon="chevronRight" />
               </PrimaryButton>
               <NotPart onClick={this.notPartInfoModal.open}>
                 Not part of the College of Engineering and Computer Science?

@@ -59,7 +59,7 @@ const DontSee = styled(Text)`
 `;
 const Search = styled.input`
   font-family: ${styles.fontFamily};
-  font-size: ${styles.space(4)};
+  font-size: ${styles.space(3)};
   outline: none;
   background-color: transparent;
   border: none;
@@ -75,8 +75,6 @@ interface GiantAutosuggestProps<T> {
   onSearch: (query: string) => void;
   renderSuggestion: (item: T, selected: boolean) => React.ReactNode;
   onSelectSuggestion: (key: string) => void;
-  onFocus: (e: React.FocusEvent<HTMLInputElement>) => void;
-  onBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
   onClickDontSee: () => void;
 }
 
@@ -98,6 +96,14 @@ export class GiantAutosuggest<T> extends React.PureComponent<
   }
   suggestionsRef = React.createRef<HTMLElement>();
   searchRef = React.createRef<HTMLInputElement>();
+
+  componentDidMount() {
+    if (this.props.focus) {
+      const searchElement = this.searchRef.current;
+      if (!searchElement) return;
+      searchElement.focus();
+    }
+  }
 
   async componentDidUpdate(
     previousProps: GiantAutosuggestProps<T>,
@@ -201,14 +207,11 @@ export class GiantAutosuggest<T> extends React.PureComponent<
   };
 
   renderContainer = (props: PopperContainerProps) => {
-    const { onFocus, onBlur } = this.props;
     const { search } = this.state;
     return (
       <ClickAwayListener onClickAway={this.handleClose}>
         <Root {...props}>
           <Search
-            onFocus={onFocus}
-            onBlur={onBlur}
             type="search"
             value={search}
             innerRef={this.searchRef}
