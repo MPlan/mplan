@@ -11,6 +11,7 @@ const Container = Model.store.connect({
     loaded: state.loaded,
     isAdmin: get(state, _ => _.user.isAdmin, false),
     routes: [...Routes, ...BottomRoutes],
+    chosenDegree: get(state, _ => _.user.chosenDegree, false),
   }),
   mapDispatchToProps: dispatch => ({
     onMount: async () => {

@@ -5,6 +5,7 @@ import { Nav } from '../nav';
 import { AppBar } from '../app-bar';
 import { Loading } from 'components/loading';
 import { RouteDefinition } from 'client/routes';
+import { Welcome } from 'client/routes/welcome';
 import { Route, Switch } from 'react-router';
 
 const Root = styled(View)`
@@ -25,6 +26,7 @@ interface AuthenticatedRoutesProps {
   loaded: boolean;
   isAdmin: boolean;
   routes: RouteDefinition[];
+  chosenDegree: boolean;
   onMount: () => any;
 }
 
@@ -34,8 +36,9 @@ export class AuthenticatedRoutes extends React.Component<AuthenticatedRoutesProp
   }
 
   render() {
-    const { loaded, routes, isAdmin } = this.props;
+    const { loaded, routes, isAdmin, chosenDegree } = this.props;
     if (!loaded) return <Loading />;
+    if (!chosenDegree) return <Welcome />;
 
     return (
       <Root>
