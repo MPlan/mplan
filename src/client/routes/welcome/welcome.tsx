@@ -62,6 +62,7 @@ const Suggestion = styled<SuggestionProps>(Text)`
   background-color: ${props => (props.selected ? styles.deepKoamaru : 'transparent')};
   color: ${styles.turbo};
   padding: ${styles.space(0)};
+  cursor: pointer;
 `;
 const Mail = styled.a`
   color: ${styles.turbo};
@@ -123,6 +124,7 @@ interface WelcomeState {
   gotStarted: boolean;
   search: string;
   selectedDegreeId: string | undefined;
+  clickedLetsBegin: boolean;
 }
 
 const getDisplayText = (degree: Model.MasteredDegree.Model) => degree.name;
@@ -131,6 +133,7 @@ const getKey = (degree: Model.MasteredDegree.Model) => degree.id;
 export class Welcome extends React.PureComponent<WelcomeProps, WelcomeState> {
   state: WelcomeState = {
     gotStarted: false,
+    clickedLetsBegin: false,
     search: '',
     selectedDegreeId: undefined,
   };
@@ -186,6 +189,7 @@ export class Welcome extends React.PureComponent<WelcomeProps, WelcomeState> {
   handleLetsBegin = () => {
     const { selectedDegreeId } = this.state;
     if (!selectedDegreeId) return;
+    
     this.props.onSelectedDegree(selectedDegreeId);
   };
 
