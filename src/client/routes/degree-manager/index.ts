@@ -1,5 +1,4 @@
 import * as Model from 'models';
-import { ObjectId } from 'utilities/object-id';
 import { DegreeEditor } from './degree-manager';
 import { saveMasteredDegree } from 'client/fetch/mastered-degrees';
 import { history } from 'client/history';

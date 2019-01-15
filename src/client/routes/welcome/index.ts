@@ -1,6 +1,10 @@
 import * as Model from 'models';
 import { memoizeLast } from 'utilities/memoize-last';
 import { Welcome } from './welcome';
+import { isEqual } from 'lodash';
+import { filter, map, distinctUntilChanged, debounceTime } from 'rxjs/operators';
+import { saveUser } from 'client/fetch/user';
+import { Observable } from 'rxjs';
 
 const getMasteredDegreesConsideringAdmin = memoizeLast(
   (degrees: Model.MasteredDegrees.Model, isAdmin: boolean) => {
@@ -23,6 +27,7 @@ const Container = Model.store.connect({
       dispatch(state => {
         const user = state.user;
         if (!user) return state;
+
         return {
           ...state,
           user: {
@@ -38,5 +43,13 @@ const Container = Model.store.connect({
     },
   }),
 })(Welcome);
+
+const user$ = Model.store.stream().pipe(
+  filter(store => !!store.user),
+  map(store => store.user!),
+  distinctUntilChanged(isEqual),
+  debounceTime(1000),
+) as Observable<Model.User.Model>;
+user$.subscribe(saveUser);
 
 export { Container as Welcome };
