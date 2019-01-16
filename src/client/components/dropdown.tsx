@@ -6,7 +6,11 @@ import { View } from 'components/view';
 import { Text } from 'components/text';
 import { Fa } from 'components/fa';
 import { MenuItem } from 'components/menu-item';
+import { Link as _ReactRouterLink } from 'react-router-dom';
 
+const ReactRouterLink = styled(_ReactRouterLink)`
+  color: inherit;
+`;
 const Container = styled(View)`
   position: relative;
   color: ${styles.text};
@@ -35,6 +39,7 @@ const Item = styled.li`
   margin: 0;
   padding: ${styles.space(-1)} ${styles.space(0)};
   outline: none;
+  cursor: pointer;
   &:focus,
   &.focus {
     background-color: ${styles.whiteTer};
@@ -230,27 +235,31 @@ export class Dropdown<T extends { [P in keyof T]: MenuItem }> extends React.Pure
               text: this.props.actions[key].text,
               icon: this.props.actions[key].icon,
               color: this.props.actions[key].color,
+              link: this.props.actions[key].link,
             }))
-            .map(({ action, text, icon, color }) => {
+            .map(({ action, text, icon, color, link }) => {
+              const Link = (link ? ReactRouterLink : 'div') as any;
               return (
-                <Item
-                  key={action.toString()}
-                  tabIndex={0}
-                  onClick={() => this.handleAction(action)}
-                  onMouseEnter={() => this.handleActionFocus(action)}
-                  onMouseLeave={() => this.handleActionBlur()}
-                  onFocus={() => this.handleActionFocus(action)}
-                  className={
-                    this.state.currentAction === action
-                      ? this.state.spaceDown
-                        ? 'focus active'
-                        : 'focus'
-                      : ''
-                  }
-                >
-                  <Icon icon={icon} color={color} />
-                  <Text style={{ color: styles.text }}>{text}</Text>
-                </Item>
+                <Link to={link}>
+                  <Item
+                    key={action.toString()}
+                    tabIndex={0}
+                    onClick={() => this.handleAction(action)}
+                    onMouseEnter={() => this.handleActionFocus(action)}
+                    onMouseLeave={() => this.handleActionBlur()}
+                    onFocus={() => this.handleActionFocus(action)}
+                    className={
+                      this.state.currentAction === action
+                        ? this.state.spaceDown
+                          ? 'focus active'
+                          : 'focus'
+                        : ''
+                    }
+                  >
+                    <Icon icon={icon} color={color} />
+                    <Text style={{ color: styles.text }}>{text}</Text>
+                  </Item>
+                </Link>
               );
             })}
         </Menu>
