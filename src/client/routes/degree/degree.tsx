@@ -7,7 +7,9 @@ import { Degree } from 'components/degree';
 
 import { RouteComponentProps } from 'react-router';
 
-const Root = styled(View)``;
+const Root = styled(View)`
+  flex: 1 1 auto;
+`;
 interface DegreePageProps extends RouteComponentProps<any> {
   degreeName: string;
 }
