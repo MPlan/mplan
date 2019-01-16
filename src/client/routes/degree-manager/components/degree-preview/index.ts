@@ -5,21 +5,6 @@ interface DegreePreviewProps {
   masteredDegreeId: string;
 }
 
-const Container = Model.store.connect({
-  mapStateToProps: (store, ownProps: DegreePreviewProps) => {
-    const { masteredDegrees } = store;
-    const masteredDegree = Model.MasteredDegrees.getMasteredDegree(
-      masteredDegrees,
-      ownProps.masteredDegreeId,
-    );
-
-    const degreeName = (masteredDegree && masteredDegree.name) || '';
-
-    return {
-      degreeName,
-    };
-  },
-  mapDispatchToProps: () => ({}),
-})(Degree);
+const Container = 'div';
 
 export { Container as DegreePreview };

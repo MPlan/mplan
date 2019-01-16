@@ -11,6 +11,8 @@ const Container = Model.store.connect({
 
     return {
       degreeName,
+      currentCredits: 90,
+      totalCredits: 120,
     };
   },
   mapDispatchToProps: () => ({}),
