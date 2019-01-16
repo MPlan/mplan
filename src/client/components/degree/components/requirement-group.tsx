@@ -6,8 +6,12 @@ import { View } from 'components/view';
 import { Text } from 'components/text';
 import { Caption } from 'components/caption';
 import { Card } from 'components/card';
+import { DropdownMenu } from 'components/dropdown-menu';
+import { ActionableText as _ActionableText } from 'components/actionable-text';
 
-const Root = styled(View)``;
+const Root = styled(View)`
+  margin-bottom: ${styles.space(0)};
+`;
 const Title = styled(Text)`
   font-size: ${styles.space(1)};
   font-weight: ${styles.bold};
@@ -15,41 +19,48 @@ const Title = styled(Text)`
   color: ${styles.textLight};
 `;
 const Courses = styled(View)`
-  & > *:not(:last-child) {
-    margin-bottom: ${styles.space(-1)};
-  }
+  margin-bottom: ${styles.space(0)};
 `;
 const Course = styled(View)`
   flex-direction: row;
   padding: 0 ${styles.space(0)};
   align-items: center;
   min-height: ${styles.space(2)};
+  transition: all 200ms;
   &:hover {
     background-color: ${styles.whiteTer};
   }
   &:active {
     background-color: ${styles.grayLighter};
   }
-  transition: all 200ms;
+  & > *:not(:last-child) {
+    margin-right: ${styles.space(-1)};
+  }
 `;
 const Header = styled(View)`
   flex-direction: row;
   padding: 0 ${styles.space(0)};
   margin-bottom: ${styles.space(0)};
+  & > *:not(:last-child) {
+    margin-right: ${styles.space(-1)};
+  }
 `;
 const CourseName = styled(Text)`
   margin-right: ${styles.space(0)};
   flex: 1 1 auto;
 `;
-const CreditHours = styled(Text)`
+const Column = styled(Text)`
   width: 3rem;
   flex: 0 0 auto;
   text-align: right;
 `;
-const Completed = styled(Text)`
-  width: 3rem;
+const MenuColumn = styled(View)`
   flex: 0 0 auto;
-  text-align: right;
+  width: 2rem;
+  align-items: flex-end;
+`;
+const ActionableText = styled(_ActionableText)`
+  padding: 0 ${styles.space(0)};
 `;
 
 export interface CourseModel {
@@ -79,28 +90,33 @@ export class RequirementGroup extends React.PureComponent<RequirementGroupProps>
                 <strong>Course name</strong>
               </Caption>
             </CourseName>
-            <CreditHours>
+            <Column>
               <Caption>
                 <strong>Credits</strong>
               </Caption>
-            </CreditHours>
-            <Completed>
+            </Column>
+            <Column>
               <Caption>
                 <strong>Done?</strong>
               </Caption>
-            </Completed>
+            </Column>
+            <MenuColumn />
           </Header>
           <Courses>
             {courses.map(({ id, name, creditHours, completed }) => (
               <Course key={id}>
                 <CourseName>{name}</CourseName>
-                <CreditHours>({creditHours})</CreditHours>
-                <Completed>
+                <Column>({creditHours})</Column>
+                <Column>
                   <input type="checkbox" checked={completed} />
-                </Completed>
+                </Column>
+                <MenuColumn>
+                  <DropdownMenu actions={{}} onAction={() => {}} header={name} />
+                </MenuColumn>
               </Course>
             ))}
           </Courses>
+          <ActionableText>Edit courses…</ActionableText>
         </Card>
       </Root>
     );

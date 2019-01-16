@@ -33,8 +33,6 @@ const Container = Model.store.connect({
             },
           ],
         },
-      ],
-      columnTwo: [
         {
           id: 'some-group',
           name: 'Writing and Oral Communication',
@@ -48,6 +46,33 @@ const Container = Model.store.connect({
 
             {
               id: 'somse-cours3e',
+              name: 'Writing and Rhetoric II',
+              completed: false,
+              creditHours: 3,
+            },
+            {
+              id: 'somse-coufdsfdsrs3e',
+              name: 'Writing and Rhetoric III',
+              completed: false,
+              creditHours: 3,
+            },
+          ],
+        },
+      ],
+      columnTwo: [
+        {
+          id: 'some-group',
+          name: 'Writing and Oral Communication',
+          courses: [
+            {
+              id: 'some-coufrse',
+              name: 'Writing and Rhetoric I',
+              completed: true,
+              creditHours: 3,
+            },
+
+            {
+              id: 'some-codsurs3e',
               name: 'Writing and Rhetoric II',
               completed: false,
               creditHours: 3,
