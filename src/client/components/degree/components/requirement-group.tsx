@@ -8,14 +8,22 @@ import { Caption } from 'components/caption';
 import { Card } from 'components/card';
 import { DropdownMenu } from 'components/dropdown-menu';
 import { ActionableText as _ActionableText } from 'components/actionable-text';
+import { RightClickMenu } from 'components/right-click-menu';
 
 const Root = styled(View)`
+  margin-bottom: ${styles.space(0)};
+`;
+const TitleRow = styled(View)`
+  flex-direction: row;
+  justify-content: space-between;
+  & > *:not(:last-child) {
+    margin-right: ${styles.space(-1)};
+  }
   margin-bottom: ${styles.space(0)};
 `;
 const Title = styled(Text)`
   font-size: ${styles.space(1)};
   font-weight: ${styles.bold};
-  margin-bottom: ${styles.space(0)};
   color: ${styles.textLight};
 `;
 const Courses = styled(View)`
@@ -81,44 +89,55 @@ export class RequirementGroup extends React.PureComponent<RequirementGroupProps>
     const { name, courses } = this.props;
 
     return (
-      <Root>
-        <Title>{name}</Title>
-        <Card>
-          <Header>
-            <CourseName>
-              <Caption>
-                <strong>Course name</strong>
-              </Caption>
-            </CourseName>
-            <Column>
-              <Caption>
-                <strong>Credits</strong>
-              </Caption>
-            </Column>
-            <Column>
-              <Caption>
-                <strong>Done?</strong>
-              </Caption>
-            </Column>
-            <MenuColumn />
-          </Header>
-          <Courses>
-            {courses.map(({ id, name, creditHours, completed }) => (
-              <Course key={id}>
-                <CourseName>{name}</CourseName>
-                <Column>({creditHours})</Column>
+      <RightClickMenu actions={{}} onAction={() => {}} header={name}>
+        {rightClickProps => (
+          <Root {...rightClickProps}>
+            <TitleRow>
+              <Title>{name}</Title>
+              <DropdownMenu actions={{}} onAction={() => {}} header={name} />
+            </TitleRow>
+            <Card>
+              <Header>
+                <CourseName>
+                  <Caption>
+                    <strong>Course name</strong>
+                  </Caption>
+                </CourseName>
                 <Column>
-                  <input type="checkbox" checked={completed} />
+                  <Caption>
+                    <strong>Credits</strong>
+                  </Caption>
                 </Column>
-                <MenuColumn>
-                  <DropdownMenu actions={{}} onAction={() => {}} header={name} />
-                </MenuColumn>
-              </Course>
-            ))}
-          </Courses>
-          <ActionableText>Edit courses…</ActionableText>
-        </Card>
-      </Root>
+                <Column>
+                  <Caption>
+                    <strong>Done?</strong>
+                  </Caption>
+                </Column>
+                <MenuColumn />
+              </Header>
+              <Courses>
+                {courses.map(({ id, name, creditHours, completed }) => (
+                  <RightClickMenu actions={{}} onAction={() => {}} header={name}>
+                    {rightClickProps => (
+                      <Course key={id} {...rightClickProps}>
+                        <CourseName>{name}</CourseName>
+                        <Column>({creditHours})</Column>
+                        <Column>
+                          <input type="checkbox" checked={completed} />
+                        </Column>
+                        <MenuColumn>
+                          <DropdownMenu actions={{}} onAction={() => {}} header={name} />
+                        </MenuColumn>
+                      </Course>
+                    )}
+                  </RightClickMenu>
+                ))}
+              </Courses>
+              <ActionableText>Edit courses…</ActionableText>
+            </Card>
+          </Root>
+        )}
+      </RightClickMenu>
     );
   }
 }
