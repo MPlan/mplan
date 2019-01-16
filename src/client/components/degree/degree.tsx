@@ -2,12 +2,16 @@ import * as React from 'react';
 import * as Model from 'models';
 import * as styles from 'styles';
 import styled from 'styled-components';
+import { memoizeLast } from 'utilities/memoize-last';
+import { SortEnd } from 'react-sortable-hoc';
 
 import { Page as _Page } from 'components/page';
 import { Text } from 'components/text';
 import { View } from 'components/view';
 import { PrimaryButton } from 'components/button';
 import { RequirementGroup, CourseModel } from './components/requirement-group';
+import { Modal } from 'components/modal';
+import { Reorder } from 'components/reorder';
 
 const { round } = Math;
 
@@ -73,6 +77,9 @@ const Column = styled(View)`
   flex: 0 0 auto;
   width: 24rem;
 `;
+const ReorderCourse = styled(View)`
+  padding: ${styles.space(0)} ${styles.space(1)};
+`;
 
 interface RequirementGroupModel {
   id: string;
@@ -84,8 +91,10 @@ interface DegreeProps {
   degreeName: string;
   currentCredits: number;
   totalCredits: number;
+  warnings: string[];
   onToggleCourseComplete: (groupId: string, courseId: string) => void;
   onRemoveCourse: (groupId: string, courseId: string) => void;
+  onRearrange: (groupId: string, sortEnd: SortEnd) => void;
   columnOne: RequirementGroupModel[];
   columnTwo: RequirementGroupModel[];
   columnThree: RequirementGroupModel[];
@@ -102,23 +111,93 @@ export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
     activeRearrangeGroupId: undefined,
   };
 
+  get activeGroup() {
+    const { columnOne, columnTwo, columnThree } = this.props;
+    const { activeGroupId } = this.state;
+    return this._getActiveGroup(activeGroupId, columnOne, columnTwo, columnThree);
+  }
+  _getActiveGroup = memoizeLast(
+    (
+      activeGroupId: string | undefined,
+      columnOne: RequirementGroupModel[],
+      columnTwo: RequirementGroupModel[],
+      columnThree: RequirementGroupModel[],
+    ) => {
+      if (!activeGroupId) return undefined;
+
+      const columnOneMatch = columnOne.find(group => group.id === activeGroupId);
+      if (columnOneMatch) return columnOneMatch;
+      const columnTwoMatch = columnTwo.find(group => group.id === activeGroupId);
+      if (columnTwoMatch) return columnTwoMatch;
+      const columnThreeMatch = columnThree.find(group => group.id === activeGroupId);
+      if (columnThreeMatch) return columnThreeMatch;
+
+      return undefined;
+    },
+  );
+
+  get activeRearrangeGroup() {
+    const { columnOne, columnTwo, columnThree } = this.props;
+    const { activeRearrangeGroupId } = this.state;
+    return this._getActiveGroup(activeRearrangeGroupId, columnOne, columnTwo, columnThree);
+  }
+  _getActiveRearrangeGroup = memoizeLast(
+    (
+      activeGroupId: string | undefined,
+      columnOne: RequirementGroupModel[],
+      columnTwo: RequirementGroupModel[],
+      columnThree: RequirementGroupModel[],
+    ) => {
+      if (!activeGroupId) return undefined;
+
+      const columnOneMatch = columnOne.find(group => group.id === activeGroupId);
+      if (columnOneMatch) return columnOneMatch;
+      const columnTwoMatch = columnTwo.find(group => group.id === activeGroupId);
+      if (columnTwoMatch) return columnTwoMatch;
+      const columnThreeMatch = columnThree.find(group => group.id === activeGroupId);
+      if (columnThreeMatch) return columnThreeMatch;
+
+      return undefined;
+    },
+  );
+
   handleEditGroup(groupId: string) {
     this.setState({
       activeGroupId: groupId,
     });
   }
+  handleEditGroupClose = () => {
+    this.setState({ activeGroupId: undefined });
+  };
 
   handleRearrangeGroup(groupId: string) {
     this.setState({
       activeRearrangeGroupId: groupId,
     });
   }
+  handleRearrangeClose = () => {
+    this.setState({ activeRearrangeGroupId: undefined });
+  };
+
+  handleRearrangeEnd = (sortEnd: SortEnd) => {
+    const { activeRearrangeGroupId } = this.state;
+    if (!activeRearrangeGroupId) return;
+
+    this.props.onRearrange(activeRearrangeGroupId, sortEnd);
+  };
+
+  renderReorderCourse = (course: CourseModel) => (
+    <ReorderCourse>
+      <Text>{course.name}</Text>
+    </ReorderCourse>
+  );
 
   render() {
     const {
       degreeName,
       currentCredits,
       totalCredits,
+      warnings,
       columnOne,
       columnTwo,
       columnThree,
@@ -126,71 +205,94 @@ export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
       onRemoveCourse,
     } = this.props;
 
+    const { activeGroupId, activeRearrangeGroupId } = this.state;
+
     const percentage = (currentCredits * 100) / totalCredits;
 
     return (
-      <Page
-        title={degreeName}
-        titleLeft={
-          <TitleLeft>
-            <Status>
-              <PercentageRow>
-                <Percentage>{isNaN(percentage) ? '0' : round(percentage)}%</Percentage>
-                <CompleteText>complete</CompleteText>
-              </PercentageRow>
-              <CreditsRow>
-                <Credits>
-                  {currentCredits}/{totalCredits}
-                </Credits>
-                <CreditsText>credits</CreditsText>
-              </CreditsRow>
-            </Status>
-          </TitleLeft>
-        }
-      >
-        <Warnings>
-          <Warning>A warning</Warning>
-          <Warning>Another warning</Warning>
-        </Warnings>
-        <Body>
-          <Column>
-            {columnOne.map(group => (
-              <RequirementGroup
-                key={group.id}
-                {...group}
-                onToggleCourseComplete={courseId => onToggleCourseComplete(group.id, courseId)}
-                onEdit={() => this.handleEditGroup(group.id)}
-                onRearrange={() => this.handleRearrangeGroup(group.id)}
-                onRemoveCourse={courseId => onRemoveCourse(group.id, courseId)}
-              />
+      <>
+        <Page
+          title={degreeName}
+          titleLeft={
+            <TitleLeft>
+              <Status>
+                <PercentageRow>
+                  <Percentage>{isNaN(percentage) ? '0' : round(percentage)}%</Percentage>
+                  <CompleteText>complete</CompleteText>
+                </PercentageRow>
+                <CreditsRow>
+                  <Credits>
+                    {currentCredits}/{totalCredits}
+                  </Credits>
+                  <CreditsText>credits</CreditsText>
+                </CreditsRow>
+              </Status>
+            </TitleLeft>
+          }
+        >
+          <Warnings>
+            {warnings.map((warning, index) => (
+              <Warning key={index}>{warning}</Warning>
             ))}
-          </Column>
-          <Column>
-            {columnTwo.map(group => (
-              <RequirementGroup
-                key={group.id}
-                {...group}
-                onToggleCourseComplete={courseId => onToggleCourseComplete(group.id, courseId)}
-                onEdit={() => this.handleEditGroup(group.id)}
-                onRearrange={() => this.handleRearrangeGroup(group.id)}
-                onRemoveCourse={courseId => onRemoveCourse(group.id, courseId)}
-              />
-            ))}
-          </Column>
-          <Column>
-            {columnThree.map(group => (
-              <RequirementGroup
-                key={group.id}
-                {...group}
-                onToggleCourseComplete={courseId => onToggleCourseComplete(group.id, courseId)}
-                onEdit={() => this.handleEditGroup(group.id)}
-                onRearrange={() => this.handleRearrangeGroup(group.id)}
-                onRemoveCourse={courseId => onRemoveCourse(group.id, courseId)}
-              />
-            ))}
-          </Column>
-        </Body>
-      </Page>
+          </Warnings>
+          <Body>
+            <Column>
+              {columnOne.map(group => (
+                <RequirementGroup
+                  key={group.id}
+                  {...group}
+                  onToggleCourseComplete={courseId => onToggleCourseComplete(group.id, courseId)}
+                  onEdit={() => this.handleEditGroup(group.id)}
+                  onRearrange={() => this.handleRearrangeGroup(group.id)}
+                  onRemoveCourse={courseId => onRemoveCourse(group.id, courseId)}
+                />
+              ))}
+            </Column>
+            <Column>
+              {columnTwo.map(group => (
+                <RequirementGroup
+                  key={group.id}
+                  {...group}
+                  onToggleCourseComplete={courseId => onToggleCourseComplete(group.id, courseId)}
+                  onEdit={() => this.handleEditGroup(group.id)}
+                  onRearrange={() => this.handleRearrangeGroup(group.id)}
+                  onRemoveCourse={courseId => onRemoveCourse(group.id, courseId)}
+                />
+              ))}
+            </Column>
+            <Column>
+              {columnThree.map(group => (
+                <RequirementGroup
+                  key={group.id}
+                  {...group}
+                  onToggleCourseComplete={courseId => onToggleCourseComplete(group.id, courseId)}
+                  onEdit={() => this.handleEditGroup(group.id)}
+                  onRearrange={() => this.handleRearrangeGroup(group.id)}
+                  onRemoveCourse={courseId => onRemoveCourse(group.id, courseId)}
+                />
+              ))}
+            </Column>
+          </Body>
+        </Page>
+        <Modal
+          open={!!activeGroupId}
+          onBlurCancel={this.handleEditGroupClose}
+          size="large"
+          title={(this.activeGroup && this.activeGroup.name) || 'Current group'}
+        >
+          edit modal
+        </Modal>
+        <Reorder
+          title={`Reordering course in ${(this.activeRearrangeGroup &&
+            this.activeRearrangeGroup.name) ||
+            ''}…`}
+          open={!!activeRearrangeGroupId}
+          elements={(this.activeRearrangeGroup && this.activeRearrangeGroup.courses) || []}
+          onClose={this.handleRearrangeClose}
+          onReorder={this.handleRearrangeEnd}
+          render={this.renderReorderCourse}
+        />
+      </>
     );
   }
 }
