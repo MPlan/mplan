@@ -84,13 +84,36 @@ interface DegreeProps {
   degreeName: string;
   currentCredits: number;
   totalCredits: number;
+  onToggleCourseComplete: (groupId: string, courseId: string) => void;
+  onRemoveCourse: (groupId: string, courseId: string) => void;
   columnOne: RequirementGroupModel[];
   columnTwo: RequirementGroupModel[];
   columnThree: RequirementGroupModel[];
 }
-interface DegreeState {}
+
+interface DegreeState {
+  activeGroupId: string | undefined;
+  activeRearrangeGroupId: string | undefined;
+}
 
 export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
+  state: DegreeState = {
+    activeGroupId: undefined,
+    activeRearrangeGroupId: undefined,
+  };
+
+  handleEditGroup(groupId: string) {
+    this.setState({
+      activeGroupId: groupId,
+    });
+  }
+
+  handleRearrangeGroup(groupId: string) {
+    this.setState({
+      activeRearrangeGroupId: groupId,
+    });
+  }
+
   render() {
     const {
       degreeName,
@@ -99,6 +122,8 @@ export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
       columnOne,
       columnTwo,
       columnThree,
+      onToggleCourseComplete,
+      onRemoveCourse,
     } = this.props;
 
     const percentage = (currentCredits * 100) / totalCredits;
@@ -129,32 +154,38 @@ export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
         </Warnings>
         <Body>
           <Column>
-            {columnOne.map(requirementGroup => (
+            {columnOne.map(group => (
               <RequirementGroup
-                key={requirementGroup.id}
-                {...requirementGroup}
-                onClickCourse={() => {}}
-                onEdit={() => {}}
+                key={group.id}
+                {...group}
+                onToggleCourseComplete={courseId => onToggleCourseComplete(group.id, courseId)}
+                onEdit={() => this.handleEditGroup(group.id)}
+                onRearrange={() => this.handleRearrangeGroup(group.id)}
+                onRemoveCourse={courseId => onRemoveCourse(group.id, courseId)}
               />
             ))}
           </Column>
           <Column>
-            {columnTwo.map(requirementGroup => (
+            {columnTwo.map(group => (
               <RequirementGroup
-                key={requirementGroup.id}
-                {...requirementGroup}
-                onClickCourse={() => {}}
-                onEdit={() => {}}
+                key={group.id}
+                {...group}
+                onToggleCourseComplete={courseId => onToggleCourseComplete(group.id, courseId)}
+                onEdit={() => this.handleEditGroup(group.id)}
+                onRearrange={() => this.handleRearrangeGroup(group.id)}
+                onRemoveCourse={courseId => onRemoveCourse(group.id, courseId)}
               />
             ))}
           </Column>
           <Column>
-            {columnThree.map(requirementGroup => (
+            {columnThree.map(group => (
               <RequirementGroup
-                key={requirementGroup.id}
-                {...requirementGroup}
-                onClickCourse={() => {}}
-                onEdit={() => {}}
+                key={group.id}
+                {...group}
+                onToggleCourseComplete={courseId => onToggleCourseComplete(group.id, courseId)}
+                onEdit={() => this.handleEditGroup(group.id)}
+                onRearrange={() => this.handleRearrangeGroup(group.id)}
+                onRemoveCourse={courseId => onRemoveCourse(group.id, courseId)}
               />
             ))}
           </Column>

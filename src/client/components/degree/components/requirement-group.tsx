@@ -85,12 +85,15 @@ export interface CourseModel {
   name: string;
   completed: boolean;
   creditHours: number;
+  catalogLink?: string;
 }
 
 interface RequirementGroupProps {
   name: string;
   courses: CourseModel[];
-  onClickCourse: (courseId: string) => void;
+  onToggleCourseComplete: (courseId: string) => void;
+  onRemoveCourse: (courseId: string) => void;
+  onRearrange: () => void;
   onEdit: () => void;
 }
 
@@ -107,50 +110,36 @@ export class RequirementGroup extends React.PureComponent<RequirementGroupProps>
     },
   };
 
-  courseActionsDone = {
-    toggle: {
-      text: 'Mark as done',
-      icon: 'check',
-      color: styles.success,
-    },
-    catalog: {
-      text: 'View in catalog',
-      icon: 'chevronRight',
-      color: styles.blue,
-    },
-    remove: {
-      text: 'Remove course',
-      icon: 'trash',
-      color: styles.danger,
-    },
-  };
-
-  courseActionsRemoveDone = {
-    toggle: {
-      text: 'Mark as incomplete',
-      icon: 'times',
-    },
-    catalog: {
-      text: 'View in catalog',
-      icon: 'chevronRight',
-      color: styles.blue,
-    },
-    remove: {
-      text: 'Remove course',
-      icon: 'trash',
-      color: styles.danger,
-    },
-  };
-
   handleGroupActions = (action: keyof RequirementGroup['groupActions']) => {
+    const { onEdit, onRearrange } = this.props;
+
     if (action === 'edit') {
-      this.props.onEdit();
+      onEdit();
+      return;
+    }
+
+    if (action === 'rearrange') {
+      onRearrange();
       return;
     }
   };
 
+  handleCourseActions(action: 'toggle' | 'catalog' | 'remove', courseId: string) {
+    const { onToggleCourseComplete, onRemoveCourse } = this.props;
+
+    if (action === 'toggle') {
+      onToggleCourseComplete(courseId);
+      return;
+    }
+
+    if (action === 'remove') {
+      onRemoveCourse(courseId);
+      return;
+    }
+  }
+
   render() {
-    const { name, courses } = this.props;
+    const { name, courses, onToggleCourseComplete, onEdit } = this.props;
 
     return (
       <RightClickMenu actions={this.groupActions} onAction={this.handleGroupActions} header={name}>
@@ -184,34 +173,66 @@ export class RequirementGroup extends React.PureComponent<RequirementGroupProps>
                 <MenuColumn />
               </Header>
               <Courses>
-                {courses.map(({ id, name, creditHours, completed }) => (
-                  <RightClickMenu
-                    actions={completed ? this.courseActionsRemoveDone : this.courseActionsDone}
-                    onAction={() => {}}
-                    header={name}
-                  >
-                    {rightClickProps => (
-                      <Course key={id} {...rightClickProps}>
-                        <CourseName>{name}</CourseName>
-                        <Column>({creditHours})</Column>
-                        <Column>
-                          <input type="checkbox" checked={completed} />
-                        </Column>
-                        <MenuColumn>
-                          <DropdownMenu
-                            actions={
-                              completed ? this.courseActionsRemoveDone : this.courseActionsDone
-                            }
-                            onAction={() => {}}
-                            header={name}
-                          />
-                        </MenuColumn>
-                      </Course>
-                    )}
-                  </RightClickMenu>
-                ))}
+                {courses.map(({ id, name, creditHours, completed, catalogLink }) => {
+                  const actions = {
+                    toggle: completed
+                      ? {
+                          text: 'Mark as incomplete',
+                          icon: 'times',
+                        }
+                      : {
+                          text: 'Mark as done',
+                          icon: 'check',
+                          color: styles.success,
+                        },
+                    remove: {
+                      text: 'Remove course',
+                      icon: 'trash',
+                      color: styles.danger,
+                    },
+                    ...(catalogLink
+                      ? {
+                          catalog: {
+                            text: 'View in catalog',
+                            icon: 'chevronRight',
+                            color: styles.blue,
+                            link: catalogLink,
+                          },
+                        }
+                      : {}),
+                  } as any;
+
+                  return (
+                    <RightClickMenu
+                      actions={actions}
+                      onAction={action => this.handleCourseActions(action as any, id)}
+                      header={name}
+                    >
+                      {rightClickProps => (
+                        <Course
+                          {...rightClickProps}
+                          key={id}
+                          onClick={() => onToggleCourseComplete(id)}
+                        >
+                          <CourseName>{name}</CourseName>
+                          <Column>({creditHours})</Column>
+                          <Column>
+                            <input type="checkbox" checked={completed} />
+                          </Column>
+                          <MenuColumn>
+                            <DropdownMenu
+                              actions={actions}
+                              onAction={action => this.handleCourseActions(action as any, id)}
+                              header={name}
+                            />
+                          </MenuColumn>
+                        </Course>
+                      )}
+                    </RightClickMenu>
+                  );
+                })}
               </Courses>
-              <ActionableText>Edit courses…</ActionableText>
+              <ActionableText onClick={onEdit}>Edit courses…</ActionableText>
             </Card>
           </Root>
         )}

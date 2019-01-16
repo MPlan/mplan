@@ -1,5 +1,6 @@
 import * as Model from 'models';
 import { Degree } from './degree';
+import { CourseModel } from './components/requirement-group';
 
 const Container = Model.store.connect({
   mapStateToProps: state => {
@@ -23,6 +24,7 @@ const Container = Model.store.connect({
               name: 'Writing and Rhetoric I',
               completed: true,
               creditHours: 3,
+              catalogLink: '/catalog/AAAS/340',
             },
 
             {
@@ -30,8 +32,9 @@ const Container = Model.store.connect({
               name: 'Writing and Rhetoric II',
               completed: false,
               creditHours: 3,
+              catalogLink: '/catalog/AAAS/340',
             },
-          ],
+          ] as CourseModel[],
         },
         {
           id: 'some-group',
@@ -42,6 +45,7 @@ const Container = Model.store.connect({
               name: 'Writing and Rhetoric I',
               completed: true,
               creditHours: 3,
+              catalogLink: '/catalog/AAAS/340',
             },
 
             {
@@ -49,14 +53,16 @@ const Container = Model.store.connect({
               name: 'Writing and Rhetoric II',
               completed: false,
               creditHours: 3,
+              catalogLink: '/catalog/AAAS/340',
             },
             {
               id: 'somse-coufdsfdsrs3e',
               name: 'Writing and Rhetoric III',
               completed: false,
               creditHours: 3,
+              catalogLink: '/catalog/AAAS/340',
             },
-          ],
+          ] as CourseModel[],
         },
       ],
       columnTwo: [
@@ -69,6 +75,7 @@ const Container = Model.store.connect({
               name: 'Writing and Rhetoric I',
               completed: true,
               creditHours: 3,
+              catalogLink: '/catalog/AAAS/340',
             },
 
             {
@@ -76,8 +83,9 @@ const Container = Model.store.connect({
               name: 'Writing and Rhetoric II',
               completed: false,
               creditHours: 3,
+              catalogLink: '/catalog/AAAS/340',
             },
-          ],
+          ] as CourseModel[],
         },
       ],
       columnThree: [
@@ -90,6 +98,7 @@ const Container = Model.store.connect({
               name: 'Writing and Rhetoric I',
               completed: true,
               creditHours: 3,
+              catalogLink: '/catalog/AAAS/340',
             },
 
             {
@@ -97,13 +106,17 @@ const Container = Model.store.connect({
               name: 'Writing and Rhetoric II',
               completed: false,
               creditHours: 3,
+              catalogLink: '/catalog/AAAS/340',
             },
-          ],
+          ] as CourseModel[],
         },
       ],
     };
   },
-  mapDispatchToProps: () => ({}),
+  mapDispatchToProps: () => ({
+    onToggleCourseComplete: (groupId: string, courseId: string) => {},
+    onRemoveCourse: (groupId: string, courseId: string) => {},
+  }),
 })(Degree);
 
 export { Container as Degree };
