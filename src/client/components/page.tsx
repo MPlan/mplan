@@ -37,6 +37,7 @@ const Body = styled<BodyProps>(View)`
 `;
 
 interface PageProps {
+  className?: string;
   title: string;
   subtitle?: React.ReactNode;
   titleLeft?: React.ReactNode;
@@ -46,9 +47,9 @@ interface PageProps {
 
 export class Page extends React.PureComponent<PageProps, any> {
   render() {
-    const { title, subtitle, titleLeft } = this.props;
+    const { className, title, subtitle, titleLeft } = this.props;
     return (
-      <Container>
+      <Container className={className}>
         <TitleRow>
           <TitleContainer>
             <Title>{title}</Title>

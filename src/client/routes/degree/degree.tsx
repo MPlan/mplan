@@ -9,6 +9,7 @@ import { RouteComponentProps } from 'react-router';
 
 const Root = styled(View)`
   flex: 1 1 auto;
+  overflow: auto;
 `;
 interface DegreePageProps extends RouteComponentProps<any> {
   degreeName: string;

@@ -20,6 +20,7 @@ const TitleRow = styled(View)`
     margin-right: ${styles.space(-1)};
   }
   margin-bottom: ${styles.space(0)};
+  align-items: flex-end;
 `;
 const Title = styled(Text)`
   font-size: ${styles.space(1)};
@@ -68,7 +69,15 @@ const MenuColumn = styled(View)`
   align-items: flex-end;
 `;
 const ActionableText = styled(_ActionableText)`
-  padding: 0 ${styles.space(0)};
+  padding: ${styles.space(-1)} ${styles.space(0)};
+  align-self: stretch;
+  transition: all 200ms;
+  &:hover {
+    background-color: ${styles.whiteTer};
+  }
+  &:active {
+    background-color: ${styles.grayLighter};
+  }
 `;
 
 export interface CourseModel {
@@ -82,19 +91,78 @@ interface RequirementGroupProps {
   name: string;
   courses: CourseModel[];
   onClickCourse: (courseId: string) => void;
+  onEdit: () => void;
 }
 
 export class RequirementGroup extends React.PureComponent<RequirementGroupProps> {
+  groupActions = {
+    edit: {
+      text: 'Edit courses',
+      icon: 'pencil',
+      color: styles.blue,
+    },
+    rearrange: {
+      text: 'Rearrange courses',
+      icon: 'bars',
+    },
+  };
+
+  courseActionsDone = {
+    toggle: {
+      text: 'Mark as done',
+      icon: 'check',
+      color: styles.success,
+    },
+    catalog: {
+      text: 'View in catalog',
+      icon: 'chevronRight',
+      color: styles.blue,
+    },
+    remove: {
+      text: 'Remove course',
+      icon: 'trash',
+      color: styles.danger,
+    },
+  };
+
+  courseActionsRemoveDone = {
+    toggle: {
+      text: 'Mark as incomplete',
+      icon: 'times',
+    },
+    catalog: {
+      text: 'View in catalog',
+      icon: 'chevronRight',
+      color: styles.blue,
+    },
+    remove: {
+      text: 'Remove course',
+      icon: 'trash',
+      color: styles.danger,
+    },
+  };
+
+  handleGroupActions = (action: keyof RequirementGroup['groupActions']) => {
+    if (action === 'edit') {
+      this.props.onEdit();
+      return;
+    }
+  };
+
   render() {
     const { name, courses } = this.props;
 
     return (
-      <RightClickMenu actions={{}} onAction={() => {}} header={name}>
+      <RightClickMenu actions={this.groupActions} onAction={this.handleGroupActions} header={name}>
         {rightClickProps => (
           <Root {...rightClickProps}>
             <TitleRow>
               <Title>{name}</Title>
-              <DropdownMenu actions={{}} onAction={() => {}} header={name} />
+              <DropdownMenu
+                actions={this.groupActions}
+                onAction={this.handleGroupActions}
+                header={name}
+              />
             </TitleRow>
             <Card>
               <Header>
@@ -117,7 +185,11 @@ export class RequirementGroup extends React.PureComponent<RequirementGroupProps>
               </Header>
               <Courses>
                 {courses.map(({ id, name, creditHours, completed }) => (
-                  <RightClickMenu actions={{}} onAction={() => {}} header={name}>
+                  <RightClickMenu
+                    actions={completed ? this.courseActionsRemoveDone : this.courseActionsDone}
+                    onAction={() => {}}
+                    header={name}
+                  >
                     {rightClickProps => (
                       <Course key={id} {...rightClickProps}>
                         <CourseName>{name}</CourseName>
@@ -126,7 +198,13 @@ export class RequirementGroup extends React.PureComponent<RequirementGroupProps>
                           <input type="checkbox" checked={completed} />
                         </Column>
                         <MenuColumn>
-                          <DropdownMenu actions={{}} onAction={() => {}} header={name} />
+                          <DropdownMenu
+                            actions={
+                              completed ? this.courseActionsRemoveDone : this.courseActionsDone
+                            }
+                            onAction={() => {}}
+                            header={name}
+                          />
                         </MenuColumn>
                       </Course>
                     )}

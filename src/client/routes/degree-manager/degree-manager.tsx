@@ -112,7 +112,7 @@ export class DegreeEditor extends React.PureComponent<DegreeEditorProps, DegreeE
 
     return (
       <Slide slide={2} active={!!masteredDegreeId}>
-        {masteredDegreeId && <DegreePreview masteredDegreeId={masteredDegreeId} />}
+        {masteredDegreeId && <DegreePreview />}
       </Slide>
     );
   };

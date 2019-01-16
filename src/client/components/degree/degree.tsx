@@ -3,7 +3,7 @@ import * as Model from 'models';
 import * as styles from 'styles';
 import styled from 'styled-components';
 
-import { Page } from 'components/page';
+import { Page as _Page } from 'components/page';
 import { Text } from 'components/text';
 import { View } from 'components/view';
 import { PrimaryButton } from 'components/button';
@@ -11,6 +11,9 @@ import { RequirementGroup, CourseModel } from './components/requirement-group';
 
 const { round } = Math;
 
+const Page = styled(_Page)`
+  flex: 1 0 auto;
+`;
 const TitleLeft = styled(View)`
   flex-direction: row;
   align-items: flex-end;
@@ -131,6 +134,7 @@ export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
                 key={requirementGroup.id}
                 {...requirementGroup}
                 onClickCourse={() => {}}
+                onEdit={() => {}}
               />
             ))}
           </Column>
@@ -140,6 +144,7 @@ export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
                 key={requirementGroup.id}
                 {...requirementGroup}
                 onClickCourse={() => {}}
+                onEdit={() => {}}
               />
             ))}
           </Column>
@@ -149,6 +154,7 @@ export class Degree extends React.PureComponent<DegreeProps, DegreeState> {
                 key={requirementGroup.id}
                 {...requirementGroup}
                 onClickCourse={() => {}}
+                onEdit={() => {}}
               />
             ))}
           </Column>

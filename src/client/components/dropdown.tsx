@@ -31,6 +31,7 @@ const Menu = styled.ul`
 `;
 const Item = styled.li`
   display: flex;
+  align-items: center;
   margin: 0;
   padding: ${styles.space(-1)} ${styles.space(0)};
   outline: none;
